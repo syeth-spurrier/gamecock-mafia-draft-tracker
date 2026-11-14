@@ -359,6 +359,77 @@
     select, input, textarea {
       max-width: 100%;
     }
+    /* Sticky Frosted Sub-Navigation Bar (Change #5) */
+    .sticky-subnav-bar {
+      position: sticky;
+      top: -0.75rem;
+      z-index: 25;
+      background: rgba(18, 18, 21, 0.92);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+    }
+    /* Pulsing Action-Required Notification Badge (Change #3) */
+    @keyframes gcmActionPulse {
+      0%, 100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(251, 191, 36, 0.65); }
+      50% { transform: scale(1.08); box-shadow: 0 0 0 5px rgba(251, 191, 36, 0); }
+    }
+    .notif-action-pulse {
+      animation: gcmActionPulse 2s infinite;
+    }
+    /* Native Mobile Bottom-Sheet Drawers Instead of Centered Modals on <768px (Change #1) */
+    @keyframes gcmBottomSheetUp {
+      from { transform: translateY(100%); opacity: 0.7; }
+      to { transform: translateY(0); opacity: 1; }
+    }
+    @media (max-width: 767px) {
+      #inspectModal, #tradeModal, #moreToolsModal, #cloudSyncModal, #espnSyncModal,
+      #orderConfigModal, #espnExportModal, #archiveModal, #pinModal, #confirmModal, #leagueBrandingModal {
+        align-items: flex-end !important;
+        padding: 0 !important;
+        overflow-y: hidden !important;
+      }
+      #inspectModal > div:first-child,
+      #tradeModal > div:first-child,
+      #moreToolsModal > div:first-child,
+      #cloudSyncModal > div:first-child,
+      #espnSyncModal > div:first-child,
+      #orderConfigModal > div:first-child,
+      #espnExportModal > div:first-child,
+      #archiveModal > div:first-child,
+      #pinModal > div:first-child,
+      #confirmModal > div:first-child,
+      #leagueBrandingModal > div:first-child {
+        width: 100% !important;
+        max-width: 100% !important;
+        margin: 0 !important;
+        border-radius: 1.35rem 1.35rem 0 0 !important;
+        border-bottom: none !important;
+        max-height: 89dvh !important;
+        overflow-y: auto !important;
+        overscroll-behavior-y: contain;
+        padding-bottom: max(1.25rem, env(safe-area-inset-bottom)) !important;
+        animation: gcmBottomSheetUp 0.22s cubic-bezier(0.16, 1, 0.3, 1);
+      }
+      #inspectModal > div:first-child::before,
+      #tradeModal > div:first-child::before,
+      #moreToolsModal > div:first-child::before,
+      #cloudSyncModal > div:first-child::before,
+      #espnSyncModal > div:first-child::before,
+      #orderConfigModal > div:first-child::before,
+      #espnExportModal > div:first-child::before,
+      #archiveModal > div:first-child::before,
+      #pinModal > div:first-child::before,
+      #confirmModal > div:first-child::before,
+      #leagueBrandingModal > div:first-child::before {
+        content: "";
+        display: block;
+        width: 42px;
+        height: 4px;
+        border-radius: 9999px;
+        background: rgba(161, 161, 170, 0.45);
+        margin: 0 auto 0.5rem auto;
+      }
+    }
     @media print {
       html, body, body.native-app-shell {
         height: auto !important;
@@ -371,7 +442,7 @@
         print-color-adjust: exact;
       }
       header, footer, #mobileBottomNav, #topContextBanner, #incomingTradeAlertBanner, #passphraseGateOverlay, #toastStack, .no-print,
-      #inspectModal, #tradeModal, #orderConfigModal, #espnExportModal, #archiveModal, #cloudSyncModal, #confirmModal, #pinModal, #moreToolsModal, #leagueBrandingModal {
+      #inspectModal, #tradeModal, #orderConfigModal, #espnExportModal, #archiveModal, #cloudSyncModal, #espnSyncModal, #confirmModal, #pinModal, #moreToolsModal, #leagueBrandingModal {
         display: none !important;
       }
       main, #appMainShell {
@@ -528,6 +599,12 @@
           <button onclick="openPinModal()" id="mobileCommishBtn" class="hidden" aria-hidden="true">
             <i id="mobileCommishIcon" class="fa-solid fa-lock"></i>
             <span id="mobileCommishLabel">Admin</span>
+          </button>
+
+          <!-- Action-Required Notification Bell (Change #3: Pending Trade Confirmations / Keeper Lock) -->
+          <button onclick="handleHeaderNotifBellClick()" id="headerNotifBellBtn" class="btn-action px-2 sm:px-2.5 py-1.5 text-[11px] sm:text-xs text-zinc-200 relative" title="Action Required & Pending Trade Confirmations">
+            <i id="headerNotifBellIcon" class="fa-solid fa-bell text-zinc-300"></i>
+            <span id="headerNotifCountBadge" class="hidden -top-1.5 -right-1.5 absolute min-w-[17px] h-[17px] px-1 rounded-full bg-amber-400 text-black font-mono font-black text-[10px] inline-flex items-center justify-center notif-action-pulse">0</span>
           </button>
 
           <!-- Dedicated Top-Header ESPN Sync Button -->
@@ -874,9 +951,9 @@
       <footer id="appFooterShell" class="hidden border-t border-zinc-900 pt-4 pb-2 mt-6 no-print">
         <div class="flex flex-col sm:flex-row items-center justify-between gap-2 text-[11px] text-zinc-500">
           <div class="flex items-center gap-2">
-            <span class="font-bold text-zinc-400">Gamecock Mafia Draft & Pick Tracker v6.6</span>
+            <span class="font-bold text-zinc-400">Gamecock Mafia League HQ & Draft Tracker v7.2</span>
             <span>•</span>
-            <span>Est. 2018</span>
+            <span>Est. 2016</span>
           </div>
           <div class="flex flex-wrap items-center justify-center gap-2">
             <button onclick="openArchiveModal()" class="hover:text-zinc-300 transition cursor-pointer">2018–2025 Archive</button>
@@ -1067,8 +1144,11 @@
           </label>
         </div>
 
+        <!-- Live Trade Value Fairness Bar inside Proposal Modal (Change #8) -->
+        <div id="modalTradeBalanceBar" class="hidden"></div>
+
         <!-- Submit Footer -->
-        <div class="flex flex-wrap items-center justify-between gap-2 pt-2 border-t border-slate-800">
+        <div class="flex flex-wrap items-center justify-between gap-2 pt-2 border-t border-slate-800 sticky bottom-0 bg-[#111827] pb-1">
           <span id="formRoleHint" class="text-[11px] text-slate-400"></span>
           <div class="flex items-center space-x-2.5">
             <button type="button" onclick="closeModal('tradeModal')" class="btn-action px-4 py-2 text-xs text-slate-300">Cancel</button>
@@ -1626,16 +1706,16 @@
           </div>
         </div>
 
-        <!-- Step 3: Keeper Format & Positional Cap Rules + ESPN Slot / Alumni Mapping -->
+        <!-- Step 3: Keeper Format, Lock Deadline & Smart "Who-is-Who" Franchise Mapping -->
         <div class="bg-[#09090B] border border-zinc-800 rounded-xl p-3.5 sm:p-4 space-y-3">
           <div class="flex flex-wrap items-center justify-between gap-2">
             <span class="font-black text-emerald-300 uppercase tracking-wider">
-              <i class="fa-solid fa-shield-halved mr-1"></i>3. Official Keeper Cap Rules & Smart "Who-is-Who" Franchise Mapping
+              <i class="fa-solid fa-shield-halved mr-1"></i>3. Official Keeper Cap Rules, Lock Deadline & Franchise Mapping
             </span>
             <span class="static-badge bg-zinc-900 text-amber-300 border border-amber-500/40">12 Keepers • RB≤4 • WR≤4 • Other≤3</span>
           </div>
 
-          <div class="grid grid-cols-2 sm:grid-cols-4 gap-2.5">
+          <div class="grid grid-cols-2 sm:grid-cols-5 gap-2.5">
             <div>
               <label for="espnKeeperMaxInput" class="block text-[10px] font-bold uppercase text-zinc-400 mb-1">Max Total Keepers</label>
               <input id="espnKeeperMaxInput" type="number" min="1" max="20" value="12" class="w-full bg-[#121215] text-white font-mono font-bold text-xs rounded-lg px-2.5 py-2 border border-zinc-700">
@@ -1652,6 +1732,14 @@
               <label for="espnPosCapOtherInput" class="block text-[10px] font-bold uppercase text-amber-400 mb-1">Max Any Other Pos</label>
               <input id="espnPosCapOtherInput" type="number" min="1" max="12" value="3" class="w-full bg-[#121215] text-amber-300 font-mono font-bold text-xs rounded-lg px-2.5 py-2 border border-zinc-700">
             </div>
+            <div class="col-span-2 sm:col-span-1">
+              <label for="espnKeeperDeadlineInput" class="block text-[10px] font-bold uppercase text-rose-300 mb-1">Keeper Lock Deadline</label>
+              <input id="espnKeeperDeadlineInput" type="datetime-local" class="w-full bg-[#121215] text-white font-mono font-bold text-[11px] rounded-lg px-2 py-2 border border-zinc-700">
+            </div>
+          </div>
+
+          <div class="bg-[#121215] border border-zinc-800 rounded-lg px-3 py-2 text-[11px] text-zinc-300">
+            <strong class="text-emerald-300">Built-In Name Recognition:</strong> <span class="font-mono text-white">Alex → Geltz</span>, <span class="font-mono text-white">Shane → Boss</span>, <span class="font-mono text-white">David → Mary/Maryland</span>. Slots 1–9 keep 100% single-owner career continuity; <strong class="text-amber-300">Josh's slot (#10)</strong> tracks historical Alumni lineage (<span class="font-mono text-amber-200">Scott → Alek → Josh</span>).
           </div>
 
           <div class="space-y-1.5 pt-1">
@@ -1662,7 +1750,7 @@
           </div>
 
           <div class="space-y-1.5 pt-1 border-t border-zinc-800/80">
-            <div class="text-[10px] font-extrabold uppercase text-amber-300">Season-by-Season Champions (2016–Present) & Alumni Owner Overrides (Shane, Alex, etc.)</div>
+            <div class="text-[10px] font-extrabold uppercase text-amber-300">Season-by-Season Champions (2016–Present) & Josh Franchise (#10) Alumni Era (Scott → Alek → Josh)</div>
             <div id="espnSeasonOwnerOverridesGrid" class="grid grid-cols-1 sm:grid-cols-2 gap-2">
               <!-- Populated by JS -->
             </div>
@@ -2009,11 +2097,11 @@
         ]
       },
       2024: {
-        title: "2024 Draft Sheet Tab (Included Alex)",
-        orderNote: "Round 1 Order: 1. Geltz, 2. Chris, 3. Matt, 4. Boss, 5. Dylan, 6. Josh, 7. Leo, 8. Corbyn, 9. Alex/Mary, 10. Syeth",
+        title: "2024 Draft Sheet Tab",
+        orderNote: "Round 1 Order: 1. Geltz, 2. Chris, 3. Matt, 4. Boss, 5. Dylan, 6. Josh, 7. Leo, 8. Corbyn, 9. Mary, 10. Syeth",
         isLocked: true,
         slots: ["geltz", "chris", "matt", "boss", "dylan", "josh", "leo", "corbyn", "mary", "syeth"],
-        teamNamesOverride: { mary: "Alex/Mary" },
+        teamNamesOverride: {},
         parsedTransfers: [
           { round: 1, originalOwner: "geltz", toOwner: "corbyn", tradeIndex: 0 },
           { round: 4, originalOwner: "geltz", toOwner: "corbyn", tradeIndex: 0 },
@@ -2034,17 +2122,17 @@
           { text: "Matt acquires 1.02 (#2) from Chris — Chris gets Tua Tagovailoa & Tee Higgins", teams: ["matt", "chris"] },
           { text: "Corbyn acquires 1.03 (#3) & 2.08 (#18) from Matt — Matt gets Breece Hall & Chris Olave", teams: ["corbyn", "matt"] },
           { text: "Corbyn acquires 1.04 (#4) from Boss — Boss gets Jonathan Taylor", teams: ["corbyn", "boss"] },
-          { text: "Mary/Alex acquires 2.01 (#11) & 3.10 (#30) from Syeth — Syeth gets Patrick Mahomes", teams: ["mary", "syeth"] },
+          { text: "Mary acquires 2.01 (#11) & 3.10 (#30) from Syeth — Syeth gets Patrick Mahomes", teams: ["mary", "syeth"] },
           { text: "Dylan acquires 2.05 (#15) & 3.06 (#26) from Josh — Josh gets Garrett Wilson", teams: ["dylan", "josh"] },
           { text: "Boss acquires 3.02 (#22) from Chris — Chris gets Raheem Mostert & 6th (#57)", teams: ["boss", "chris"] }
         ]
       },
       2023: {
-        title: "2023 Draft Sheet Tab (Included Shane)",
-        orderNote: "Round 1 Order: 1. Chris, 2. Matt, 3. Geltz, 4. Josh, 5. Dylan, 6. Mary/Shane, 7. Syeth, 8. Leo, 9. Boss, 10. Corbyn",
+        title: "2023 Draft Sheet Tab",
+        orderNote: "Round 1 Order: 1. Chris, 2. Matt, 3. Geltz, 4. Alek (Josh Slot), 5. Dylan, 6. Mary, 7. Syeth, 8. Leo, 9. Boss, 10. Corbyn",
         isLocked: true,
         slots: ["chris", "matt", "geltz", "josh", "dylan", "mary", "syeth", "leo", "boss", "corbyn"],
-        teamNamesOverride: { mary: "Shane/Mary" },
+        teamNamesOverride: { josh: "Alek" },
         parsedTransfers: [
           { round: 1, originalOwner: "josh",  toOwner: "corbyn", tradeIndex: 0 },
           { round: 1, originalOwner: "syeth", toOwner: "boss",   tradeIndex: 1 },
@@ -2053,17 +2141,17 @@
           { round: 5, originalOwner: "dylan", toOwner: "matt",   tradeIndex: 2 }
         ],
         trades: [
-          { text: "Corbyn acquires 1.04 (#4) from Josh — Final leg of the Dalvin Cook / D'Andre Swift + two 1sts deal", teams: ["corbyn", "josh"] },
+          { text: "Corbyn acquires 1.04 (#4) from Alek (Josh Slot) — Final leg of the Dalvin Cook / D'Andre Swift + two 1sts deal", teams: ["corbyn", "josh"] },
           { text: "Boss acquires 1.07 (#7) from Syeth — Syeth gets Marquise Brown & 6th (#52)", teams: ["boss", "syeth"] },
           { text: "Dylan acquires 2.02 (#12) from Matt — Matt gets George Kittle & 5th (#45)", teams: ["dylan", "matt"] }
         ]
       },
       2022: {
-        title: "2022 Draft Sheet Tab (Included Shane)",
-        orderNote: "Round 1 Order: 1. Matt, 2. Chris, 3. Josh, 4. Geltz, 5. Shane/Mary, 6. Dylan, 7. Leo, 8. Corbyn, 9. Boss, 10. Syeth",
+        title: "2022 Draft Sheet Tab",
+        orderNote: "Round 1 Order: 1. Matt, 2. Chris, 3. Alek (Josh Slot), 4. Geltz, 5. Mary, 6. Dylan, 7. Leo, 8. Corbyn, 9. Boss, 10. Syeth",
         isLocked: true,
         slots: ["matt", "chris", "josh", "geltz", "mary", "dylan", "leo", "corbyn", "boss", "syeth"],
-        teamNamesOverride: { mary: "Shane/Mary" },
+        teamNamesOverride: { josh: "Alek" },
         parsedTransfers: [
           { round: 1, originalOwner: "josh",  toOwner: "corbyn", tradeIndex: 0 },
           { round: 1, originalOwner: "boss",  toOwner: "syeth",  tradeIndex: 1 },
@@ -2072,18 +2160,18 @@
           { round: 3, originalOwner: "chris", toOwner: "dylan",  tradeIndex: 3 }
         ],
         trades: [
-          { text: "Corbyn acquires 1.03 (#3) & 2023 1st + D'Andre Swift from Josh — Josh gets Dalvin Cook", teams: ["corbyn", "josh"] },
+          { text: "Corbyn acquires 1.03 (#3) & 2023 1st + D'Andre Swift from Alek (Josh Slot) — Alek gets Dalvin Cook", teams: ["corbyn", "josh"] },
           { text: "Syeth acquires 1.09 (#9) from Boss — Boss gets Ezekiel Elliott & 5th (#50)", teams: ["syeth", "boss"] },
           { text: "Corbyn acquires 2.04 (#14) from Geltz — Geltz gets Chris Godwin", teams: ["corbyn", "geltz"] },
           { text: "Dylan acquires 3.02 (#22) from Chris — Chris gets Leonard Fournette", teams: ["dylan", "chris"] }
         ]
       },
       2021: {
-        title: "2021 Draft Sheet Tab (Included Shane)",
-        orderNote: "Round 1 Order: 1. Chris, 2. Shane, 3. Josh, 4. Corbyn, 5. Syeth, 6. Boss, 7. Matt, 8. Leo, 9. Mary, 10. Geltz",
+        title: "2021 Draft Sheet Tab",
+        orderNote: "Round 1 Order: 1. Chris, 2. Dylan, 3. Alek (Josh Slot), 4. Corbyn, 5. Syeth, 6. Boss, 7. Matt, 8. Leo, 9. Mary, 10. Geltz",
         isLocked: true,
         slots: ["chris", "dylan", "josh", "corbyn", "syeth", "boss", "matt", "leo", "mary", "geltz"],
-        teamNamesOverride: { dylan: "Shane (Slot 2)" },
+        teamNamesOverride: { josh: "Alek" },
         parsedTransfers: [
           { round: 1, originalOwner: "dylan", toOwner: "corbyn", tradeIndex: 0 },
           { round: 4, originalOwner: "corbyn", toOwner: "dylan", tradeIndex: 0 },
@@ -2093,34 +2181,34 @@
           { round: 4, originalOwner: "dylan", toOwner: "geltz",  tradeIndex: 2 }
         ],
         trades: [
-          { text: "Corbyn acquires 1.02 (#2) from Shane — Shane gets James Robinson & 4th (#37)", teams: ["corbyn", "dylan"] },
+          { text: "Corbyn acquires 1.02 (#2) from Dylan — Dylan gets James Robinson & 4th (#37)", teams: ["corbyn", "dylan"] },
           { text: "Mary acquires 1.05 (#5) from Syeth — Syeth gets Miles Sanders & 3rd (#29)", teams: ["mary", "syeth"] },
           { text: "Dylan acquires 2.01 (#11) from Geltz — Geltz gets Kareem Hunt & 4th (#36)", teams: ["dylan", "geltz"] }
         ]
       },
       2020: {
         title: "2020 Draft Sheet Tab (Conditional Trades)",
-        orderNote: "Included Shane • Featured injury and playoff conditional pick rules",
+        orderNote: "Featured injury and playoff conditional pick rules",
         isLocked: false,
         slots: ["syeth", "corbyn", "chris", "boss", "geltz", "matt", "dylan", "leo", "mary", "josh"],
-        teamNamesOverride: { mary: "Shane/Mary" },
+        teamNamesOverride: { josh: "Alek" },
         parsedTransfers: [
           { round: 3, originalOwner: "geltz", toOwner: "mary",   tradeIndex: 0, isConditional: true },
           { round: 4, originalOwner: "matt",  toOwner: "corbyn", tradeIndex: 1, isConditional: true },
           { round: 2, originalOwner: "boss",  toOwner: "corbyn", tradeIndex: 2 }
         ],
         trades: [
-          { text: "CONDITIONAL TRADE: Geltz traded 3rd/4th to Shane for Sammy Watkins (3rd round pick unless Watkins is injured and misses a game, then becomes a 4th round pick)", teams: ["geltz", "mary"], isCond: true },
+          { text: "CONDITIONAL TRADE: Geltz traded 3rd/4th to Mary for Sammy Watkins (3rd round pick unless Watkins is injured and misses a game, then becomes a 4th round pick)", teams: ["geltz", "mary"], isCond: true },
           { text: "CONDITIONAL TRADE: Matt traded 4th/5th to Corbyn for Mark Ingram (4th round pick if Matt makes playoffs, 5th round pick if he misses)", teams: ["matt", "corbyn"], isCond: true },
           { text: "Corbyn acquired 2nd round pick from Boss for Cooper Kupp", teams: ["corbyn", "boss"] }
         ]
       },
       2019: {
         title: "2019 Draft Sheet Tab",
-        orderNote: "Included Shane • Featured conditional TE performance trade",
+        orderNote: "Featured conditional TE performance trade",
         isLocked: false,
         slots: ["syeth", "corbyn", "chris", "boss", "geltz", "matt", "dylan", "leo", "mary", "josh"],
-        teamNamesOverride: {},
+        teamNamesOverride: { josh: "Scott" },
         parsedTransfers: [
           { round: 3, originalOwner: "matt", toOwner: "dylan",  tradeIndex: 0, isConditional: true },
           { round: 2, originalOwner: "boss", toOwner: "corbyn", tradeIndex: 1 }
@@ -2170,6 +2258,7 @@
       keeperRules: {
         maxKeepers: 12,
         keeperRounds: 12,
+        keeperDeadlineIso: "",
         posCaps: { RB: 4, WR: 4, OTHER: 3 }
       },
       teamSlotMap: {
@@ -2185,8 +2274,8 @@
         "10": "josh"
       },
       alumniManagers: [
-        { id: "shane", name: "Shane", seasons: "2016–2023", notes: "Former Franchise Manager (Alumni)" },
-        { id: "alex",  name: "Alex",  seasons: "2024",      notes: "Former Franchise Manager (2024)" }
+        { id: "scott", name: "Scott", seasons: "2016–2019", yearsActive: "2016–2019", replacedBy: "josh", notes: "Original Franchise #10 Manager (preceded Alek & Josh)" },
+        { id: "alek",  name: "Alek",  seasons: "2020–2023", yearsActive: "2020–2023", replacedBy: "josh", notes: "Former Franchise #10 Manager (preceded Josh)" }
       ],
       seasonOwnerOverrides: {},
       rosters: {
@@ -2379,7 +2468,7 @@
         ],
         "2024": [
           { teamId: "syeth",  managerId: "syeth",  wins: 11, losses: 3, ties: 0, pf: 2188.4, pa: 1882.0, seed: 1,  rank: 1,  isChamp: true,  isToilet: false, allPlayWins: 105, allPlayLosses: 21, streak: "W7" },
-          { teamId: "mary",   managerId: "alex",   wins: 10, losses: 4, ties: 0, pf: 2076.2, pa: 1924.8, seed: 2,  rank: 2,  isChamp: false, isToilet: false, allPlayWins: 90,  allPlayLosses: 36, streak: "W3" },
+          { teamId: "mary",   managerId: "mary",   wins: 10, losses: 4, ties: 0, pf: 2076.2, pa: 1924.8, seed: 2,  rank: 2,  isChamp: false, isToilet: false, allPlayWins: 90,  allPlayLosses: 36, streak: "W3" },
           { teamId: "corbyn", managerId: "corbyn", wins: 9,  losses: 5, ties: 0, pf: 2048.0, pa: 1936.4, seed: 3,  rank: 3,  isChamp: false, isToilet: false, allPlayWins: 85,  allPlayLosses: 41, streak: "W2" },
           { teamId: "leo",    managerId: "leo",    wins: 8,  losses: 6, ties: 0, pf: 1984.6, pa: 1952.0, seed: 4,  rank: 4,  isChamp: false, isToilet: false, allPlayWins: 73,  allPlayLosses: 53, streak: "L1" },
           { teamId: "josh",   managerId: "josh",   wins: 7,  losses: 7, ties: 0, pf: 1946.2, pa: 1964.5, seed: 5,  rank: 5,  isChamp: false, isToilet: false, allPlayWins: 64,  allPlayLosses: 62, streak: "W1" },
@@ -2394,9 +2483,9 @@
           { teamId: "boss",   managerId: "boss",   wins: 10, losses: 4, ties: 0, pf: 2088.6, pa: 1918.0, seed: 2,  rank: 2,  isChamp: false, isToilet: false, allPlayWins: 93,  allPlayLosses: 33, streak: "W3" },
           { teamId: "leo",    managerId: "leo",    wins: 9,  losses: 5, ties: 0, pf: 2024.4, pa: 1942.6, seed: 3,  rank: 3,  isChamp: false, isToilet: false, allPlayWins: 82,  allPlayLosses: 44, streak: "W1" },
           { teamId: "syeth",  managerId: "syeth",  wins: 8,  losses: 6, ties: 0, pf: 1996.8, pa: 1958.4, seed: 4,  rank: 4,  isChamp: false, isToilet: false, allPlayWins: 75,  allPlayLosses: 51, streak: "W2" },
-          { teamId: "mary",   managerId: "shane",  wins: 7,  losses: 7, ties: 0, pf: 1948.2, pa: 1966.0, seed: 5,  rank: 5,  isChamp: false, isToilet: false, allPlayWins: 65,  allPlayLosses: 61, streak: "L1" },
+          { teamId: "mary",   managerId: "mary",   wins: 7,  losses: 7, ties: 0, pf: 1948.2, pa: 1966.0, seed: 5,  rank: 5,  isChamp: false, isToilet: false, allPlayWins: 65,  allPlayLosses: 61, streak: "L1" },
           { teamId: "corbyn", managerId: "corbyn", wins: 7,  losses: 7, ties: 0, pf: 1928.0, pa: 1974.2, seed: 6,  rank: 6,  isChamp: false, isToilet: false, allPlayWins: 60,  allPlayLosses: 66, streak: "L2" },
-          { teamId: "josh",   managerId: "josh",   wins: 6,  losses: 8, ties: 0, pf: 1894.5, pa: 1998.0, seed: 7,  rank: 7,  isChamp: false, isToilet: false, allPlayWins: 52,  allPlayLosses: 74, streak: "W1" },
+          { teamId: "josh",   managerId: "alek",   wins: 6,  losses: 8, ties: 0, pf: 1894.5, pa: 1998.0, seed: 7,  rank: 7,  isChamp: false, isToilet: false, allPlayWins: 52,  allPlayLosses: 74, streak: "W1" },
           { teamId: "geltz",  managerId: "geltz",  wins: 5,  losses: 9, ties: 0, pf: 1852.0, pa: 2038.4, seed: 8,  rank: 8,  isChamp: false, isToilet: false, allPlayWins: 44,  allPlayLosses: 82, streak: "L3" },
           { teamId: "matt",   managerId: "matt",   wins: 4,  losses: 10, ties: 0, pf: 1812.6, pa: 2084.5, seed: 9, rank: 9,  isChamp: false, isToilet: false, allPlayWins: 33,  allPlayLosses: 93, streak: "L2" },
           { teamId: "chris",  managerId: "chris",  wins: 3,  losses: 11, ties: 0, pf: 1758.4, pa: 2111.2, seed: 10, rank: 10, isChamp: false, isToilet: true, allPlayWins: 25,  allPlayLosses: 101, streak: "L6" }
@@ -2407,9 +2496,9 @@
           { teamId: "corbyn", managerId: "corbyn", wins: 9,  losses: 5, ties: 0, pf: 2038.0, pa: 1938.4, seed: 3,  rank: 3,  isChamp: false, isToilet: false, allPlayWins: 83,  allPlayLosses: 43, streak: "W1" },
           { teamId: "leo",    managerId: "leo",    wins: 8,  losses: 6, ties: 0, pf: 1982.4, pa: 1954.0, seed: 4,  rank: 4,  isChamp: false, isToilet: false, allPlayWins: 74,  allPlayLosses: 52, streak: "L1" },
           { teamId: "dylan",  managerId: "dylan",  wins: 7,  losses: 7, ties: 0, pf: 1946.0, pa: 1962.8, seed: 5,  rank: 5,  isChamp: false, isToilet: false, allPlayWins: 64,  allPlayLosses: 62, streak: "W1" },
-          { teamId: "mary",   managerId: "shane",  wins: 7,  losses: 7, ties: 0, pf: 1932.5, pa: 1978.0, seed: 6,  rank: 6,  isChamp: false, isToilet: false, allPlayWins: 61,  allPlayLosses: 65, streak: "L2" },
+          { teamId: "mary",   managerId: "mary",   wins: 7,  losses: 7, ties: 0, pf: 1932.5, pa: 1978.0, seed: 6,  rank: 6,  isChamp: false, isToilet: false, allPlayWins: 61,  allPlayLosses: 65, streak: "L2" },
           { teamId: "geltz",  managerId: "geltz",  wins: 6,  losses: 8, ties: 0, pf: 1892.0, pa: 2004.2, seed: 7,  rank: 7,  isChamp: false, isToilet: false, allPlayWins: 53,  allPlayLosses: 73, streak: "L1" },
-          { teamId: "josh",   managerId: "josh",   wins: 5,  losses: 9, ties: 0, pf: 1848.6, pa: 2042.0, seed: 8,  rank: 8,  isChamp: false, isToilet: false, allPlayWins: 43,  allPlayLosses: 83, streak: "L3" },
+          { teamId: "josh",   managerId: "alek",   wins: 5,  losses: 9, ties: 0, pf: 1848.6, pa: 2042.0, seed: 8,  rank: 8,  isChamp: false, isToilet: false, allPlayWins: 43,  allPlayLosses: 83, streak: "L3" },
           { teamId: "chris",  managerId: "chris",  wins: 3,  losses: 11, ties: 0, pf: 1796.2, pa: 2098.4, seed: 9, rank: 9,  isChamp: false, isToilet: false, allPlayWins: 29,  allPlayLosses: 97, streak: "L4" },
           { teamId: "matt",   managerId: "matt",   wins: 3,  losses: 11, ties: 0, pf: 1764.0, pa: 2156.1, seed: 10, rank: 10, isChamp: false, isToilet: true, allPlayWins: 24,  allPlayLosses: 102, streak: "L5" }
         ],
@@ -2421,8 +2510,8 @@
           { teamId: "boss",   managerId: "boss",   wins: 7,  losses: 7, ties: 0, pf: 1952.0, pa: 1966.4, seed: 5,  rank: 5,  isChamp: false, isToilet: false, allPlayWins: 65,  allPlayLosses: 61, streak: "W1" },
           { teamId: "syeth",  managerId: "syeth",  wins: 7,  losses: 7, ties: 0, pf: 1941.8, pa: 1972.0, seed: 6,  rank: 6,  isChamp: false, isToilet: false, allPlayWins: 62,  allPlayLosses: 64, streak: "L2" },
           { teamId: "corbyn", managerId: "corbyn", wins: 6,  losses: 8, ties: 0, pf: 1904.5, pa: 1998.2, seed: 7,  rank: 7,  isChamp: false, isToilet: false, allPlayWins: 54,  allPlayLosses: 72, streak: "L1" },
-          { teamId: "josh",   managerId: "josh",   wins: 5,  losses: 9, ties: 0, pf: 1858.0, pa: 2036.4, seed: 8,  rank: 8,  isChamp: false, isToilet: false, allPlayWins: 44,  allPlayLosses: 82, streak: "L3" },
-          { teamId: "dylan",  managerId: "shane",  wins: 4,  losses: 10, ties: 0, pf: 1812.4, pa: 2088.0, seed: 9, rank: 9,  isChamp: false, isToilet: false, allPlayWins: 35,  allPlayLosses: 91, streak: "L4" },
+          { teamId: "josh",   managerId: "alek",   wins: 5,  losses: 9, ties: 0, pf: 1858.0, pa: 2036.4, seed: 8,  rank: 8,  isChamp: false, isToilet: false, allPlayWins: 44,  allPlayLosses: 82, streak: "L3" },
+          { teamId: "dylan",  managerId: "dylan",  wins: 4,  losses: 10, ties: 0, pf: 1812.4, pa: 2088.0, seed: 9, rank: 9,  isChamp: false, isToilet: false, allPlayWins: 35,  allPlayLosses: 91, streak: "L4" },
           { teamId: "chris",  managerId: "chris",  wins: 4,  losses: 10, ties: 0, pf: 1784.2, pa: 2087.7, seed: 10, rank: 10, isChamp: false, isToilet: true, allPlayWins: 30,  allPlayLosses: 96, streak: "L5" }
         ],
         "2020": [
@@ -2431,23 +2520,23 @@
           { teamId: "syeth",  managerId: "syeth",  wins: 8,  losses: 5, ties: 0, pf: 1898.0, pa: 1812.4, seed: 3,  rank: 3,  isChamp: false, isToilet: false, allPlayWins: 76,  allPlayLosses: 41, streak: "W1" },
           { teamId: "dylan",  managerId: "dylan",  wins: 8,  losses: 5, ties: 0, pf: 1876.5, pa: 1824.0, seed: 4,  rank: 4,  isChamp: false, isToilet: false, allPlayWins: 71,  allPlayLosses: 46, streak: "L1" },
           { teamId: "matt",   managerId: "matt",   wins: 7,  losses: 6, ties: 0, pf: 1842.0, pa: 1848.2, seed: 5,  rank: 5,  isChamp: false, isToilet: false, allPlayWins: 62,  allPlayLosses: 55, streak: "W2" },
-          { teamId: "mary",   managerId: "shane",  wins: 6,  losses: 7, ties: 0, pf: 1812.4, pa: 1864.0, seed: 6,  rank: 6,  isChamp: false, isToilet: false, allPlayWins: 56,  allPlayLosses: 61, streak: "L1" },
+          { teamId: "mary",   managerId: "mary",   wins: 6,  losses: 7, ties: 0, pf: 1812.4, pa: 1864.0, seed: 6,  rank: 6,  isChamp: false, isToilet: false, allPlayWins: 56,  allPlayLosses: 61, streak: "L1" },
           { teamId: "leo",    managerId: "leo",    wins: 6,  losses: 7, ties: 0, pf: 1796.8, pa: 1878.4, seed: 7,  rank: 7,  isChamp: false, isToilet: false, allPlayWins: 52,  allPlayLosses: 65, streak: "L2" },
           { teamId: "geltz",  managerId: "geltz",  wins: 5,  losses: 8, ties: 0, pf: 1754.2, pa: 1912.0, seed: 8,  rank: 8,  isChamp: false, isToilet: false, allPlayWins: 43,  allPlayLosses: 74, streak: "L3" },
-          { teamId: "josh",   managerId: "josh",   wins: 3,  losses: 10, ties: 0, pf: 1712.0, pa: 1968.4, seed: 9, rank: 9,  isChamp: false, isToilet: false, allPlayWins: 28,  allPlayLosses: 89, streak: "L4" },
+          { teamId: "josh",   managerId: "alek",   wins: 3,  losses: 10, ties: 0, pf: 1712.0, pa: 1968.4, seed: 9, rank: 9,  isChamp: false, isToilet: false, allPlayWins: 28,  allPlayLosses: 89, streak: "L4" },
           { teamId: "chris",  managerId: "chris",  wins: 3,  losses: 10, ties: 0, pf: 1684.5, pa: 1959.0, seed: 10, rank: 10, isChamp: false, isToilet: true, allPlayWins: 21,  allPlayLosses: 96, streak: "L5" }
         ],
         "2019": [
           { teamId: "corbyn", managerId: "corbyn", wins: 11, losses: 2, ties: 0, pf: 2012.6, pa: 1724.0, seed: 1,  rank: 1,  isChamp: true,  isToilet: false, allPlayWins: 96,  allPlayLosses: 21, streak: "W6" },
           { teamId: "syeth",  managerId: "syeth",  wins: 9,  losses: 4, ties: 0, pf: 1942.0, pa: 1784.2, seed: 2,  rank: 2,  isChamp: false, isToilet: false, allPlayWins: 83,  allPlayLosses: 34, streak: "W2" },
           { teamId: "chris",  managerId: "chris",  wins: 8,  losses: 5, ties: 0, pf: 1888.4, pa: 1812.6, seed: 3,  rank: 3,  isChamp: false, isToilet: false, allPlayWins: 74,  allPlayLosses: 43, streak: "W1" },
-          { teamId: "mary",   managerId: "shane",  wins: 8,  losses: 5, ties: 0, pf: 1864.2, pa: 1828.0, seed: 4,  rank: 4,  isChamp: false, isToilet: false, allPlayWins: 69,  allPlayLosses: 48, streak: "L1" },
+          { teamId: "mary",   managerId: "mary",   wins: 8,  losses: 5, ties: 0, pf: 1864.2, pa: 1828.0, seed: 4,  rank: 4,  isChamp: false, isToilet: false, allPlayWins: 69,  allPlayLosses: 48, streak: "L1" },
           { teamId: "dylan",  managerId: "dylan",  wins: 7,  losses: 6, ties: 0, pf: 1838.0, pa: 1844.5, seed: 5,  rank: 5,  isChamp: false, isToilet: false, allPlayWins: 61,  allPlayLosses: 56, streak: "W1" },
           { teamId: "boss",   managerId: "boss",   wins: 6,  losses: 7, ties: 0, pf: 1804.6, pa: 1868.2, seed: 6,  rank: 6,  isChamp: false, isToilet: false, allPlayWins: 54,  allPlayLosses: 63, streak: "L2" },
           { teamId: "matt",   managerId: "matt",   wins: 5,  losses: 8, ties: 0, pf: 1768.0, pa: 1898.4, seed: 7,  rank: 7,  isChamp: false, isToilet: false, allPlayWins: 46,  allPlayLosses: 71, streak: "L1" },
           { teamId: "leo",    managerId: "leo",    wins: 5,  losses: 8, ties: 0, pf: 1742.5, pa: 1912.0, seed: 8,  rank: 8,  isChamp: false, isToilet: false, allPlayWins: 41,  allPlayLosses: 76, streak: "L3" },
           { teamId: "geltz",  managerId: "geltz",  wins: 3,  losses: 10, ties: 0, pf: 1698.2, pa: 1964.6, seed: 9, rank: 9,  isChamp: false, isToilet: false, allPlayWins: 33,  allPlayLosses: 84, streak: "L4" },
-          { teamId: "josh",   managerId: "josh",   wins: 3,  losses: 10, ties: 0, pf: 1664.0, pa: 1986.0, seed: 10, rank: 10, isChamp: false, isToilet: true, allPlayWins: 28,  allPlayLosses: 89, streak: "L5" }
+          { teamId: "josh",   managerId: "scott",  wins: 3,  losses: 10, ties: 0, pf: 1664.0, pa: 1986.0, seed: 10, rank: 10, isChamp: false, isToilet: true, allPlayWins: 28,  allPlayLosses: 89, streak: "L5" }
         ],
         "2018": [
           { teamId: "dylan",  managerId: "dylan",  wins: 10, losses: 3, ties: 0, pf: 1968.4, pa: 1738.2, seed: 1,  rank: 1,  isChamp: true,  isToilet: false, allPlayWins: 91,  allPlayLosses: 26, streak: "W5" },
@@ -2458,8 +2547,8 @@
           { teamId: "leo",    managerId: "leo",    wins: 6,  losses: 7, ties: 0, pf: 1792.4, pa: 1854.0, seed: 6,  rank: 6,  isChamp: false, isToilet: false, allPlayWins: 53,  allPlayLosses: 64, streak: "L1" },
           { teamId: "syeth",  managerId: "syeth",  wins: 5,  losses: 8, ties: 0, pf: 1758.0, pa: 1882.4, seed: 7,  rank: 7,  isChamp: false, isToilet: false, allPlayWins: 45,  allPlayLosses: 72, streak: "L2" },
           { teamId: "geltz",  managerId: "geltz",  wins: 5,  losses: 8, ties: 0, pf: 1736.8, pa: 1904.2, seed: 8,  rank: 8,  isChamp: false, isToilet: false, allPlayWins: 41,  allPlayLosses: 76, streak: "L3" },
-          { teamId: "josh",   managerId: "josh",   wins: 4,  losses: 9, ties: 0, pf: 1702.4, pa: 1938.0, seed: 9,  rank: 9,  isChamp: false, isToilet: false, allPlayWins: 39,  allPlayLosses: 78, streak: "L2" },
-          { teamId: "mary",   managerId: "shane",  wins: 3,  losses: 10, ties: 0, pf: 1668.2, pa: 1941.1, seed: 10, rank: 10, isChamp: false, isToilet: true, allPlayWins: 33,  allPlayLosses: 84, streak: "L4" }
+          { teamId: "josh",   managerId: "scott",  wins: 4,  losses: 9, ties: 0, pf: 1702.4, pa: 1938.0, seed: 9,  rank: 9,  isChamp: false, isToilet: false, allPlayWins: 39,  allPlayLosses: 78, streak: "L2" },
+          { teamId: "mary",   managerId: "mary",   wins: 3,  losses: 10, ties: 0, pf: 1668.2, pa: 1941.1, seed: 10, rank: 10, isChamp: false, isToilet: true, allPlayWins: 33,  allPlayLosses: 84, streak: "L4" }
         ],
         "2017": [
           { teamId: "dylan",  managerId: "dylan",  wins: 10, losses: 3, ties: 0, pf: 1944.2, pa: 1712.8, seed: 1,  rank: 1,  isChamp: true,  isToilet: false, allPlayWins: 90,  allPlayLosses: 27, streak: "W4" },
@@ -2469,9 +2558,9 @@
           { teamId: "leo",    managerId: "leo",    wins: 7,  losses: 6, ties: 0, pf: 1794.0, pa: 1824.6, seed: 5,  rank: 5,  isChamp: false, isToilet: false, allPlayWins: 59,  allPlayLosses: 58, streak: "W1" },
           { teamId: "corbyn", managerId: "corbyn", wins: 6,  losses: 7, ties: 0, pf: 1762.8, pa: 1848.0, seed: 6,  rank: 6,  isChamp: false, isToilet: false, allPlayWins: 53,  allPlayLosses: 64, streak: "L2" },
           { teamId: "matt",   managerId: "matt",   wins: 6,  losses: 7, ties: 0, pf: 1748.2, pa: 1862.4, seed: 7,  rank: 7,  isChamp: false, isToilet: false, allPlayWins: 49,  allPlayLosses: 68, streak: "W1" },
-          { teamId: "mary",   managerId: "shane",  wins: 5,  losses: 8, ties: 0, pf: 1712.0, pa: 1894.0, seed: 8,  rank: 8,  isChamp: false, isToilet: false, allPlayWins: 42,  allPlayLosses: 75, streak: "L3" },
+          { teamId: "mary",   managerId: "mary",   wins: 5,  losses: 8, ties: 0, pf: 1712.0, pa: 1894.0, seed: 8,  rank: 8,  isChamp: false, isToilet: false, allPlayWins: 42,  allPlayLosses: 75, streak: "L3" },
           { teamId: "geltz",  managerId: "geltz",  wins: 4,  losses: 9, ties: 0, pf: 1684.5, pa: 1928.6, seed: 9,  rank: 9,  isChamp: false, isToilet: false, allPlayWins: 38,  allPlayLosses: 79, streak: "L2" },
-          { teamId: "josh",   managerId: "josh",   wins: 3,  losses: 10, ties: 0, pf: 1648.0, pa: 1915.7, seed: 10, rank: 10, isChamp: false, isToilet: true, allPlayWins: 38,  allPlayLosses: 79, streak: "L4" }
+          { teamId: "josh",   managerId: "scott",  wins: 3,  losses: 10, ties: 0, pf: 1648.0, pa: 1915.7, seed: 10, rank: 10, isChamp: false, isToilet: true, allPlayWins: 38,  allPlayLosses: 79, streak: "L4" }
         ],
         "2016": [
           { teamId: "syeth",  managerId: "syeth",  wins: 11, losses: 2, ties: 0, pf: 1982.4, pa: 1698.0, seed: 1,  rank: 1,  isChamp: true,  isToilet: false, allPlayWins: 94,  allPlayLosses: 23, streak: "W6" },
@@ -2479,11 +2568,11 @@
           { teamId: "dylan",  managerId: "dylan",  wins: 8,  losses: 5, ties: 0, pf: 1846.0, pa: 1788.4, seed: 3,  rank: 3,  isChamp: false, isToilet: false, allPlayWins: 71,  allPlayLosses: 46, streak: "W1" },
           { teamId: "corbyn", managerId: "corbyn", wins: 8,  losses: 5, ties: 0, pf: 1824.2, pa: 1802.0, seed: 4,  rank: 4,  isChamp: false, isToilet: false, allPlayWins: 67,  allPlayLosses: 50, streak: "L1" },
           { teamId: "boss",   managerId: "boss",   wins: 7,  losses: 6, ties: 0, pf: 1796.8, pa: 1814.6, seed: 5,  rank: 5,  isChamp: false, isToilet: false, allPlayWins: 60,  allPlayLosses: 57, streak: "W1" },
-          { teamId: "mary",   managerId: "shane",  wins: 6,  losses: 7, ties: 0, pf: 1764.0, pa: 1838.2, seed: 6,  rank: 6,  isChamp: false, isToilet: false, allPlayWins: 54,  allPlayLosses: 63, streak: "L2" },
+          { teamId: "mary",   managerId: "mary",   wins: 6,  losses: 7, ties: 0, pf: 1764.0, pa: 1838.2, seed: 6,  rank: 6,  isChamp: false, isToilet: false, allPlayWins: 54,  allPlayLosses: 63, streak: "L2" },
           { teamId: "chris",  managerId: "chris",  wins: 6,  losses: 7, ties: 0, pf: 1742.5, pa: 1852.0, seed: 7,  rank: 7,  isChamp: false, isToilet: false, allPlayWins: 48,  allPlayLosses: 69, streak: "L1" },
           { teamId: "leo",    managerId: "leo",    wins: 5,  losses: 8, ties: 0, pf: 1718.0, pa: 1884.4, seed: 8,  rank: 8,  isChamp: false, isToilet: false, allPlayWins: 43,  allPlayLosses: 74, streak: "L3" },
           { teamId: "geltz",  managerId: "geltz",  wins: 3,  losses: 10, ties: 0, pf: 1672.4, pa: 1936.0, seed: 9, rank: 9,  isChamp: false, isToilet: false, allPlayWins: 35,  allPlayLosses: 82, streak: "L4" },
-          { teamId: "josh",   managerId: "josh",   wins: 2,  losses: 11, ties: 0, pf: 1638.0, pa: 1999.1, seed: 10, rank: 10, isChamp: false, isToilet: true, allPlayWins: 33,  allPlayLosses: 84, streak: "L5" }
+          { teamId: "josh",   managerId: "scott",  wins: 2,  losses: 11, ties: 0, pf: 1638.0, pa: 1999.1, seed: 10, rank: 10, isChamp: false, isToilet: true, allPlayWins: 33,  allPlayLosses: 84, streak: "L5" }
         ]
       },
       headToHead: {},
@@ -2498,7 +2587,7 @@
         lowestSingleGame: [
           { year: 2021, week: 8,  managerId: "chris",  score: 74.2,  opponentId: "geltz",  oppScore: 148.6, label: "Chris (2021 Wk 8 vs Geltz)" },
           { year: 2024, week: 10, managerId: "geltz",  score: 76.8,  opponentId: "syeth",  oppScore: 162.4, label: "Geltz (2024 Wk 10 vs Syeth)" },
-          { year: 2020, week: 5,  managerId: "josh",   score: 79.4,  opponentId: "boss",   oppScore: 151.2, label: "Josh (2020 Wk 5 vs Boss)" },
+          { year: 2020, week: 5,  managerId: "alek",   score: 79.4,  opponentId: "boss",   oppScore: 151.2, label: "Alek (2020 Wk 5 vs Boss)" },
           { year: 2025, week: 12, managerId: "dylan",  score: 81.0,  opponentId: "leo",    oppScore: 168.4, label: "Dylan (2025 Wk 12 vs Leo)" },
           { year: 2022, week: 9,  managerId: "matt",   score: 82.6,  opponentId: "corbyn", oppScore: 154.0, label: "Matt (2022 Wk 9 vs Corbyn)" }
         ],
@@ -2507,13 +2596,13 @@
           { year: 2024, week: 10, winnerId: "syeth",  loserId: "geltz", margin: 85.6, scoreLine: "162.4 – 76.8",  label: "Syeth def. Geltz (+85.6 in 2024 Wk 10)" },
           { year: 2021, week: 8,  winnerId: "geltz",  loserId: "chris", margin: 74.4, scoreLine: "148.6 – 74.2",  label: "Geltz def. Chris (+74.4 in 2021 Wk 8)" },
           { year: 2025, week: 11, winnerId: "leo",    loserId: "josh",  margin: 72.4, scoreLine: "194.2 – 121.8", label: "Leo def. Josh (+72.4 in 2025 Wk 11)" },
-          { year: 2020, week: 5,  winnerId: "boss",   loserId: "josh",  margin: 71.8, scoreLine: "151.2 – 79.4",  label: "Boss def. Josh (+71.8 in 2020 Wk 5)" }
+          { year: 2020, week: 5,  winnerId: "boss",   loserId: "alek",  margin: 71.8, scoreLine: "151.2 – 79.4",  label: "Boss def. Alek (+71.8 in 2020 Wk 5)" }
         ],
         closestGames: [
           { year: 2023, week: 13, winnerId: "corbyn", loserId: "syeth", margin: 0.12, scoreLine: "144.32 – 144.20", label: "Corbyn def. Syeth by 0.12 pts (2023 Wk 13)" },
           { year: 2025, week: 6,  winnerId: "chris",  loserId: "matt",  margin: 0.28, scoreLine: "138.68 – 138.40", label: "Chris def. Matt by 0.28 pts (2025 Wk 6)" },
-          { year: 2022, week: 10, winnerId: "boss",   loserId: "shane", margin: 0.44, scoreLine: "151.14 – 150.70", label: "Boss def. Shane by 0.44 pts (2022 Wk 10)" },
-          { year: 2024, week: 4,  winnerId: "alex",   loserId: "leo",   margin: 0.62, scoreLine: "149.82 – 149.20", label: "Alex def. Leo by 0.62 pts (2024 Wk 4)" },
+          { year: 2022, week: 10, winnerId: "boss",   loserId: "mary",  margin: 0.44, scoreLine: "151.14 – 150.70", label: "Boss def. Mary by 0.44 pts (2022 Wk 10)" },
+          { year: 2024, week: 4,  winnerId: "geltz",  loserId: "leo",   margin: 0.62, scoreLine: "149.82 – 149.20", label: "Geltz def. Leo by 0.62 pts (2024 Wk 4)" },
           { year: 2026, week: 8,  winnerId: "mary",   loserId: "dylan", margin: 0.85, scoreLine: "156.45 – 155.60", label: "Mary def. Dylan by 0.85 pts (2026 Wk 8)" }
         ],
         longestStreaks: [
@@ -2910,6 +2999,22 @@
       return String(val).slice(0, maxLen);
     }
 
+    function normalizeLegacyManagerAlias(rawId, slotTeamId = "") {
+      const id = safeId(rawId || "").toLowerCase();
+      if (id === "shane") return "boss";
+      if (id === "alex" || id === "alexander") return "geltz";
+      if (id === "david" || id === "dave" || id === "maryland") return "mary";
+      // 9-slot single-owner continuity rule: ONLY Josh's slot ("josh") ever had former managers ("scott", "alek")
+      if (slotTeamId && slotTeamId !== "josh") {
+        return safeId(slotTeamId);
+      }
+      if (slotTeamId === "josh") {
+        if (id === "scott" || id === "alek" || id === "josh") return id;
+        return "josh";
+      }
+      return id || "";
+    }
+
     function sanitizeEspnDataObject(rawEspn, validTeams) {
       const fallback = JSON.parse(JSON.stringify(DEFAULT_ESPN_DATA));
       const src = (rawEspn && typeof rawEspn === "object" && !Array.isArray(rawEspn)) ? rawEspn : fallback;
@@ -2922,6 +3027,7 @@
       const cleanRules = {
         maxKeepers: maxK,
         keeperRounds: Math.min(20, Math.max(1, Number(kr.keeperRounds || maxK) || 12)),
+        keeperDeadlineIso: cleanStr(kr.keeperDeadlineIso || "", 40).trim(),
         maxRb,
         maxWr,
         maxOtherSinglePos: maxOth,
@@ -2939,7 +3045,7 @@
         ...(src.espnTeamMap && typeof src.espnTeamMap === "object" ? src.espnTeamMap : {})
       };
       for (const [k, v] of Object.entries(rawMapSource)) {
-        const tid = safeId(v);
+        const tid = normalizeLegacyManagerAlias(v);
         if (validTeamIds.has(tid)) {
           const cleanKey = String(k).replace(/^espn_/, "");
           cleanSlotMap[cleanKey] = tid;
@@ -2952,42 +3058,69 @@
         }
       }
 
+      // Only Scott & Alek (Josh's Franchise #10 predecessors) are Alumni; never label active aliases (Shane/Alex/David) as Alumni
+      const bannedFakeAlumni = new Set(["shane", "alex", "alexander", "david", "dave", "maryland", ...validTeamIds]);
       const rawAlumniList = (Array.isArray(src.alumniManagers) && src.alumniManagers.length > 0)
         ? src.alumniManagers
         : ((Array.isArray(src.alumni) && src.alumni.length > 0) ? src.alumni : fallback.alumniManagers);
       const cleanAlumni = rawAlumniList.slice(0, 20).map(a => {
-        const yrs = cleanStr(a?.yearsActive || a?.seasons || "2019–2024", 40).trim();
+        const id = safeId(a?.id).toLowerCase();
+        const yrs = cleanStr(a?.yearsActive || a?.seasons || (id === "scott" ? "2016–2019" : "2020–2023"), 40).trim();
         return {
-          id: safeId(a?.id),
+          id,
           name: cleanStr(a?.name, 40).trim(),
           seasons: yrs,
           yearsActive: yrs,
-          replacedBy: cleanStr(a?.replacedBy || "mary", 40).trim(),
-          notes: cleanStr(a?.notes || `Former Franchise Manager (${yrs})`, 120).trim()
+          replacedBy: "josh",
+          notes: cleanStr(a?.notes || `Former Franchise #10 Manager (${yrs})`, 120).trim()
         };
-      }).filter(a => a.id && a.name);
+      }).filter(a => a.id && a.name && !bannedFakeAlumni.has(a.id));
 
-      const cleanOverrides = (src.seasonOwnerOverrides && typeof src.seasonOwnerOverrides === "object")
+      fallback.alumniManagers.forEach(defAlum => {
+        if (!cleanAlumni.some(x => x.id === defAlum.id)) {
+          cleanAlumni.push({ ...defAlum });
+        }
+      });
+
+      const rawOverrides = (src.seasonOwnerOverrides && typeof src.seasonOwnerOverrides === "object")
         ? JSON.parse(JSON.stringify(src.seasonOwnerOverrides))
-        : fallback.seasonOwnerOverrides;
+        : {};
+      const cleanOverrides = {};
+      for (const [yrKey, ovMap] of Object.entries(rawOverrides)) {
+        if (!ovMap || typeof ovMap !== "object") continue;
+        cleanOverrides[yrKey] = {};
+        for (const [k, v] of Object.entries(ovMap)) {
+          if (k.startsWith("__")) {
+            const normV = normalizeLegacyManagerAlias(v);
+            if (normV) cleanOverrides[yrKey][k] = normV;
+          } else if (k === "josh") {
+            cleanOverrides[yrKey].josh = normalizeLegacyManagerAlias(v, "josh");
+          }
+        }
+      }
 
       const cleanRosters = {};
       (validTeams || DEFAULT_TEAMS).forEach(t => {
         const srcArr = (src.rosters && Array.isArray(src.rosters[t.id]))
           ? src.rosters[t.id]
           : (fallback.rosters[t.id] || []);
-        cleanRosters[t.id] = srcArr.slice(0, 45).map((p, idx) => ({
-          id: safeId(p?.id || `p-${t.id}-${idx + 1}`),
-          name: cleanStr(p?.name, 60).trim(),
-          pos: cleanStr(p?.pos || "FLEX", 12).trim().toUpperCase(),
-          nflTeam: cleanStr(p?.nflTeam || "NFL", 8).trim().toUpperCase(),
-          slot: cleanStr(p?.slot || "BE", 10).trim().toUpperCase(),
-          posRank: cleanStr(p?.posRank || "", 12).trim(),
-          acquiredVia: cleanStr(p?.acquiredVia || p?.acqType || "ESPN Sync", 24).trim(),
-          projPts: Number(p?.projPts) || 0,
-          totalPts: Number(p?.totalPts || p?.pts) || 0,
-          pts: Number(p?.pts || p?.totalPts || p?.projPts) || 0
-        })).filter(p => p.name);
+        cleanRosters[t.id] = srcArr.slice(0, 45).map((p, idx) => {
+          const pid = safeId(p?.id || `p-${t.id}-${idx + 1}`);
+          const extractedNum = Number(p?.espnId) || Number((String(pid).match(/(?:^espn_(?:p_)?|^)(\d{4,9})$/) || [])[1]) || 0;
+          return {
+            id: pid,
+            espnId: extractedNum,
+            name: cleanStr(p?.name, 60).trim(),
+            pos: cleanStr(p?.pos || "FLEX", 12).trim().toUpperCase(),
+            nflTeam: cleanStr(p?.nflTeam || "NFL", 8).trim().toUpperCase(),
+            slot: cleanStr(p?.slot || "BE", 10).trim().toUpperCase(),
+            posRank: cleanStr(p?.posRank || "", 12).trim(),
+            acquiredVia: cleanStr(p?.acquiredVia || p?.acqType || "ESPN Sync", 24).trim(),
+            projPts: Number(p?.projPts) || 0,
+            totalPts: Number(p?.totalPts || p?.pts) || 0,
+            pts: Number(p?.pts || p?.totalPts || p?.projPts) || 0
+          };
+        }).filter(p => p.name);
       });
 
       const rawStandingsMap = (src.seasonStandings && typeof src.seasonStandings === "object" && Object.keys(src.seasonStandings).length > 0)
@@ -3008,15 +3141,24 @@
           : (Array.isArray(rawStandingsMap[yrKey]) ? rawStandingsMap[yrKey] : []);
         if (stArr.length === 0) return;
 
+        const yrNum = Number(yrKey) || 2026;
         const normalizedRows = stArr.map((r, idx) => {
-          const tid = safeId(r.teamId || r.managerId || "syeth");
-          const mid = safeId(r.managerId || r.teamId || tid);
+          const rawTid = normalizeLegacyManagerAlias(r.teamId || r.managerId || "syeth");
+          const tid = validTeamIds.has(rawTid) ? rawTid : "syeth";
+          let mid = normalizeLegacyManagerAlias(r.managerId || tid, tid);
+          if (tid === "josh" && mid === "josh") {
+            const ownerBlob = `${r.ownerName || ""} ${r.teamName || ""}`.toLowerCase();
+            if (/\bscott\b/.test(ownerBlob)) mid = "scott";
+            else if (/\balek\b/.test(ownerBlob)) mid = "alek";
+            else if (cleanOverrides[yrKey]?.josh) mid = cleanOverrides[yrKey].josh;
+          }
           const pfVal = Number(r.pointsFor ?? r.pf) || 0;
           const paVal = Number(r.pointsAgainst ?? r.pa) || 0;
           const rankVal = Number(r.finalRank ?? r.rank ?? r.finalStanding) || (idx + 1);
           const seedVal = Number(r.playoffSeed ?? r.seed ?? rankVal) || (idx + 1);
-          const isChampVal = Boolean(r.isChamp || r.isChampion || (sObj && sObj.champion === mid) || rankVal === 1);
-          const isToiletVal = Boolean(r.isToilet || (sObj && sObj.toiletBowl === mid) || rankVal === stArr.length);
+          const normSChamp = sObj?.champion ? normalizeLegacyManagerAlias(sObj.champion) : "";
+          const isChampVal = Boolean(r.isChamp || r.isChampion || (normSChamp && (normSChamp === mid || normSChamp === tid)) || rankVal === 1);
+          const isToiletVal = Boolean(r.isToilet || rankVal === stArr.length);
           return {
             teamId: tid,
             managerId: mid,
@@ -3050,23 +3192,43 @@
         const toiletRow = normalizedRows.find(r => r.isToilet) || normalizedRows[normalizedRows.length - 1];
         const topScorerRow = [...normalizedRows].sort((a, b) => b.pointsFor - a.pointsFor)[0];
 
+        const resolveAward = (rawAward, rowFallback) => {
+          const norm = normalizeLegacyManagerAlias(rawAward || "");
+          if (norm) {
+            const matchingRow = normalizedRows.find(nr => nr.teamId === norm || nr.managerId === norm);
+            if (matchingRow) return matchingRow.managerId;
+            return norm;
+          }
+          return safeId(rowFallback?.managerId || rowFallback?.teamId);
+        };
+
         cleanSeasons[yrKey] = {
-          year: Number(yrKey) || 2026,
-          champion: safeId(sObj?.champion || champRow?.managerId || champRow?.teamId),
-          runnerUp: safeId(sObj?.runnerUp || runnerRow?.managerId || runnerRow?.teamId),
-          toiletBowl: safeId(sObj?.toiletBowl || toiletRow?.managerId || toiletRow?.teamId),
-          highestScorer: safeId(sObj?.highestScorer || topScorerRow?.managerId || topScorerRow?.teamId),
+          year: yrNum,
+          champion: resolveAward(sObj?.champion, champRow),
+          runnerUp: resolveAward(sObj?.runnerUp, runnerRow),
+          toiletBowl: resolveAward(sObj?.toiletBowl, toiletRow),
+          highestScorer: resolveAward(sObj?.highestScorer, topScorerRow),
           standings: normalizedRows
         };
       });
 
+      const normRecItem = (item) => {
+        if (!item || typeof item !== "object") return item;
+        const copy = { ...item };
+        if (copy.managerId) copy.managerId = normalizeLegacyManagerAlias(copy.managerId);
+        if (copy.opponentId) copy.opponentId = normalizeLegacyManagerAlias(copy.opponentId);
+        if (copy.winnerId) copy.winnerId = normalizeLegacyManagerAlias(copy.winnerId);
+        if (copy.loserId) copy.loserId = normalizeLegacyManagerAlias(copy.loserId);
+        return copy;
+      };
+
       const cleanRecords = (src.records && typeof src.records === "object")
         ? {
-            highestSingleGame: Array.isArray(src.records.highestSingleGame) ? src.records.highestSingleGame.slice(0, 15) : fallback.records.highestSingleGame,
-            lowestSingleGame: Array.isArray(src.records.lowestSingleGame) ? src.records.lowestSingleGame.slice(0, 15) : fallback.records.lowestSingleGame,
-            biggestBlowouts: Array.isArray(src.records.biggestBlowouts) ? src.records.biggestBlowouts.slice(0, 15) : fallback.records.biggestBlowouts,
-            closestGames: Array.isArray(src.records.closestGames) ? src.records.closestGames.slice(0, 15) : fallback.records.closestGames,
-            longestStreaks: Array.isArray(src.records.longestStreaks) ? src.records.longestStreaks.slice(0, 15) : fallback.records.longestStreaks
+            highestSingleGame: (Array.isArray(src.records.highestSingleGame) ? src.records.highestSingleGame : fallback.records.highestSingleGame).slice(0, 15).map(normRecItem),
+            lowestSingleGame: (Array.isArray(src.records.lowestSingleGame) ? src.records.lowestSingleGame : fallback.records.lowestSingleGame).slice(0, 15).map(normRecItem),
+            biggestBlowouts: (Array.isArray(src.records.biggestBlowouts) ? src.records.biggestBlowouts : fallback.records.biggestBlowouts).slice(0, 15).map(normRecItem),
+            closestGames: (Array.isArray(src.records.closestGames) ? src.records.closestGames : fallback.records.closestGames).slice(0, 15).map(normRecItem),
+            longestStreaks: (Array.isArray(src.records.longestStreaks) ? src.records.longestStreaks : fallback.records.longestStreaks).slice(0, 15).map(normRecItem)
           }
         : fallback.records;
 
@@ -3231,6 +3393,7 @@
           needsChips: [],
           pickTags: {},
           keepers: defaultRoster.slice(0, 8).map(p => p.id),
+          keepersConfirmedAt: 0,
           playerTags: {},
           updatedAt: 0
         };
@@ -3283,6 +3446,7 @@
             needsChips: cleanChips,
             pickTags: cleanTags,
             keepers: cleanKeepers,
+            keepersConfirmedAt: Number(pRaw.keepersConfirmedAt) > 0 ? Number(pRaw.keepersConfirmedAt) : 0,
             playerTags: cleanPlayerTags,
             updatedAt: Number(pRaw.updatedAt) > 0 ? Number(pRaw.updatedAt) : 0
           };
@@ -4540,9 +4704,711 @@
       }
     }
 
+    /* -----------------------------------------------------------
+       4A. v7.2 PRO UPGRADES: NOTIFICATIONS, HEADSHOTS, KEEPER LOCK,
+           TRADE VALUE BALANCE METER, TROPHY STRIP, SHARE CARDS & SWIPE
+       ----------------------------------------------------------- */
+    const NFL_TEAM_COLORS = {
+      ARI: ["#97233F", "#FFFFFF"], ATL: ["#A71930", "#FFFFFF"], BAL: ["#241773", "#E9D5FF"], BUF: ["#00338D", "#FFFFFF"],
+      CAR: ["#0085CA", "#FFFFFF"], CHI: ["#0B162A", "#F97316"], CIN: ["#FB4F14", "#FFFFFF"], CLE: ["#311D00", "#FF3C00"],
+      DAL: ["#041E42", "#E2E8F0"], DEN: ["#FB4F14", "#FFFFFF"], DET: ["#0076B6", "#FFFFFF"], GB:  ["#203731", "#FFB612"],
+      HOU: ["#03202F", "#FCA5A5"], IND: ["#002C5F", "#FFFFFF"], JAX: ["#006778", "#FDE68A"], KC:  ["#E31837", "#FFB81C"],
+      LAC: ["#0080C6", "#FFC20E"], LAR: ["#003594", "#FFA300"], LV:  ["#18181B", "#E4E4E7"], MIA: ["#008E97", "#FFFFFF"],
+      MIN: ["#4F2683", "#FFC62F"], NE:  ["#002244", "#F87171"], NO:  ["#18181B", "#D3BC8D"], NYG: ["#0B2265", "#FFFFFF"],
+      NYJ: ["#125740", "#FFFFFF"], PHI: ["#004C54", "#FFFFFF"], PIT: ["#18181B", "#FFB612"], SEA: ["#002244", "#69BE28"],
+      SF:  ["#AA0000", "#B3995D"], TB:  ["#D50A0A", "#FFFFFF"], TEN: ["#0C2340", "#4B92DB"], WAS: ["#5A1414", "#FFB612"]
+    };
+
+    function extractPlayerEspnNumericId(p) {
+      if (!p) return 0;
+      if (Number(p.espnId) > 0) return Number(p.espnId);
+      const raw = String(p.id || p.playerId || "");
+      const m = raw.match(/^(?:espn_(?:p_)?|p_)(\d{4,9})$/i);
+      return m ? Number(m[1]) : 0;
+    }
+
+    function renderNflTeamPillHtml(nflTeam) {
+      const code = cleanStr(nflTeam || "NFL", 8).trim().toUpperCase() || "NFL";
+      const pair = NFL_TEAM_COLORS[code];
+      if (!pair) {
+        return `<span class="px-1.5 py-0.5 rounded text-[10px] font-mono font-bold bg-zinc-900 text-zinc-300 border border-zinc-700/80">${escapeHtml(code)}</span>`;
+      }
+      return `<span class="px-1.5 py-0.5 rounded text-[10px] font-mono font-extrabold border border-white/15 leading-none" style="background:${pair[0]};color:${pair[1]};">${escapeHtml(code)}</span>`;
+    }
+
+    function renderPlayerHeadshotHtml(p, sizeClass = "w-9 h-9", textClass = "text-[10px]") {
+      const pos = cleanStr(p?.pos || "NFL", 8).trim().toUpperCase();
+      const bucket = typeof normalizeKeeperPosBucket === "function" ? normalizeKeeperPosBucket(pos) : pos;
+      const isIdp = ["DL", "LB", "DB"].includes(bucket);
+      const posTone = isIdp
+        ? "bg-purple-950/90 text-purple-300 border-purple-500/50"
+        : bucket === "RB"
+        ? "bg-emerald-950/90 text-emerald-300 border-emerald-500/50"
+        : bucket === "WR"
+        ? "bg-sky-950/90 text-sky-300 border-sky-500/50"
+        : "bg-amber-950/90 text-amber-300 border-amber-500/50";
+      const espnNumId = extractPlayerEspnNumericId(p);
+      if (espnNumId > 0) {
+        const imgUrl = `https://a.espncdn.com/i/headshots/nfl/players/full/${espnNumId}.png`;
+        return `<span class="${sizeClass} rounded-full overflow-hidden bg-zinc-900 border border-zinc-700 inline-flex items-center justify-center flex-shrink-0 relative"><img src="${imgUrl}" alt="${escapeHtml(p?.name || pos)}" loading="lazy" class="w-full h-full object-cover" onerror="this.style.display='none';if(this.nextElementSibling)this.nextElementSibling.style.display='inline-flex';"><span style="display:none" class="w-full h-full font-mono font-black ${textClass} items-center justify-center ${posTone}">${escapeHtml(pos)}</span></span>`;
+      }
+      return `<span class="${sizeClass} rounded-full border font-mono font-black ${textClass} inline-flex items-center justify-center flex-shrink-0 ${posTone}">${escapeHtml(pos)}</span>`;
+    }
+
+    function getKeeperDeadlineInfo() {
+      const iso = cleanStr(leagueDB?.espnData?.keeperRules?.keeperDeadlineIso || "", 40).trim();
+      if (!iso) {
+        return { hasDeadline: false, iso: "", targetMs: 0, diffMs: 0, isLocked: false, countdownLabel: "No Lock Timer Set" };
+      }
+      const targetMs = Date.parse(iso);
+      if (isNaN(targetMs)) {
+        return { hasDeadline: false, iso: "", targetMs: 0, diffMs: 0, isLocked: false, countdownLabel: "No Lock Timer Set" };
+      }
+      const diffMs = targetMs - Date.now();
+      if (diffMs <= 0) {
+        return { hasDeadline: true, iso, targetMs, diffMs: 0, isLocked: true, countdownLabel: "KEEPERS LOCKED 🔒" };
+      }
+      const totalMins = Math.floor(diffMs / 60000);
+      const days = Math.floor(totalMins / 1440);
+      const hours = Math.floor((totalMins % 1440) / 60);
+      const mins = totalMins % 60;
+      const countdownLabel = days > 0
+        ? `${days}d ${hours}h ${mins}m`
+        : `${hours}h ${mins}m`;
+      return { hasDeadline: true, iso, targetMs, diffMs, isLocked: false, countdownLabel };
+    }
+
+    function isKeeperDeadlineLocked() {
+      const info = getKeeperDeadlineInfo();
+      return Boolean(info.hasDeadline && info.isLocked);
+    }
+
+    function getLeagueKeeperReadinessSummary() {
+      const teams = leagueDB?.teams || DEFAULT_TEAMS;
+      const maxK = Number(leagueDB?.espnData?.keeperRules?.maxKeepers ?? 12);
+      const statuses = teams.map(t => {
+        const prof = getTeamProfile(t.id);
+        const kCount = Array.isArray(prof.keepers) ? prof.keepers.length : 0;
+        const confirmed = Number(prof.keepersConfirmedAt) > 0 || (maxK > 0 && kCount >= maxK);
+        return {
+          teamId: t.id,
+          name: getTeamName(t.id),
+          keepersCount: kCount,
+          maxKeepers: maxK,
+          isReady: confirmed
+        };
+      });
+      const readyCount = statuses.filter(s => s.isReady).length;
+      return { readyCount, totalTeams: statuses.length, statuses };
+    }
+
+    function renderKeeperReadinessBannerHtml(compact = false) {
+      const dl = getKeeperDeadlineInfo();
+      const rd = getLeagueKeeperReadinessSummary();
+      const pct = Math.round((rd.readyCount / Math.max(1, rd.totalTeams)) * 100);
+      const dlBadge = dl.hasDeadline
+        ? `<span data-keeper-countdown="1" class="static-badge ${dl.isLocked ? 'bg-rose-950 text-rose-200 border border-rose-500' : 'bg-amber-950 text-amber-300 border border-amber-500/80'} font-mono"><i class="fa-solid fa-clock mr-1"></i>${escapeHtml(dl.countdownLabel)}</span>`
+        : (uiState.isCommish
+            ? `<button type="button" onclick="openEspnSyncModal()" class="px-2 py-0.5 rounded-md bg-zinc-900 border border-zinc-700 text-[10px] font-bold text-amber-300 hover:border-amber-400 cursor-pointer"><i class="fa-solid fa-clock mr-1"></i>Set Lock Deadline</button>`
+            : `<span class="text-[10px] font-mono text-zinc-500">Pre-Lock Open</span>`);
+
+      if (compact) {
+        return `
+          <div class="bg-[#09090B] border border-zinc-800 rounded-xl px-3 py-2 flex flex-wrap items-center justify-between gap-2 text-xs">
+            <div class="flex flex-wrap items-center gap-2">
+              <span class="font-extrabold text-white"><i class="fa-solid fa-shield-halved text-emerald-400 mr-1"></i>Keeper Readiness: <span class="font-mono text-emerald-300">${rd.readyCount}/${rd.totalTeams}</span> Franchises Ready</span>
+              ${dlBadge}
+            </div>
+            <div class="flex items-center gap-1">
+              ${rd.statuses.map(s => `<span title="${escapeHtml(s.name)}: ${s.keepersCount}/${s.maxKeepers} Keepers ${s.isReady ? '(Confirmed)' : '(Pending)'}" class="px-1.5 py-0.5 rounded text-[9px] font-mono font-black border ${s.isReady ? 'bg-emerald-950/80 text-emerald-300 border-emerald-500/70' : 'bg-zinc-900 text-zinc-500 border-zinc-800'}">${escapeHtml(getTeamInitials(s.teamId))}${s.isReady ? '✓' : ''}</span>`).join("")}
+            </div>
+          </div>
+        `;
+      }
+
+      return `
+        <div id="keeperReadinessTrackerCard" class="bg-[#09090B] border border-zinc-800 rounded-xl p-3 sm:p-3.5 space-y-2.5">
+          <div class="flex flex-wrap items-center justify-between gap-2">
+            <div class="flex flex-wrap items-center gap-2">
+              <span class="text-xs font-black uppercase tracking-wider text-emerald-300"><i class="fa-solid fa-clipboard-check mr-1"></i>League Keeper Readiness: ${rd.readyCount}/${rd.totalTeams} Franchises Ready</span>
+              ${dlBadge}
+            </div>
+            ${uiState.isCommish ? `<button type="button" onclick="openEspnSyncModal()" class="text-[11px] font-bold text-amber-300 hover:underline cursor-pointer"><i class="fa-solid fa-gear mr-1"></i>Configure Lock Timer</button>` : ''}
+          </div>
+          <div class="w-full h-2 rounded-full bg-zinc-900 border border-zinc-800 overflow-hidden">
+            <div class="h-full bg-gradient-to-r from-emerald-600 to-emerald-400 transition-all duration-300" style="width:${pct}%"></div>
+          </div>
+          <div class="flex flex-wrap items-center gap-1.5">
+            ${rd.statuses.map(s => `
+              <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-lg text-[10px] font-bold border ${s.isReady ? 'bg-emerald-950/50 text-emerald-200 border-emerald-500/60' : 'bg-[#121215] text-zinc-400 border-zinc-800'}" title="${escapeHtml(s.name)} (${s.keepersCount}/${s.maxKeepers})">
+                <span>${escapeHtml(getOriginalManagerName(s.teamId))}</span>
+                <span class="font-mono text-[9px] ${s.isReady ? 'text-emerald-400' : 'text-zinc-500'}">${s.isReady ? '✓' : `${s.keepersCount}/${s.maxKeepers}`}</span>
+              </span>
+            `).join("")}
+          </div>
+        </div>
+      `;
+    }
+
+    // KeepTradeCut-style exponential Draft Pick Value Curve (Round 1 = top non-keeper rookie/FA round 1.01-1.10, decaying to Round 20)
+    function computeDraftPickTradeValue(year, round, origOwner = "", stateOpt = null) {
+      const r = Math.min(20, Math.max(1, Number(round) || 1));
+      const baseRoundValues = [
+        0,
+        800, 465, 310, 215, 155,
+        115, 88,  68,  54,  44,
+        36,  30,  26,  23,  20,
+        18,  17,  16,  15,  15
+      ];
+      let val = baseRoundValues[r] || 15;
+      const st = stateOpt || (Number(year) ? evaluateYearState(Number(year)) : null);
+      if (st && st.orderCfg && st.orderCfg.isLocked && origOwner) {
+        const pickObj = st.picks.find(p => p.round === r && p.originalOwner === origOwner);
+        if (pickObj && pickObj.overallPickNum) {
+          const slotInRd = ((pickObj.overallPickNum - 1) % 10); // 0 = .01, 9 = .10
+          const slotBoost = 1.18 - (slotInRd * 0.04); // +18% for .01 down to -18% for .10
+          val = Math.round(val * slotBoost);
+        }
+      }
+      const baseYr = Number(leagueDB?.baseUpcomingYear) || 2027;
+      if (Number(year) > baseYr) {
+        val = Math.round(val * 0.90);
+      }
+      return Math.max(10, val);
+    }
+
+    function computePlayerTradeValue(p) {
+      if (!p) return 150;
+      const pos = cleanStr(p.pos || "FLEX", 8).trim().toUpperCase();
+      const bucket = typeof normalizeKeeperPosBucket === "function" ? normalizeKeeperPosBucket(pos) : pos;
+      const pts = Math.max(Number(p.projPts) || 0, Number(p.totalPts) || 0, Number(p.pts) || 0);
+      if (pts <= 0) {
+        if (bucket === "RB" || bucket === "WR") return 430;
+        if (bucket === "QB") return 450;
+        if (bucket === "TE") return 340;
+        if (["DL", "LB", "DB"].includes(bucket)) return 210;
+        return 110;
+      }
+      const mult = (bucket === "RB" || bucket === "WR") ? 2.45
+        : bucket === "TE" ? 2.35
+        : bucket === "QB" ? 1.85
+        : ["DL", "LB", "DB"].includes(bucket) ? 1.35
+        : 0.75;
+      return Math.min(980, Math.max(75, Math.round(pts * mult)));
+    }
+
+    function buildTradeValueBalanceBarHtml(teamAId, teamBId, aItems, bItems) {
+      const valA = (aItems || []).reduce((s, x) => s + (Number(x.val) || 0), 0);
+      const valB = (bItems || []).reduce((s, x) => s + (Number(x.val) || 0), 0);
+      if (valA === 0 && valB === 0) return "";
+
+      const nameA = escapeHtml(getTeamName(teamAId));
+      const nameB = escapeHtml(getTeamName(teamBId));
+      const total = Math.max(1, valA + valB);
+      const pctA = Math.min(88, Math.max(12, Math.round((valA / total) * 100)));
+      const pctB = 100 - pctA;
+
+      const diff = Math.abs(valA - valB);
+      const maxSide = Math.max(valA, valB, 1);
+      const gapRatio = diff / maxSide;
+      const leaderName = valA >= valB ? nameA : nameB;
+
+      let verdictBadge = `<span class="px-2 py-0.5 rounded-full text-[10px] font-extrabold bg-emerald-950 text-emerald-300 border border-emerald-500/70">⚖️ Fair / Balanced Deal</span>`;
+      if (gapRatio > 0.28) {
+        verdictBadge = `<span class="px-2 py-0.5 rounded-full text-[10px] font-extrabold bg-rose-950 text-rose-200 border border-rose-500/70">🔥 Favors ${leaderName} (+${diff} val)</span>`;
+      } else if (gapRatio > 0.12) {
+        verdictBadge = `<span class="px-2 py-0.5 rounded-full text-[10px] font-extrabold bg-amber-950 text-amber-300 border border-amber-500/70">📊 Slight Edge: ${leaderName} (+${diff} val)</span>`;
+      }
+
+      return `
+        <div class="trade-value-balance-meter bg-[#09090B] border border-zinc-800 rounded-xl p-2.5 sm:p-3 space-y-2">
+          <div class="flex flex-wrap items-center justify-between gap-1.5 text-[11px]">
+            <span class="font-extrabold text-white"><i class="fa-solid fa-scale-balanced text-amber-400 mr-1"></i>Trade Value Balance</span>
+            ${verdictBadge}
+          </div>
+          <div class="w-full h-3 rounded-full bg-zinc-900 border border-zinc-800 overflow-hidden flex">
+            <div class="h-full bg-gradient-to-r from-[#73000A] to-[#CC1429] transition-all duration-300" style="width:${pctA}%"></div>
+            <div class="h-full bg-gradient-to-r from-sky-500 to-sky-400 transition-all duration-300" style="width:${pctB}%"></div>
+          </div>
+          <div class="flex items-center justify-between text-[11px] font-mono">
+            <span class="text-rose-200 font-bold truncate max-w-[46%]">${nameA}: <strong>${valA}</strong> pts (${pctA}%)</span>
+            <span class="text-sky-300 font-bold truncate max-w-[46%] text-right">${nameB}: <strong>${valB}</strong> pts (${pctB}%)</span>
+          </div>
+        </div>
+      `;
+    }
+
+    function updateModalTradeBalanceBar() {
+      const box = document.getElementById("modalTradeBalanceBar");
+      if (!box) return;
+      const teamA = safeId(document.getElementById("formTeamA")?.value || "");
+      const teamB = safeId(document.getElementById("formTeamB")?.value || "");
+      if (!teamA || !teamB) {
+        box.classList.add("hidden");
+        box.innerHTML = "";
+        return;
+      }
+      const aItems = [];
+      const bItems = [];
+
+      // Staged players in modal
+      (uiState.stagedModalPlayers || []).forEach(sp => {
+        const roster = getTeamRoster(sp.fromOwner);
+        const pObj = roster.find(x => x.id === sp.playerId) || sp;
+        const val = computePlayerTradeValue(pObj);
+        if (sp.toOwner === teamA) aItems.push({ val });
+        else if (sp.toOwner === teamB) bItems.push({ val });
+      });
+
+      // Staged quick-pick rows in modal
+      const container = document.getElementById("quickPickRowsContainer");
+      if (container) {
+        Array.from(container.children).forEach(row => {
+          const rowId = parseInt(row.id.replace("quickPickRow_", ""), 10);
+          const yr = parseInt(document.getElementById(`qpYear_${rowId}`)?.value, 10) || uiState.activeYear;
+          const rVal = document.getElementById(`qpRound_${rowId}`)?.value || "NONE";
+          const dirVal = document.getElementById(`qpDir_${rowId}`)?.value || "NONE";
+          if (rVal === "NONE" || dirVal === "NONE") return;
+          const r = parseInt(rVal, 10);
+          const m = dirVal.match(/^FLOW_([A-Za-z0-9_.-]+?)_TO_([A-Za-z0-9_.-]+?)_((?:POOL|ORIG)_.*)$/);
+          if (!m) return;
+          const receiver = safeId(m[2]);
+          const origOwner = m[3].startsWith("ORIG_") ? safeId(m[3].replace("ORIG_", "")) : "";
+          const val = computeDraftPickTradeValue(yr, r, origOwner);
+          if (receiver === teamA) aItems.push({ val });
+          else if (receiver === teamB) bItems.push({ val });
+        });
+      }
+
+      if (aItems.length === 0 && bItems.length === 0) {
+        box.classList.add("hidden");
+        box.innerHTML = "";
+        return;
+      }
+      box.classList.remove("hidden");
+      box.innerHTML = buildTradeValueBalanceBarHtml(teamA, teamB, aItems, bItems);
+    }
+
+    function buildFranchiseTrophyAndNemesisHtml(teamId) {
+      const tid = safeId(teamId);
+      const { activeStandings } = computeAllTimeManagerStats();
+      const st = activeStandings.find(x => x.id === tid);
+      if (!st) return "";
+
+      const matrix = computeHeadToHeadMatrix();
+      const row = matrix[tid] || {};
+      let bestVictim = null;
+      let archNemesis = null;
+
+      (leagueDB?.teams || DEFAULT_TEAMS).forEach(opp => {
+        if (opp.id === tid) return;
+        const rec = row[opp.id] || { wins: 0, losses: 0 };
+        const games = (rec.wins || 0) + (rec.losses || 0);
+        if (games < 1) return;
+        const pct = rec.wins / games;
+        const diff = rec.wins - rec.losses;
+        if (!bestVictim || pct > bestVictim.pct || (pct === bestVictim.pct && diff > bestVictim.diff)) {
+          bestVictim = { id: opp.id, wins: rec.wins, losses: rec.losses, pct, diff };
+        }
+        if (!archNemesis || pct < archNemesis.pct || (pct === archNemesis.pct && diff < archNemesis.diff)) {
+          archNemesis = { id: opp.id, wins: rec.wins, losses: rec.losses, pct, diff };
+        }
+      });
+      if (archNemesis && bestVictim && archNemesis.id === bestVictim.id) {
+        archNemesis = null;
+      }
+
+      const ringsHtml = st.championships > 0
+        ? st.champYears.map(yr => `<span class="px-2 py-0.5 rounded-full bg-amber-950/90 border border-amber-400/80 text-amber-200 font-mono text-[10px] font-black shadow-sm">💍 ${yr}</span>`).join("")
+        : `<span class="text-[11px] text-zinc-400 italic">Chasing First Ring 🎯 (${st.playoffBerths} Playoff Berths)</span>`;
+
+      const winPctStr = (st.winPct * 100).toFixed(1) + "%";
+
+      return `
+        <div id="warRoomTrophyNemesisStrip" class="mt-2.5 pt-2.5 border-t border-white/10 grid grid-cols-1 md:grid-cols-12 gap-2 items-center text-xs">
+          <div class="md:col-span-5 flex flex-wrap items-center gap-1.5 min-w-0">
+            <span class="text-[10px] font-extrabold uppercase tracking-wider text-amber-300"><i class="fa-solid fa-trophy mr-1"></i>Trophy Case:</span>
+            ${ringsHtml}
+            <span class="px-1.5 py-0.5 rounded bg-[#09090B]/80 border border-zinc-700/80 font-mono text-[10px] text-zinc-200">${st.wins}-${st.losses} (${winPctStr})</span>
+          </div>
+          <div class="md:col-span-5 flex flex-wrap items-center gap-2 min-w-0">
+            ${bestVictim ? `
+              <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-lg bg-emerald-950/60 border border-emerald-600/50 text-[11px] text-emerald-200">
+                <span>🎯 Owns <strong>${escapeHtml(getOriginalManagerName(bestVictim.id))}</strong></span>
+                <span class="font-mono text-[10px] text-emerald-300">(${bestVictim.wins}-${bestVictim.losses})</span>
+              </span>
+            ` : ''}
+            ${archNemesis ? `
+              <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-lg bg-rose-950/60 border border-rose-600/50 text-[11px] text-rose-200">
+                <span>😈 Nemesis: <strong>${escapeHtml(getOriginalManagerName(archNemesis.id))}</strong></span>
+                <span class="font-mono text-[10px] text-rose-300">(${archNemesis.wins}-${archNemesis.losses})</span>
+              </span>
+            ` : ''}
+          </div>
+          <div class="md:col-span-2 flex justify-start md:justify-end">
+            <button type="button" onclick="shareBrandedCardToChat('TROPHY', '${safeId(tid)}')" class="btn-action px-2.5 py-1 text-[11px] text-amber-300 bg-[#09090B]/85 w-full md:w-auto justify-center" title="Share Franchise Trophy Card to Group Chat">
+              <i class="fa-solid fa-share-from-square"></i>
+              <span>Share Card</span>
+            </button>
+          </div>
+        </div>
+      `;
+    }
+
+    function offerTradeForInspectedPick(year, round, origOwner, currOwner) {
+      const yr = Number(year) || uiState.activeYear;
+      const rd = Number(round) || 1;
+      const orig = safeId(origOwner);
+      const holder = safeId(currOwner);
+      const myId = safeId((uiState.isCommish ? uiState.selectedManager : uiState.myTeam) || "syeth");
+
+      closeModal("inspectModal");
+      if (holder === myId) {
+        toggleMyPickTradeTag(myId, yr, rd, orig, "ON_BLOCK");
+        return;
+      }
+
+      uiState.activeYear = yr;
+      uiState.selectedManager = myId;
+      uiState.compareManagerB = holder;
+      uiState.ledgerViewMode = "COMPARE";
+      uiState.whatIfActive = true;
+      uiState.whatIfSwaps = [{
+        round: rd,
+        originalOwner: orig,
+        fromTeam: holder,
+        toTeam: myId
+      }];
+      uiState.whatIfPlayerSwaps = [];
+      uiState.activeTab = "tradecenter";
+      renderAll();
+      showToast(`Staged ${yr} Rd ${rd} (${getOriginalManagerName(orig)}'s slot) from ${getTeamName(holder)} in Trade Machine!`, "success");
+    }
+
+    async function shareBrandedCardToChat(cardType, refId) {
+      const baseUrl = window.location.origin && window.location.origin !== "null"
+        ? (window.location.origin + window.location.pathname)
+        : "https://syeth-spurrier.github.io/gamecock-mafia-draft-tracker/";
+
+      let badgeText = "GAMECOCK MAFIA • EST. 2016";
+      let titleText = "League Update";
+      let subtitleText = "";
+      let bodyLines = [];
+      let shareUrl = baseUrl;
+      let fileSlug = `gcm-${String(cardType || "card").toLowerCase()}`;
+
+      if (cardType === "TRADE") {
+        const tr = (leagueDB?.trades || []).find(t => t.id === refId);
+        if (!tr) return;
+        const parts = [tr.teamA, tr.teamB, tr.teamC].filter(Boolean).map(id => getTeamName(id)).join(" ↔ ");
+        const yrs = getTradeAffectedYears(tr).join(" & ");
+        badgeText = `OFFICIAL TRADE RECEIPT • ${tr.id}`;
+        titleText = parts;
+        subtitleText = `${yrs} Draft Window • ${tr.date || "Official"}`;
+        bodyLines.push(`Deal: ${tr.headline}`);
+        (tr.playerTransfers || []).slice(0, 5).forEach(pt => {
+          bodyLines.push(`🏈 ${pt.playerName || pt.name} (${pt.pos || "NFL"}) ➔ ${getTeamName(pt.toOwner)}`);
+        });
+        (tr.directTransfers || []).slice(0, 6).forEach(dt => {
+          bodyLines.push(`📋 ${dt.year} Rd ${dt.round} (${getOriginalManagerName(dt.originalOwner)}'s Pick) ➔ ${getTeamName(dt.toOwner)}`);
+        });
+        shareUrl = `${baseUrl}?year=${Number(tr.year || uiState.activeYear)}&tab=feed`;
+        fileSlug = `gcm-trade-${tr.id}`;
+      } else if (cardType === "PROPOSAL") {
+        const pt = (leagueDB?.pendingTrades || []).find(t => t.id === refId);
+        if (!pt) return;
+        const parts = getProposalRequiredTeams(pt).map(id => getTeamName(id)).join(" ↔ ");
+        badgeText = `INCOMING TRADE OFFER • ${pt.id}`;
+        titleText = parts;
+        subtitleText = `Awaiting Partner Confirmation`;
+        bodyLines.push(`Offer: ${pt.headline}`);
+        (pt.playerTransfers || []).slice(0, 4).forEach(p => {
+          bodyLines.push(`🏈 ${p.playerName || p.name} (${p.pos || "NFL"}) ➔ ${getTeamName(p.toOwner)}`);
+        });
+        (pt.directTransfers || []).slice(0, 5).forEach(dt => {
+          bodyLines.push(`📋 ${dt.year} Rd ${dt.round} (${getOriginalManagerName(dt.originalOwner)}'s) ➔ ${getTeamName(dt.toOwner)}`);
+        });
+        shareUrl = `${baseUrl}?year=${Number(pt.year || uiState.activeYear)}&tab=feed`;
+        fileSlug = `gcm-offer-${pt.id}`;
+      } else if (cardType === "KEEPERS") {
+        const tid = safeId(refId || uiState.myTeam || "syeth");
+        const caps = getTeamKeeperCountsAndCaps(tid);
+        const roster = getTeamRoster(tid);
+        const kept = caps.keeperIds.map(id => roster.find(p => p.id === id)).filter(Boolean);
+        badgeText = `${uiState.activeYear} OFFICIAL KEEPER SLATE`;
+        titleText = `${getTeamName(tid)} (${kept.length}/${caps.maxKeepers} Locked)`;
+        subtitleText = `Gamecock Mafia Keeper Lock-In`;
+        kept.slice(0, 8).forEach((p, idx) => {
+          bodyLines.push(`🔒 Rd ${idx + 1}: ${p.name} (${p.pos} • ${p.nflTeam})`);
+        });
+        if (kept.length > 8) {
+          bodyLines.push(`+ ${kept.length - 8} more Keepers: ${kept.slice(8).map(x => x.name).join(", ")}`);
+        }
+        shareUrl = `${baseUrl}?team=${tid}&year=${Number(uiState.activeYear)}&tab=ledger`;
+        fileSlug = `gcm-keepers-${tid}`;
+      } else if (cardType === "TROPHY") {
+        const tid = safeId(refId || uiState.myTeam || "syeth");
+        const { activeStandings } = computeAllTimeManagerStats();
+        const st = activeStandings.find(x => x.id === tid);
+        badgeText = `FRANCHISE RESUME • 2016–PRESENT`;
+        titleText = getTeamName(tid);
+        subtitleText = st ? `${st.championships}x League Champion • ${st.wins}-${st.losses} (${(st.winPct * 100).toFixed(1)}%)` : "Gamecock Mafia Franchise";
+        if (st) {
+          bodyLines.push(`🏆 Championships: ${st.championships > 0 ? st.champYears.join(", ") : "Chasing First Ring"}`);
+          bodyLines.push(`📈 All-Time Record: ${st.wins}-${st.losses} • ${st.playoffBerths} Playoff Berths`);
+          bodyLines.push(`🔥 Career Points For: ${st.pointsFor.toLocaleString()} PF`);
+        }
+        shareUrl = `${baseUrl}?team=${tid}&tab=capital`;
+        fileSlug = `gcm-trophy-${tid}`;
+      }
+
+      const plainCaption = [
+        `🐓 ${badgeText}`,
+        `🤝 ${titleText}`,
+        subtitleText ? `📌 ${subtitleText}` : "",
+        ...bodyLines,
+        `🔗 ${shareUrl}`
+      ].filter(Boolean).join("\n");
+
+      // Render 1080x640 branded PNG card on <canvas> when supported
+      let pngBlob = null;
+      try {
+        if (typeof document !== "undefined") {
+          const canvas = document.createElement("canvas");
+          canvas.width = 1080;
+          canvas.height = 640;
+          const ctx = canvas.getContext && canvas.getContext("2d");
+          if (ctx) {
+            const rootStyles = getComputedStyle(document.documentElement);
+            const accent = (rootStyles.getPropertyValue("--gcm-accent") || "#CC1429").trim() || "#CC1429";
+            const primary = (rootStyles.getPropertyValue("--gcm-primary") || "#73000A").trim() || "#73000A";
+
+            const grad = ctx.createLinearGradient(0, 0, 1080, 640);
+            grad.addColorStop(0, "#09090B");
+            grad.addColorStop(0.55, "#121218");
+            grad.addColorStop(1, primary);
+            ctx.fillStyle = grad;
+            ctx.fillRect(0, 0, 1080, 640);
+
+            ctx.strokeStyle = accent;
+            ctx.lineWidth = 6;
+            ctx.strokeRect(24, 24, 1032, 592);
+
+            ctx.fillStyle = accent;
+            ctx.font = "800 22px system-ui, -apple-system, sans-serif";
+            ctx.fillText(badgeText.toUpperCase(), 64, 86);
+
+            ctx.fillStyle = "#FFFFFF";
+            ctx.font = "900 44px system-ui, -apple-system, sans-serif";
+            ctx.fillText(String(titleText).slice(0, 42), 64, 148);
+
+            if (subtitleText) {
+              ctx.fillStyle = "#FCD34D";
+              ctx.font = "700 24px system-ui, -apple-system, sans-serif";
+              ctx.fillText(String(subtitleText).slice(0, 65), 64, 190);
+            }
+
+            ctx.fillStyle = "rgba(9, 9, 11, 0.78)";
+            ctx.fillRect(56, 220, 968, 320);
+            ctx.strokeStyle = "rgba(255,255,255,0.14)";
+            ctx.lineWidth = 2;
+            ctx.strokeRect(56, 220, 968, 320);
+
+            ctx.fillStyle = "#F4F4F5";
+            ctx.font = "600 24px system-ui, -apple-system, sans-serif";
+            bodyLines.slice(0, 6).forEach((ln, idx) => {
+              const clipped = ln.length > 68 ? ln.slice(0, 65) + "..." : ln;
+              ctx.fillText(clipped, 84, 268 + idx * 46);
+            });
+
+            ctx.fillStyle = "#A1A1AA";
+            ctx.font = "700 18px monospace";
+            ctx.fillText("GAMECOCK MAFIA DRAFT & LEAGUE HQ • EST. 2016", 64, 584);
+
+            pngBlob = await new Promise(resolve => {
+              if (typeof canvas.toBlob === "function") {
+                canvas.toBlob(b => resolve(b), "image/png");
+              } else {
+                resolve(null);
+              }
+            });
+          }
+        }
+      } catch (e) {
+        pngBlob = null;
+      }
+
+      // 1. Native Mobile Web Share API with PNG Image Card
+      try {
+        if (pngBlob && typeof File !== "undefined" && navigator.share && navigator.canShare) {
+          const file = new File([pngBlob], `${fileSlug}.png`, { type: "image/png" });
+          if (navigator.canShare({ files: [file] })) {
+            await navigator.share({ title: titleText, text: plainCaption, files: [file] });
+            showToast("Shared branded graphic card to chat!", "success");
+            return true;
+          }
+        }
+        if (navigator.share) {
+          await navigator.share({ title: titleText, text: plainCaption, url: shareUrl });
+          showToast("Shared receipt to group chat!", "success");
+          return true;
+        }
+      } catch (err) {
+        if (err && err.name === "AbortError") return false;
+      }
+
+      // 2. Desktop / Clipboard Fallback (+ download PNG card if generated)
+      if (pngBlob && typeof URL !== "undefined" && typeof URL.createObjectURL === "function") {
+        try {
+          const dl = document.createElement("a");
+          dl.href = URL.createObjectURL(pngBlob);
+          dl.download = `${fileSlug}.png`;
+          document.body.appendChild(dl);
+          dl.click();
+          dl.remove();
+        } catch (e) {}
+      }
+      copyTextToClipboard(plainCaption, `Copied ${badgeText} & downloaded Share Card graphic!`);
+      return true;
+    }
+
+    function getActionRequiredNotifications(stateOpt = null) {
+      const st = stateOpt || evaluateYearState(uiState.activeYear);
+      const myTeam = uiState.myTeam || uiState.selectedManager || "syeth";
+      const pendingList = Array.isArray(leagueDB?.pendingTrades) ? leagueDB.pendingTrades : [];
+      const awaitingMeProposals = pendingList.filter(pt => {
+        const req = getProposalRequiredTeams(pt);
+        const apps = pt.approvals || {};
+        return req.includes(myTeam) && !apps[myTeam];
+      });
+
+      const dl = getKeeperDeadlineInfo();
+      const prof = getTeamProfile(myTeam);
+      const caps = getTeamKeeperCountsAndCaps(myTeam);
+      const keeperActionNeeded = Boolean(dl.hasDeadline && !dl.isLocked && !(Number(prof.keepersConfirmedAt) > 0) && caps.totalKeepers < caps.maxKeepers);
+      const commishPendingCount = uiState.isCommish ? (st.activePools.length + st.activeConditionals.length) : 0;
+
+      const totalCount = awaitingMeProposals.length + (keeperActionNeeded ? 1 : 0) + commishPendingCount;
+      return { totalCount, awaitingMeProposals, keeperActionNeeded, commishPendingCount };
+    }
+
+    function updateHeaderNotificationBellUI(stateOpt = null) {
+      const notif = getActionRequiredNotifications(stateOpt);
+      const btn = document.getElementById("headerNotifBellBtn");
+      const badge = document.getElementById("headerNotifCountBadge");
+      const icon = document.getElementById("headerNotifBellIcon");
+      if (!btn || !badge) return;
+
+      if (notif.totalCount > 0) {
+        badge.textContent = String(notif.totalCount);
+        badge.classList.remove("hidden");
+        btn.classList.add("notif-action-pulse", "border-amber-400", "text-amber-300");
+        btn.classList.remove("text-zinc-300");
+        if (icon) icon.className = "fa-solid fa-bell text-xs text-amber-300";
+      } else {
+        badge.textContent = "0";
+        badge.classList.add("hidden");
+        btn.classList.remove("notif-action-pulse", "border-amber-400", "text-amber-300");
+        btn.classList.add("text-zinc-300");
+        if (icon) icon.className = "fa-solid fa-bell text-xs";
+      }
+    }
+
+    function handleHeaderNotifBellClick() {
+      const notif = getActionRequiredNotifications();
+      if (notif.awaitingMeProposals.length > 0) {
+        const banner = document.getElementById("incomingTradeAlertBanner");
+        if (banner && !banner.classList.contains("hidden") && typeof banner.scrollIntoView === "function") {
+          banner.scrollIntoView({ behavior: "smooth", block: "center" });
+        } else {
+          switchMainTab("feed");
+        }
+        showToast(`🔔 You have ${notif.awaitingMeProposals.length} incoming trade offer${notif.awaitingMeProposals.length > 1 ? 's' : ''} awaiting your confirmation!`, "info");
+        return;
+      }
+      if (notif.keeperActionNeeded) {
+        switchMainTab("ledger");
+        setMyTeamSubView("ROSTER");
+        showToast("⏱️ Keeper Lock countdown is active — review & confirm your Keepers!", "info");
+        return;
+      }
+      if (notif.commishPendingCount > 0) {
+        switchMainTab("feed");
+        setActivitySubTab("PENDING_FINAL");
+        showToast(`⚖️ ${notif.commishPendingCount} conditional/pool item(s) ready for Commissioner review.`, "info");
+        return;
+      }
+      switchMainTab("feed");
+      showToast("All caught up — no pending actions awaiting your franchise!", "success");
+    }
+
+    function initMobileTouchGestures() {
+      if (typeof document === "undefined" || window.__gcmTouchGesturesBound) return;
+      window.__gcmTouchGesturesBound = true;
+
+      // Live countdown ticker every 30s for Keeper Lock banner without disturbing active inputs
+      setInterval(() => {
+        const els = document.querySelectorAll("[data-keeper-countdown='1']");
+        if (!els.length) return;
+        const dl = getKeeperDeadlineInfo();
+        if (!dl.hasDeadline) return;
+        els.forEach(el => {
+          el.innerHTML = `<i class="fa-solid fa-clock mr-1"></i>${escapeHtml(dl.countdownLabel)}`;
+        });
+      }, 30000);
+
+      let startX = 0;
+      let startY = 0;
+      let startTarget = null;
+
+      document.addEventListener("touchstart", e => {
+        if (!e.touches || e.touches.length !== 1) return;
+        startX = e.touches[0].clientX;
+        startY = e.touches[0].clientY;
+        startTarget = e.target;
+      }, { passive: true });
+
+      document.addEventListener("touchend", e => {
+        if (!e.changedTouches || e.changedTouches.length !== 1 || !startTarget) return;
+        const dx = e.changedTouches[0].clientX - startX;
+        const dy = e.changedTouches[0].clientY - startY;
+
+        // 1. Mobile Bottom-Sheet Swipe-Down-to-Dismiss (< 768px)
+        if (window.innerWidth < 768 && dy > 90 && Math.abs(dy) > Math.abs(dx) * 1.6) {
+          const openModalEl = startTarget.closest && startTarget.closest("[id$='Modal']:not(.hidden)");
+          if (openModalEl) {
+            const scroller = startTarget.closest(".overflow-y-auto");
+            if (!scroller || scroller.scrollTop <= 4) {
+              closeModal(openModalEl.id);
+              return;
+            }
+          }
+        }
+
+        // 2. Horizontal Sub-Tab Swipe on My Team & League HQ (ignore scrollable tables & form controls)
+        if (Math.abs(dx) < 72 || Math.abs(dx) < Math.abs(dy) * 1.8) return;
+        if (startTarget.closest && startTarget.closest("input, textarea, select, button, .overflow-x-auto, table")) return;
+
+        if (uiState.activeTab === "ledger") {
+          const nextSub = dx < 0 ? "ROSTER" : "PICKS";
+          if ((uiState.myTeamSubView || "PICKS") !== nextSub) {
+            setMyTeamSubView(nextSub);
+          }
+        } else if (uiState.activeTab === "capital") {
+          const order = ["CAPITAL", "STANDINGS", "VAULT", "RIVALRY", "RECORDS"];
+          const curIdx = Math.max(0, order.indexOf(uiState.leagueHqSubTab || "CAPITAL"));
+          const nextIdx = dx < 0 ? Math.min(order.length - 1, curIdx + 1) : Math.max(0, curIdx - 1);
+          if (nextIdx !== curIdx) {
+            setLeagueHqSubTab(order[nextIdx]);
+          }
+        }
+      }, { passive: true });
+    }
+
     function renderAll() {
       if (!uiState.isLeagueUnlocked) return;
 
+      initMobileTouchGestures();
       ensureRollingWindowYearsExist();
       // In standard manager mode, Team 1 is always locked to the manager's claimed franchise
       if (!uiState.isCommish) {
@@ -4601,6 +5467,9 @@
         }
       });
 
+      const notifState = getActionRequiredNotifications(state);
+      updateHeaderNotificationBellUI(state);
+
       const pendingCount = state.activePools.length + state.activeConditionals.length;
       const openProposalsCount = Array.isArray(leagueDB.pendingTrades) ? leagueDB.pendingTrades.length : 0;
       const navPoolBadge = document.getElementById("navPoolBadge");
@@ -4608,6 +5477,7 @@
         const totalBadgeCount = pendingCount + openProposalsCount;
         navPoolBadge.textContent = openProposalsCount > 0 ? `${openProposalsCount} Offer${openProposalsCount > 1 ? 's' : ''}` : `${pendingCount} Pending`;
         navPoolBadge.classList.toggle("hidden", totalBadgeCount === 0);
+        navPoolBadge.classList.toggle("notif-action-pulse", notifState.awaitingMeProposals.length > 0);
       }
 
       const navFeedBadge = document.getElementById("navFeedBadge");
@@ -4617,9 +5487,12 @@
 
       const mobActBadge = document.getElementById("mobActivityBadge");
       if (mobActBadge) {
-        const actNum = openProposalsCount > 0 ? openProposalsCount : (pendingCount > 0 ? pendingCount : state.yearTrades.length);
+        const actNum = notifState.awaitingMeProposals.length > 0
+          ? notifState.awaitingMeProposals.length
+          : (openProposalsCount > 0 ? openProposalsCount : (pendingCount > 0 ? pendingCount : state.yearTrades.length));
         mobActBadge.textContent = actNum;
         mobActBadge.classList.toggle("hidden", actNum === 0);
+        mobActBadge.classList.toggle("notif-action-pulse", notifState.awaitingMeProposals.length > 0);
       }
 
       const { activeBlockEntries } = getActiveTradeBlockEntries(state);
@@ -5267,6 +6140,9 @@
                   ${otbPillsHtml}
                 </div>
               </div>
+
+              <!-- Franchise Trophy Case & Rivalry Nemesis Strip -->
+              ${buildFranchiseTrophyAndNemesisHtml(managedTeamId)}
             </div>
 
             <!-- Collapsible War Room Editor Drawer (keeps inputs always in DOM for instant editing & tests) -->
@@ -5877,7 +6753,7 @@
         { id: "RECORDS", icon: "fa-scroll", label: "📜 Record Book" }
       ];
       return `
-        <div class="app-card p-2.5 sm:p-3 flex flex-wrap items-center justify-between gap-2 bg-[#121215]">
+        <div class="sticky-subnav-bar app-card p-2.5 sm:p-3 flex flex-wrap items-center justify-between gap-2 bg-[#121215]">
           <div class="flex flex-wrap items-center gap-1.5">
             ${tabs.map(t => `
               <button
@@ -5922,7 +6798,7 @@
         const allPlayTotal = (st.allPlayWins || 0) + (st.allPlayLosses || 0);
         const expectedWins = allPlayTotal > 0 ? ((st.allPlayWins / allPlayTotal) * (st.wins + st.losses)).toFixed(1) : st.wins;
         const luckDelta = (st.wins - Number(expectedWins)).toFixed(1);
-        const isChamp = idx === 0;
+        const isChamp = isCompletedSeason && effectiveChampId ? (ownerId === effectiveChampId) : (idx === 0);
         const isToilet = idx === (sObj.standings.length - 1);
 
         return `
@@ -6035,7 +6911,7 @@
               ${!m.isAlumni ? renderTeamAvatarHtml(m.id, "w-6 h-6 text-[10px]", "rounded-md") : `<span class="w-6 h-6 rounded-md bg-zinc-800 border border-zinc-700 text-[10px] font-mono inline-flex items-center justify-center text-zinc-300">AL</span>`}
               <div>
                 <div>${escapeHtml(m.name)}</div>
-                ${m.isAlumni ? `<div class="text-[10px] text-zinc-400 font-normal">Active: ${escapeHtml(m.yearsActive)}${m.replacedBy ? ` • Replaced by ${escapeHtml(getOriginalManagerName(m.replacedBy))}` : ''}</div>` : ''}
+                ${m.isAlumni ? `<div class="text-[10px] text-zinc-400 font-normal">Active: ${escapeHtml(m.yearsActive)}${m.replacedBy ? ` • Josh's Franchise Lineage` : ''}</div>` : ''}
               </div>
             </div>
           </td>
@@ -6060,11 +6936,11 @@
               <div>
                 <div class="flex items-center gap-2">
                   <span class="static-badge bg-amber-950 text-amber-300 border border-amber-500/60">
-                    <i class="fa-solid fa-trophy"></i> All-Time Franchise Vault (${totalSeasonsCount} Seasons: 2018–2026)
+                    <i class="fa-solid fa-trophy"></i> All-Time Franchise Vault (${totalSeasonsCount} Seasons: 2016–Present)
                   </span>
                   <h2 class="text-base sm:text-lg font-black text-white">Active Managers Career Leaderboard</h2>
                 </div>
-                <p class="text-xs text-zinc-400 mt-0.5">Career totals across all seasons managed by each current franchise owner.</p>
+                <p class="text-xs text-zinc-400 mt-0.5">Career totals across all seasons managed by each current franchise owner (9 founding franchises since 2016 + Josh).</p>
               </div>
               <button type="button" onclick="openEspnSyncModal()" class="btn-action px-3 py-1.5 text-xs text-sky-300">
                 <i class="fa-solid fa-user-clock"></i>
@@ -6093,7 +6969,7 @@
             </div>
           </div>
 
-          <!-- Former Managers / League Alumni Section (Shane, Alex, etc.) -->
+          <!-- Former Managers / League Alumni Section (Scott -> Alek -> Josh Franchise Lineage) -->
           <div id="leagueAlumniVaultCard" class="app-card overflow-hidden p-4 sm:p-5 space-y-3">
             <div class="flex flex-wrap items-center justify-between gap-2 border-b border-zinc-800 pb-2.5">
               <div>
@@ -6101,9 +6977,9 @@
                   <span class="static-badge bg-zinc-800 text-zinc-200 border border-zinc-600">
                     <i class="fa-solid fa-graduation-cap"></i> League Alumni
                   </span>
-                  <h3 class="text-sm sm:text-base font-black text-white">Former Managers & Historical Alumni (Kept Separate from Current Owners)</h3>
+                  <h3 class="text-sm sm:text-base font-black text-white">Former Managers (Scott & Alek — Josh's Franchise Lineage)</h3>
                 </div>
-                <p class="text-xs text-zinc-400 mt-0.5">Historical seasons played by former league members before franchise takeovers.</p>
+                <p class="text-xs text-zinc-400 mt-0.5">Josh's franchise is the only slot to ever change hands: originally managed by Scott, then Alek, and now Josh.</p>
               </div>
             </div>
             <div class="overflow-x-auto">
@@ -6172,7 +7048,7 @@
               <span class="static-badge bg-[#73000A] text-white border border-[#CC1429]">
                 <i class="fa-solid fa-skull-crossbones"></i> Head-to-Head Rivalry Matrix
               </span>
-              <h2 class="text-base sm:text-lg font-black text-white">All-Time 10×10 Franchise Rivalry Grid (2018–2026)</h2>
+              <h2 class="text-base sm:text-lg font-black text-white">All-Time 10×10 Franchise Rivalry Grid (2016–Present)</h2>
             </div>
             <p class="text-xs text-zinc-400 mt-0.5">Read across any row to see that manager's all-time W-L record against every opponent column.</p>
           </div>
@@ -6207,8 +7083,8 @@
             ${(items || []).map((it, idx) => `
               <div class="flex items-center justify-between gap-2 bg-[#121215] border border-zinc-800/80 rounded-lg px-3 py-2 text-xs">
                 <div class="min-w-0">
-                  <div class="font-black text-white truncate">#${idx + 1} • ${escapeHtml(getHistoricalManagerDisplayName(it.teamId || it.managerId))} ${it.opponentId ? `<span class="text-zinc-400 font-normal">vs. ${escapeHtml(getHistoricalManagerDisplayName(it.opponentId))}</span>` : ''}</div>
-                  <div class="text-[10px] font-mono text-zinc-400">${Number(it.year)} • Week ${Number(it.week)} ${it.note ? `• ${escapeHtml(it.note)}` : ''}</div>
+                  <div class="font-black text-white truncate">#${idx + 1} • ${escapeHtml(getHistoricalManagerDisplayName(it.teamId || it.managerId || it.winnerId))} ${(it.opponentId || it.loserId) ? `<span class="text-zinc-400 font-normal">vs. ${escapeHtml(getHistoricalManagerDisplayName(it.opponentId || it.loserId))}</span>` : ''}</div>
+                  <div class="text-[10px] font-mono text-zinc-400">${Number(it.year)} • Week ${Number(it.week)} ${(it.note || it.scoreLine) ? `• ${escapeHtml(it.note || it.scoreLine)}` : ''}</div>
                 </div>
                 <span class="font-mono font-black text-sm text-amber-300 flex-shrink-0">${valFmt(it)}</span>
               </div>
@@ -6226,7 +7102,7 @@
               </span>
               <h2 class="text-base sm:text-lg font-black text-white">Gamecock Mafia All-Time Single-Week & Streak Records</h2>
             </div>
-            <p class="text-xs text-zinc-400 mt-0.5">All-time highs, lows, blowouts, and heartbreakers across league history (2018–present).</p>
+            <p class="text-xs text-zinc-400 mt-0.5">All-time highs, lows, blowouts, and heartbreakers across league history (2016–present).</p>
           </div>
           <div class="grid grid-cols-1 md:grid-cols-2 gap-3.5">
             ${renderRecCard("All-Time Single-Week High Scores", "bg-emerald-950 text-emerald-300 border border-emerald-600", "fa-fire", recs.highestSingleWeek || recs.highestSingleGame, it => `${Number(it.score).toFixed(1)} pts`)}
@@ -6427,6 +7303,7 @@
         if (bGets.length > 0) parts.push(`${getOriginalManagerName(tB)} receives ${bGets.join(" & ")}`);
         sumEl.value = parts.join("; ");
       }
+      updateModalTradeBalanceBar();
     }
 
     function computeWhatIfDeltas(teamId) {
@@ -6504,8 +7381,9 @@
             class="px-2 py-1 rounded-lg border text-left transition cursor-pointer inline-flex items-center gap-1.5 text-[11px] ${isStaged ? 'whatif-pick-sim bg-amber-950/40 text-amber-200 border-amber-400' : tag === 'ON_BLOCK' ? 'bg-amber-950/25 border-amber-500/60 text-white hover:border-amber-400' : 'bg-[#121215] border-zinc-800 text-zinc-200 hover:border-sky-400'}"
             title="Tap to stage ${escapeHtml(p.name)} in trade package"
           >
-            <span class="font-mono font-black text-[10px] px-1 rounded bg-zinc-900 text-sky-300">${escapeHtml(p.pos)}</span>
+            ${renderPlayerHeadshotHtml(p, "w-5 h-5", "text-[8px]")}
             <span class="font-bold truncate max-w-[115px] ${isStaged ? 'line-through text-amber-300' : ''}">${escapeHtml(p.name)}</span>
+            ${renderNflTeamPillHtml(p.nflTeam)}
             ${isKeeper ? `<span class="text-[9px]" title="Keeper">🔒</span>` : ''}
             ${tag === 'ON_BLOCK' ? `<span class="text-[9px]" title="On Trade Block">🏷️</span>` : ''}
             <span class="text-[10px] text-zinc-400">${isStaged ? '✓' : '⇄'}</span>
@@ -6566,6 +7444,22 @@
       const teamBReceivesPlayers = uiState.whatIfPlayerSwaps.filter(p => p.toTeam === teamB.id);
       const totalStagedAssets = uiState.whatIfSwaps.length + uiState.whatIfPlayerSwaps.length;
 
+      const aValueItems = [
+        ...teamAReceivesPlayers.map(ps => {
+          const fullP = rosterB.find(x => x.id === ps.playerId) || rosterA.find(x => x.id === ps.playerId) || ps;
+          return { val: computePlayerTradeValue(fullP) };
+        }),
+        ...teamAReceivesSwaps.map(s => ({ val: computeDraftPickTradeValue(state.year, s.round, s.originalOwner, state) }))
+      ];
+      const bValueItems = [
+        ...teamBReceivesPlayers.map(ps => {
+          const fullP = rosterA.find(x => x.id === ps.playerId) || rosterB.find(x => x.id === ps.playerId) || ps;
+          return { val: computePlayerTradeValue(fullP) };
+        }),
+        ...teamBReceivesSwaps.map(s => ({ val: computeDraftPickTradeValue(state.year, s.round, s.originalOwner, state) }))
+      ];
+      const balanceMeterHtml = buildTradeValueBalanceBarHtml(teamA.id, teamB.id, aValueItems, bValueItems);
+
       const stagingBarHtml = totalStagedAssets > 0 ? `
         <div class="bg-[#121215] border-2 border-amber-500/80 rounded-xl p-3 sm:p-4 space-y-3 shadow-lg">
           <div class="flex flex-wrap items-center justify-between gap-2 border-b border-zinc-800 pb-2.5">
@@ -6584,6 +7478,7 @@
               </button>
             </div>
           </div>
+          ${balanceMeterHtml}
           <div class="grid grid-cols-1 md:grid-cols-2 gap-2.5 sm:gap-3 text-xs">
             <div class="bg-[#09090B] border border-zinc-800 rounded-lg p-2.5 min-w-0">
               <div class="text-[10px] font-extrabold uppercase text-[#CC1429] mb-1 truncate">${escapeHtml(teamA.name)} Receives:</div>
@@ -6850,6 +7745,10 @@
         showToast(`You can only manage Keepers for your own franchise (${getTeamName(uiState.myTeam)}).`, "error");
         return false;
       }
+      if (!uiState.isCommish && isKeeperDeadlineLocked()) {
+        showToast("Keepers are LOCKED past the Commissioner's deadline! Contact Commissioner for changes.", "error");
+        return false;
+      }
       const roster = getTeamRoster(tid);
       const player = roster.find(p => p.id === playerId);
       if (!player) return false;
@@ -6920,8 +7819,13 @@
         showToast("You can only confirm Keepers for your own franchise.", "error");
         return false;
       }
+      if (!uiState.isCommish && isKeeperDeadlineLocked()) {
+        showToast("Keepers are LOCKED past the Commissioner's deadline! Contact Commissioner for changes.", "error");
+        return false;
+      }
       const caps = getTeamKeeperCountsAndCaps(tid);
       const prof = getTeamProfile(tid);
+      prof.keepersConfirmedAt = Date.now();
       prof.updatedAt = Date.now();
       leagueDB.updatedAt = Date.now();
       uiState.keepersDirty = false;
@@ -6989,6 +7893,7 @@
       const prof = getTeamProfile(tid);
       const caps = getTeamKeeperCountsAndCaps(tid);
       const canManage = uiState.isCommish || tid === uiState.myTeam;
+      const lockedByTimer = !uiState.isCommish && isKeeperDeadlineLocked();
 
       const otherBuckets = ["QB", "TE", "DL", "LB", "DB", "K", "D/ST"].filter(b => (caps.posCounts[b] || 0) > 0);
       const otherSummary = otherBuckets.length > 0
@@ -7009,13 +7914,12 @@
         return `
           <div class="p-3 flex flex-col sm:flex-row sm:items-center justify-between gap-2.5 ${isKeeper ? 'bg-[#73000A]/20 border-l-4 border-l-[#CC1429]' : 'bg-[#09090B]/60'}">
             <div class="flex items-center gap-2.5 min-w-0">
-              <span class="w-9 h-7 rounded-lg font-mono font-black text-xs inline-flex items-center justify-center flex-shrink-0 border ${isIdp ? 'bg-purple-950/80 text-purple-300 border-purple-500/50' : bucket === 'RB' ? 'bg-emerald-950/80 text-emerald-300 border-emerald-500/50' : bucket === 'WR' ? 'bg-sky-950/80 text-sky-300 border-sky-500/50' : 'bg-amber-950/80 text-amber-300 border-amber-500/50'}">
-                ${escapeHtml(p.pos)}
-              </span>
+              ${renderPlayerHeadshotHtml(p, "w-9 h-9", "text-[10px]")}
               <div class="min-w-0">
                 <div class="flex flex-wrap items-center gap-1.5">
                   <span class="text-xs sm:text-sm font-black text-white truncate">${escapeHtml(p.name)}</span>
-                  <span class="text-[11px] font-mono text-zinc-400">${escapeHtml(p.nflTeam)}</span>
+                  <span class="px-1.5 py-0.5 rounded text-[10px] font-mono font-black border leading-none ${isIdp ? 'bg-purple-950/80 text-purple-300 border-purple-500/50' : bucket === 'RB' ? 'bg-emerald-950/80 text-emerald-300 border-emerald-500/50' : bucket === 'WR' ? 'bg-sky-950/80 text-sky-300 border-sky-500/50' : 'bg-amber-950/80 text-amber-300 border-amber-500/50'}">${escapeHtml(p.pos)}</span>
+                  ${renderNflTeamPillHtml(p.nflTeam)}
                   ${p.posRank ? `<span class="px-1.5 py-0.2 rounded bg-zinc-900 border border-zinc-800 text-[10px] font-mono text-emerald-300">${escapeHtml(p.posRank)}</span>` : ''}
                   ${isKeeper ? `<span class="static-badge bg-[#73000A] text-amber-200 border border-[#CC1429]">🔒 Keeper Rd ${keeperRound}</span>` : ''}
                   ${pTag === 'ON_BLOCK' ? `<span class="static-badge bg-amber-950 text-amber-300 border border-amber-500/70">🏷️ OTB</span>` : ''}
@@ -7030,7 +7934,8 @@
                 <button
                   type="button"
                   onclick="togglePlayerKeeperSelection('${safeId(tid)}', '${safeId(p.id)}')"
-                  class="px-2.5 py-1 rounded-lg text-xs font-extrabold border transition cursor-pointer ${isKeeper ? 'bg-[#73000A] text-white border-[#CC1429] shadow' : 'bg-[#09090B] text-zinc-300 border-zinc-700 hover:border-amber-400 hover:text-white'}"
+                  ${lockedByTimer ? 'disabled' : ''}
+                  class="px-2.5 py-1 rounded-lg text-xs font-extrabold border transition ${lockedByTimer ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'} ${isKeeper ? 'bg-[#73000A] text-white border-[#CC1429] shadow' : 'bg-[#09090B] text-zinc-300 border-zinc-700 hover:border-amber-400 hover:text-white'}"
                 >
                   ${isKeeper ? `🔒 Kept (Rd ${keeperRound})` : '+ Keep'}
                 </button>
@@ -7066,6 +7971,9 @@
 
       return `
         <div class="space-y-3">
+          <!-- League-Wide Keeper Lock Countdown & X/10 Franchises Ready Bar -->
+          ${renderKeeperReadinessBannerHtml(false)}
+
           <!-- Keeper Cap & Positional Limit Meter Bar -->
           <div class="bg-[#09090B] border border-zinc-800 rounded-xl p-3.5 sm:p-4 space-y-3">
             <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-2.5">
@@ -7074,16 +7982,22 @@
                   <span class="static-badge bg-[#73000A] text-white border border-[#CC1429]">
                     <i class="fa-solid fa-user-lock"></i> ${Number(state.year)} Keeper Lock-In
                   </span>
-                  <h3 class="text-sm sm:text-base font-black text-white">${escapeHtml(team.name)} • ${caps.totalKeepers}/${caps.maxKeepers} Keepers Selected (Rounds 1–${caps.maxKeepers})</h3>
+                  <h3 class="text-sm sm:text-base font-black text-white">${escapeHtml(team.name)} • ${caps.totalKeepers}/${caps.maxKeepers} Keepers Selected (ESPN Rds 1–${caps.maxKeepers})</h3>
                 </div>
                 <p class="text-[11px] text-zinc-400 mt-0.5">League Keeper Caps: Max <strong class="text-white">${caps.maxKeepers} Keepers</strong> total • Max <strong class="text-emerald-300">${caps.maxRb} RB</strong> • Max <strong class="text-sky-300">${caps.maxWr} WR</strong> • Max <strong class="text-amber-300">${caps.maxOtherSinglePos} of any other single position</strong> (Offense + IDP).</p>
               </div>
-              ${canManage ? `
-                <button type="button" id="confirmKeepersBtn" onclick="confirmTeamKeepersAndRoster('${safeId(tid)}')" class="btn-garnet px-4 py-2 text-xs self-start lg:self-auto">
-                  <i class="fa-solid fa-circle-check"></i>
-                  <span>Confirm Keepers & Roster Tags</span>
+              <div class="flex flex-wrap items-center gap-2 self-start lg:self-auto">
+                <button type="button" onclick="shareBrandedCardToChat('KEEPERS', '${safeId(tid)}')" class="btn-action px-3 py-2 text-xs text-amber-300" title="Share Branded Keeper Slate Card to Group Chat">
+                  <i class="fa-solid fa-share-from-square"></i>
+                  <span>Share Keepers 📲</span>
                 </button>
-              ` : ''}
+                ${canManage ? `
+                  <button type="button" id="confirmKeepersBtn" onclick="confirmTeamKeepersAndRoster('${safeId(tid)}')" class="btn-garnet px-4 py-2 text-xs">
+                    <i class="fa-solid fa-circle-check"></i>
+                    <span>Confirm Keepers & Roster Tags</span>
+                  </button>
+                ` : ''}
+              </div>
             </div>
 
             <!-- Live Positional Cap Pills -->
@@ -7331,9 +8245,9 @@
       }
 
       container.innerHTML = `
-        <div class="app-card overflow-hidden">
-          <!-- Sub-View Switcher (Draft Picks vs Roster & Keepers) + Compact Filter Header -->
-          <div class="p-3 sm:p-4 border-b border-zinc-800 flex flex-col lg:flex-row lg:items-center justify-between gap-2.5 bg-[#121215]">
+        <div class="app-card overflow-visible">
+          <!-- Sticky Sub-View Switcher (Draft Picks vs Roster & Keepers) + Compact Filter Header -->
+          <div class="sticky-subnav-bar p-3 sm:p-4 border-b border-zinc-800 flex flex-col lg:flex-row lg:items-center justify-between gap-2.5 rounded-t-2xl">
             <div class="flex flex-wrap items-center gap-1.5 min-w-0">
               <!-- Sub-Navigation Pill Bar -->
               <div class="inline-flex items-center bg-[#09090B] p-1 rounded-xl border border-zinc-800 mr-1">
@@ -8188,9 +9102,13 @@
                 <i class="fa-solid fa-xmark"></i>
                 <span>Decline</span>
               </button>
-              <button onclick="copyProposalPingForChat('${safeId(pt.id)}')" class="btn-action px-2.5 py-1.5 text-xs text-amber-300" title="Copy Offer Ping for Chat">
-                <i class="fa-solid fa-comment-dots"></i>
-                <span>Ping Chat</span>
+              <button onclick="shareBrandedCardToChat('PROPOSAL', '${safeId(pt.id)}')" class="btn-action px-2.5 py-1.5 text-xs text-amber-300" title="Share Branded Offer Card to Group Chat">
+                <i class="fa-solid fa-share-from-square"></i>
+                <span>Share Card</span>
+              </button>
+              <button onclick="copyProposalPingForChat('${safeId(pt.id)}')" class="btn-action px-2.5 py-1.5 text-xs text-zinc-300" title="Copy Offer Ping for Chat">
+                <i class="fa-solid fa-copy"></i>
+                <span>Copy</span>
               </button>
             </div>
           </div>
@@ -8528,8 +9446,11 @@
                           <i class="fa-solid fa-rotate-left"></i> Withdraw
                         </button>
                       ` : ''}
-                      <button onclick="copyProposalPingForChat('${safeId(pt.id)}')" class="btn-action px-2.5 py-1.5 text-xs text-amber-300" title="Copy Offer Ping for Group Chat">
-                        <i class="fa-solid fa-comment-dots"></i> Copy Offer Ping 💬
+                      <button onclick="shareBrandedCardToChat('PROPOSAL', '${safeId(pt.id)}')" class="btn-action px-2.5 py-1.5 text-xs text-amber-300" title="Share Branded Offer Card to Group Chat">
+                        <i class="fa-solid fa-share-from-square"></i> Share Card 📲
+                      </button>
+                      <button onclick="copyProposalPingForChat('${safeId(pt.id)}')" class="btn-action px-2.5 py-1.5 text-xs text-zinc-300" title="Copy Offer Ping for Group Chat">
+                        <i class="fa-solid fa-copy"></i> Copy
                       </button>
                       ${uiState.isCommish ? `
                         <button onclick="approvePendingSubmission(${Number(idx)})" class="btn-garnet px-2.5 py-1.5 text-xs" title="Commissioner Force-Approve">Force Approve</button>
@@ -8611,10 +9532,11 @@
 
           (tr.playerTransfers || []).filter(pt => pt.toOwner === tid).forEach(pt => {
             receivedItems.push(`
-              <div class="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg bg-sky-950/35 border border-sky-500/40 text-xs">
-                <i class="fa-solid fa-football text-[10px] text-sky-400 shrink-0"></i>
-                <span class="font-bold text-white">${escapeHtml(pt.playerName)}</span>
-                <span class="text-sky-300 font-mono text-[10px]">(${escapeHtml(pt.pos || 'NFL')} • ${escapeHtml(pt.nflTeam || 'NFL')})</span>
+              <div class="flex items-center gap-2 px-2.5 py-1.5 rounded-lg bg-sky-950/35 border border-sky-500/40 text-xs">
+                ${renderPlayerHeadshotHtml({ id: pt.playerId, name: pt.playerName, pos: pt.pos }, "w-6 h-6", "text-[9px]")}
+                <span class="font-bold text-white truncate">${escapeHtml(pt.playerName)}</span>
+                <span class="text-sky-300 font-mono text-[10px]">${escapeHtml(pt.pos || 'NFL')}</span>
+                ${renderNflTeamPillHtml(pt.nflTeam || 'NFL')}
               </div>
             `);
           });
@@ -8708,9 +9630,12 @@
                     ? `<button onclick="setActivitySubTab('PENDING_FINAL')" class="btn-pending px-2.5 py-1 text-xs"><span>Resolve ▾</span></button>`
                     : `<span class="static-badge bg-amber-950 text-amber-300 border border-amber-500/50">Pending Final</span>`
                 ) : `<span class="static-badge bg-emerald-950/80 text-emerald-300 border border-emerald-700/60">Official</span>`}
-                <button onclick="copyTradeReceiptForChat('${safeId(tr.id)}')" class="btn-action px-2.5 py-1 text-xs text-emerald-300" title="Copy Trade Receipt for Group Chat">
-                  <i class="fa-solid fa-share-nodes"></i>
-                  <span>Share</span>
+                <button onclick="shareBrandedCardToChat('TRADE', '${safeId(tr.id)}')" class="btn-action px-2.5 py-1 text-xs text-amber-300" title="Share Branded Graphic Receipt Card to Group Chat">
+                  <i class="fa-solid fa-share-from-square"></i>
+                  <span>Share Card</span>
+                </button>
+                <button onclick="copyTradeReceiptForChat('${safeId(tr.id)}')" class="btn-action px-2 py-1 text-xs text-emerald-300" title="Copy Plain Text Receipt">
+                  <i class="fa-solid fa-copy"></i>
                 </button>
                 ${uiState.isCommish ? `
                   <button onclick="openEditTradeModal('${safeId(tr.id)}')" class="btn-action px-2.5 py-1 text-xs text-zinc-200" title="Edit Trade In-Place">
@@ -8795,7 +9720,7 @@
     }
 
     /* -----------------------------------------------------------
-       10. PICK & POOL INSPECTION MODALS
+       10. PICK & POOL INSPECTION MODALS (WITH PROVENANCE & 1-TAP TRADE)
        ----------------------------------------------------------- */
     function openInspectModalForPick(year, round, originalOwner) {
       const state = evaluateYearState(year);
@@ -8804,23 +9729,70 @@
 
       const origName = getTeamName(pick.originalOwner);
       const currName = getTeamName(pick.currentOwner);
+      const myTeamId = safeId((uiState.isCommish ? uiState.selectedManager : uiState.myTeam) || "syeth");
+      const isHeldByMe = pick.currentOwner === myTeamId;
+      const pickVal = computeDraftPickTradeValue(year, round, originalOwner, state);
+      const holderTag = getPickTradeTag(pick.currentOwner, year, round, originalOwner);
 
-      document.getElementById("inspectModalBadge").textContent = `${Number(year)} DRAFT • ROUND ${Number(round)}`;
+      // Build visual ownership provenance chain
+      const chainIds = [pick.originalOwner];
+      (pick.receipts || []).forEach(tr => {
+        (tr.directTransfers || []).forEach(dt => {
+          if (Number(dt.year) === Number(year) && Number(dt.round) === Number(round) && dt.originalOwner === originalOwner && dt.toOwner) {
+            if (chainIds[chainIds.length - 1] !== dt.toOwner) chainIds.push(dt.toOwner);
+          }
+        });
+      });
+      if (chainIds[chainIds.length - 1] !== pick.currentOwner) {
+        chainIds.push(pick.currentOwner);
+      }
+      const provenanceChainHtml = chainIds.map((cid, idx) => {
+        const isCurrent = idx === chainIds.length - 1;
+        return `
+          <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs font-extrabold border ${isCurrent ? 'bg-emerald-950/70 text-emerald-200 border-emerald-500/70' : 'bg-zinc-900 text-zinc-400 border-zinc-800'}">
+            ${renderTeamAvatarHtml(cid, "w-4 h-4 text-[9px]", "rounded")}
+            <span>${escapeHtml(getTeamName(cid))}</span>
+            ${idx === 0 ? `<span class="text-[9px] font-mono text-zinc-500">(Orig)</span>` : ''}
+            ${isCurrent && chainIds.length > 1 ? `<span class="text-[9px] font-mono text-emerald-400">(Holder)</span>` : ''}
+          </span>
+        `;
+      }).join(`<i class="fa-solid fa-arrow-right text-[10px] text-amber-400"></i>`);
+
+      document.getElementById("inspectModalBadge").textContent = `${Number(year)} DRAFT • ROUND ${Number(round)} • ${pickVal} VAL PTS`;
       document.getElementById("inspectModalTitle").textContent = state.orderCfg.isLocked && pick.overallPickNum
         ? `Pick ${pick.formattedSlot} (#${pick.overallPickNum} Overall) — ${origName}'s Original Slot`
         : `${origName}'s Original ${Number(year)} Round ${Number(round)} Pick`;
 
       let bodyHtml = `
-        <div class="grid grid-cols-2 gap-3 bg-[#0b0f19] p-3.5 rounded-xl border border-slate-800">
-          <div>
-            <div class="text-[10px] font-bold uppercase text-slate-400">Original Slot Owner</div>
-            <div class="text-sm font-black text-white mt-0.5">${escapeHtml(origName)}</div>
-          </div>
-          <div>
-            <div class="text-[10px] font-bold uppercase text-slate-400">Current Holder</div>
-            <div class="text-sm font-black ${pick.originalOwner !== pick.currentOwner ? 'text-sky-300' : 'text-emerald-300'} mt-0.5">
-              ${pick.poolEncumbrance ? `${escapeHtml(currName)} (Pending Final Pool for ${escapeHtml(getTeamName(pick.poolEncumbrance.owedTo))})` : escapeHtml(currName)}
+        <div class="bg-[#0b0f19] p-3.5 rounded-xl border border-slate-800 space-y-3">
+          <div class="flex flex-wrap items-center justify-between gap-2">
+            <div class="text-[10px] font-extrabold uppercase tracking-wider text-amber-300"><i class="fa-solid fa-route mr-1"></i>Pick Provenance Chain</div>
+            <div class="flex flex-wrap items-center gap-1.5">
+              <span class="px-2 py-0.5 rounded-full text-[10px] font-mono font-black bg-sky-950 text-sky-300 border border-sky-500/60">⚖️ ${pickVal} Trade Val</span>
+              ${holderTag === 'ON_BLOCK' ? `<span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-amber-950 text-amber-300 border border-amber-500/70">🏷️ On Trade Block</span>` : ''}
+              ${holderTag === 'UNTOUCHABLE' ? `<span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-zinc-800 text-zinc-200 border border-zinc-600">🛡️ Marked Untouchable</span>` : ''}
             </div>
+          </div>
+          <div class="flex flex-wrap items-center gap-1.5">
+            ${provenanceChainHtml}
+          </div>
+          <div class="pt-2 border-t border-slate-800/80 flex flex-wrap items-center justify-between gap-2">
+            <span class="text-[11px] text-slate-400">
+              ${pick.poolEncumbrance
+                ? `Encumbered in ${escapeHtml(currName)}'s Pending Final Pool owed to ${escapeHtml(getTeamName(pick.poolEncumbrance.owedTo))}`
+                : isHeldByMe
+                ? `Owned by your franchise (${escapeHtml(currName)})`
+                : `Currently held by ${escapeHtml(currName)}`}
+            </span>
+            <button
+              type="button"
+              id="inspectOfferTradeBtn"
+              onclick="offerTradeForInspectedPick(${Number(year)}, ${Number(round)}, '${safeId(pick.originalOwner)}', '${safeId(pick.currentOwner)}')"
+              class="${isHeldByMe ? 'btn-action text-amber-300' : 'btn-garnet'} px-3.5 py-1.5 text-xs"
+            >
+              <i class="fa-solid ${isHeldByMe ? 'fa-tag' : 'fa-right-left'}"></i>
+              <span>${isHeldByMe ? 'Toggle On Trade Block 🏷️' : `Offer Trade to ${escapeHtml(currName)} ⇄`}</span>
+            </button>
           </div>
         </div>
       `;
@@ -9246,11 +10218,11 @@
           </select>
         </div>
         <div class="sm:col-span-5">
-          <select id="qpDir_${rowId}" class="w-full bg-[#0b0f19] text-sky-300 font-semibold rounded-lg px-2.5 py-2 border border-slate-700 text-xs">
+          <select id="qpDir_${rowId}" onchange="updateModalTradeBalanceBar()" class="w-full bg-[#0b0f19] text-sky-300 font-semibold rounded-lg px-2.5 py-2 border border-slate-700 text-xs">
           </select>
         </div>
         <div class="sm:col-span-1 flex justify-end">
-          <button type="button" onclick="document.getElementById('quickPickRow_${rowId}').remove()" class="btn-action px-2 py-1.5 text-rose-400 text-xs" title="Remove row">
+          <button type="button" onclick="document.getElementById('quickPickRow_${rowId}').remove(); updateModalTradeBalanceBar();" class="btn-action px-2 py-1.5 text-rose-400 text-xs" title="Remove row">
             <i class="fa-solid fa-xmark"></i>
           </button>
         </div>
@@ -9268,6 +10240,7 @@
         const idNum = parseInt(child.id.replace("quickPickRow_", ""), 10);
         if (idNum) refreshSingleQuickPickRow(idNum);
       });
+      updateModalTradeBalanceBar();
     }
 
     function refreshSingleQuickPickRow(rowId, preset = null) {
@@ -9285,6 +10258,7 @@
 
       if (roundVal === "NONE") {
         dirEl.innerHTML = `<option value="NONE">Note / Swap Only</option>`;
+        updateModalTradeBalanceBar();
         return;
       }
 
@@ -9332,6 +10306,7 @@
       });
 
       dirEl.innerHTML = html;
+      updateModalTradeBalanceBar();
     }
 
     function handleSaveNewTrade(e) {
@@ -11676,6 +12651,7 @@
             needsChips: Array.isArray(prof.needsChips) ? prof.needsChips : [],
             pickTags: prof.pickTags || {},
             keepers: Array.isArray(prof.keepers) ? prof.keepers : [],
+            keepersConfirmedAt: Number(prof.keepersConfirmedAt) || 0,
             playerTags: prof.playerTags || {},
             roster: Array.isArray(leagueDB?.espnData?.rosters?.[teamId]) ? leagueDB.espnData.rosters[teamId] : [],
             teamPinVerifier: prof.teamPinVerifier || "",
@@ -11952,15 +12928,15 @@
       { id: "syeth",  isAlumni: false, tokens: ["syeth", "spurrier", "cosmic motherfunk"] },
       { id: "corbyn", isAlumni: false, tokens: ["corbyn"] },
       { id: "chris",  isAlumni: false, tokens: ["chris", "christopher"] },
-      { id: "boss",   isAlumni: false, tokens: ["boss", "bossman"] },
-      { id: "geltz",  isAlumni: false, tokens: ["geltz"] },
+      { id: "boss",   isAlumni: false, tokens: ["boss", "bossman", "shane"] },
+      { id: "geltz",  isAlumni: false, tokens: ["geltz", "alex", "alexander"] },
       { id: "matt",   isAlumni: false, tokens: ["matt", "matthew"] },
       { id: "dylan",  isAlumni: false, tokens: ["dylan"] },
       { id: "leo",    isAlumni: false, tokens: ["leo", "leonard"] },
-      { id: "mary",   isAlumni: false, tokens: ["mary"] },
+      { id: "mary",   isAlumni: false, tokens: ["mary", "maryland", "david", "dave"] },
       { id: "josh",   isAlumni: false, tokens: ["josh", "joshua"] },
-      { id: "shane",  isAlumni: true,  tokens: ["shane"] },
-      { id: "alex",   isAlumni: true,  tokens: ["alex", "alexander"] }
+      { id: "scott",  isAlumni: true,  tokens: ["scott"] },
+      { id: "alek",   isAlumni: true,  tokens: ["alek"] }
     ];
 
     function detectGcmManagerFromEspnMeta(metaObj, includeAlumni = true) {
@@ -12035,15 +13011,17 @@
       if (lidInp) lidInp.value = ed.leagueId || "30215";
       refreshEspnExtractorScriptPreview();
 
-      const kRules = ed.keeperRules || { maxKeepers: 12, maxRb: 4, maxWr: 4, maxOtherSinglePos: 3 };
+      const kRules = ed.keeperRules || { maxKeepers: 12, maxRb: 4, maxWr: 4, maxOtherSinglePos: 3, keeperDeadlineIso: "" };
       const kMaxEl = document.getElementById("espnKeeperMaxInput");
       const kRbEl = document.getElementById("espnPosCapRbInput");
       const kWrEl = document.getElementById("espnPosCapWrInput");
       const kOthEl = document.getElementById("espnPosCapOtherInput");
+      const kDeadEl = document.getElementById("espnKeeperDeadlineInput");
       if (kMaxEl) kMaxEl.value = kRules.maxKeepers ?? 12;
       if (kRbEl) kRbEl.value = kRules.maxRb ?? 4;
       if (kWrEl) kWrEl.value = kRules.maxWr ?? 4;
       if (kOthEl) kOthEl.value = kRules.maxOtherSinglePos ?? 3;
+      if (kDeadEl) kDeadEl.value = cleanStr(kRules.keeperDeadlineIso || "", 40).slice(0, 16);
 
       renderEspnTeamMappingControls();
       openModal("espnSyncModal");
@@ -12056,6 +13034,11 @@
       const allManagers = [
         ...(leagueDB?.teams || DEFAULT_TEAMS).map(t => ({ id: t.id, name: getOriginalManagerName(t.id) })),
         ...(ed.alumni || []).map(a => ({ id: a.id, name: `${a.name} (Former / Alumni)` }))
+      ];
+      const slot10LineageOptions = [
+        { id: "scott", name: "Scott (Former • 2016–2019)" },
+        { id: "alek",  name: "Alek (Former • 2020–2023)" },
+        { id: "josh",  name: "Josh (Current Owner)" }
       ];
 
       const rawMetaBySlot = {};
@@ -12102,12 +13085,23 @@
           const s = seasonsObj[String(yr)];
           const yrMap = (ed.seasonOwnerOverrides && ed.seasonOwnerOverrides[String(yr)]) || {};
           const currentChamp = yrMap.__champion || yrMap[s?.champion] || s?.champion || "syeth";
+          const joshRow = (s?.standings || []).find(r => r.teamId === "josh");
+          const defaultJoshLineage = yr <= 2019 ? "scott" : yr <= 2023 ? "alek" : "josh";
+          const currentSlot10Mgr = yrMap.josh || joshRow?.managerId || defaultJoshLineage;
           html += `
-            <div class="bg-[#121215] border border-zinc-800 rounded-lg p-2 flex items-center justify-between gap-2">
-              <span class="text-[11px] font-mono font-bold text-amber-300">🏆 ${yr} Champion:</span>
-              <select id="espnChampOverride_${yr}" class="bg-[#09090B] text-white text-[11px] font-bold rounded px-2 py-1 border border-zinc-700">
-                ${allManagers.map(m => `<option value="${safeId(m.id)}" ${m.id === currentChamp ? 'selected' : ''}>${escapeHtml(m.name)}</option>`).join("")}
-              </select>
+            <div class="bg-[#121215] border border-zinc-800 rounded-lg p-2 space-y-1.5">
+              <div class="flex items-center justify-between gap-2">
+                <span class="text-[11px] font-mono font-bold text-amber-300">🏆 ${yr} Champ:</span>
+                <select id="espnChampOverride_${yr}" class="bg-[#09090B] text-white text-[11px] font-bold rounded px-2 py-1 border border-zinc-700">
+                  ${allManagers.map(m => `<option value="${safeId(m.id)}" ${m.id === currentChamp ? 'selected' : ''}>${escapeHtml(m.name)}</option>`).join("")}
+                </select>
+              </div>
+              <div class="flex items-center justify-between gap-2 pt-1 border-t border-zinc-800/70">
+                <span class="text-[10px] font-mono text-zinc-400">👤 ${yr} Josh Slot:</span>
+                <select id="espnJoshOwnerOverride_${yr}" class="bg-[#09090B] text-sky-200 text-[10px] font-bold rounded px-2 py-0.5 border border-zinc-700">
+                  ${slot10LineageOptions.map(o => `<option value="${safeId(o.id)}" ${o.id === currentSlot10Mgr ? 'selected' : ''}>${escapeHtml(o.name)}</option>`).join("")}
+                </select>
+              </div>
             </div>
           `;
         });
@@ -12137,6 +13131,8 @@
       const maxRb = Math.max(1, Math.min(12, Number(document.getElementById("espnPosCapRbInput")?.value ?? 4)));
       const maxWr = Math.max(1, Math.min(12, Number(document.getElementById("espnPosCapWrInput")?.value ?? 4)));
       const maxOth = Math.max(1, Math.min(12, Number(document.getElementById("espnPosCapOtherInput")?.value ?? 3)));
+      const deadlineInputEl = document.getElementById("espnKeeperDeadlineInput");
+      const rawDeadline = deadlineInputEl ? cleanStr(deadlineInputEl.value || "", 40).trim() : cleanStr(ed.keeperRules?.keeperDeadlineIso || "", 40).trim();
 
       ed.leagueId = lid;
       ed.keeperRules = {
@@ -12145,6 +13141,7 @@
         maxRb,
         maxWr,
         maxOtherSinglePos: maxOth,
+        keeperDeadlineIso: rawDeadline,
         posCaps: { RB: maxRb, WR: maxWr, OTHER: maxOth }
       };
 
@@ -12179,14 +13176,14 @@
           rows.forEach(r => {
             if (r.espnTeamId && newSlotMap[String(r.espnTeamId)]) {
               r.teamId = newSlotMap[String(r.espnTeamId)];
-              if (!ed.alumni?.some(a => a.id === r.managerId)) {
+              if (r.teamId !== "josh" || !ed.alumni?.some(a => a.id === r.managerId)) {
                 r.managerId = r.teamId;
               }
             } else {
               const slotHit = [1,2,3,4,5,6,7,8,9,10].find(n => oldSlotMap[String(n)] === r.teamId);
               if (slotHit) {
                 r.teamId = newSlotMap[String(slotHit)];
-                if (!ed.alumni?.some(a => a.id === r.managerId)) r.managerId = r.teamId;
+                if (r.teamId !== "josh" || !ed.alumni?.some(a => a.id === r.managerId)) r.managerId = r.teamId;
               }
             }
           });
@@ -12199,6 +13196,15 @@
         if (champSel && champSel.value) {
           if (!ed.seasonOwnerOverrides[yrKey]) ed.seasonOwnerOverrides[yrKey] = {};
           ed.seasonOwnerOverrides[yrKey].__champion = safeId(champSel.value);
+        }
+        const joshSel = document.getElementById(`espnJoshOwnerOverride_${yrKey}`);
+        if (joshSel && joshSel.value && ["scott", "alek", "josh"].includes(joshSel.value)) {
+          if (!ed.seasonOwnerOverrides[yrKey]) ed.seasonOwnerOverrides[yrKey] = {};
+          ed.seasonOwnerOverrides[yrKey].josh = safeId(joshSel.value);
+          const sRows = ed.seasons[yrKey]?.standings || [];
+          sRows.forEach(r => { if (r.teamId === "josh") r.managerId = safeId(joshSel.value); });
+          const stRows = ed.seasonStandings?.[yrKey] || [];
+          stRows.forEach(r => { if (r.teamId === "josh") r.managerId = safeId(joshSel.value); });
         }
       });
 
@@ -12251,7 +13257,7 @@
           const detectedMap = {};
           const usedManagers = new Set();
 
-          // Pass A: Match by Roster Trade Signatures (100% deterministic for active rosters) + ESPN Member/Owner Name
+          // Pass A: Match by Roster Trade Signatures (100% deterministic for active rosters) + ESPN Member/Owner Name (with Alex=Geltz, Shane=Boss, David=Mary aliases!)
           for (let slot = 1; slot <= 10; slot++) {
             const rtMeta = rawTeamsArr.find(x => Number(x?.espnTeamId) === slot) || null;
             const rPlayers = parsed.rosters?.[`espn_${slot}`] || parsed.rosters?.[String(slot)] || [];
@@ -12294,8 +13300,9 @@
         const resolveEspnSlotToGcmId = (rawKeyOrId) => {
           const s = String(rawKeyOrId || "").replace(/^espn_/, "");
           if (teamMap[s]) return teamMap[s];
+          const aliased = normalizeLegacyManagerAlias(s);
           const validIds = new Set([...activeIds, ...(ed.alumni || []).map(a => a.id)]);
-          if (validIds.has(s)) return s;
+          if (validIds.has(aliased)) return aliased;
           return null;
         };
 
@@ -12306,6 +13313,7 @@
             if (!gcmTeamId || !Array.isArray(pList)) continue;
             ed.rosters[gcmTeamId] = pList.map((p, idx) => ({
               id: cleanStr(p.id || `${gcmTeamId}_p_${idx + 1}`, 48),
+              espnId: Number(p.espnId) || extractPlayerEspnNumericId(p) || 0,
               name: cleanStr(p.name || "Unknown Player", 64),
               pos: cleanStr(p.pos || "FLEX", 12).toUpperCase(),
               nflTeam: cleanStr(p.nflTeam || "NFL", 8).toUpperCase(),
@@ -12318,7 +13326,7 @@
           }
         }
 
-        // 3. Map imported seasons (2016–Present) + Per-Season Historical Owner / Alumni Recognition + Real Boxscore H2H & Records!
+        // 3. Map imported seasons (2016–Present) + Enforce 9-Slot Continuity & Josh's Scott->Alek->Josh Lineage!
         ed.seasons = {};
         ed.seasonStandings = {};
         ed.seasonOwnerOverrides = {};
@@ -12335,15 +13343,23 @@
             const yr = Number(yrStr);
             if (isNaN(yr) || yr < 2010 || yr > 2035 || !sObj || typeof sObj !== "object") continue;
 
-            // Resolve each standing row's active franchise slot AND historical owner (e.g., Shane or Alex in earlier years)
+            // Slots 1–9 have 100% single-owner continuity (2016–Present); ONLY Josh's slot ("josh") changed hands (Scott -> Alek -> Josh)
             const slotToHistoricalManager = {};
             const standings = Array.isArray(sObj.standings)
               ? sObj.standings.map((st, idx) => {
                   const espnSlotNum = Number(st.espnTeamId) || Number(String(st.teamId || "").replace(/^espn_/, "")) || 0;
                   const baseSlotGcmId = resolveEspnSlotToGcmId(espnSlotNum || st.teamId || st.managerId || (idx + 1)) || "syeth";
-                  // Check if ESPN member/owner metadata for this specific historical year identifies a specific manager or Alumni (Shane, Alex, Dylan, etc.)
-                  const detectedHistOwner = detectGcmManagerFromEspnMeta(st, true);
-                  const effectiveManagerId = detectedHistOwner || (st.managerId && resolveEspnSlotToGcmId(st.managerId)) || baseSlotGcmId;
+                  let effectiveManagerId = baseSlotGcmId;
+                  if (baseSlotGcmId === "josh") {
+                    const detectedOnSlot10 = detectGcmManagerFromEspnMeta(st, true);
+                    if (detectedOnSlot10 && ["scott", "alek", "josh"].includes(detectedOnSlot10)) {
+                      effectiveManagerId = detectedOnSlot10;
+                    } else if (st.managerId && ["scott", "alek", "josh"].includes(normalizeLegacyManagerAlias(st.managerId))) {
+                      effectiveManagerId = normalizeLegacyManagerAlias(st.managerId);
+                    } else {
+                      effectiveManagerId = yr <= 2019 ? "scott" : yr <= 2023 ? "alek" : "josh";
+                    }
+                  }
                   if (espnSlotNum) slotToHistoricalManager[String(espnSlotNum)] = effectiveManagerId;
 
                   const pfVal = Number(st.pointsFor ?? st.pf) || 0;

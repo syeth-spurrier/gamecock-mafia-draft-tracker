@@ -605,6 +605,7 @@ function doPost(e) {
         pickTags: sanitizedTags,
         playerTags: incoming.playerTags && typeof incoming.playerTags === "object" ? sanitizedPlayerTags : (existingProf.playerTags || {}),
         keepers: sanitizedKeepers,
+        keepersConfirmedAt: Number(incoming.keepersConfirmedAt || existingProf.keepersConfirmedAt || 0),
         customTeamName: String(incoming.customTeamName || "").trim().slice(0, 24),
         avatarType: ["MONOGRAM", "EMOJI", "IMAGE"].indexOf(incoming.avatarType) !== -1 ? incoming.avatarType : (existingProf.avatarType || "MONOGRAM"),
         avatarText: String(incoming.avatarText || "").trim().slice(0, 4),
@@ -628,6 +629,7 @@ function doPost(e) {
         baseStateProf.espnData.rosters[teamId] = incoming.roster.slice(0, 40).map(function(rp, rIdx) {
           return {
             id: String(rp && rp.id ? rp.id : ("p-" + teamId + "-" + (rIdx + 1))).slice(0, 40),
+            espnId: String(rp && rp.espnId ? rp.espnId : "").slice(0, 20),
             name: String(rp && rp.name ? rp.name : "").trim().slice(0, 60),
             pos: String(rp && rp.pos ? rp.pos : "FLEX").trim().toUpperCase().slice(0, 12),
             nflTeam: String(rp && rp.nflTeam ? rp.nflTeam : "NFL").trim().toUpperCase().slice(0, 8),
