@@ -686,7 +686,10 @@ function doPost(e) {
           : (existingEspn.records || {}),
         pastDraftPicks: (incomingEspn.pastDraftPicks && typeof incomingEspn.pastDraftPicks === "object")
           ? incomingEspn.pastDraftPicks
-          : (existingEspn.pastDraftPicks || {})
+          : (existingEspn.pastDraftPicks || {}),
+        rawTeams: Array.isArray(incomingEspn.rawTeams)
+          ? incomingEspn.rawTeams.slice(0, 20)
+          : (existingEspn.rawTeams || [])
       };
       baseStateEspn.updatedAt = Date.now();
       saveAndMirrorToSheets(sheets, baseStateEspn, "ESPN_SYNC_UPDATE:" + (baseStateEspn.espnData.leagueId || "LIVE"));

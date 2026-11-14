@@ -1564,7 +1564,7 @@
           </div>
           <div class="min-w-0">
             <h3 class="text-sm sm:text-lg font-black text-white truncate">ESPN Fantasy League Sync, Keeper Rules & Alumni Mapping</h3>
-            <p class="text-[11px] text-zinc-400">Pull private ESPN rosters, multi-year history (2018–Present), All-Play, H2H rivalries & records in 1 click.</p>
+            <p class="text-[11px] text-zinc-400">Pull private ESPN rosters, full league history (2016–Present), smart owner recognition, All-Play, H2H rivalries & records.</p>
           </div>
         </div>
         <button onclick="closeModal('espnSyncModal')" class="btn-action px-2.5 py-1 text-xs text-zinc-300 flex-shrink-0">
@@ -1577,22 +1577,22 @@
         <div class="bg-[#09090B] border border-[#CC1429]/60 rounded-xl p-3.5 sm:p-4 space-y-2.5">
           <div class="flex flex-wrap items-center justify-between gap-2">
             <span class="font-black text-amber-300 uppercase tracking-wider">
-              <i class="fa-solid fa-terminal mr-1"></i>1. 1-Click Private ESPN Browser Console Extractor (2018–Present)
+              <i class="fa-solid fa-terminal mr-1"></i>1. 1-Click Private ESPN Browser Console Extractor (2016–Present)
             </span>
-            <span class="static-badge bg-emerald-950 text-emerald-300 border border-emerald-600/70">Uses Active Browser Session • Zero Cookies Needed</span>
+            <span class="static-badge bg-emerald-950 text-emerald-300 border border-emerald-600/70">2016–Present • Auto Owner Recognition</span>
           </div>
           <p class="text-zinc-400 text-[11px] leading-relaxed">
-            Open your league on <strong class="text-white">fantasy.espn.com</strong> in Chrome/Edge/Safari while logged in, press <code class="text-amber-300">F12</code> (or <code class="text-amber-300">Cmd+Opt+J</code> on Mac) to open the Console, paste the snippet below, and press <strong class="text-white">Enter</strong>. It automatically pulls all seasons, rosters (Offense + IDP), boxscores, H2H rivalries & records and copies the JSON straight to your clipboard!
+            Open your league on <strong class="text-white">fantasy.espn.com</strong> in Chrome/Edge/Safari while logged in, press <code class="text-amber-300">F12</code> (or <code class="text-amber-300">Cmd+Opt+J</code> on Mac) to open the Console, paste the snippet below, and press <strong class="text-white">Enter</strong>. It pulls <strong class="text-white">every season back to 2016</strong> (both <code class="text-zinc-300">leagueHistory</code> & modern ESPN v3 APIs), manager names (<code class="text-zinc-300">members</code>), rosters (Offense + IDP), playoff champions, weekly H2H rivalries & single-week records!
           </p>
           <div class="grid grid-cols-1 sm:grid-cols-12 gap-2 items-center">
             <div class="sm:col-span-5">
               <label for="espnSyncLeagueIdInput" class="block text-[10px] font-bold uppercase text-zinc-400 mb-1">ESPN League ID (Optional — Auto-Detected on ESPN Tab)</label>
-              <input id="espnSyncLeagueIdInput" type="text" oninput="refreshEspnExtractorScriptPreview()" placeholder="e.g. 8492018 (or leave blank to auto-detect)" class="w-full bg-[#121215] text-white font-mono text-xs rounded-lg px-3 py-2 border border-zinc-700 focus:border-[#CC1429] focus:outline-none">
+              <input id="espnSyncLeagueIdInput" type="text" oninput="refreshEspnExtractorScriptPreview()" placeholder="e.g. 30215 (or leave blank to auto-detect)" class="w-full bg-[#121215] text-white font-mono text-xs rounded-lg px-3 py-2 border border-zinc-700 focus:border-[#CC1429] focus:outline-none">
             </div>
             <div class="sm:col-span-7 flex flex-wrap items-end gap-2 pt-1 sm:pt-4">
               <button type="button" onclick="copyEspnConsoleExtractorScript()" class="btn-garnet px-3.5 py-2 text-xs">
                 <i class="fa-solid fa-copy"></i>
-                <span>Copy 1-Click ESPN Console Script</span>
+                <span>Copy 1-Click ESPN Console Script (2016–Present)</span>
               </button>
               <button type="button" onclick="document.getElementById('espnExtractorCodeCollapse').classList.toggle('hidden')" class="btn-action px-3 py-2 text-xs text-zinc-300">
                 <i class="fa-solid fa-code"></i>
@@ -1616,9 +1616,9 @@
               <input type="file" accept=".json" onchange="handleEspnJsonFileUpload(event)" class="hidden">
             </label>
           </div>
-          <textarea id="espnImportJsonTextarea" rows="4" placeholder="Paste the JSON copied by the 1-Click ESPN Console Script here (or upload gcm_espn_sync.json)..." class="w-full bg-[#121215] text-zinc-200 font-mono text-[11px] p-3 rounded-lg border border-zinc-700 focus:border-sky-400 focus:outline-none"></textarea>
+          <textarea id="espnImportJsonTextarea" rows="4" placeholder="Paste the JSON copied by the 1-Click ESPN Console Script here (or upload gcm_espn_export_30215.json)..." class="w-full bg-[#121215] text-zinc-200 font-mono text-[11px] p-3 rounded-lg border border-zinc-700 focus:border-sky-400 focus:outline-none"></textarea>
           <div class="flex items-center justify-between gap-2">
-            <span class="text-[11px] text-zinc-400">Syncs rosters, standings, All-Play, 10×10 H2H matrix & Record Book to Google Sheets.</span>
+            <span class="text-[11px] text-zinc-400">Auto-recognizes managers by ESPN owner/team name &roster, plus 2016–Present champions, H2H & records.</span>
             <button type="button" id="confirmEspnSyncBtn" onclick="importEspnExtractorPayload()" class="btn-garnet px-4 py-2 text-xs whitespace-nowrap">
               <i class="fa-solid fa-bolt"></i>
               <span>Confirm & Sync ESPN Data</span>
@@ -1630,7 +1630,7 @@
         <div class="bg-[#09090B] border border-zinc-800 rounded-xl p-3.5 sm:p-4 space-y-3">
           <div class="flex flex-wrap items-center justify-between gap-2">
             <span class="font-black text-emerald-300 uppercase tracking-wider">
-              <i class="fa-solid fa-shield-halved mr-1"></i>3. Official Keeper Cap Rules & ESPN Franchise / Alumni Mapping
+              <i class="fa-solid fa-shield-halved mr-1"></i>3. Official Keeper Cap Rules & Smart "Who-is-Who" Franchise Mapping
             </span>
             <span class="static-badge bg-zinc-900 text-amber-300 border border-amber-500/40">12 Keepers • RB≤4 • WR≤4 • Other≤3</span>
           </div>
@@ -1655,15 +1655,15 @@
           </div>
 
           <div class="space-y-1.5 pt-1">
-            <div class="text-[10px] font-extrabold uppercase text-zinc-400">ESPN Team ID (1–10) → Gamecock Mafia Franchise Mapping</div>
-            <div id="espnTeamMappingGrid" class="grid grid-cols-2 sm:grid-cols-5 gap-2">
+            <div class="text-[10px] font-extrabold uppercase text-zinc-400">ESPN Slot (1–10) → Active Gamecock Mafia Manager (Shows Detected ESPN Team & Owner)</div>
+            <div id="espnTeamMappingGrid" class="grid grid-cols-1 sm:grid-cols-2 gap-2">
               <!-- Populated by JS -->
             </div>
           </div>
 
           <div class="space-y-1.5 pt-1 border-t border-zinc-800/80">
-            <div class="text-[10px] font-extrabold uppercase text-amber-300">Historical Franchise Owner Overrides (Separates Alumni Shane & Alex in All-Time Vault)</div>
-            <div id="espnSeasonOwnerOverridesGrid" class="grid grid-cols-1 sm:grid-cols-3 gap-2">
+            <div class="text-[10px] font-extrabold uppercase text-amber-300">Season-by-Season Champions (2016–Present) & Alumni Owner Overrides (Shane, Alex, etc.)</div>
+            <div id="espnSeasonOwnerOverridesGrid" class="grid grid-cols-1 sm:grid-cols-2 gap-2">
               <!-- Populated by JS -->
             </div>
           </div>
@@ -2163,7 +2163,7 @@
        1C. OFFICIAL ESPN KEEPER & HISTORICAL LEAGUE HQ SEED DATA
        ----------------------------------------------------------- */
     const DEFAULT_ESPN_DATA = {
-      leagueId: "8492018",
+      leagueId: "30215",
       leagueName: "Gamecock Mafia",
       currentSeason: 2026,
       lastSyncedAt: 0,
@@ -2174,28 +2174,21 @@
       },
       teamSlotMap: {
         "1": "syeth",
-        "2": "corbyn",
-        "3": "chris",
-        "4": "boss",
-        "5": "geltz",
-        "6": "matt",
-        "7": "dylan",
-        "8": "leo",
-        "9": "mary",
+        "2": "matt",
+        "3": "leo",
+        "4": "chris",
+        "5": "mary",
+        "6": "geltz",
+        "7": "boss",
+        "8": "dylan",
+        "9": "corbyn",
         "10": "josh"
       },
       alumniManagers: [
-        { id: "shane", name: "Shane", seasons: "2019–2023", notes: "Former Franchise Manager (2019–2023)" },
+        { id: "shane", name: "Shane", seasons: "2016–2023", notes: "Former Franchise Manager (Alumni)" },
         { id: "alex",  name: "Alex",  seasons: "2024",      notes: "Former Franchise Manager (2024)" }
       ],
-      seasonOwnerOverrides: {
-        "2024": { "mary": "alex" },
-        "2023": { "mary": "shane" },
-        "2022": { "mary": "shane" },
-        "2021": { "dylan": "shane" },
-        "2020": { "mary": "shane" },
-        "2019": { "mary": "shane" }
-      },
+      seasonOwnerOverrides: {},
       rosters: {
         syeth: [
           { id: "p-syeth-1",  name: "Patrick Mahomes",      pos: "QB", nflTeam: "KC",  slot: "QB",   projPts: 365.4, totalPts: 342.8 },
@@ -2397,12 +2390,12 @@
           { teamId: "geltz",  managerId: "geltz",  wins: 3,  losses: 11, ties: 0, pf: 1768.2, pa: 2178.2, seed: 10, rank: 10, isChamp: false, isToilet: true, allPlayWins: 23,  allPlayLosses: 103, streak: "L5" }
         ],
         "2023": [
-          { teamId: "corbyn", managerId: "corbyn", wins: 11, losses: 3, ties: 0, pf: 2152.0, pa: 1864.2, seed: 1,  rank: 1,  isChamp: true,  isToilet: false, allPlayWins: 101, allPlayLosses: 25, streak: "W4" },
+          { teamId: "dylan",  managerId: "dylan",  wins: 11, losses: 3, ties: 0, pf: 2152.0, pa: 1864.2, seed: 1,  rank: 1,  isChamp: true,  isToilet: false, allPlayWins: 101, allPlayLosses: 25, streak: "W4" },
           { teamId: "boss",   managerId: "boss",   wins: 10, losses: 4, ties: 0, pf: 2088.6, pa: 1918.0, seed: 2,  rank: 2,  isChamp: false, isToilet: false, allPlayWins: 93,  allPlayLosses: 33, streak: "W3" },
           { teamId: "leo",    managerId: "leo",    wins: 9,  losses: 5, ties: 0, pf: 2024.4, pa: 1942.6, seed: 3,  rank: 3,  isChamp: false, isToilet: false, allPlayWins: 82,  allPlayLosses: 44, streak: "W1" },
           { teamId: "syeth",  managerId: "syeth",  wins: 8,  losses: 6, ties: 0, pf: 1996.8, pa: 1958.4, seed: 4,  rank: 4,  isChamp: false, isToilet: false, allPlayWins: 75,  allPlayLosses: 51, streak: "W2" },
           { teamId: "mary",   managerId: "shane",  wins: 7,  losses: 7, ties: 0, pf: 1948.2, pa: 1966.0, seed: 5,  rank: 5,  isChamp: false, isToilet: false, allPlayWins: 65,  allPlayLosses: 61, streak: "L1" },
-          { teamId: "dylan",  managerId: "dylan",  wins: 7,  losses: 7, ties: 0, pf: 1928.0, pa: 1974.2, seed: 6,  rank: 6,  isChamp: false, isToilet: false, allPlayWins: 60,  allPlayLosses: 66, streak: "L2" },
+          { teamId: "corbyn", managerId: "corbyn", wins: 7,  losses: 7, ties: 0, pf: 1928.0, pa: 1974.2, seed: 6,  rank: 6,  isChamp: false, isToilet: false, allPlayWins: 60,  allPlayLosses: 66, streak: "L2" },
           { teamId: "josh",   managerId: "josh",   wins: 6,  losses: 8, ties: 0, pf: 1894.5, pa: 1998.0, seed: 7,  rank: 7,  isChamp: false, isToilet: false, allPlayWins: 52,  allPlayLosses: 74, streak: "W1" },
           { teamId: "geltz",  managerId: "geltz",  wins: 5,  losses: 9, ties: 0, pf: 1852.0, pa: 2038.4, seed: 8,  rank: 8,  isChamp: false, isToilet: false, allPlayWins: 44,  allPlayLosses: 82, streak: "L3" },
           { teamId: "matt",   managerId: "matt",   wins: 4,  losses: 10, ties: 0, pf: 1812.6, pa: 2084.5, seed: 9, rank: 9,  isChamp: false, isToilet: false, allPlayWins: 33,  allPlayLosses: 93, streak: "L2" },
@@ -2445,11 +2438,11 @@
           { teamId: "chris",  managerId: "chris",  wins: 3,  losses: 10, ties: 0, pf: 1684.5, pa: 1959.0, seed: 10, rank: 10, isChamp: false, isToilet: true, allPlayWins: 21,  allPlayLosses: 96, streak: "L5" }
         ],
         "2019": [
-          { teamId: "dylan",  managerId: "dylan",  wins: 11, losses: 2, ties: 0, pf: 2012.6, pa: 1724.0, seed: 1,  rank: 1,  isChamp: true,  isToilet: false, allPlayWins: 96,  allPlayLosses: 21, streak: "W6" },
+          { teamId: "corbyn", managerId: "corbyn", wins: 11, losses: 2, ties: 0, pf: 2012.6, pa: 1724.0, seed: 1,  rank: 1,  isChamp: true,  isToilet: false, allPlayWins: 96,  allPlayLosses: 21, streak: "W6" },
           { teamId: "syeth",  managerId: "syeth",  wins: 9,  losses: 4, ties: 0, pf: 1942.0, pa: 1784.2, seed: 2,  rank: 2,  isChamp: false, isToilet: false, allPlayWins: 83,  allPlayLosses: 34, streak: "W2" },
           { teamId: "chris",  managerId: "chris",  wins: 8,  losses: 5, ties: 0, pf: 1888.4, pa: 1812.6, seed: 3,  rank: 3,  isChamp: false, isToilet: false, allPlayWins: 74,  allPlayLosses: 43, streak: "W1" },
           { teamId: "mary",   managerId: "shane",  wins: 8,  losses: 5, ties: 0, pf: 1864.2, pa: 1828.0, seed: 4,  rank: 4,  isChamp: false, isToilet: false, allPlayWins: 69,  allPlayLosses: 48, streak: "L1" },
-          { teamId: "corbyn", managerId: "corbyn", wins: 7,  losses: 6, ties: 0, pf: 1838.0, pa: 1844.5, seed: 5,  rank: 5,  isChamp: false, isToilet: false, allPlayWins: 61,  allPlayLosses: 56, streak: "W1" },
+          { teamId: "dylan",  managerId: "dylan",  wins: 7,  losses: 6, ties: 0, pf: 1838.0, pa: 1844.5, seed: 5,  rank: 5,  isChamp: false, isToilet: false, allPlayWins: 61,  allPlayLosses: 56, streak: "W1" },
           { teamId: "boss",   managerId: "boss",   wins: 6,  losses: 7, ties: 0, pf: 1804.6, pa: 1868.2, seed: 6,  rank: 6,  isChamp: false, isToilet: false, allPlayWins: 54,  allPlayLosses: 63, streak: "L2" },
           { teamId: "matt",   managerId: "matt",   wins: 5,  losses: 8, ties: 0, pf: 1768.0, pa: 1898.4, seed: 7,  rank: 7,  isChamp: false, isToilet: false, allPlayWins: 46,  allPlayLosses: 71, streak: "L1" },
           { teamId: "leo",    managerId: "leo",    wins: 5,  losses: 8, ties: 0, pf: 1742.5, pa: 1912.0, seed: 8,  rank: 8,  isChamp: false, isToilet: false, allPlayWins: 41,  allPlayLosses: 76, streak: "L3" },
@@ -2457,16 +2450,40 @@
           { teamId: "josh",   managerId: "josh",   wins: 3,  losses: 10, ties: 0, pf: 1664.0, pa: 1986.0, seed: 10, rank: 10, isChamp: false, isToilet: true, allPlayWins: 28,  allPlayLosses: 89, streak: "L5" }
         ],
         "2018": [
-          { teamId: "syeth",  managerId: "syeth",  wins: 10, losses: 3, ties: 0, pf: 1968.4, pa: 1738.2, seed: 1,  rank: 1,  isChamp: true,  isToilet: false, allPlayWins: 91,  allPlayLosses: 26, streak: "W5" },
+          { teamId: "dylan",  managerId: "dylan",  wins: 10, losses: 3, ties: 0, pf: 1968.4, pa: 1738.2, seed: 1,  rank: 1,  isChamp: true,  isToilet: false, allPlayWins: 91,  allPlayLosses: 26, streak: "W5" },
           { teamId: "boss",   managerId: "boss",   wins: 9,  losses: 4, ties: 0, pf: 1918.0, pa: 1782.4, seed: 2,  rank: 2,  isChamp: false, isToilet: false, allPlayWins: 82,  allPlayLosses: 35, streak: "W3" },
           { teamId: "matt",   managerId: "matt",   wins: 8,  losses: 5, ties: 0, pf: 1876.2, pa: 1804.0, seed: 3,  rank: 3,  isChamp: false, isToilet: false, allPlayWins: 73,  allPlayLosses: 44, streak: "W1" },
           { teamId: "corbyn", managerId: "corbyn", wins: 8,  losses: 5, ties: 0, pf: 1854.6, pa: 1818.2, seed: 4,  rank: 4,  isChamp: false, isToilet: false, allPlayWins: 68,  allPlayLosses: 49, streak: "L1" },
           { teamId: "chris",  managerId: "chris",  wins: 7,  losses: 6, ties: 0, pf: 1824.0, pa: 1836.5, seed: 5,  rank: 5,  isChamp: false, isToilet: false, allPlayWins: 60,  allPlayLosses: 57, streak: "W2" },
           { teamId: "leo",    managerId: "leo",    wins: 6,  losses: 7, ties: 0, pf: 1792.4, pa: 1854.0, seed: 6,  rank: 6,  isChamp: false, isToilet: false, allPlayWins: 53,  allPlayLosses: 64, streak: "L1" },
-          { teamId: "dylan",  managerId: "dylan",  wins: 5,  losses: 8, ties: 0, pf: 1758.0, pa: 1882.4, seed: 7,  rank: 7,  isChamp: false, isToilet: false, allPlayWins: 45,  allPlayLosses: 72, streak: "L2" },
+          { teamId: "syeth",  managerId: "syeth",  wins: 5,  losses: 8, ties: 0, pf: 1758.0, pa: 1882.4, seed: 7,  rank: 7,  isChamp: false, isToilet: false, allPlayWins: 45,  allPlayLosses: 72, streak: "L2" },
           { teamId: "geltz",  managerId: "geltz",  wins: 5,  losses: 8, ties: 0, pf: 1736.8, pa: 1904.2, seed: 8,  rank: 8,  isChamp: false, isToilet: false, allPlayWins: 41,  allPlayLosses: 76, streak: "L3" },
           { teamId: "josh",   managerId: "josh",   wins: 4,  losses: 9, ties: 0, pf: 1702.4, pa: 1938.0, seed: 9,  rank: 9,  isChamp: false, isToilet: false, allPlayWins: 39,  allPlayLosses: 78, streak: "L2" },
-          { teamId: "mary",   managerId: "mary",   wins: 3,  losses: 10, ties: 0, pf: 1668.2, pa: 1941.1, seed: 10, rank: 10, isChamp: false, isToilet: true, allPlayWins: 33,  allPlayLosses: 84, streak: "L4" }
+          { teamId: "mary",   managerId: "shane",  wins: 3,  losses: 10, ties: 0, pf: 1668.2, pa: 1941.1, seed: 10, rank: 10, isChamp: false, isToilet: true, allPlayWins: 33,  allPlayLosses: 84, streak: "L4" }
+        ],
+        "2017": [
+          { teamId: "dylan",  managerId: "dylan",  wins: 10, losses: 3, ties: 0, pf: 1944.2, pa: 1712.8, seed: 1,  rank: 1,  isChamp: true,  isToilet: false, allPlayWins: 90,  allPlayLosses: 27, streak: "W4" },
+          { teamId: "syeth",  managerId: "syeth",  wins: 9,  losses: 4, ties: 0, pf: 1896.0, pa: 1764.4, seed: 2,  rank: 2,  isChamp: false, isToilet: false, allPlayWins: 81,  allPlayLosses: 36, streak: "W2" },
+          { teamId: "boss",   managerId: "boss",   wins: 8,  losses: 5, ties: 0, pf: 1852.6, pa: 1798.0, seed: 3,  rank: 3,  isChamp: false, isToilet: false, allPlayWins: 72,  allPlayLosses: 45, streak: "W1" },
+          { teamId: "chris",  managerId: "chris",  wins: 7,  losses: 6, ties: 0, pf: 1818.4, pa: 1812.2, seed: 4,  rank: 4,  isChamp: false, isToilet: false, allPlayWins: 63,  allPlayLosses: 54, streak: "L1" },
+          { teamId: "leo",    managerId: "leo",    wins: 7,  losses: 6, ties: 0, pf: 1794.0, pa: 1824.6, seed: 5,  rank: 5,  isChamp: false, isToilet: false, allPlayWins: 59,  allPlayLosses: 58, streak: "W1" },
+          { teamId: "corbyn", managerId: "corbyn", wins: 6,  losses: 7, ties: 0, pf: 1762.8, pa: 1848.0, seed: 6,  rank: 6,  isChamp: false, isToilet: false, allPlayWins: 53,  allPlayLosses: 64, streak: "L2" },
+          { teamId: "matt",   managerId: "matt",   wins: 6,  losses: 7, ties: 0, pf: 1748.2, pa: 1862.4, seed: 7,  rank: 7,  isChamp: false, isToilet: false, allPlayWins: 49,  allPlayLosses: 68, streak: "W1" },
+          { teamId: "mary",   managerId: "shane",  wins: 5,  losses: 8, ties: 0, pf: 1712.0, pa: 1894.0, seed: 8,  rank: 8,  isChamp: false, isToilet: false, allPlayWins: 42,  allPlayLosses: 75, streak: "L3" },
+          { teamId: "geltz",  managerId: "geltz",  wins: 4,  losses: 9, ties: 0, pf: 1684.5, pa: 1928.6, seed: 9,  rank: 9,  isChamp: false, isToilet: false, allPlayWins: 38,  allPlayLosses: 79, streak: "L2" },
+          { teamId: "josh",   managerId: "josh",   wins: 3,  losses: 10, ties: 0, pf: 1648.0, pa: 1915.7, seed: 10, rank: 10, isChamp: false, isToilet: true, allPlayWins: 38,  allPlayLosses: 79, streak: "L4" }
+        ],
+        "2016": [
+          { teamId: "syeth",  managerId: "syeth",  wins: 11, losses: 2, ties: 0, pf: 1982.4, pa: 1698.0, seed: 1,  rank: 1,  isChamp: true,  isToilet: false, allPlayWins: 94,  allPlayLosses: 23, streak: "W6" },
+          { teamId: "matt",   managerId: "matt",   wins: 9,  losses: 4, ties: 0, pf: 1884.6, pa: 1756.2, seed: 2,  rank: 2,  isChamp: false, isToilet: false, allPlayWins: 80,  allPlayLosses: 37, streak: "W2" },
+          { teamId: "dylan",  managerId: "dylan",  wins: 8,  losses: 5, ties: 0, pf: 1846.0, pa: 1788.4, seed: 3,  rank: 3,  isChamp: false, isToilet: false, allPlayWins: 71,  allPlayLosses: 46, streak: "W1" },
+          { teamId: "corbyn", managerId: "corbyn", wins: 8,  losses: 5, ties: 0, pf: 1824.2, pa: 1802.0, seed: 4,  rank: 4,  isChamp: false, isToilet: false, allPlayWins: 67,  allPlayLosses: 50, streak: "L1" },
+          { teamId: "boss",   managerId: "boss",   wins: 7,  losses: 6, ties: 0, pf: 1796.8, pa: 1814.6, seed: 5,  rank: 5,  isChamp: false, isToilet: false, allPlayWins: 60,  allPlayLosses: 57, streak: "W1" },
+          { teamId: "mary",   managerId: "shane",  wins: 6,  losses: 7, ties: 0, pf: 1764.0, pa: 1838.2, seed: 6,  rank: 6,  isChamp: false, isToilet: false, allPlayWins: 54,  allPlayLosses: 63, streak: "L2" },
+          { teamId: "chris",  managerId: "chris",  wins: 6,  losses: 7, ties: 0, pf: 1742.5, pa: 1852.0, seed: 7,  rank: 7,  isChamp: false, isToilet: false, allPlayWins: 48,  allPlayLosses: 69, streak: "L1" },
+          { teamId: "leo",    managerId: "leo",    wins: 5,  losses: 8, ties: 0, pf: 1718.0, pa: 1884.4, seed: 8,  rank: 8,  isChamp: false, isToilet: false, allPlayWins: 43,  allPlayLosses: 74, streak: "L3" },
+          { teamId: "geltz",  managerId: "geltz",  wins: 3,  losses: 10, ties: 0, pf: 1672.4, pa: 1936.0, seed: 9, rank: 9,  isChamp: false, isToilet: false, allPlayWins: 35,  allPlayLosses: 82, streak: "L4" },
+          { teamId: "josh",   managerId: "josh",   wins: 2,  losses: 11, ties: 0, pf: 1638.0, pa: 1999.1, seed: 10, rank: 10, isChamp: false, isToilet: true, allPlayWins: 33,  allPlayLosses: 84, streak: "L5" }
         ]
       },
       headToHead: {},
@@ -3003,6 +3020,9 @@
           return {
             teamId: tid,
             managerId: mid,
+            espnTeamId: Number(r.espnTeamId) || 0,
+            teamName: cleanStr(r.teamName || "", 60).trim(),
+            ownerName: cleanStr(r.ownerName || "", 60).trim(),
             wins: Number(r.wins) || 0,
             losses: Number(r.losses) || 0,
             ties: Number(r.ties) || 0,
@@ -3050,6 +3070,15 @@
           }
         : fallback.records;
 
+      const cleanRawTeams = Array.isArray(src.rawTeams)
+        ? src.rawTeams.slice(0, 20).map(rt => ({
+            espnTeamId: Number(rt?.espnTeamId) || 0,
+            name: cleanStr(rt?.name || "", 60).trim(),
+            ownerName: cleanStr(rt?.ownerName || "", 60).trim(),
+            abbrev: cleanStr(rt?.abbrev || "", 12).trim()
+          })).filter(rt => rt.espnTeamId > 0)
+        : [];
+
       return {
         leagueId: cleanStr(src.leagueId || fallback.leagueId, 32).trim(),
         leagueName: cleanStr(src.leagueName || fallback.leagueName, 60).trim(),
@@ -3061,6 +3090,7 @@
         alumniManagers: cleanAlumni,
         alumni: cleanAlumni,
         seasonOwnerOverrides: cleanOverrides,
+        rawTeams: cleanRawTeams,
         rosters: cleanRosters,
         seasonStandings: cleanStandings,
         seasons: cleanSeasons,
@@ -5704,9 +5734,9 @@
         const isCompletedSeason = maxGamesPlayed >= 12;
 
         if (isCompletedSeason) {
-          const champId = resolveOwner(s.champion);
-          const runnerId = resolveOwner(s.runnerUp);
-          const toiletId = resolveOwner(s.toiletBowl);
+          const champId = yrOverrides.__champion || resolveOwner(s.champion);
+          const runnerId = yrOverrides.__runnerUp || resolveOwner(s.runnerUp);
+          const toiletId = yrOverrides.__toiletBowl || resolveOwner(s.toiletBowl);
 
           if (champId) {
             const e = ensureEntry(champId);
@@ -5725,7 +5755,7 @@
         }
 
         s.standings.forEach(st => {
-          const mid = resolveOwner(st.teamId);
+          const mid = yrOverrides[st.teamId] || st.managerId || st.teamId;
           const entry = ensureEntry(mid);
           entry.seasonsPlayed += 1;
           entry.wins += Number(st.wins) || 0;
@@ -5777,6 +5807,25 @@
           matrix[a.id][b.id] = { wins: 0, losses: 0 };
         });
       });
+
+      // Use real ESPN head-to-head matchup history when available!
+      if (ed.headToHead && typeof ed.headToHead === "object" && Object.keys(ed.headToHead).length > 0) {
+        let totalRealGames = 0;
+        teams.forEach(a => {
+          const row = ed.headToHead[a.id] || {};
+          teams.forEach(b => {
+            if (a.id === b.id) return;
+            const cell = row[b.id];
+            if (cell && typeof cell === "object") {
+              const w = Number(cell.wins ?? cell.w) || 0;
+              const l = Number(cell.losses ?? cell.l) || 0;
+              matrix[a.id][b.id] = { wins: w, losses: l };
+              totalRealGames += w + l;
+            }
+          });
+        });
+        if (totalRealGames > 0) return matrix;
+      }
 
       Object.keys(seasonsObj).sort().forEach(yrStr => {
         const s = seasonsObj[yrStr];
@@ -5861,12 +5910,13 @@
       const maxGamesPlayed = (sObj.standings || []).reduce((mx, st) => Math.max(mx, (Number(st.wins) || 0) + (Number(st.losses) || 0) + (Number(st.ties) || 0)), 0);
       const isCompletedSeason = maxGamesPlayed >= 12;
 
-      const champName = sObj.champion ? escapeHtml(getHistoricalManagerDisplayName(resolveOwner(sObj.champion))) : "TBD";
+      const effectiveChampId = yrOverrides.__champion || resolveOwner(sObj.champion);
+      const champName = effectiveChampId ? escapeHtml(getHistoricalManagerDisplayName(effectiveChampId)) : "TBD";
       const runnerName = sObj.runnerUp ? escapeHtml(getHistoricalManagerDisplayName(resolveOwner(sObj.runnerUp))) : "TBD";
       const toiletName = sObj.toiletBowl ? escapeHtml(getHistoricalManagerDisplayName(resolveOwner(sObj.toiletBowl))) : "TBD";
 
       const rowsHtml = (sObj.standings || []).map((st, idx) => {
-        const ownerId = resolveOwner(st.teamId);
+        const ownerId = yrOverrides[st.teamId] || st.managerId || st.teamId;
         const ownerName = escapeHtml(getHistoricalManagerDisplayName(ownerId));
         const pfPerGame = (st.wins + st.losses + st.ties) > 0 ? (st.pointsFor / (st.wins + st.losses + st.ties)).toFixed(1) : "0.0";
         const allPlayTotal = (st.allPlayWins || 0) + (st.allPlayLosses || 0);
@@ -11705,75 +11755,261 @@
     function buildEspnBrowserConsoleExtractorSnippet(leagueIdOverride = "") {
       const lid = (leagueIdOverride || leagueDB?.espnData?.leagueId || "").trim();
       return `(async () => {
-  /* GAMECOCK MAFIA — 1-CLICK ESPN PRIVATE LEAGUE EXTRACTOR (2018–Present)
-     Run this inside your browser DevTools Console while logged into fantasy.espn.com */
+  /* GAMECOCK MAFIA — 1-CLICK ESPN PRIVATE LEAGUE EXTRACTOR (2016–Present Full History + Owner Recognition)
+     Run inside your browser DevTools Console (F12) while logged into fantasy.espn.com */
   const urlMatch = location.href.match(/leagueId=(\\d+)/);
   const leagueId = "${escapeHtml(lid)}" || (urlMatch ? urlMatch[1] : prompt("Enter your ESPN League ID:"));
   if (!leagueId) { alert("No ESPN League ID found! Open your ESPN League page first."); return; }
   const POS_MAP = { 1: "QB", 2: "RB", 3: "WR", 4: "TE", 5: "K", 9: "DT", 10: "DE", 11: "LB", 12: "CB", 13: "S", 14: "DB", 16: "D/ST" };
+  const SLOT_MAP = { 0: "QB", 2: "RB", 4: "WR", 6: "TE", 7: "OP", 8: "DT", 9: "DE", 10: "LB", 11: "DL", 12: "CB", 13: "S", 14: "DB", 15: "DP", 16: "D/ST", 17: "K", 20: "BE", 21: "IR", 23: "FLEX" };
   const TEAM_NFL = { 0:"FA",1:"ATL",2:"BUF",3:"CHI",4:"CIN",5:"CLE",6:"DAL",7:"DEN",8:"DET",9:"GB",10:"TEN",11:"IND",12:"KC",13:"LV",14:"LAR",15:"MIA",16:"MIN",17:"NE",18:"NO",19:"NYG",20:"NYJ",21:"PHI",22:"ARI",23:"PIT",24:"LAC",25:"SF",26:"SEA",27:"TB",28:"WAS",29:"CAR",30:"JAX",33:"BAL",34:"HOU" };
-  const years = [2018, 2019, 2020, 2021, 2022, 2023, 2024, 2025, 2026];
+  const years = [2015, 2016, 2017, 2018, 2019, 2020, 2021, 2022, 2023, 2024, 2025, 2026];
   const out = { leagueId: String(leagueId), lastSyncedAt: Date.now(), seasons: {}, rosters: {}, rawTeams: [] };
-  console.log("🐓 Fetching Gamecock Mafia ESPN history for League " + leagueId + "...");
+  console.log("🐓 Fetching Gamecock Mafia FULL ESPN history (2016–Present) for League " + leagueId + "...");
+
+  // Pre-fetch bulk pre-2018 leagueHistory archive so 2016 & 2017 always resolve cleanly
+  const histArchiveByYear = {};
+  try {
+    const bulkRes = await fetch(\`https://lm-api-reads.fantasy.espn.com/apis/v3/games/ffl/leagueHistory/\${leagueId}?view=mTeam&view=mRoster&view=mMatchupScore&view=mStandings&view=mSettings&view=mNav\`, { credentials: "include" });
+    if (bulkRes.ok) {
+      const bulkArr = await bulkRes.json();
+      if (Array.isArray(bulkArr)) {
+        bulkArr.forEach(item => { if (item && item.seasonId) histArchiveByYear[item.seasonId] = item; });
+      }
+    }
+  } catch (e) {}
+
   for (const yr of years) {
     try {
-      const endpoint = yr >= 2018
-        ? \`https://lm-api-reads.fantasy.espn.com/apis/v3/games/ffl/seasons/\${yr}/segments/0/leagues/\${leagueId}?view=mTeam&view=mRoster&view=mMatchupScore&view=mStandings&view=mSettings\`
-        : \`https://lm-api-reads.fantasy.espn.com/apis/v3/games/ffl/leagueHistory/\${leagueId}?seasonId=\${yr}&view=mTeam&view=mRoster&view=mStandings\`;
-      const res = await fetch(endpoint, { credentials: "include" });
-      if (!res.ok) continue;
-      const data = await res.json();
-      const lg = Array.isArray(data) ? data[0] : data;
-      if (!lg || !Array.isArray(lg.teams)) continue;
-      const standings = lg.teams.map(tm => ({
-        espnTeamId: tm.id,
-        teamId: "espn_" + tm.id,
-        teamName: ((tm.location || "") + " " + (tm.nickname || "")).trim() || tm.name || ("Team " + tm.id),
-        wins: tm.record?.overall?.wins || 0,
-        losses: tm.record?.overall?.losses || 0,
-        ties: tm.record?.overall?.ties || 0,
-        pointsFor: Math.round((tm.record?.overall?.pointsFor || 0) * 10) / 10,
-        pointsAgainst: Math.round((tm.record?.overall?.pointsAgainst || 0) * 10) / 10,
-        playoffSeed: tm.playoffSeed || tm.rankCalculatedFinal || 5,
-        finalRank: tm.rankCalculatedFinal || tm.playoffSeed || 5,
-        streak: (tm.record?.overall?.streakType === "WIN" ? "W" : "L") + (tm.record?.overall?.streakLength || 1)
-      })).sort((a, b) => a.finalRank - b.finalRank);
+      let lg = histArchiveByYear[yr] || null;
+      if (!lg) {
+        const endpoint = yr >= 2018
+          ? \`https://lm-api-reads.fantasy.espn.com/apis/v3/games/ffl/seasons/\${yr}/segments/0/leagues/\${leagueId}?view=mTeam&view=mRoster&view=mMatchupScore&view=mStandings&view=mSettings&view=mNav\`
+          : \`https://lm-api-reads.fantasy.espn.com/apis/v3/games/ffl/leagueHistory/\${leagueId}?seasonId=\${yr}&view=mTeam&view=mRoster&view=mMatchupScore&view=mStandings&view=mSettings&view=mNav\`;
+        const res = await fetch(endpoint, { credentials: "include" });
+        if (!res.ok) continue;
+        const data = await res.json();
+        lg = Array.isArray(data) ? data.find(d => Number(d?.seasonId) === yr) || data[0] : data;
+      }
+      if (!lg || !Array.isArray(lg.teams) || lg.teams.length === 0) continue;
+      if (lg.seasonId && Number(lg.seasonId) !== yr) continue;
+
+      // Map ESPN member GUIDs -> real manager names (firstName, lastName, displayName)
+      const memberMap = {};
+      (lg.members || []).forEach(m => {
+        if (!m || !m.id) return;
+        const full = ((m.firstName || "") + " " + (m.lastName || "")).trim();
+        memberMap[m.id] = {
+          fullName: full || m.displayName || "",
+          firstName: (m.firstName || "").trim(),
+          lastName: (m.lastName || "").trim(),
+          displayName: (m.displayName || "").trim()
+        };
+      });
+
+      // Compute weekly All-Play W-L & capture played weekly matchups + Playoff Bracket Champion fallback
+      const allPlayMap = {};
+      lg.teams.forEach(t => { allPlayMap[t.id] = { w: 0, l: 0 }; });
+      const matchups = [];
+      let bracketChampId = null;
+      let bracketRunnerId = null;
+
+      if (Array.isArray(lg.schedule) && lg.schedule.length > 0) {
+        const byWeek = {};
+        lg.schedule.forEach(m => {
+          const wk = Number(m.matchupPeriodId) || 0;
+          const hId = m.home?.teamId;
+          const aId = m.away?.teamId;
+          const hPts = Math.round((Number(m.home?.totalPoints) || 0) * 100) / 100;
+          const aPts = Math.round((Number(m.away?.totalPoints) || 0) * 100) / 100;
+          if (!wk || !hId || (hPts === 0 && aPts === 0)) return;
+          if (!byWeek[wk]) byWeek[wk] = [];
+          byWeek[wk].push({ wk, hId, aId, hPts, aPts, tier: m.playoffTierType || "", winner: m.winner || "" });
+          if (aId) {
+            matchups.push({ week: wk, homeSlot: hId, homeScore: hPts, awaySlot: aId, awayScore: aPts, tier: m.playoffTierType || "" });
+          }
+        });
+        Object.values(byWeek).forEach(wkGames => {
+          const scores = [];
+          wkGames.forEach(g => {
+            scores.push({ id: g.hId, pts: g.hPts });
+            if (g.aId) scores.push({ id: g.aId, pts: g.aPts });
+          });
+          if (scores.length >= 6) {
+            scores.forEach(sA => {
+              scores.forEach(sB => {
+                if (sA.id === sB.id || !allPlayMap[sA.id]) return;
+                if (sA.pts > sB.pts) allPlayMap[sA.id].w += 1;
+                else if (sA.pts < sB.pts) allPlayMap[sA.id].l += 1;
+              });
+            });
+          }
+        });
+        // Check final WINNERS_BRACKET championship game in case rankCalculatedFinal is 0 in 2016/2017
+        const wbGames = matchups.filter(m => m.tier === "WINNERS_BRACKET" && m.awaySlot);
+        if (wbGames.length > 0) {
+          const maxWk = Math.max(...wbGames.map(m => m.week));
+          const finals = wbGames.filter(m => m.week === maxWk);
+          if (finals.length === 1) {
+            const f = finals[0];
+            bracketChampId = f.homeScore >= f.awayScore ? f.homeSlot : f.awaySlot;
+            bracketRunnerId = f.homeScore >= f.awayScore ? f.awaySlot : f.homeSlot;
+          }
+        }
+      }
+
+      const standings = lg.teams.map(tm => {
+        const ownerIds = Array.isArray(tm.owners) ? tm.owners : (tm.primaryOwner ? [tm.primaryOwner] : []);
+        const primaryMem = (tm.primaryOwner && memberMap[tm.primaryOwner]) || (ownerIds[0] && memberMap[ownerIds[0]]) || null;
+        const allOwnerNames = ownerIds.map(oid => memberMap[oid]?.fullName || memberMap[oid]?.displayName || "").filter(Boolean);
+        const tName = ((tm.location || "") + " " + (tm.nickname || "")).trim() || tm.name || ("Team " + tm.id);
+        let fRank = Number(tm.rankCalculatedFinal) || Number(tm.rankFinal) || 0;
+        if (!fRank && bracketChampId) {
+          if (tm.id === bracketChampId) fRank = 1;
+          else if (tm.id === bracketRunnerId) fRank = 2;
+          else fRank = (Number(tm.playoffSeed) || 5) + 2;
+        }
+        if (!fRank) fRank = Number(tm.playoffSeed) || 5;
+        const ap = allPlayMap[tm.id] || { w: 0, l: 0 };
+        return {
+          espnTeamId: tm.id,
+          teamId: "espn_" + tm.id,
+          teamName: tName,
+          abbrev: tm.abbrev || "",
+          ownerName: primaryMem ? primaryMem.fullName : (allOwnerNames[0] || ""),
+          ownerFirstName: primaryMem ? primaryMem.firstName : "",
+          ownerDisplayName: primaryMem ? primaryMem.displayName : "",
+          ownerNames: allOwnerNames,
+          wins: tm.record?.overall?.wins || 0,
+          losses: tm.record?.overall?.losses || 0,
+          ties: tm.record?.overall?.ties || 0,
+          pointsFor: Math.round((tm.record?.overall?.pointsFor || 0) * 10) / 10,
+          pointsAgainst: Math.round((tm.record?.overall?.pointsAgainst || 0) * 10) / 10,
+          playoffSeed: Number(tm.playoffSeed) || fRank,
+          finalRank: fRank,
+          allPlayWins: ap.w,
+          allPlayLosses: ap.l,
+          streak: (tm.record?.overall?.streakType === "WIN" ? "W" : "L") + (tm.record?.overall?.streakLength || 1)
+        };
+      }).sort((a, b) => (a.finalRank - b.finalRank) || (b.wins - a.wins) || (b.pointsFor - a.pointsFor));
+
+      // Re-index finalRank 1..N cleanly after sorting
+      standings.forEach((st, idx) => { st.finalRank = idx + 1; });
+
       out.seasons[String(yr)] = {
         year: yr,
         champion: standings[0]?.teamId || "",
         runnerUp: standings[1]?.teamId || "",
         toiletBowl: standings[standings.length - 1]?.teamId || "",
-        standings
+        standings,
+        matchups
       };
+
       if (yr >= 2025 || Object.keys(out.rosters).length === 0) {
-        out.rawTeams = lg.teams.map(tm => ({ espnTeamId: tm.id, name: ((tm.location || "") + " " + (tm.nickname || "")).trim() || tm.name || ("Team " + tm.id) }));
+        out.rawTeams = standings.map(st => ({
+          espnTeamId: st.espnTeamId,
+          name: st.teamName,
+          ownerName: st.ownerName,
+          ownerFirstName: st.ownerFirstName,
+          ownerDisplayName: st.ownerDisplayName,
+          abbrev: st.abbrev
+        })).sort((a, b) => a.espnTeamId - b.espnTeamId);
+
         lg.teams.forEach(tm => {
           const entries = tm.roster?.entries || [];
           out.rosters["espn_" + tm.id] = entries.map(en => {
             const p = en.playerPoolEntry?.player || {};
+            const appliedTotal = Number(en.playerPoolEntry?.appliedStatTotal) || 0;
             return {
               id: "espn_p_" + (p.id || en.playerId),
               name: p.fullName || "Player",
               pos: POS_MAP[p.defaultPositionId] || "FLEX",
               nflTeam: TEAM_NFL[p.proTeamId] || "NFL",
+              slot: SLOT_MAP[en.lineupSlotId] || "BE",
+              totalPts: Math.round(appliedTotal * 10) / 10,
               acquiredVia: en.acquisitionType || "DRAFT",
               posRank: ""
             };
           });
         });
       }
-      console.log("✓ Pulled " + yr + " season (" + standings.length + " teams)");
+      console.log("✓ Pulled " + yr + " season (" + standings.length + " teams, Champ: " + (standings[0]?.ownerName || standings[0]?.teamName) + ")");
     } catch (err) { console.warn("Skipped " + yr, err); }
   }
+  const pulledYrs = Object.keys(out.seasons).sort();
   const json = JSON.stringify(out, null, 2);
-  try { await navigator.clipboard.writeText(json); console.log("✅ Copied ESPN JSON to clipboard!"); } catch (e) {}
+  try { await navigator.clipboard.writeText(json); console.log("✅ Copied ESPN JSON (" + pulledYrs[0] + "–" + pulledYrs[pulledYrs.length - 1] + ") to clipboard!"); } catch (e) {}
   const blob = new Blob([json], { type: "application/json" });
   const a = document.createElement("a");
   a.href = URL.createObjectURL(blob);
   a.download = "gcm_espn_export_" + leagueId + ".json";
   a.click();
-  alert("🐓 Gamecock Mafia ESPN Export Complete! JSON copied to clipboard & downloaded. Paste it into the ESPN Sync Modal in the app!");
+  alert("🐓 Gamecock Mafia ESPN Export Complete (" + (pulledYrs[0] || "2016") + "–" + (pulledYrs[pulledYrs.length - 1] || "2026") + ")! JSON copied to clipboard & downloaded. Paste it into the ESPN Sync Modal!");
 })();`;
+    }
+
+    const GCM_MANAGER_NAME_PATTERNS = [
+      { id: "syeth",  isAlumni: false, tokens: ["syeth", "spurrier", "cosmic motherfunk"] },
+      { id: "corbyn", isAlumni: false, tokens: ["corbyn"] },
+      { id: "chris",  isAlumni: false, tokens: ["chris", "christopher"] },
+      { id: "boss",   isAlumni: false, tokens: ["boss", "bossman"] },
+      { id: "geltz",  isAlumni: false, tokens: ["geltz"] },
+      { id: "matt",   isAlumni: false, tokens: ["matt", "matthew"] },
+      { id: "dylan",  isAlumni: false, tokens: ["dylan"] },
+      { id: "leo",    isAlumni: false, tokens: ["leo", "leonard"] },
+      { id: "mary",   isAlumni: false, tokens: ["mary"] },
+      { id: "josh",   isAlumni: false, tokens: ["josh", "joshua"] },
+      { id: "shane",  isAlumni: true,  tokens: ["shane"] },
+      { id: "alex",   isAlumni: true,  tokens: ["alex", "alexander"] }
+    ];
+
+    function detectGcmManagerFromEspnMeta(metaObj, includeAlumni = true) {
+      if (!metaObj) return null;
+      const haystacks = [
+        metaObj.ownerFirstName,
+        metaObj.ownerName,
+        ...(Array.isArray(metaObj.ownerNames) ? metaObj.ownerNames : []),
+        metaObj.ownerDisplayName,
+        metaObj.teamName,
+        metaObj.name
+      ].filter(Boolean).map(s => String(s).toLowerCase());
+      if (haystacks.length === 0) return null;
+
+      // Also include any user-customized team names currently set in teamProfiles
+      const customPatterns = [];
+      (leagueDB?.teams || DEFAULT_TEAMS).forEach(t => {
+        const cName = leagueDB?.teamProfiles?.[t.id]?.customTeamName;
+        if (cName && cName.trim().length >= 3) {
+          customPatterns.push({ id: t.id, isAlumni: false, tokens: [cName.trim().toLowerCase()] });
+        }
+      });
+
+      const candidates = [...GCM_MANAGER_NAME_PATTERNS, ...customPatterns].filter(c => includeAlumni || !c.isAlumni);
+      for (const h of haystacks) {
+        for (const cand of candidates) {
+          for (const tok of cand.tokens) {
+            const re = new RegExp(`(^|[^a-z])${tok.replace(/[.*+?^${}()|[\\]\\\\]/g, "\\\\$&")}([^a-z]|$)`, "i");
+            if (re.test(h)) return cand.id;
+          }
+        }
+      }
+      return null;
+    }
+
+    function detectActiveSlotByRosterSignatures(playerList) {
+      if (!Array.isArray(playerList) || playerList.length === 0) return null;
+      const names = new Set(playerList.map(p => String(p?.name || "").trim()));
+      if (names.has("Trevor Lawrence") && (names.has("Lamar Jackson") || names.has("Bijan Robinson"))) return "syeth";
+      if (names.has("Malik Nabers") && names.has("Michael Pittman Jr.")) return "matt";
+      if (names.has("Davante Adams") && names.has("Brock Purdy") && names.has("Blake Cashman")) return "dylan";
+      if (names.has("Cam Skattebo") && names.has("Quinshon Judkins")) return "geltz";
+      if (names.has("A.J. Brown") && names.has("David Montgomery")) return "chris";
+      if (names.has("Travis Hunter") && names.has("Josh Allen")) return "corbyn";
+      if (names.has("D'Andre Swift") && names.has("Mike Gesicki")) return "josh";
+      if (names.has("George Pickens") && names.has("Dallas Goedert")) return "mary";
+      if (names.has("Rhamondre Stevenson") && names.has("Jahmyr Gibbs")) return "leo";
+      if (names.has("Patrick Mahomes") && names.has("Drake Maye")) return "boss";
+      return null;
     }
 
     function refreshEspnExtractorScriptPreview() {
@@ -11787,7 +12023,7 @@
     function copyEspnConsoleExtractorScript() {
       const lid = document.getElementById("espnSyncLeagueIdInput")?.value || leagueDB?.espnData?.leagueId || "";
       const script = buildEspnBrowserConsoleExtractorSnippet(lid);
-      copyTextToClipboard(script, "Copied 1-Click ESPN Console Extractor! Open fantasy.espn.com → F12 Console → Paste & press Enter.");
+      copyTextToClipboard(script, "Copied 2016–Present ESPN Console Extractor! Open fantasy.espn.com → F12 Console → Paste & press Enter.");
     }
 
     function openEspnSyncModal() {
@@ -11796,7 +12032,7 @@
       }
       const ed = leagueDB.espnData;
       const lidInp = document.getElementById("espnSyncLeagueIdInput");
-      if (lidInp) lidInp.value = ed.leagueId || "10482910";
+      if (lidInp) lidInp.value = ed.leagueId || "30215";
       refreshEspnExtractorScriptPreview();
 
       const kRules = ed.keeperRules || { maxKeepers: 12, maxRb: 4, maxWr: 4, maxOtherSinglePos: 3 };
@@ -11822,14 +12058,27 @@
         ...(ed.alumni || []).map(a => ({ id: a.id, name: `${a.name} (Former / Alumni)` }))
       ];
 
+      const rawMetaBySlot = {};
+      (ed.rawTeams || []).forEach(rt => {
+        if (rt && rt.espnTeamId) rawMetaBySlot[String(rt.espnTeamId)] = rt;
+      });
+
       if (mapGrid) {
         mapGrid.innerHTML = Array.from({ length: 10 }, (_, idx) => {
           const slotNum = idx + 1;
-          const mappedId = (ed.espnTeamMap && ed.espnTeamMap[String(slotNum)]) || DEFAULT_TEAMS[idx]?.id || "syeth";
+          const mappedId = (ed.espnTeamMap && ed.espnTeamMap[String(slotNum)]) || DEFAULT_ESPN_DATA.teamSlotMap[String(slotNum)] || DEFAULT_TEAMS[idx]?.id || "syeth";
+          const meta = rawMetaBySlot[String(slotNum)];
+          const sampleRoster = (ed.rosters && ed.rosters[mappedId]) ? ed.rosters[mappedId].slice(0, 2).map(p => p.name).join(", ") : "";
+          const subtitle = meta
+            ? `${meta.name || ''}${meta.ownerName ? ' • ' + meta.ownerName : ''}`
+            : (sampleRoster ? `Roster: ${sampleRoster}` : `Slot #${slotNum}`);
           return `
             <div class="bg-[#121215] border border-zinc-800 rounded-lg p-2 flex items-center justify-between gap-2">
-              <span class="text-[11px] font-mono font-bold text-zinc-400">ESPN #${slotNum}</span>
-              <select id="espnSlotMap_${slotNum}" class="bg-[#09090B] text-white text-xs font-bold rounded px-2 py-1 border border-zinc-700">
+              <div class="min-w-0">
+                <div class="text-[11px] font-mono font-bold text-amber-300">ESPN #${slotNum}</div>
+                <div class="text-[10px] text-zinc-400 truncate" title="${escapeHtml(subtitle)}">${escapeHtml(subtitle)}</div>
+              </div>
+              <select id="espnSlotMap_${slotNum}" class="bg-[#09090B] text-white text-xs font-bold rounded px-2 py-1 border border-zinc-700 flex-shrink-0">
                 ${(leagueDB?.teams || DEFAULT_TEAMS).map(t => `<option value="${safeId(t.id)}" ${t.id === mappedId ? 'selected' : ''}>${escapeHtml(getOriginalManagerName(t.id))}</option>`).join("")}
               </select>
             </div>
@@ -11838,24 +12087,31 @@
       }
 
       if (overGrid) {
-        const histYears = [2018, 2019, 2020, 2021, 2022, 2023];
-        const slotsToCustomize = ["boss", "chris"];
+        const seasonsObj = ed.seasons || {};
+        const completedYears = Object.keys(seasonsObj)
+          .map(Number)
+          .filter(y => {
+            const st = seasonsObj[String(y)]?.standings || [];
+            const maxG = st.reduce((mx, r) => Math.max(mx, (Number(r.wins) || 0) + (Number(r.losses) || 0) + (Number(r.ties) || 0)), 0);
+            return maxG >= 12;
+          })
+          .sort((a, b) => b - a);
+
         let html = "";
-        histYears.forEach(yr => {
+        completedYears.forEach(yr => {
+          const s = seasonsObj[String(yr)];
           const yrMap = (ed.seasonOwnerOverrides && ed.seasonOwnerOverrides[String(yr)]) || {};
-          slotsToCustomize.forEach(franchiseSlot => {
-            const currentOwner = yrMap[franchiseSlot] || franchiseSlot;
-            html += `
-              <div class="bg-[#121215] border border-zinc-800 rounded-lg p-2 flex items-center justify-between gap-1.5">
-                <span class="text-[10px] font-mono text-zinc-300">${yr} (${escapeHtml(getOriginalManagerName(franchiseSlot))} Slot):</span>
-                <select id="espnHistOverride_${yr}_${franchiseSlot}" class="bg-[#09090B] text-amber-300 text-[11px] font-bold rounded px-2 py-1 border border-zinc-700">
-                  ${allManagers.map(m => `<option value="${safeId(m.id)}" ${m.id === currentOwner ? 'selected' : ''}>${escapeHtml(m.name)}</option>`).join("")}
-                </select>
-              </div>
-            `;
-          });
+          const currentChamp = yrMap.__champion || yrMap[s?.champion] || s?.champion || "syeth";
+          html += `
+            <div class="bg-[#121215] border border-zinc-800 rounded-lg p-2 flex items-center justify-between gap-2">
+              <span class="text-[11px] font-mono font-bold text-amber-300">🏆 ${yr} Champion:</span>
+              <select id="espnChampOverride_${yr}" class="bg-[#09090B] text-white text-[11px] font-bold rounded px-2 py-1 border border-zinc-700">
+                ${allManagers.map(m => `<option value="${safeId(m.id)}" ${m.id === currentChamp ? 'selected' : ''}>${escapeHtml(m.name)}</option>`).join("")}
+              </select>
+            </div>
+          `;
         });
-        overGrid.innerHTML = html;
+        overGrid.innerHTML = html || `<div class="text-[11px] text-zinc-500 col-span-2">Import your ESPN history JSON above to inspect & verify every season's Champion (2016–Present).</div>`;
       }
     }
 
@@ -11866,17 +12122,17 @@
       reader.onload = e => {
         const ta = document.getElementById("espnImportJsonTextarea");
         if (ta) ta.value = String(e.target?.result || "");
-        showToast("Loaded ESPN Export JSON file — click 'Import & Sync ESPN Data' below!", "info");
+        showToast("Loaded ESPN Export JSON file — click 'Confirm & Sync ESPN Data'!", "info");
       };
       reader.readAsText(file);
     }
 
-    async function confirmEspnKeeperSettings() {
+    async function confirmEspnKeeperSettings(skipCloudSave = false) {
       if (!uiState.isCommish && !requireCommish()) return false;
       if (!leagueDB.espnData) leagueDB.espnData = sanitizeEspnDataObject(null);
       const ed = leagueDB.espnData;
 
-      const lid = cleanStr(document.getElementById("espnSyncLeagueIdInput")?.value || ed.leagueId || "10482910", 32).trim();
+      const lid = cleanStr(document.getElementById("espnSyncLeagueIdInput")?.value || ed.leagueId || "30215", 32).trim();
       const maxK = Math.max(0, Math.min(20, Number(document.getElementById("espnKeeperMaxInput")?.value ?? 12)));
       const maxRb = Math.max(1, Math.min(12, Number(document.getElementById("espnPosCapRbInput")?.value ?? 4)));
       const maxWr = Math.max(1, Math.min(12, Number(document.getElementById("espnPosCapWrInput")?.value ?? 4)));
@@ -11885,37 +12141,77 @@
       ed.leagueId = lid;
       ed.keeperRules = {
         maxKeepers: maxK,
+        keeperRounds: maxK,
         maxRb,
         maxWr,
         maxOtherSinglePos: maxOth,
-        keeperRoundsStart: 1,
-        keeperRoundsEnd: maxK
+        posCaps: { RB: maxRb, WR: maxWr, OTHER: maxOth }
       };
 
-      if (!ed.espnTeamMap) ed.espnTeamMap = {};
+      const oldSlotMap = { ...(ed.espnTeamMap || DEFAULT_ESPN_DATA.teamSlotMap) };
+      const newSlotMap = {};
       for (let slotNum = 1; slotNum <= 10; slotNum++) {
         const sel = document.getElementById(`espnSlotMap_${slotNum}`);
-        if (sel && sel.value) {
-          ed.espnTeamMap[String(slotNum)] = safeId(sel.value);
+        const chosen = (sel && sel.value) ? safeId(sel.value) : (oldSlotMap[String(slotNum)] || DEFAULT_ESPN_DATA.teamSlotMap[String(slotNum)]);
+        newSlotMap[String(slotNum)] = chosen;
+        newSlotMap[`espn_${slotNum}`] = chosen;
+      }
+      ed.teamSlotMap = newSlotMap;
+      ed.espnTeamMap = newSlotMap;
+
+      // Re-map existing rosters & seasons if any ESPN #1..#10 slot dropdown changed!
+      const slotChanged = [1,2,3,4,5,6,7,8,9,10].some(n => oldSlotMap[String(n)] && oldSlotMap[String(n)] !== newSlotMap[String(n)]);
+      if (slotChanged && !skipCloudSave) {
+        const remappedRosters = {};
+        for (let slotNum = 1; slotNum <= 10; slotNum++) {
+          const prevOwner = oldSlotMap[String(slotNum)];
+          const nextOwner = newSlotMap[String(slotNum)];
+          if (prevOwner && ed.rosters && Array.isArray(ed.rosters[prevOwner])) {
+            remappedRosters[nextOwner] = ed.rosters[prevOwner];
+          }
         }
+        if (Object.keys(remappedRosters).length === 10) {
+          ed.rosters = remappedRosters;
+        }
+        Object.keys(ed.seasonStandings || {}).forEach(yrKey => {
+          const rows = ed.seasonStandings[yrKey];
+          if (!Array.isArray(rows)) return;
+          rows.forEach(r => {
+            if (r.espnTeamId && newSlotMap[String(r.espnTeamId)]) {
+              r.teamId = newSlotMap[String(r.espnTeamId)];
+              if (!ed.alumni?.some(a => a.id === r.managerId)) {
+                r.managerId = r.teamId;
+              }
+            } else {
+              const slotHit = [1,2,3,4,5,6,7,8,9,10].find(n => oldSlotMap[String(n)] === r.teamId);
+              if (slotHit) {
+                r.teamId = newSlotMap[String(slotHit)];
+                if (!ed.alumni?.some(a => a.id === r.managerId)) r.managerId = r.teamId;
+              }
+            }
+          });
+        });
       }
 
       if (!ed.seasonOwnerOverrides) ed.seasonOwnerOverrides = {};
-      [2018, 2019, 2020, 2021, 2022, 2023].forEach(yr => {
-        if (!ed.seasonOwnerOverrides[String(yr)]) ed.seasonOwnerOverrides[String(yr)] = {};
-        ["boss", "chris"].forEach(slot => {
-          const sel = document.getElementById(`espnHistOverride_${yr}_${slot}`);
-          if (sel && sel.value) {
-            ed.seasonOwnerOverrides[String(yr)][slot] = safeId(sel.value);
-          }
-        });
+      Object.keys(ed.seasons || {}).forEach(yrKey => {
+        const champSel = document.getElementById(`espnChampOverride_${yrKey}`);
+        if (champSel && champSel.value) {
+          if (!ed.seasonOwnerOverrides[yrKey]) ed.seasonOwnerOverrides[yrKey] = {};
+          ed.seasonOwnerOverrides[yrKey].__champion = safeId(champSel.value);
+        }
       });
 
       ed.lastSyncedAt = Date.now();
-      leagueDB.updatedAt = Date.now();
-      saveDatabase(true, "CONFIRM_ESPN_SETTINGS");
-      renderAll();
-      showToast(`✓ Confirmed Keeper Caps (${maxK} Keepers | Max ${maxRb} RB, ${maxWr} WR, ${maxOth} Other) & ESPN Franchise Mapping!`, "success");
+      leagueDB.espnData = sanitizeEspnDataObject(ed);
+      if (!skipCloudSave) {
+        leagueDB.updatedAt = Date.now();
+        saveDatabase(false);
+        await pushEspnDataToCloud();
+        renderEspnTeamMappingControls();
+        renderAll();
+        showToast(`✓ Confirmed Keeper Caps (${maxK} Keepers | RB≤${maxRb}, WR≤${maxWr}, Other≤${maxOth}) & Franchise Mapping!`, "success");
+      }
       return true;
     }
 
@@ -11923,16 +12219,13 @@
       if (!leagueDB.espnData) leagueDB.espnData = sanitizeEspnDataObject(null);
       const ed = leagueDB.espnData;
 
-      // Save any changed mapping/keeper rule inputs first if Commissioner
-      if (uiState.isCommish) {
-        await confirmEspnKeeperSettings();
-      }
-
       const rawText = (document.getElementById("espnImportJsonTextarea")?.value || "").trim();
       if (!rawText) {
+        if (uiState.isCommish) {
+          await confirmEspnKeeperSettings(false);
+        }
         closeModal("espnSyncModal");
         renderAll();
-        showToast("✓ Saved ESPN League HQ & Keeper Settings!", "success");
         return true;
       }
 
@@ -11943,20 +12236,70 @@
           return false;
         }
 
-        const teamMap = ed.espnTeamMap || DEFAULT_ESPN_DATA.espnTeamMap;
-        const resolveEspnSlotToGcmId = (rawKeyOrId) => {
-          const s = String(rawKeyOrId || "").replace(/^espn_/, "");
-          if (teamMap[s]) return teamMap[s];
-          const validIds = new Set((leagueDB?.teams || DEFAULT_TEAMS).map(t => t.id));
-          if (validIds.has(s)) return s;
-          return null;
-        };
+        if (uiState.isCommish) {
+          await confirmEspnKeeperSettings(true);
+        }
 
         if (parsed.leagueId) {
           ed.leagueId = cleanStr(parsed.leagueId, 32);
         }
 
-        // Map imported rosters (either keyed by "espn_1" or "syeth")
+        // 1. Smart Auto-Recognition of ESPN #1..#10 -> Active Gamecock Mafia Managers
+        const activeIds = (leagueDB?.teams || DEFAULT_TEAMS).map(t => t.id);
+        const rawTeamsArr = Array.isArray(parsed.rawTeams) ? parsed.rawTeams : [];
+        if (rawTeamsArr.length > 0 || (parsed.rosters && Object.keys(parsed.rosters).some(k => /^espn_\d+$/.test(k)))) {
+          const detectedMap = {};
+          const usedManagers = new Set();
+
+          // Pass A: Match by Roster Trade Signatures (100% deterministic for active rosters) + ESPN Member/Owner Name
+          for (let slot = 1; slot <= 10; slot++) {
+            const rtMeta = rawTeamsArr.find(x => Number(x?.espnTeamId) === slot) || null;
+            const rPlayers = parsed.rosters?.[`espn_${slot}`] || parsed.rosters?.[String(slot)] || [];
+            const bySig = detectActiveSlotByRosterSignatures(rPlayers);
+            const byName = detectGcmManagerFromEspnMeta(rtMeta, false);
+            const pick = byName || bySig;
+            if (pick && activeIds.includes(pick) && !usedManagers.has(pick)) {
+              detectedMap[String(slot)] = pick;
+              usedManagers.add(pick);
+            }
+          }
+
+          // Pass B: Fill remaining slots from verified League #30215 map or current dropdown map without duplicates
+          const fallbackMap = DEFAULT_ESPN_DATA.teamSlotMap;
+          for (let slot = 1; slot <= 10; slot++) {
+            if (detectedMap[String(slot)]) continue;
+            const pref = (ed.espnTeamMap && ed.espnTeamMap[String(slot)]) || fallbackMap[String(slot)];
+            if (pref && activeIds.includes(pref) && !usedManagers.has(pref)) {
+              detectedMap[String(slot)] = pref;
+              usedManagers.add(pref);
+            }
+          }
+          for (let slot = 1; slot <= 10; slot++) {
+            if (!detectedMap[String(slot)]) {
+              const rem = activeIds.find(id => !usedManagers.has(id)) || activeIds[slot - 1];
+              detectedMap[String(slot)] = rem;
+              usedManagers.add(rem);
+            }
+            detectedMap[`espn_${slot}`] = detectedMap[String(slot)];
+          }
+          ed.teamSlotMap = detectedMap;
+          ed.espnTeamMap = detectedMap;
+        }
+
+        if (rawTeamsArr.length > 0) {
+          ed.rawTeams = rawTeamsArr;
+        }
+
+        const teamMap = ed.espnTeamMap || DEFAULT_ESPN_DATA.teamSlotMap;
+        const resolveEspnSlotToGcmId = (rawKeyOrId) => {
+          const s = String(rawKeyOrId || "").replace(/^espn_/, "");
+          if (teamMap[s]) return teamMap[s];
+          const validIds = new Set([...activeIds, ...(ed.alumni || []).map(a => a.id)]);
+          if (validIds.has(s)) return s;
+          return null;
+        };
+
+        // 2. Map imported rosters (either keyed by "espn_1" or "syeth")
         if (parsed.rosters && typeof parsed.rosters === "object") {
           for (const [k, pList] of Object.entries(parsed.rosters)) {
             const gcmTeamId = resolveEspnSlotToGcmId(k);
@@ -11966,34 +12309,53 @@
               name: cleanStr(p.name || "Unknown Player", 64),
               pos: cleanStr(p.pos || "FLEX", 12).toUpperCase(),
               nflTeam: cleanStr(p.nflTeam || "NFL", 8).toUpperCase(),
+              slot: cleanStr(p.slot || "BE", 10).toUpperCase(),
+              totalPts: Number(p.totalPts || p.pts) || 0,
+              pts: Number(p.totalPts || p.pts) || 0,
               posRank: cleanStr(p.posRank || "", 12),
-              acquiredVia: cleanStr(p.acquiredVia || "ESPN Sync", 24)
+              acquiredVia: cleanStr(p.acquiredVia || p.acqType || "ESPN Sync", 24)
             }));
           }
         }
 
-        // Map imported seasons (2018-2026)
-        if (!ed.seasons) ed.seasons = {};
-        if (!ed.seasonStandings) ed.seasonStandings = {};
+        // 3. Map imported seasons (2016–Present) + Per-Season Historical Owner / Alumni Recognition + Real Boxscore H2H & Records!
+        ed.seasons = {};
+        ed.seasonStandings = {};
+        ed.seasonOwnerOverrides = {};
+        const h2hTotals = {};
+        activeIds.forEach(a => {
+          h2hTotals[a] = {};
+          activeIds.forEach(b => { h2hTotals[a][b] = { wins: 0, losses: 0 }; });
+        });
+        const allWeeklyPerformances = [];
+        const allMatchupDiffs = [];
+
         if (parsed.seasons && typeof parsed.seasons === "object") {
           for (const [yrStr, sObj] of Object.entries(parsed.seasons)) {
             const yr = Number(yrStr);
             if (isNaN(yr) || yr < 2010 || yr > 2035 || !sObj || typeof sObj !== "object") continue;
-            const yrOverrides = (ed.seasonOwnerOverrides && ed.seasonOwnerOverrides[String(yr)]) || {};
-            const mapTeamWithSeasonOverride = (rawId) => {
-              const baseGcm = resolveEspnSlotToGcmId(rawId) || cleanStr(rawId, 24);
-              return yrOverrides[baseGcm] || baseGcm;
-            };
+
+            // Resolve each standing row's active franchise slot AND historical owner (e.g., Shane or Alex in earlier years)
+            const slotToHistoricalManager = {};
             const standings = Array.isArray(sObj.standings)
               ? sObj.standings.map((st, idx) => {
-                  const mappedTid = mapTeamWithSeasonOverride(st.espnTeamId || st.teamId || st.managerId || (idx + 1));
+                  const espnSlotNum = Number(st.espnTeamId) || Number(String(st.teamId || "").replace(/^espn_/, "")) || 0;
+                  const baseSlotGcmId = resolveEspnSlotToGcmId(espnSlotNum || st.teamId || st.managerId || (idx + 1)) || "syeth";
+                  // Check if ESPN member/owner metadata for this specific historical year identifies a specific manager or Alumni (Shane, Alex, Dylan, etc.)
+                  const detectedHistOwner = detectGcmManagerFromEspnMeta(st, true);
+                  const effectiveManagerId = detectedHistOwner || (st.managerId && resolveEspnSlotToGcmId(st.managerId)) || baseSlotGcmId;
+                  if (espnSlotNum) slotToHistoricalManager[String(espnSlotNum)] = effectiveManagerId;
+
                   const pfVal = Number(st.pointsFor ?? st.pf) || 0;
                   const paVal = Number(st.pointsAgainst ?? st.pa) || 0;
                   const rankVal = Number(st.finalRank ?? st.rank) || (idx + 1);
                   const seedVal = Number(st.playoffSeed ?? st.seed ?? rankVal) || (idx + 1);
                   return {
-                    teamId: mappedTid,
-                    managerId: mappedTid,
+                    espnTeamId: espnSlotNum,
+                    teamId: baseSlotGcmId,
+                    managerId: effectiveManagerId,
+                    teamName: cleanStr(st.teamName || "", 60),
+                    ownerName: cleanStr(st.ownerName || "", 60),
                     wins: Number(st.wins) || 0,
                     losses: Number(st.losses) || 0,
                     ties: Number(st.ties) || 0,
@@ -12012,19 +12374,85 @@
                   };
                 })
               : [];
+
             if (standings.length > 0) {
               standings.sort((a, b) => a.finalRank - b.finalRank);
+              const resolveSeasonAwardee = (rawAwardId, fallbackRow) => {
+                const slotNumStr = String(rawAwardId || "").replace(/^espn_/, "");
+                if (slotToHistoricalManager[slotNumStr]) return slotToHistoricalManager[slotNumStr];
+                return resolveEspnSlotToGcmId(rawAwardId) || fallbackRow?.managerId || fallbackRow?.teamId || "syeth";
+              };
+              const topPfRow = [...standings].sort((a, b) => b.pointsFor - a.pointsFor)[0];
               ed.seasons[String(yr)] = {
                 year: yr,
-                champion: mapTeamWithSeasonOverride(sObj.champion || standings[0]?.teamId),
-                runnerUp: mapTeamWithSeasonOverride(sObj.runnerUp || standings[1]?.teamId),
-                toiletBowl: mapTeamWithSeasonOverride(sObj.toiletBowl || standings[standings.length - 1]?.teamId),
-                highestScorer: mapTeamWithSeasonOverride(sObj.highestScorer || [...standings].sort((a, b) => b.pointsFor - a.pointsFor)[0]?.teamId),
+                champion: resolveSeasonAwardee(sObj.champion, standings[0]),
+                runnerUp: resolveSeasonAwardee(sObj.runnerUp, standings[1]),
+                toiletBowl: resolveSeasonAwardee(sObj.toiletBowl, standings[standings.length - 1]),
+                highestScorer: resolveSeasonAwardee(sObj.highestScorer, topPfRow),
                 standings
               };
               ed.seasonStandings[String(yr)] = standings;
             }
+
+            // Aggregate real weekly matchups into 10x10 Head-to-Head Matrix & All-Time Record Book!
+            if (Array.isArray(sObj.matchups)) {
+              sObj.matchups.forEach(m => {
+                const hId = resolveEspnSlotToGcmId(m.homeSlot || m.homeManagerId);
+                const aId = resolveEspnSlotToGcmId(m.awaySlot || m.awayManagerId);
+                const hScore = Math.round((Number(m.homeScore) || 0) * 10) / 10;
+                const aScore = Math.round((Number(m.awayScore) || 0) * 10) / 10;
+                const wk = Number(m.week) || 1;
+                if (!hId || !aId || (hScore === 0 && aScore === 0)) return;
+
+                if (h2hTotals[hId] && h2hTotals[hId][aId]) {
+                  if (hScore > aScore) {
+                    h2hTotals[hId][aId].wins += 1;
+                    h2hTotals[aId][hId].losses += 1;
+                  } else if (aScore > hScore) {
+                    h2hTotals[aId][hId].wins += 1;
+                    h2hTotals[hId][aId].losses += 1;
+                  }
+                }
+
+                const hMgr = slotToHistoricalManager[String(m.homeSlot || "").replace(/^espn_/, "")] || hId;
+                const aMgr = slotToHistoricalManager[String(m.awaySlot || "").replace(/^espn_/, "")] || aId;
+                allWeeklyPerformances.push({ year: yr, week: wk, managerId: hMgr, score: hScore, opponentId: aMgr, oppScore: aScore });
+                allWeeklyPerformances.push({ year: yr, week: wk, managerId: aMgr, score: aScore, opponentId: hMgr, oppScore: hScore });
+
+                if (hScore !== aScore) {
+                  const winnerId = hScore > aScore ? hMgr : aMgr;
+                  const loserId = hScore > aScore ? aMgr : hMgr;
+                  const winScore = Math.max(hScore, aScore);
+                  const loseScore = Math.min(hScore, aScore);
+                  const margin = Math.round((winScore - loseScore) * 10) / 10;
+                  allMatchupDiffs.push({
+                    year: yr,
+                    week: wk,
+                    winnerId,
+                    loserId,
+                    winScore,
+                    loseScore,
+                    margin,
+                    scoreLine: `${winScore.toFixed(1)} – ${loseScore.toFixed(1)}`
+                  });
+                }
+              });
+            }
           }
+        }
+
+        const totalH2HGames = Object.values(h2hTotals).reduce((s, row) => s + Object.values(row).reduce((s2, c) => s2 + c.wins, 0), 0);
+        if (totalH2HGames > 0) {
+          ed.headToHead = h2hTotals;
+        }
+        if (allWeeklyPerformances.length >= 10) {
+          ed.records = {
+            highestSingleGame: [...allWeeklyPerformances].sort((a, b) => b.score - a.score).slice(0, 10),
+            lowestSingleGame: [...allWeeklyPerformances].filter(x => x.score > 25).sort((a, b) => a.score - b.score).slice(0, 10),
+            biggestBlowouts: [...allMatchupDiffs].sort((a, b) => b.margin - a.margin).slice(0, 10),
+            closestGames: [...allMatchupDiffs].filter(x => x.margin > 0).sort((a, b) => a.margin - b.margin).slice(0, 10),
+            longestStreaks: ed.records?.longestStreaks || []
+          };
         }
 
         ed.lastSyncedAt = Date.now();
@@ -12034,7 +12462,9 @@
         await pushEspnDataToCloud();
         closeModal("espnSyncModal");
         renderAll();
-        showToast("🏈 Imported & synced ESPN Rosters, Standings & Multi-Season History!", "success");
+        const syncedYrs = Object.keys(leagueDB.espnData.seasons || {}).sort();
+        const rangeLabel = syncedYrs.length > 0 ? `${syncedYrs[0]}–${syncedYrs[syncedYrs.length - 1]}` : "ESPN";
+        showToast(`🏈 Imported & synced ${rangeLabel} ESPN History, Smart Owner Mapping, H2H & Records!`, "success");
         return true;
       } catch (err) {
         console.warn("ESPN JSON parse error:", err);

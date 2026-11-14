@@ -14,7 +14,7 @@
   },
   "hallOfShame": [],
   "espnData": {
-    "leagueId": "8492018",
+    "leagueId": "30215",
     "leagueName": "Gamecock Mafia",
     "currentSeason": 2026,
     "lastSyncedAt": 0,
@@ -29,22 +29,22 @@
     },
     "teamSlotMap": {
       "1": "syeth",
-      "2": "corbyn",
-      "3": "chris",
-      "4": "boss",
-      "5": "geltz",
-      "6": "matt",
-      "7": "dylan",
-      "8": "leo",
-      "9": "mary",
+      "2": "matt",
+      "3": "leo",
+      "4": "chris",
+      "5": "mary",
+      "6": "geltz",
+      "7": "boss",
+      "8": "dylan",
+      "9": "corbyn",
       "10": "josh"
     },
     "alumniManagers": [
       {
         "id": "shane",
         "name": "Shane",
-        "seasons": "2019–2023",
-        "notes": "Former Franchise Manager (2019–2023)"
+        "seasons": "2016–2023",
+        "notes": "Former Franchise Manager (Alumni)"
       },
       {
         "id": "alex",
@@ -53,26 +53,7 @@
         "notes": "Former Franchise Manager (2024)"
       }
     ],
-    "seasonOwnerOverrides": {
-      "2019": {
-        "mary": "shane"
-      },
-      "2020": {
-        "mary": "shane"
-      },
-      "2021": {
-        "dylan": "shane"
-      },
-      "2022": {
-        "mary": "shane"
-      },
-      "2023": {
-        "mary": "shane"
-      },
-      "2024": {
-        "mary": "alex"
-      }
-    },
+    "seasonOwnerOverrides": {},
     "rosters": {
       "syeth": [
         {
@@ -1365,10 +1346,334 @@
       ]
     },
     "seasonStandings": {
-      "2018": [
+      "2016": [
         {
           "teamId": "syeth",
           "managerId": "syeth",
+          "wins": 11,
+          "losses": 2,
+          "ties": 0,
+          "pf": 1982.4,
+          "pa": 1698,
+          "seed": 1,
+          "rank": 1,
+          "isChamp": true,
+          "isToilet": false,
+          "allPlayWins": 94,
+          "allPlayLosses": 23,
+          "streak": "W6"
+        },
+        {
+          "teamId": "matt",
+          "managerId": "matt",
+          "wins": 9,
+          "losses": 4,
+          "ties": 0,
+          "pf": 1884.6,
+          "pa": 1756.2,
+          "seed": 2,
+          "rank": 2,
+          "isChamp": false,
+          "isToilet": false,
+          "allPlayWins": 80,
+          "allPlayLosses": 37,
+          "streak": "W2"
+        },
+        {
+          "teamId": "dylan",
+          "managerId": "dylan",
+          "wins": 8,
+          "losses": 5,
+          "ties": 0,
+          "pf": 1846,
+          "pa": 1788.4,
+          "seed": 3,
+          "rank": 3,
+          "isChamp": false,
+          "isToilet": false,
+          "allPlayWins": 71,
+          "allPlayLosses": 46,
+          "streak": "W1"
+        },
+        {
+          "teamId": "corbyn",
+          "managerId": "corbyn",
+          "wins": 8,
+          "losses": 5,
+          "ties": 0,
+          "pf": 1824.2,
+          "pa": 1802,
+          "seed": 4,
+          "rank": 4,
+          "isChamp": false,
+          "isToilet": false,
+          "allPlayWins": 67,
+          "allPlayLosses": 50,
+          "streak": "L1"
+        },
+        {
+          "teamId": "boss",
+          "managerId": "boss",
+          "wins": 7,
+          "losses": 6,
+          "ties": 0,
+          "pf": 1796.8,
+          "pa": 1814.6,
+          "seed": 5,
+          "rank": 5,
+          "isChamp": false,
+          "isToilet": false,
+          "allPlayWins": 60,
+          "allPlayLosses": 57,
+          "streak": "W1"
+        },
+        {
+          "teamId": "mary",
+          "managerId": "shane",
+          "wins": 6,
+          "losses": 7,
+          "ties": 0,
+          "pf": 1764,
+          "pa": 1838.2,
+          "seed": 6,
+          "rank": 6,
+          "isChamp": false,
+          "isToilet": false,
+          "allPlayWins": 54,
+          "allPlayLosses": 63,
+          "streak": "L2"
+        },
+        {
+          "teamId": "chris",
+          "managerId": "chris",
+          "wins": 6,
+          "losses": 7,
+          "ties": 0,
+          "pf": 1742.5,
+          "pa": 1852,
+          "seed": 7,
+          "rank": 7,
+          "isChamp": false,
+          "isToilet": false,
+          "allPlayWins": 48,
+          "allPlayLosses": 69,
+          "streak": "L1"
+        },
+        {
+          "teamId": "leo",
+          "managerId": "leo",
+          "wins": 5,
+          "losses": 8,
+          "ties": 0,
+          "pf": 1718,
+          "pa": 1884.4,
+          "seed": 8,
+          "rank": 8,
+          "isChamp": false,
+          "isToilet": false,
+          "allPlayWins": 43,
+          "allPlayLosses": 74,
+          "streak": "L3"
+        },
+        {
+          "teamId": "geltz",
+          "managerId": "geltz",
+          "wins": 3,
+          "losses": 10,
+          "ties": 0,
+          "pf": 1672.4,
+          "pa": 1936,
+          "seed": 9,
+          "rank": 9,
+          "isChamp": false,
+          "isToilet": false,
+          "allPlayWins": 35,
+          "allPlayLosses": 82,
+          "streak": "L4"
+        },
+        {
+          "teamId": "josh",
+          "managerId": "josh",
+          "wins": 2,
+          "losses": 11,
+          "ties": 0,
+          "pf": 1638,
+          "pa": 1999.1,
+          "seed": 10,
+          "rank": 10,
+          "isChamp": false,
+          "isToilet": true,
+          "allPlayWins": 33,
+          "allPlayLosses": 84,
+          "streak": "L5"
+        }
+      ],
+      "2017": [
+        {
+          "teamId": "dylan",
+          "managerId": "dylan",
+          "wins": 10,
+          "losses": 3,
+          "ties": 0,
+          "pf": 1944.2,
+          "pa": 1712.8,
+          "seed": 1,
+          "rank": 1,
+          "isChamp": true,
+          "isToilet": false,
+          "allPlayWins": 90,
+          "allPlayLosses": 27,
+          "streak": "W4"
+        },
+        {
+          "teamId": "syeth",
+          "managerId": "syeth",
+          "wins": 9,
+          "losses": 4,
+          "ties": 0,
+          "pf": 1896,
+          "pa": 1764.4,
+          "seed": 2,
+          "rank": 2,
+          "isChamp": false,
+          "isToilet": false,
+          "allPlayWins": 81,
+          "allPlayLosses": 36,
+          "streak": "W2"
+        },
+        {
+          "teamId": "boss",
+          "managerId": "boss",
+          "wins": 8,
+          "losses": 5,
+          "ties": 0,
+          "pf": 1852.6,
+          "pa": 1798,
+          "seed": 3,
+          "rank": 3,
+          "isChamp": false,
+          "isToilet": false,
+          "allPlayWins": 72,
+          "allPlayLosses": 45,
+          "streak": "W1"
+        },
+        {
+          "teamId": "chris",
+          "managerId": "chris",
+          "wins": 7,
+          "losses": 6,
+          "ties": 0,
+          "pf": 1818.4,
+          "pa": 1812.2,
+          "seed": 4,
+          "rank": 4,
+          "isChamp": false,
+          "isToilet": false,
+          "allPlayWins": 63,
+          "allPlayLosses": 54,
+          "streak": "L1"
+        },
+        {
+          "teamId": "leo",
+          "managerId": "leo",
+          "wins": 7,
+          "losses": 6,
+          "ties": 0,
+          "pf": 1794,
+          "pa": 1824.6,
+          "seed": 5,
+          "rank": 5,
+          "isChamp": false,
+          "isToilet": false,
+          "allPlayWins": 59,
+          "allPlayLosses": 58,
+          "streak": "W1"
+        },
+        {
+          "teamId": "corbyn",
+          "managerId": "corbyn",
+          "wins": 6,
+          "losses": 7,
+          "ties": 0,
+          "pf": 1762.8,
+          "pa": 1848,
+          "seed": 6,
+          "rank": 6,
+          "isChamp": false,
+          "isToilet": false,
+          "allPlayWins": 53,
+          "allPlayLosses": 64,
+          "streak": "L2"
+        },
+        {
+          "teamId": "matt",
+          "managerId": "matt",
+          "wins": 6,
+          "losses": 7,
+          "ties": 0,
+          "pf": 1748.2,
+          "pa": 1862.4,
+          "seed": 7,
+          "rank": 7,
+          "isChamp": false,
+          "isToilet": false,
+          "allPlayWins": 49,
+          "allPlayLosses": 68,
+          "streak": "W1"
+        },
+        {
+          "teamId": "mary",
+          "managerId": "shane",
+          "wins": 5,
+          "losses": 8,
+          "ties": 0,
+          "pf": 1712,
+          "pa": 1894,
+          "seed": 8,
+          "rank": 8,
+          "isChamp": false,
+          "isToilet": false,
+          "allPlayWins": 42,
+          "allPlayLosses": 75,
+          "streak": "L3"
+        },
+        {
+          "teamId": "geltz",
+          "managerId": "geltz",
+          "wins": 4,
+          "losses": 9,
+          "ties": 0,
+          "pf": 1684.5,
+          "pa": 1928.6,
+          "seed": 9,
+          "rank": 9,
+          "isChamp": false,
+          "isToilet": false,
+          "allPlayWins": 38,
+          "allPlayLosses": 79,
+          "streak": "L2"
+        },
+        {
+          "teamId": "josh",
+          "managerId": "josh",
+          "wins": 3,
+          "losses": 10,
+          "ties": 0,
+          "pf": 1648,
+          "pa": 1915.7,
+          "seed": 10,
+          "rank": 10,
+          "isChamp": false,
+          "isToilet": true,
+          "allPlayWins": 38,
+          "allPlayLosses": 79,
+          "streak": "L4"
+        }
+      ],
+      "2018": [
+        {
+          "teamId": "dylan",
+          "managerId": "dylan",
           "wins": 10,
           "losses": 3,
           "ties": 0,
@@ -1463,8 +1768,8 @@
           "streak": "L1"
         },
         {
-          "teamId": "dylan",
-          "managerId": "dylan",
+          "teamId": "syeth",
+          "managerId": "syeth",
           "wins": 5,
           "losses": 8,
           "ties": 0,
@@ -1512,7 +1817,7 @@
         },
         {
           "teamId": "mary",
-          "managerId": "mary",
+          "managerId": "shane",
           "wins": 3,
           "losses": 10,
           "ties": 0,
@@ -1529,8 +1834,8 @@
       ],
       "2019": [
         {
-          "teamId": "dylan",
-          "managerId": "dylan",
+          "teamId": "corbyn",
+          "managerId": "corbyn",
           "wins": 11,
           "losses": 2,
           "ties": 0,
@@ -1593,8 +1898,8 @@
           "streak": "L1"
         },
         {
-          "teamId": "corbyn",
-          "managerId": "corbyn",
+          "teamId": "dylan",
+          "managerId": "dylan",
           "wins": 7,
           "losses": 6,
           "ties": 0,
@@ -2177,8 +2482,8 @@
       ],
       "2023": [
         {
-          "teamId": "corbyn",
-          "managerId": "corbyn",
+          "teamId": "dylan",
+          "managerId": "dylan",
           "wins": 11,
           "losses": 3,
           "ties": 0,
@@ -2257,8 +2562,8 @@
           "streak": "L1"
         },
         {
-          "teamId": "dylan",
-          "managerId": "dylan",
+          "teamId": "corbyn",
+          "managerId": "corbyn",
           "wins": 7,
           "losses": 7,
           "ties": 0,
