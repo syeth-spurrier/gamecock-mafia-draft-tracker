@@ -3,6 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="referrer" content="no-referrer">
   <title>Gamecock Mafia — Official Draft & Pick Tracker</title>
   <!-- Mobile PWA & Home Screen App Meta -->
   <meta name="theme-color" content="#111827">
@@ -1456,17 +1457,22 @@
     const SYNC_URL_STORAGE_KEY = "gamecock_mafia_sync_url";
     const WEBHOOK_URL_STORAGE_KEY = "gamecock_mafia_webhook_url";
     const PASSPHRASE_STORAGE_KEY = "gamecock_mafia_pass_hash";
-    // Optional: Paste your Google Apps Script /exec URL here to hardcode zero-config 2-way sync
-    const DEFAULT_CLOUD_SYNC_URL = "";
     const TOTAL_ROUNDS = 20;
     const PASSPHRASE_SALT = "gcm_pass_v5:";
-    const DEFAULT_PASSPHRASE_HASH = "ed82a630acbc4c03fe026e616f3002f5d7ffd51a462cc9023efca21b90a1bd4e";
+    const PASSPHRASE_VERIFIER_SALT = "gcm_pass_verifier_v5:";
+    const DEFAULT_PASSPHRASE_VERIFIER = "eafd2c26f6979985a54ab2573dd6b5adf47275fb991ae6cdf1512a8b037cc385";
     const PIN_SALT = "gcm_v4_salt:";
-    const DEFAULT_PIN_HASH = "9dc15277bc17bbea84f404584d0deff365108b37ccff158a6b2311ddcc5a6b8a";
+    const PIN_VERIFIER_SALT = "gcm_pin_verifier_v5:";
+    const DEFAULT_PIN_VERIFIER = "f03f4a5f4e5dc70446e6a5191311eb62fb045b12440f99b4bdb49c5e4048bb59";
+    const URL_CIPHER_SALT = "gcm_url_cipher_v5:";
+    // Passphrase-encrypted Google Apps Script /exec endpoint (decrypts in-memory upon unlock; never exposed in plaintext in public repo)
+    const DEFAULT_ENCRYPTED_SYNC_URL = "ea6e4579eca7e2d4f5ae7d1858ec182b79ad5a18b3baac29253084d14d45031cf418be69f7373c0b3bbd0dfb97c8be8bc93c854342b2a7b6c1f4ff90e2f03524f8d6d7944110421831469af3cd4efaa5c0845aa92d7b7368038c6fc5cf2c400a134cc1e320d6b065da6e17ea9976d4a7";
 
     let uiState = {
       isLeagueUnlocked: false,
       verifiedPassHash: "",
+      decryptedSyncUrl: "",
+      sheetNeedsInitialSeed: false,
       commishSessionHash: "",
       failedPassAttempts: 0,
       passLockoutUntil: 0,
@@ -1645,6 +1651,126 @@
     }
 
     /**
+     * SHA-256 counter-mode keystream helpers for encrypting/decrypting the Apps Script /exec URL
+     * using the league passphrase wire key so the endpoint URL is never exposed in public GitHub files.
+     */
+    async function deriveCipherStreamBytes(cipherKeyHex, byteLength) {
+      const out = new Uint8Array(byteLength);
+      let offset = 0;
+      let block = 0;
+      while (offset < byteLength) {
+        const blockHex = await sha256Hex(`${cipherKeyHex}:${block}`);
+        for (let i = 0; i < blockHex.length && offset < byteLength; i += 2) {
+          out[offset++] = parseInt(blockHex.slice(i, i + 2), 16);
+        }
+        block++;
+      }
+      return out;
+    }
+
+    async function encryptStringWithKeyHex(plainText, cipherKeyHex) {
+      const str = String(plainText);
+      let utf8Bytes;
+      if (typeof TextEncoder !== "undefined") {
+        utf8Bytes = new TextEncoder().encode(str);
+      } else {
+        const bin = unescape(encodeURIComponent(str));
+        utf8Bytes = new Uint8Array(bin.length);
+        for (let i = 0; i < bin.length; i++) utf8Bytes[i] = bin.charCodeAt(i);
+      }
+      const stream = await deriveCipherStreamBytes(cipherKeyHex, utf8Bytes.length);
+      let hex = "";
+      for (let i = 0; i < utf8Bytes.length; i++) {
+        hex += (utf8Bytes[i] ^ stream[i]).toString(16).padStart(2, "0");
+      }
+      return hex;
+    }
+
+    async function decryptHexWithKeyHex(cipherHex, cipherKeyHex) {
+      if (!cipherHex || typeof cipherHex !== "string" || cipherHex.length % 2 !== 0 || !/^[a-f0-9]+$/i.test(cipherHex)) {
+        return "";
+      }
+      const byteLen = cipherHex.length / 2;
+      const stream = await deriveCipherStreamBytes(cipherKeyHex, byteLen);
+      const plainBytes = new Uint8Array(byteLen);
+      for (let i = 0; i < byteLen; i++) {
+        plainBytes[i] = parseInt(cipherHex.slice(i * 2, i * 2 + 2), 16) ^ stream[i];
+      }
+      if (typeof TextDecoder !== "undefined") {
+        return new TextDecoder().decode(plainBytes);
+      }
+      let bin = "";
+      for (let i = 0; i < plainBytes.length; i++) bin += String.fromCharCode(plainBytes[i]);
+      return decodeURIComponent(escape(bin));
+    }
+
+    async function unlockEncryptedSyncUrl(wirePassHash) {
+      if (!wirePassHash) return "";
+      const encHex = (leagueDB && leagueDB.encryptedCloudSyncUrl)
+        ? leagueDB.encryptedCloudSyncUrl
+        : DEFAULT_ENCRYPTED_SYNC_URL;
+      if (!encHex) return "";
+      try {
+        const cipherKey = await sha256Hex(URL_CIPHER_SALT + wirePassHash.toLowerCase());
+        const candidateUrl = (await decryptHexWithKeyHex(encHex, cipherKey)).trim();
+        if (isValidHttpsUrl(candidateUrl)) {
+          uiState.decryptedSyncUrl = candidateUrl;
+          return candidateUrl;
+        }
+      } catch (e) {
+        // Ignore decryption mismatch
+      }
+      return "";
+    }
+
+    async function verifyWirePassHashAgainstDb(wirePassHash) {
+      if (!wirePassHash || !/^[a-f0-9]{64}$/i.test(wirePassHash)) return false;
+      const lower = wirePassHash.toLowerCase();
+      if (leagueDB && leagueDB.leaguePassphraseVerifier) {
+        const candVerifier = await sha256Hex(PASSPHRASE_VERIFIER_SALT + lower);
+        return candVerifier === leagueDB.leaguePassphraseVerifier;
+      }
+      if (leagueDB && leagueDB.leaguePassphraseHash) {
+        return lower === leagueDB.leaguePassphraseHash;
+      }
+      const candVerifier = await sha256Hex(PASSPHRASE_VERIFIER_SALT + lower);
+      return candVerifier === DEFAULT_PASSPHRASE_VERIFIER;
+    }
+
+    async function verifyWirePinHashAgainstDb(wirePinHash) {
+      if (!wirePinHash || !/^[a-f0-9]{64}$/i.test(wirePinHash)) return false;
+      const lower = wirePinHash.toLowerCase();
+      if (leagueDB && leagueDB.commishPinVerifier) {
+        const candVerifier = await sha256Hex(PIN_VERIFIER_SALT + lower);
+        return candVerifier === leagueDB.commishPinVerifier;
+      }
+      if (leagueDB && leagueDB.commishPinHash) {
+        return lower === leagueDB.commishPinHash;
+      }
+      const candVerifier = await sha256Hex(PIN_VERIFIER_SALT + lower);
+      return candVerifier === DEFAULT_PIN_VERIFIER;
+    }
+
+    function sanitizeStateForPublicExport(dbObj) {
+      if (!dbObj || typeof dbObj !== "object") return dbObj;
+      const copy = JSON.parse(JSON.stringify(dbObj));
+      delete copy.cloudSyncUrl;
+      delete copy.chatWebhookUrl;
+      delete copy.commishPinHash;
+      delete copy.leaguePassphraseHash;
+      if (!copy.encryptedCloudSyncUrl && DEFAULT_ENCRYPTED_SYNC_URL) {
+        copy.encryptedCloudSyncUrl = DEFAULT_ENCRYPTED_SYNC_URL;
+      }
+      if (!copy.leaguePassphraseVerifier) {
+        copy.leaguePassphraseVerifier = DEFAULT_PASSPHRASE_VERIFIER;
+      }
+      if (!copy.commishPinVerifier) {
+        copy.commishPinVerifier = DEFAULT_PIN_VERIFIER;
+      }
+      return copy;
+    }
+
+    /**
      * Deeply strips dangerous prototype keys and validates expected league_data.json structure.
      */
     function stripDangerousKeys(obj, depth = 0) {
@@ -1769,6 +1895,15 @@
             }
       };
 
+      if (typeof raw.commishPinVerifier === "string" && /^[a-f0-9]{64}$/i.test(raw.commishPinVerifier)) {
+        out.commishPinVerifier = raw.commishPinVerifier.toLowerCase();
+      }
+      if (typeof raw.leaguePassphraseVerifier === "string" && /^[a-f0-9]{64}$/i.test(raw.leaguePassphraseVerifier)) {
+        out.leaguePassphraseVerifier = raw.leaguePassphraseVerifier.toLowerCase();
+      }
+      if (typeof raw.encryptedCloudSyncUrl === "string" && /^[a-f0-9]{20,2000}$/i.test(raw.encryptedCloudSyncUrl)) {
+        out.encryptedCloudSyncUrl = raw.encryptedCloudSyncUrl.toLowerCase();
+      }
       if (typeof raw.commishPinHash === "string" && /^[a-f0-9]{64}$/i.test(raw.commishPinHash)) {
         out.commishPinHash = raw.commishPinHash.toLowerCase();
       }
@@ -1832,12 +1967,13 @@
     }
 
     function createDefaultDatabase() {
-      const db = {
+      return {
         version: "5.0",
         updatedAt: 0,
         baseUpcomingYear: 2027,
-        leaguePassphraseHash: DEFAULT_PASSPHRASE_HASH,
-        commishPinHash: DEFAULT_PIN_HASH,
+        leaguePassphraseVerifier: DEFAULT_PASSPHRASE_VERIFIER,
+        commishPinVerifier: DEFAULT_PIN_VERIFIER,
+        encryptedCloudSyncUrl: DEFAULT_ENCRYPTED_SYNC_URL,
         teams: JSON.parse(JSON.stringify(DEFAULT_TEAMS)),
         trades: JSON.parse(JSON.stringify(SEED_TRADES)),
         pendingTrades: [],
@@ -1847,10 +1983,6 @@
           2028: { isLocked: false, slots: DEFAULT_TEAMS.map(t => t.id) }
         }
       };
-      if (isValidHttpsUrl(DEFAULT_CLOUD_SYNC_URL)) {
-        db.cloudSyncUrl = DEFAULT_CLOUD_SYNC_URL;
-      }
-      return db;
     }
 
     /**
@@ -5649,14 +5781,34 @@
       if (ftr) ftr.classList.toggle("hidden", !unlocked);
     }
 
+    async function mergePreservedSecurityMetadata(validated) {
+      if (!validated) return null;
+      if (!validated.encryptedCloudSyncUrl) {
+        validated.encryptedCloudSyncUrl = (leagueDB && leagueDB.encryptedCloudSyncUrl) || DEFAULT_ENCRYPTED_SYNC_URL;
+      }
+      if (validated.leaguePassphraseHash && !validated.leaguePassphraseVerifier) {
+        validated.leaguePassphraseVerifier = await sha256Hex(PASSPHRASE_VERIFIER_SALT + validated.leaguePassphraseHash);
+      } else if (!validated.leaguePassphraseVerifier) {
+        validated.leaguePassphraseVerifier = (leagueDB && leagueDB.leaguePassphraseVerifier) || DEFAULT_PASSPHRASE_VERIFIER;
+      }
+      if (validated.commishPinHash && !validated.commishPinVerifier) {
+        validated.commishPinVerifier = await sha256Hex(PIN_VERIFIER_SALT + validated.commishPinHash);
+      } else if (!validated.commishPinVerifier) {
+        validated.commishPinVerifier = (leagueDB && leagueDB.commishPinVerifier) || DEFAULT_PIN_VERIFIER;
+      }
+      delete validated.cloudSyncUrl;
+      return validated;
+    }
+
     async function initLeaguePassphraseGate() {
-      // Quietly check ./league_data.json first so hosted cloudSyncUrl / passphrase hashes apply before unlock
+      // Quietly check ./league_data.json first so hosted encryptedCloudSyncUrl / verifiers apply before unlock
       try {
         const res = await fetch(`./league_data.json?t=${Date.now()}`, { cache: "no-store" });
         if (res.ok) {
           const hostedJson = await res.json();
           const validatedHosted = validateAndSanitizeDatabase(hostedJson);
           if (validatedHosted) {
+            await mergePreservedSecurityMetadata(validatedHosted);
             const hostedTs = Number(validatedHosted.updatedAt) || 0;
             const localTs = Number(leagueDB?.updatedAt) || 0;
             if (hostedTs >= localTs) {
@@ -5666,11 +5818,14 @@
               saveDatabase(false);
               populateStaticFormControls();
             } else {
-              if (validatedHosted.cloudSyncUrl && !leagueDB.cloudSyncUrl) {
-                leagueDB.cloudSyncUrl = validatedHosted.cloudSyncUrl;
+              if (validatedHosted.encryptedCloudSyncUrl && !leagueDB.encryptedCloudSyncUrl) {
+                leagueDB.encryptedCloudSyncUrl = validatedHosted.encryptedCloudSyncUrl;
               }
-              if (validatedHosted.leaguePassphraseHash) {
-                leagueDB.leaguePassphraseHash = validatedHosted.leaguePassphraseHash;
+              if (validatedHosted.leaguePassphraseVerifier && !leagueDB.leaguePassphraseVerifier) {
+                leagueDB.leaguePassphraseVerifier = validatedHosted.leaguePassphraseVerifier;
+              }
+              if (validatedHosted.commishPinVerifier && !leagueDB.commishPinVerifier) {
+                leagueDB.commishPinVerifier = validatedHosted.commishPinVerifier;
               }
             }
           }
@@ -5686,13 +5841,10 @@
         savedHash = "";
       }
 
-      const expectedHash = (leagueDB && leagueDB.leaguePassphraseHash)
-        ? leagueDB.leaguePassphraseHash
-        : DEFAULT_PASSPHRASE_HASH;
-
-      if (savedHash && savedHash === expectedHash) {
+      if (savedHash && (await verifyWirePassHashAgainstDb(savedHash))) {
         uiState.isLeagueUnlocked = true;
-        uiState.verifiedPassHash = savedHash;
+        uiState.verifiedPassHash = savedHash.toLowerCase();
+        await unlockEncryptedSyncUrl(uiState.verifiedPassHash);
         setAppShellUnlocked(true);
         renderAll();
         startBackgroundSyncTimers();
@@ -5722,18 +5874,17 @@
         return;
       }
 
-      const candidateHash = await sha256Hex(PASSPHRASE_SALT + normalized);
-      const expectedHash = (leagueDB && leagueDB.leaguePassphraseHash)
-        ? leagueDB.leaguePassphraseHash
-        : DEFAULT_PASSPHRASE_HASH;
+      const candidateWireHash = await sha256Hex(PASSPHRASE_SALT + normalized);
+      const isValid = await verifyWirePassHashAgainstDb(candidateWireHash);
 
-      if (candidateHash === expectedHash) {
+      if (isValid) {
         uiState.isLeagueUnlocked = true;
-        uiState.verifiedPassHash = candidateHash;
+        uiState.verifiedPassHash = candidateWireHash;
         uiState.failedPassAttempts = 0;
         uiState.passLockoutUntil = 0;
+        await unlockEncryptedSyncUrl(candidateWireHash);
         try {
-          localStorage.setItem(PASSPHRASE_STORAGE_KEY, candidateHash);
+          localStorage.setItem(PASSPHRASE_STORAGE_KEY, candidateWireHash);
         } catch (e) {
           // Ignore storage restrictions
         }
@@ -5771,6 +5922,7 @@
       uiState.commishSessionHash = "";
       uiState.isLeagueUnlocked = false;
       uiState.verifiedPassHash = "";
+      uiState.decryptedSyncUrl = "";
       setAppShellUnlocked(false);
       showToast("Tracker locked on this device.", "info");
     }
@@ -5783,15 +5935,24 @@
         showToast("League passphrase must be between 3 and 32 characters.", "error");
         return;
       }
-      const prevPassHash = uiState.verifiedPassHash || leagueDB.leaguePassphraseHash || DEFAULT_PASSPHRASE_HASH;
-      const nextPassHash = await sha256Hex(PASSPHRASE_SALT + normalized);
+      const prevPassHash = uiState.verifiedPassHash || leagueDB.leaguePassphraseHash || "";
+      const nextWirePassHash = await sha256Hex(PASSPHRASE_SALT + normalized);
+      const nextPassVerifier = await sha256Hex(PASSPHRASE_VERIFIER_SALT + nextWirePassHash);
+      const currentSyncUrl = getActiveCloudSyncUrl();
 
       pushUndoState("Update League Passphrase");
-      leagueDB.leaguePassphraseHash = nextPassHash;
+      leagueDB.leaguePassphraseVerifier = nextPassVerifier;
+      leagueDB.leaguePassphraseHash = nextWirePassHash;
+      if (currentSyncUrl) {
+        const nextCipherKey = await sha256Hex(URL_CIPHER_SALT + nextWirePassHash);
+        leagueDB.encryptedCloudSyncUrl = await encryptStringWithKeyHex(currentSyncUrl, nextCipherKey);
+        uiState.decryptedSyncUrl = currentSyncUrl;
+      }
+      delete leagueDB.cloudSyncUrl;
       leagueDB.updatedAt = Date.now();
-      uiState.verifiedPassHash = nextPassHash;
+      uiState.verifiedPassHash = nextWirePassHash;
       try {
-        localStorage.setItem(PASSPHRASE_STORAGE_KEY, nextPassHash);
+        localStorage.setItem(PASSPHRASE_STORAGE_KEY, nextWirePassHash);
       } catch (e) {
         // Ignore storage error
       }
@@ -5805,7 +5966,7 @@
         updateSyncStatusUI("Unpublished Local Edits", false, true);
       }
       renderAll();
-      showToast("League passphrase updated! Export league_data.json if hosting static files.", "success");
+      showToast("League passphrase updated! Export league_data.json if changing public defaults.", "success");
     }
 
     function openPinModal() {
@@ -5835,18 +5996,21 @@
         showToast("Enter your Commissioner PIN.", "error");
         return;
       }
-      const candidateHash = await sha256Hex(PIN_SALT + val);
-      const expectedHash = (leagueDB && leagueDB.commishPinHash) ? leagueDB.commishPinHash : DEFAULT_PIN_HASH;
+      const candidateWireHash = await sha256Hex(PIN_SALT + val);
+      const isPinValid = await verifyWirePinHashAgainstDb(candidateWireHash);
 
-      if (candidateHash === expectedHash) {
+      if (isPinValid) {
         uiState.isCommish = true;
-        uiState.commishSessionHash = candidateHash;
+        uiState.commishSessionHash = candidateWireHash;
         uiState.failedPinAttempts = 0;
         uiState.pinLockoutUntil = 0;
         if (inp) inp.value = "";
         closeModal("pinModal");
         renderAll();
         showToast("Commissioner Mode unlocked!", "success");
+        if (uiState.sheetNeedsInitialSeed && getActiveCloudSyncUrl()) {
+          await initializeRemoteSheetFromLocal(false);
+        }
       } else {
         uiState.failedPinAttempts = (uiState.failedPinAttempts || 0) + 1;
         if (uiState.failedPinAttempts >= 5) {
@@ -5867,13 +6031,15 @@
         showToast("Commissioner PIN must be between 4 and 16 characters.", "error");
         return;
       }
-      const prevCommishHash = uiState.commishSessionHash || leagueDB.commishPinHash || DEFAULT_PIN_HASH;
-      const nextPinHash = await sha256Hex(PIN_SALT + newPin);
+      const prevCommishHash = uiState.commishSessionHash || leagueDB.commishPinHash || "";
+      const nextWirePinHash = await sha256Hex(PIN_SALT + newPin);
+      const nextPinVerifier = await sha256Hex(PIN_VERIFIER_SALT + nextWirePinHash);
 
       pushUndoState("Update Commissioner PIN");
-      leagueDB.commishPinHash = nextPinHash;
+      leagueDB.commishPinVerifier = nextPinVerifier;
+      leagueDB.commishPinHash = nextWirePinHash;
       leagueDB.updatedAt = Date.now();
-      uiState.commishSessionHash = nextPinHash;
+      uiState.commishSessionHash = nextWirePinHash;
       saveDatabase(false);
       if (inp) inp.value = "";
 
@@ -5884,7 +6050,7 @@
         updateSyncStatusUI("Unpublished Local Edits", false, true);
       }
       renderAll();
-      showToast("Commissioner PIN updated! Export league_data.json if hosting static files.", "success");
+      showToast("Commissioner PIN updated & synced to Google Sheet!", "success");
     }
 
     function updateCommishButtonState() {
@@ -5929,15 +6095,19 @@
         "Reset Database",
         () => {
           pushUndoState("Reset to Official Spreadsheet Seed");
-          const prevSyncUrl = getActiveCloudSyncUrl();
+          const prevEncUrl = leagueDB?.encryptedCloudSyncUrl || DEFAULT_ENCRYPTED_SYNC_URL;
           const prevWebhook = getActiveWebhookUrl();
-          const prevPass = leagueDB?.leaguePassphraseHash || DEFAULT_PASSPHRASE_HASH;
-          const prevPin = leagueDB?.commishPinHash || DEFAULT_PIN_HASH;
+          const prevPassVerifier = leagueDB?.leaguePassphraseVerifier || DEFAULT_PASSPHRASE_VERIFIER;
+          const prevPassHash = leagueDB?.leaguePassphraseHash;
+          const prevPinVerifier = leagueDB?.commishPinVerifier || DEFAULT_PIN_VERIFIER;
+          const prevPinHash = leagueDB?.commishPinHash;
 
           leagueDB = createDefaultDatabase();
-          leagueDB.leaguePassphraseHash = prevPass;
-          leagueDB.commishPinHash = prevPin;
-          if (prevSyncUrl) leagueDB.cloudSyncUrl = prevSyncUrl;
+          leagueDB.encryptedCloudSyncUrl = prevEncUrl;
+          leagueDB.leaguePassphraseVerifier = prevPassVerifier;
+          leagueDB.commishPinVerifier = prevPinVerifier;
+          if (prevPassHash) leagueDB.leaguePassphraseHash = prevPassHash;
+          if (prevPinHash) leagueDB.commishPinHash = prevPinHash;
           if (prevWebhook) leagueDB.chatWebhookUrl = prevWebhook;
 
           saveDatabase(true, "RESET_TO_SEED");
@@ -5969,8 +6139,8 @@
         localUrl = "";
       }
       if (isValidHttpsUrl(localUrl)) return localUrl.trim();
+      if (isValidHttpsUrl(uiState.decryptedSyncUrl)) return uiState.decryptedSyncUrl.trim();
       if (leagueDB && isValidHttpsUrl(leagueDB.cloudSyncUrl)) return leagueDB.cloudSyncUrl.trim();
-      if (isValidHttpsUrl(DEFAULT_CLOUD_SYNC_URL)) return DEFAULT_CLOUD_SYNC_URL.trim();
       return "";
     }
 
@@ -6007,14 +6177,23 @@
           showToast("Sync endpoint must be a valid https:// URL.", "error");
           return;
         }
-        try { localStorage.setItem(SYNC_URL_STORAGE_KEY, val); } catch (e) {}
-        leagueDB.cloudSyncUrl = val;
+        uiState.decryptedSyncUrl = val;
+        try { localStorage.removeItem(SYNC_URL_STORAGE_KEY); } catch (e) {}
+        if (uiState.verifiedPassHash) {
+          const cipherKey = await sha256Hex(URL_CIPHER_SALT + uiState.verifiedPassHash);
+          leagueDB.encryptedCloudSyncUrl = await encryptStringWithKeyHex(val, cipherKey);
+        } else {
+          try { localStorage.setItem(SYNC_URL_STORAGE_KEY, val); } catch (e) {}
+        }
+        delete leagueDB.cloudSyncUrl;
         saveDatabase(false);
-        showToast("Saved Google Sheet Live Sync URL! Connecting...", "success");
+        showToast("Saved & encrypted Google Sheet Live Sync URL! Connecting...", "success");
         await fetchRemoteJsonNow(true);
       } else {
         try { localStorage.removeItem(SYNC_URL_STORAGE_KEY); } catch (e) {}
+        uiState.decryptedSyncUrl = "";
         delete leagueDB.cloudSyncUrl;
+        delete leagueDB.encryptedCloudSyncUrl;
         saveDatabase(false);
         updateSyncStatusUI("Static / Local Mode", false, false);
         showToast("Cleared custom Google Sheet sync endpoint.", "info");
@@ -6076,7 +6255,7 @@
     function buildCloudGetUrl(customUrl) {
       if (!customUrl) return `./league_data.json?t=${Date.now()}`;
       const sep = customUrl.includes("?") ? "&" : "?";
-      const passHash = encodeURIComponent(uiState.verifiedPassHash || leagueDB?.leaguePassphraseHash || DEFAULT_PASSPHRASE_HASH);
+      const passHash = encodeURIComponent(uiState.verifiedPassHash || leagueDB?.leaguePassphraseHash || "");
       return `${customUrl}${sep}passHash=${passHash}&t=${Date.now()}`;
     }
 
@@ -6108,23 +6287,26 @@
         const unwrapped = unwrapRemoteSyncResponse(rawJson);
 
         if (unwrapped.empty) {
-          updateSyncStatusUI("Sheet Connected (Ready to Seed)", true, false);
-          if (showFeedback) showToast("Google Sheet connected! Click 'Push / Seed' in Admin Sync to initialize.", "info");
+          uiState.sheetNeedsInitialSeed = true;
+          if (uiState.isCommish && customUrl) {
+            await initializeRemoteSheetFromLocal(false);
+            return;
+          }
+          updateSyncStatusUI("Live Sheet Connected ✓", true, false);
+          if (showFeedback) showToast("Live Google Sheet connected! Unlock Commissioner Mode once to auto-seed backup tabs.", "info");
           return;
         }
         if (unwrapped.error || !unwrapped.state) return;
 
         const validated = validateAndSanitizeDatabase(unwrapped.state);
         if (!validated) return;
-
-        if (customUrl && !validated.cloudSyncUrl) {
-          validated.cloudSyncUrl = customUrl;
-        }
+        await mergePreservedSecurityMetadata(validated);
+        uiState.sheetNeedsInitialSeed = false;
 
         const remoteTs = Number(validated.updatedAt) || 1;
         const localTs = Number(leagueDB?.updatedAt) || 0;
 
-        if (customUrl ? remoteTs >= localTs : remoteTs >= localTs) {
+        if (remoteTs >= localTs) {
           const changed = remoteTs > localTs || JSON.stringify(validated.trades) !== JSON.stringify(leagueDB?.trades);
           leagueDB = validated;
           normalizeAndDeduplicateTrades(leagueDB);
@@ -6162,6 +6344,7 @@
         const unwrapped = unwrapRemoteSyncResponse(rawJson);
 
         if (unwrapped.empty) {
+          uiState.sheetNeedsInitialSeed = true;
           if (autoSeedIfEmpty && uiState.isCommish && customUrl) {
             await initializeRemoteSheetFromLocal(true);
             return;
@@ -6178,7 +6361,8 @@
 
         const validated = validateAndSanitizeDatabase(unwrapped.state);
         if (validated) {
-          if (customUrl && !validated.cloudSyncUrl) validated.cloudSyncUrl = customUrl;
+          await mergePreservedSecurityMetadata(validated);
+          uiState.sheetNeedsInitialSeed = false;
           pushUndoState("Pull Remote League State");
           leagueDB = validated;
           normalizeAndDeduplicateTrades(leagueDB);
@@ -6206,14 +6390,19 @@
         showToast("Save your Google Apps Script /exec URL first.", "error");
         return;
       }
-      leagueDB.cloudSyncUrl = customUrl;
+      if (uiState.verifiedPassHash && !leagueDB.encryptedCloudSyncUrl) {
+        const cipherKey = await sha256Hex(URL_CIPHER_SALT + uiState.verifiedPassHash);
+        leagueDB.encryptedCloudSyncUrl = await encryptStringWithKeyHex(customUrl, cipherKey);
+      }
+      delete leagueDB.cloudSyncUrl;
       leagueDB.updatedAt = Date.now();
       saveDatabase(false);
       const ok = await pushAdminStateToCloud("INITIAL_SHEET_SEED");
       if (ok) {
+        uiState.sheetNeedsInitialSeed = false;
         if (closeOnDone) closeModal("cloudSyncModal");
         renderAll();
-        showToast("Seeded Google Sheet & created LIVE_STATE_JSON + Backup tabs! Export league_data.json once to GitHub so all 10 managers auto-connect.", "success");
+        showToast("Live Google Sheet seeded (LIVE_STATE_JSON + Backup tabs created)!", "success");
       }
     }
 
@@ -6224,12 +6413,25 @@
 
       updateSyncStatusUI("Syncing to Sheet...", false, false);
       try {
+        const stateForCloud = JSON.parse(JSON.stringify(leagueDB));
+        delete stateForCloud.cloudSyncUrl;
+        if (stateForCloud.commishPinVerifier && stateForCloud.commishPinVerifier !== DEFAULT_PIN_VERIFIER && uiState.commishSessionHash) {
+          stateForCloud.commishPinHash = uiState.commishSessionHash;
+        } else if (stateForCloud.commishPinVerifier === DEFAULT_PIN_VERIFIER) {
+          delete stateForCloud.commishPinHash;
+        }
+        if (stateForCloud.leaguePassphraseVerifier && stateForCloud.leaguePassphraseVerifier !== DEFAULT_PASSPHRASE_VERIFIER && uiState.verifiedPassHash) {
+          stateForCloud.leaguePassphraseHash = uiState.verifiedPassHash;
+        } else if (stateForCloud.leaguePassphraseVerifier === DEFAULT_PASSPHRASE_VERIFIER) {
+          delete stateForCloud.leaguePassphraseHash;
+        }
+
         const payload = {
           action: "ADMIN_FULL_SYNC",
           reason,
-          passHash: overrides.passHashOverride || uiState.verifiedPassHash || leagueDB?.leaguePassphraseHash || DEFAULT_PASSPHRASE_HASH,
-          commishAuthHash: overrides.commishAuthHashOverride || uiState.commishSessionHash || leagueDB?.commishPinHash || DEFAULT_PIN_HASH,
-          state: leagueDB
+          passHash: overrides.passHashOverride || uiState.verifiedPassHash || leagueDB?.leaguePassphraseHash || "",
+          commishAuthHash: overrides.commishAuthHashOverride || uiState.commishSessionHash || leagueDB?.commishPinHash || "",
+          state: stateForCloud
         };
         // text/plain;charset=utf-8 avoids CORS preflight OPTIONS failure on Google Apps Script /exec
         const res = await fetch(customUrl, {
@@ -6242,6 +6444,7 @@
         if (res.ok && (!resJson || resJson.ok !== false)) {
           uiState.lastSyncedAt = Date.now();
           uiState.hasUnpublishedAdminEdits = false;
+          uiState.sheetNeedsInitialSeed = false;
           updateSyncStatusUI("Live Sheet Synced ✓", true, false);
           return true;
         } else {
@@ -6264,9 +6467,9 @@
       try {
         const payload = {
           action: "ADD_MEMBER_TRADE",
-          passHash: uiState.verifiedPassHash || leagueDB?.leaguePassphraseHash || DEFAULT_PASSPHRASE_HASH,
+          passHash: uiState.verifiedPassHash || leagueDB?.leaguePassphraseHash || "",
           trade: tradeObj,
-          fallbackBaseState: leagueDB
+          fallbackBaseState: sanitizeStateForPublicExport(leagueDB)
         };
         const res = await fetch(customUrl, {
           method: "POST",
@@ -6278,7 +6481,8 @@
         if (res.ok && resJson && resJson.ok && resJson.state) {
           const validated = validateAndSanitizeDatabase(resJson.state);
           if (validated) {
-            if (!validated.cloudSyncUrl) validated.cloudSyncUrl = customUrl;
+            await mergePreservedSecurityMetadata(validated);
+            uiState.sheetNeedsInitialSeed = false;
             leagueDB = validated;
             normalizeAndDeduplicateTrades(leagueDB);
             ensureRollingWindowYearsExist();
@@ -6334,7 +6538,7 @@
 
     function copyShareableSnapshotLink() {
       try {
-        const jsonStr = JSON.stringify(leagueDB);
+        const jsonStr = JSON.stringify(sanitizeStateForPublicExport(leagueDB));
         const encoded = utf8ToBase64(jsonStr);
         const baseUrl = window.location.href.split("#")[0];
         const shareUrl = `${baseUrl}#snapshot=${encodeURIComponent(encoded)}`;
@@ -6351,7 +6555,8 @@
         saveDatabase(false);
         renderAll();
       }
-      const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(leagueDB, null, 2));
+      const safeExportObj = sanitizeStateForPublicExport(leagueDB);
+      const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(safeExportObj, null, 2));
       const a = document.createElement("a");
       a.setAttribute("href", dataStr);
       a.setAttribute("download", `league_data.json`);
@@ -6359,7 +6564,7 @@
       a.click();
       a.remove();
       updateSyncStatusUI("Exported league_data.json ✓", true, false);
-      showToast("Downloaded league_data.json — upload alongside index.html on GitHub Pages!", "success");
+      showToast("Downloaded sanitized league_data.json — safe for GitHub Pages!", "success");
     }
 
     function importLeagueBackup(event) {

@@ -2,8 +2,9 @@
   "version": "5.0",
   "updatedAt": 0,
   "baseUpcomingYear": 2027,
-  "leaguePassphraseHash": "ed82a630acbc4c03fe026e616f3002f5d7ffd51a462cc9023efca21b90a1bd4e",
-  "commishPinHash": "9dc15277bc17bbea84f404584d0deff365108b37ccff158a6b2311ddcc5a6b8a",
+  "leaguePassphraseVerifier": "eafd2c26f6979985a54ab2573dd6b5adf47275fb991ae6cdf1512a8b037cc385",
+  "commishPinVerifier": "f03f4a5f4e5dc70446e6a5191311eb62fb045b12440f99b4bdb49c5e4048bb59",
+  "encryptedCloudSyncUrl": "ea6e4579eca7e2d4f5ae7d1858ec182b79ad5a18b3baac29253084d14d45031cf418be69f7373c0b3bbd0dfb97c8be8bc93c854342b2a7b6c1f4ff90e2f03524f8d6d7944110421831469af3cd4efaa5c0845aa92d7b7368038c6fc5cf2c400a134cc1e320d6b065da6e17ea9976d4a7",
   "teams": [
     {
       "id": "syeth",
