@@ -261,9 +261,17 @@ function doPost(e) {
           }
         });
       }
+      var sanitizedChips = [];
+      if (Array.isArray(incoming.needsChips)) {
+        incoming.needsChips.slice(0, 12).forEach(function(c) {
+          var s = String(c || "").trim().slice(0, 32);
+          if (s && sanitizedChips.indexOf(s) === -1) sanitizedChips.push(s);
+        });
+      }
       baseStateProf.teamProfiles[teamId] = {
         tradeBlockNote: String(incoming.tradeBlockNote || "").slice(0, 280),
         lookingFor: String(incoming.lookingFor || "").slice(0, 180),
+        needsChips: sanitizedChips,
         pickTags: sanitizedTags,
         teamPinVerifier: (incoming.teamPinVerifier && /^[a-f0-9]{64}$/i.test(incoming.teamPinVerifier)) ? incoming.teamPinVerifier.toLowerCase() : "",
         teamPinHash: (incoming.teamPinHash && /^[a-f0-9]{64}$/i.test(incoming.teamPinHash)) ? incoming.teamPinHash.toLowerCase() : "",

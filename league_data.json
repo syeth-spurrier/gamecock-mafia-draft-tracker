@@ -1,5 +1,5 @@
 {
-  "version": "5.1",
+  "version": "6.0",
   "updatedAt": 0,
   "baseUpcomingYear": 2027,
   "leaguePassphraseVerifier": "eafd2c26f6979985a54ab2573dd6b5adf47275fb991ae6cdf1512a8b037cc385",
@@ -51,60 +51,70 @@
     "syeth": {
       "tradeBlockNote": "",
       "lookingFor": "",
+      "needsChips": [],
       "pickTags": {},
       "updatedAt": 0
     },
     "corbyn": {
       "tradeBlockNote": "",
       "lookingFor": "",
+      "needsChips": [],
       "pickTags": {},
       "updatedAt": 0
     },
     "chris": {
       "tradeBlockNote": "",
       "lookingFor": "",
+      "needsChips": [],
       "pickTags": {},
       "updatedAt": 0
     },
     "boss": {
       "tradeBlockNote": "",
       "lookingFor": "",
+      "needsChips": [],
       "pickTags": {},
       "updatedAt": 0
     },
     "geltz": {
       "tradeBlockNote": "",
       "lookingFor": "",
+      "needsChips": [],
       "pickTags": {},
       "updatedAt": 0
     },
     "matt": {
       "tradeBlockNote": "",
       "lookingFor": "",
+      "needsChips": [],
       "pickTags": {},
       "updatedAt": 0
     },
     "dylan": {
       "tradeBlockNote": "",
       "lookingFor": "",
+      "needsChips": [],
       "pickTags": {},
       "updatedAt": 0
     },
     "leo": {
       "tradeBlockNote": "",
       "lookingFor": "",
+      "needsChips": [],
       "pickTags": {},
       "updatedAt": 0
     },
     "mary": {
       "tradeBlockNote": "",
       "lookingFor": "",
+      "needsChips": [],
       "pickTags": {},
       "updatedAt": 0
     },
     "josh": {
       "tradeBlockNote": "",
       "lookingFor": "",
+      "needsChips": [],
       "pickTags": {},
       "updatedAt": 0
     }
