@@ -2959,7 +2959,7 @@
         const srcArr = (src.rosters && Array.isArray(src.rosters[t.id]))
           ? src.rosters[t.id]
           : (fallback.rosters[t.id] || []);
-        cleanRosters[t.id] = srcArr.slice(0, 35).map((p, idx) => ({
+        cleanRosters[t.id] = srcArr.slice(0, 45).map((p, idx) => ({
           id: safeId(p?.id || `p-${t.id}-${idx + 1}`),
           name: cleanStr(p?.name, 60).trim(),
           pos: cleanStr(p?.pos || "FLEX", 12).trim().toUpperCase(),
@@ -5696,27 +5696,32 @@
       const sortedYears = Object.keys(seasonsObj).map(Number).sort((a, b) => a - b);
       sortedYears.forEach(yr => {
         const s = seasonsObj[String(yr)];
-        if (!s || !Array.isArray(s.standings)) return;
+        if (!s || !Array.isArray(s.standings) || s.standings.length === 0) return;
         const yrOverrides = (ed.seasonOwnerOverrides && ed.seasonOwnerOverrides[String(yr)]) || {};
         const resolveOwner = (rawId) => yrOverrides[rawId] || rawId;
 
-        const champId = resolveOwner(s.champion);
-        const runnerId = resolveOwner(s.runnerUp);
-        const toiletId = resolveOwner(s.toiletBowl);
+        const maxGamesPlayed = s.standings.reduce((mx, st) => Math.max(mx, (Number(st.wins) || 0) + (Number(st.losses) || 0) + (Number(st.ties) || 0)), 0);
+        const isCompletedSeason = maxGamesPlayed >= 12;
 
-        if (champId) {
-          const e = ensureEntry(champId);
-          e.championships += 1;
-          e.champYears.push(yr);
-        }
-        if (runnerId) {
-          const e = ensureEntry(runnerId);
-          e.runnerUps += 1;
-        }
-        if (toiletId) {
-          const e = ensureEntry(toiletId);
-          e.toiletBowls += 1;
-          e.toiletYears.push(yr);
+        if (isCompletedSeason) {
+          const champId = resolveOwner(s.champion);
+          const runnerId = resolveOwner(s.runnerUp);
+          const toiletId = resolveOwner(s.toiletBowl);
+
+          if (champId) {
+            const e = ensureEntry(champId);
+            e.championships += 1;
+            e.champYears.push(yr);
+          }
+          if (runnerId) {
+            const e = ensureEntry(runnerId);
+            e.runnerUps += 1;
+          }
+          if (toiletId) {
+            const e = ensureEntry(toiletId);
+            e.toiletBowls += 1;
+            e.toiletYears.push(yr);
+          }
         }
 
         s.standings.forEach(st => {
@@ -5730,7 +5735,7 @@
           entry.pointsAgainst += Number(st.pointsAgainst) || 0;
           entry.allPlayWins += Number(st.allPlayWins) || 0;
           entry.allPlayLosses += Number(st.allPlayLosses) || 0;
-          if ((Number(st.playoffSeed) || 10) <= 6) {
+          if (isCompletedSeason && (Number(st.playoffSeed) || 10) <= 6) {
             entry.playoffBerths += 1;
           }
         });
@@ -5853,6 +5858,9 @@
       const yrOverrides = (ed.seasonOwnerOverrides && ed.seasonOwnerOverrides[String(selectedYr)]) || {};
       const resolveOwner = (rawId) => yrOverrides[rawId] || rawId;
 
+      const maxGamesPlayed = (sObj.standings || []).reduce((mx, st) => Math.max(mx, (Number(st.wins) || 0) + (Number(st.losses) || 0) + (Number(st.ties) || 0)), 0);
+      const isCompletedSeason = maxGamesPlayed >= 12;
+
       const champName = sObj.champion ? escapeHtml(getHistoricalManagerDisplayName(resolveOwner(sObj.champion))) : "TBD";
       const runnerName = sObj.runnerUp ? escapeHtml(getHistoricalManagerDisplayName(resolveOwner(sObj.runnerUp))) : "TBD";
       const toiletName = sObj.toiletBowl ? escapeHtml(getHistoricalManagerDisplayName(resolveOwner(sObj.toiletBowl))) : "TBD";
@@ -5870,7 +5878,7 @@
         return `
           <tr class="border-b border-zinc-800/80 hover:bg-zinc-900/60 transition text-xs ${isChamp ? 'bg-amber-950/15' : isToilet ? 'bg-rose-950/15' : ''}">
             <td class="py-2.5 px-3 font-mono font-black text-center ${isChamp ? 'text-amber-300' : isToilet ? 'text-rose-400' : 'text-zinc-400'}">
-              ${isChamp ? '🏆 #1' : isToilet ? `🚽 #${idx + 1}` : `#${idx + 1}`}
+              ${isChamp ? (isCompletedSeason ? '🏆 #1' : '🔥 #1') : isToilet ? (isCompletedSeason ? `🚽 #${idx + 1}` : `#${idx + 1}`) : `#${idx + 1}`}
             </td>
             <td class="py-2.5 px-3 font-black text-white">
               <div class="flex items-center gap-2">
@@ -5898,6 +5906,7 @@
                 <span class="static-badge bg-amber-950 text-amber-300 border border-amber-500/60">
                   <i class="fa-solid fa-football"></i> ESPN Season Standings
                 </span>
+                ${!isCompletedSeason && maxGamesPlayed > 0 ? `<span class="static-badge bg-emerald-950 text-emerald-300 border border-emerald-500/50">🟢 Live Season (${maxGamesPlayed} GP)</span>` : ''}
                 <h2 class="text-base sm:text-lg font-black text-white">${selectedYr} Gamecock Mafia Standings & Schedule Luck</h2>
               </div>
               <p class="text-xs text-zinc-400 mt-0.5">Includes All-Play Record (if you played all 9 opponents every week) & Schedule Luck delta.</p>
@@ -5920,24 +5929,24 @@
           <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
             <div class="bg-[#09090B] border border-amber-500/50 rounded-xl p-3 flex items-center justify-between">
               <div>
-                <div class="text-[10px] font-extrabold uppercase text-amber-400">🏆 ${selectedYr} League Champion</div>
+                <div class="text-[10px] font-extrabold uppercase text-amber-400">${isCompletedSeason ? `🏆 ${selectedYr} League Champion` : `🔥 ${selectedYr} Current #1 Seed (In Progress)`}</div>
                 <div class="text-sm font-black text-white mt-0.5">${champName}</div>
               </div>
-              <span class="text-2xl">🏆</span>
+              <span class="text-2xl">${isCompletedSeason ? '🏆' : '🔥'}</span>
             </div>
             <div class="bg-[#09090B] border border-zinc-800 rounded-xl p-3 flex items-center justify-between">
               <div>
-                <div class="text-[10px] font-extrabold uppercase text-zinc-400">🥈 ${selectedYr} Runner-Up</div>
+                <div class="text-[10px] font-extrabold uppercase text-zinc-400">${isCompletedSeason ? `🥈 ${selectedYr} Runner-Up` : `⚡ ${selectedYr} Current #2 Seed`}</div>
                 <div class="text-sm font-black text-zinc-200 mt-0.5">${runnerName}</div>
               </div>
-              <span class="text-2xl">🥈</span>
+              <span class="text-2xl">${isCompletedSeason ? '🥈' : '⚡'}</span>
             </div>
             <div class="bg-[#09090B] border border-rose-500/40 rounded-xl p-3 flex items-center justify-between">
               <div>
-                <div class="text-[10px] font-extrabold uppercase text-rose-400">🚽 ${selectedYr} Toilet Bowl (Last Place)</div>
+                <div class="text-[10px] font-extrabold uppercase text-rose-400">${isCompletedSeason ? `🚽 ${selectedYr} Toilet Bowl (Last Place)` : `🚨 ${selectedYr} Current Cellar (#10)`}</div>
                 <div class="text-sm font-black text-rose-200 mt-0.5">${toiletName}</div>
               </div>
-              <span class="text-2xl">🚽</span>
+              <span class="text-2xl">${isCompletedSeason ? '🚽' : '🚨'}</span>
             </div>
           </div>
 
