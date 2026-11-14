@@ -7149,7 +7149,12 @@
         return;
       }
 
-      // Check optional personal Team PIN if enabled for this franchise
+      uiState.verifiedPassHash = candidateWireHash;
+      await unlockEncryptedSyncUrl(candidateWireHash);
+      await initCloudSyncOnLoad(false);
+      populateGateFranchiseSelect(chosenTeamId);
+
+      // Check optional personal Team PIN if enabled for this franchise (against freshly synced Sheet state)
       let verifiedTeamPinHash = "";
       if (doesTeamHavePersonalPin(chosenTeamId) && !uiState.isCommish) {
         const teamPinInp = document.getElementById("gateTeamPinInput");
@@ -7170,7 +7175,6 @@
       }
 
       uiState.isLeagueUnlocked = true;
-      uiState.verifiedPassHash = candidateWireHash;
       uiState.myTeam = chosenTeamId;
       uiState.myTeamPinHash = verifiedTeamPinHash;
       uiState.selectedManager = chosenTeamId;
@@ -7179,7 +7183,6 @@
       }
       uiState.failedPassAttempts = 0;
       uiState.passLockoutUntil = 0;
-      await unlockEncryptedSyncUrl(candidateWireHash);
       try {
         localStorage.setItem(PASSPHRASE_STORAGE_KEY, candidateWireHash);
         localStorage.setItem(MY_TEAM_STORAGE_KEY, chosenTeamId);
@@ -7193,7 +7196,6 @@
       populateStaticFormControls();
       renderAll();
       startBackgroundSyncTimers();
-      await initCloudSyncOnLoad(false);
       showToast(`Signed in as ${getTeamName(chosenTeamId)}!`, "success");
     }
 
