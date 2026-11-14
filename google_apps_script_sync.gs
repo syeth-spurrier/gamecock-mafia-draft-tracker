@@ -13,15 +13,18 @@
  *   5. Copy the Web App URL (ends in /exec) and paste it into your Tracker's
  *      Admin -> Live Sheet / GitHub Sync modal!
  *
- * Automatically maintains 3 tabs inside your Google Sheet:
- *   - LIVE_STATE_JSON     (Canonical JSON state + 30-version rollback history)
+ * Automatically maintains 5 tabs inside your Google Sheet:
+ *   - LIVE_STATE_JSON     (Canonical JSON state + 30-version rollback history, multi-cell chunk-safe)
  *   - TRADES_BACKUP       (Human-readable spreadsheet table of every trade)
  *   - PICK_LEDGER_BACKUP  (Human-readable spreadsheet backup of traded picks & Pending Final items)
+ *   - ESPN_ROSTERS_BACKUP (Human-readable spreadsheet of synced ESPN rosters, keeper locks & OTB tags)
+ *   - ESPN_HISTORY_BACKUP (Human-readable spreadsheet of all-time ESPN season standings & trophies)
  * ============================================================================
  */
 
 var DEFAULT_PASSPHRASE_HASH = "ed82a630acbc4c03fe026e616f3002f5d7ffd51a462cc9023efca21b90a1bd4e"; // Salted SHA-256 hash of default league passphrase
 var DEFAULT_COMMISH_PIN_HASH = "9dc15277bc17bbea84f404584d0deff365108b37ccff158a6b2311ddcc5a6b8a"; // Salted SHA-256 hash of default Commissioner PIN
+var CELL_CHUNK_SIZE = 44000; // Safe margin below Google Sheets 50,000 char/cell limit
 
 function jsonResponse(obj) {
   return ContentService
@@ -50,20 +53,53 @@ function ensureSheetsExist(ss) {
     picksSheet = ss.insertSheet("PICK_LEDGER_BACKUP");
   }
 
+  var espnRostersSheet = ss.getSheetByName("ESPN_ROSTERS_BACKUP");
+  if (!espnRostersSheet) {
+    espnRostersSheet = ss.insertSheet("ESPN_ROSTERS_BACKUP");
+  }
+
+  var espnHistorySheet = ss.getSheetByName("ESPN_HISTORY_BACKUP");
+  if (!espnHistorySheet) {
+    espnHistorySheet = ss.insertSheet("ESPN_HISTORY_BACKUP");
+  }
+
   return {
     stateSheet: stateSheet,
     tradesSheet: tradesSheet,
-    picksSheet: picksSheet
+    picksSheet: picksSheet,
+    espnRostersSheet: espnRostersSheet,
+    espnHistorySheet: espnHistorySheet
   };
 }
 
 function readStoredState(stateSheet) {
   var raw = stateSheet.getRange("B2").getValue();
   if (!raw || typeof raw !== "string") return null;
+  var joined = raw;
+  // Support multi-cell overflow chunks in D2:Z2 when full ESPN history + rosters exceed 44,000 chars
+  if (raw.length >= CELL_CHUNK_SIZE) {
+    try {
+      var extraRow = stateSheet.getRange(2, 4, 1, 20).getValues();
+      if (extraRow && extraRow[0]) {
+        for (var c = 0; c < extraRow[0].length; c++) {
+          var part = extraRow[0][c];
+          if (part && typeof part === "string") {
+            joined += part;
+          } else {
+            break;
+          }
+        }
+      }
+    } catch (ignoreChunkErr) {}
+  }
   try {
-    return JSON.parse(raw);
+    return JSON.parse(joined);
   } catch (err) {
-    return null;
+    try {
+      return JSON.parse(raw);
+    } catch (err2) {
+      return null;
+    }
   }
 }
 
@@ -229,6 +265,17 @@ function doPost(e) {
         cleanApprovals[confBy[ci]] = true;
       }
 
+      var cleanPlayers = Array.isArray(tr.playerTransfers) ? tr.playerTransfers.slice(0, 30).map(function(pt) {
+        return {
+          playerId: String(pt.playerId || "").slice(0, 40),
+          name: String(pt.name || "").slice(0, 80),
+          pos: String(pt.pos || "").slice(0, 12),
+          nflTeam: String(pt.nflTeam || "").slice(0, 12),
+          fromOwner: String(pt.fromOwner || "").slice(0, 30),
+          toOwner: String(pt.toOwner || "").slice(0, 30)
+        };
+      }) : [];
+
       return {
         id: assignedId,
         year: primaryYear,
@@ -255,10 +302,35 @@ function doPost(e) {
             toOwner: String(dt.toOwner || "")
           };
         }) : [],
+        playerTransfers: cleanPlayers,
         pools: cleanPools,
         conditionals: cleanConds,
         reactions: (tr.reactions && typeof tr.reactions === "object") ? tr.reactions : {}
       };
+    }
+
+    function applyConfirmedPlayerTransfersToRosters(baseStateObj, tradeObj) {
+      if (!baseStateObj || !baseStateObj.espnData || !baseStateObj.espnData.rosters || !tradeObj) return;
+      var pts = Array.isArray(tradeObj.playerTransfers) ? tradeObj.playerTransfers : [];
+      if (pts.length === 0) return;
+      var rosters = baseStateObj.espnData.rosters;
+      for (var i = 0; i < pts.length; i++) {
+        var pt = pts[i];
+        var fromList = Array.isArray(rosters[pt.fromOwner]) ? rosters[pt.fromOwner] : [];
+        var toList = Array.isArray(rosters[pt.toOwner]) ? rosters[pt.toOwner] : [];
+        var movedPlayer = null;
+        for (var fi = 0; fi < fromList.length; fi++) {
+          if (String(fromList[fi].id) === String(pt.playerId) || String(fromList[fi].name) === String(pt.name)) {
+            movedPlayer = fromList.splice(fi, 1)[0];
+            break;
+          }
+        }
+        if (movedPlayer) {
+          toList.push(movedPlayer);
+          rosters[pt.fromOwner] = fromList;
+          rosters[pt.toOwner] = toList;
+        }
+      }
     }
 
     // ------------------------------------------------------------------------
@@ -303,6 +375,7 @@ function doPost(e) {
       var assignedId = assignOfficialTradeId(baseState, primaryYear);
       var cleanTrade = sanitizeIncomingTradeObject(tr, primaryYear, assignedId);
       baseState.trades.push(cleanTrade);
+      applyConfirmedPlayerTransfersToRosters(baseState, cleanTrade);
       baseState.updatedAt = Date.now();
 
       saveAndMirrorToSheets(sheets, baseState, "MEMBER_TRADE:" + assignedId);
@@ -390,6 +463,7 @@ function doPost(e) {
           propObj.notes = (propObj.notes ? propObj.notes + " | " : "") + "Partner Note: " + replyNote;
         }
         baseStateResp.trades.push(propObj);
+        applyConfirmedPlayerTransfersToRosters(baseStateResp, propObj);
 
         // Auto-prune any remaining open proposals whose directTransfers now conflict
         baseStateResp.pendingTrades = baseStateResp.pendingTrades.filter(function(otherProp) {
@@ -447,7 +521,7 @@ function doPost(e) {
     }
 
     // ------------------------------------------------------------------------
-    // ACTION 1B: FRANCHISE MANAGER UPDATES THEIR OWN TEAM WAR ROOM / IDENTITY
+    // ACTION 1B: FRANCHISE MANAGER UPDATES THEIR OWN TEAM WAR ROOM / KEEPERS / IDENTITY
     // ------------------------------------------------------------------------
     if (action === "UPDATE_TEAM_PROFILE") {
       var baseStateProf = stored || body.fallbackBaseState;
@@ -479,6 +553,25 @@ function doPost(e) {
           }
         });
       }
+      var sanitizedPlayerTags = {};
+      if (incoming.playerTags && typeof incoming.playerTags === "object") {
+        Object.keys(incoming.playerTags).slice(0, 60).forEach(function(pk) {
+          var pv = incoming.playerTags[pk];
+          if ((pv === "ON_BLOCK" || pv === "UNTOUCHABLE") && /^[A-Za-z0-9_.-]+$/.test(pk)) {
+            sanitizedPlayerTags[pk] = pv;
+          }
+        });
+      }
+      var sanitizedKeepers = [];
+      if (Array.isArray(incoming.keepers)) {
+        incoming.keepers.slice(0, 20).forEach(function(kid) {
+          var ks = String(kid || "").trim().slice(0, 40);
+          if (ks && sanitizedKeepers.indexOf(ks) === -1) sanitizedKeepers.push(ks);
+        });
+      } else if (Array.isArray(existingProf.keepers)) {
+        sanitizedKeepers = existingProf.keepers;
+      }
+
       var sanitizedChips = [];
       if (Array.isArray(incoming.needsChips)) {
         incoming.needsChips.slice(0, 12).forEach(function(c) {
@@ -510,6 +603,8 @@ function doPost(e) {
         lookingFor: String(incoming.lookingFor || "").slice(0, 180),
         needsChips: sanitizedChips,
         pickTags: sanitizedTags,
+        playerTags: incoming.playerTags && typeof incoming.playerTags === "object" ? sanitizedPlayerTags : (existingProf.playerTags || {}),
+        keepers: sanitizedKeepers,
         customTeamName: String(incoming.customTeamName || "").trim().slice(0, 24),
         avatarType: ["MONOGRAM", "EMOJI", "IMAGE"].indexOf(incoming.avatarType) !== -1 ? incoming.avatarType : (existingProf.avatarType || "MONOGRAM"),
         avatarText: String(incoming.avatarText || "").trim().slice(0, 4),
@@ -523,9 +618,79 @@ function doPost(e) {
         teamPinHash: (incoming.teamPinHash && /^[a-f0-9]{64}$/i.test(incoming.teamPinHash)) ? incoming.teamPinHash.toLowerCase() : "",
         updatedAt: Date.now()
       };
+      if (Array.isArray(incoming.roster)) {
+        if (!baseStateProf.espnData || typeof baseStateProf.espnData !== "object") {
+          baseStateProf.espnData = { rosters: {} };
+        }
+        if (!baseStateProf.espnData.rosters || typeof baseStateProf.espnData.rosters !== "object") {
+          baseStateProf.espnData.rosters = {};
+        }
+        baseStateProf.espnData.rosters[teamId] = incoming.roster.slice(0, 40).map(function(rp, rIdx) {
+          return {
+            id: String(rp && rp.id ? rp.id : ("p-" + teamId + "-" + (rIdx + 1))).slice(0, 40),
+            name: String(rp && rp.name ? rp.name : "").trim().slice(0, 60),
+            pos: String(rp && rp.pos ? rp.pos : "FLEX").trim().toUpperCase().slice(0, 12),
+            nflTeam: String(rp && rp.nflTeam ? rp.nflTeam : "NFL").trim().toUpperCase().slice(0, 8),
+            slot: String(rp && rp.slot ? rp.slot : "BE").trim().toUpperCase().slice(0, 10),
+            projPts: Number(rp && rp.projPts) || 0,
+            totalPts: Number(rp && rp.totalPts) || 0
+          };
+        }).filter(function(rp) { return Boolean(rp.name); });
+      }
       baseStateProf.updatedAt = Date.now();
       saveAndMirrorToSheets(sheets, baseStateProf, (!wasCursed && nowCursed) ? ("UPSTATE_KITTY_CURSE:" + teamId) : ("TEAM_WAR_ROOM:" + teamId));
       return jsonResponse({ ok: true, state: sanitizeStateForClient(baseStateProf) });
+    }
+
+    // ------------------------------------------------------------------------
+    // ACTION 1D: 1-CLICK ESPN CONSOLE EXTRACTOR OR COMMISSIONER ESPN DATA SYNC
+    // ------------------------------------------------------------------------
+    if (action === "ESPN_SYNC_UPDATE") {
+      var baseStateEspn = stored || body.fallbackBaseState;
+      if (!baseStateEspn || !Array.isArray(baseStateEspn.teams)) {
+        return jsonResponse({ ok: false, error: "Initialize database from Commissioner Mode first." });
+      }
+      var incomingEspn = body.espnData;
+      if (!incomingEspn || typeof incomingEspn !== "object") {
+        return jsonResponse({ ok: false, error: "Missing espnData payload." });
+      }
+      var existingEspn = (baseStateEspn.espnData && typeof baseStateEspn.espnData === "object") ? baseStateEspn.espnData : {};
+      baseStateEspn.espnData = {
+        leagueId: String(incomingEspn.leagueId || existingEspn.leagueId || "").slice(0, 32),
+        leagueName: String(incomingEspn.leagueName || existingEspn.leagueName || "Gamecock Mafia").slice(0, 80),
+        currentSeason: Number(incomingEspn.currentSeason) || Number(existingEspn.currentSeason) || 2026,
+        lastSyncedAt: Date.now(),
+        keeperRules: (incomingEspn.keeperRules && typeof incomingEspn.keeperRules === "object")
+          ? incomingEspn.keeperRules
+          : (existingEspn.keeperRules || { maxKeepers: 12, keeperRounds: 12, posCaps: { RB: 4, WR: 4, OTHER: 3 } }),
+        teamSlotMap: (incomingEspn.teamSlotMap && typeof incomingEspn.teamSlotMap === "object")
+          ? incomingEspn.teamSlotMap
+          : (existingEspn.teamSlotMap || {}),
+        seasonOwnerOverrides: (incomingEspn.seasonOwnerOverrides && typeof incomingEspn.seasonOwnerOverrides === "object")
+          ? incomingEspn.seasonOwnerOverrides
+          : (existingEspn.seasonOwnerOverrides || {}),
+        alumniManagers: Array.isArray(incomingEspn.alumniManagers)
+          ? incomingEspn.alumniManagers
+          : (existingEspn.alumniManagers || []),
+        rosters: (incomingEspn.rosters && typeof incomingEspn.rosters === "object")
+          ? incomingEspn.rosters
+          : (existingEspn.rosters || {}),
+        seasonStandings: (incomingEspn.seasonStandings && typeof incomingEspn.seasonStandings === "object")
+          ? incomingEspn.seasonStandings
+          : (existingEspn.seasonStandings || {}),
+        headToHead: (incomingEspn.headToHead && typeof incomingEspn.headToHead === "object")
+          ? incomingEspn.headToHead
+          : (existingEspn.headToHead || {}),
+        records: (incomingEspn.records && typeof incomingEspn.records === "object")
+          ? incomingEspn.records
+          : (existingEspn.records || {}),
+        pastDraftPicks: (incomingEspn.pastDraftPicks && typeof incomingEspn.pastDraftPicks === "object")
+          ? incomingEspn.pastDraftPicks
+          : (existingEspn.pastDraftPicks || {})
+      };
+      baseStateEspn.updatedAt = Date.now();
+      saveAndMirrorToSheets(sheets, baseStateEspn, "ESPN_SYNC_UPDATE:" + (baseStateEspn.espnData.leagueId || "LIVE"));
+      return jsonResponse({ ok: true, state: sanitizeStateForClient(baseStateEspn) });
     }
 
     // ------------------------------------------------------------------------
@@ -566,16 +731,30 @@ function doPost(e) {
 }
 
 /**
- * Writes canonical JSON + rolling 30-snapshot history + human-readable Google Sheet tabs!
+ * Writes canonical JSON (chunk-safe across columns if >44k chars) + rolling 30-snapshot history + human-readable Google Sheet tabs!
  */
 function saveAndMirrorToSheets(sheets, state, actionLabel) {
   var nowIso = new Date().toISOString();
   var jsonStr = JSON.stringify(state);
 
-  // 1. Update LIVE_STATE_JSON
-  sheets.stateSheet.getRange("B2:C2").setValues([[jsonStr, nowIso]]);
+  // 1. Update LIVE_STATE_JSON (Chunk-safe if jsonStr > 44,000 chars)
+  var primaryChunk = jsonStr.slice(0, CELL_CHUNK_SIZE);
+  sheets.stateSheet.getRange("B2:C2").setValues([[primaryChunk, nowIso]]);
+  if (jsonStr.length > CELL_CHUNK_SIZE) {
+    var overflowChunks = [];
+    for (var pos = CELL_CHUNK_SIZE; pos < jsonStr.length; pos += CELL_CHUNK_SIZE) {
+      overflowChunks.push(jsonStr.slice(pos, pos + CELL_CHUNK_SIZE));
+    }
+    while (overflowChunks.length < 10) overflowChunks.push("");
+    sheets.stateSheet.getRange(2, 4, 1, overflowChunks.length).setValues([overflowChunks]);
+  } else {
+    try {
+      sheets.stateSheet.getRange(2, 4, 1, 10).clearContent();
+    } catch (ignoreClearErr) {}
+  }
+
   sheets.stateSheet.insertRowBefore(5);
-  sheets.stateSheet.getRange("A5:D5").setValues([[state.updatedAt || Date.now(), nowIso, safeSheetCell(actionLabel), jsonStr]]);
+  sheets.stateSheet.getRange("A5:D5").setValues([[state.updatedAt || Date.now(), nowIso, safeSheetCell(actionLabel), primaryChunk]]);
   if (sheets.stateSheet.getLastRow() > 35) {
     sheets.stateSheet.deleteRows(36, sheets.stateSheet.getLastRow() - 35);
   }
@@ -589,7 +768,7 @@ function saveAndMirrorToSheets(sheets, state, actionLabel) {
   sheets.tradesSheet.clearContents();
   var tradeRows = [[
     "Trade ID", "Primary Year", "Date / Sheet", "Logged By", "Managers Involved",
-    "Headline", "Direct Pick Transfers", "Pools (Pending Final / Finalized)",
+    "Headline", "Direct Pick Transfers", "Player Transfers", "Pools (Pending Final / Finalized)",
     "Conditional Swaps", "Notes"
   ]];
 
@@ -597,6 +776,9 @@ function saveAndMirrorToSheets(sheets, state, actionLabel) {
     var mgrs = [tr.teamA, tr.teamB, tr.teamC].filter(Boolean).map(tName).join(" <-> ");
     var directs = (tr.directTransfers || []).map(function(dt) {
       return dt.year + " Rd " + dt.round + " (" + tName(dt.originalOwner) + " -> " + tName(dt.toOwner) + ")";
+    }).join("; ");
+    var players = (tr.playerTransfers || []).map(function(pt) {
+      return pt.name + " (" + pt.pos + ", " + tName(pt.fromOwner) + " -> " + tName(pt.toOwner) + ")";
     }).join("; ");
     var pools = (tr.pools || []).map(function(p) {
       var st = p.resolvedOriginalOwner ? ("Finalized -> " + tName(p.resolvedOriginalOwner)) : "PENDING FINAL";
@@ -615,6 +797,7 @@ function saveAndMirrorToSheets(sheets, state, actionLabel) {
       safeSheetCell(mgrs),
       safeSheetCell(tr.headline || ""),
       safeSheetCell(directs),
+      safeSheetCell(players),
       safeSheetCell(pools),
       safeSheetCell(conds),
       safeSheetCell(tr.notes || "")
@@ -657,4 +840,71 @@ function saveAndMirrorToSheets(sheets, state, actionLabel) {
 
   sheets.picksSheet.getRange(1, 1, pickRows.length, pickRows[0].length).setValues(pickRows);
   sheets.picksSheet.getRange(1, 1, 1, pickRows[0].length).setFontWeight("bold");
+
+  // 4. Rebuild ESPN_ROSTERS_BACKUP tab if espnData.rosters is present
+  if (sheets.espnRostersSheet && state.espnData && state.espnData.rosters) {
+    sheets.espnRostersSheet.clearContents();
+    var rosterRows = [[
+      "Franchise Manager", "Player ID", "Player Name", "Position", "NFL Team",
+      "Lineup Slot", "Season Pts", "Keeper Locked?", "Trade Block Status"
+    ]];
+    var rostersMap = state.espnData.rosters || {};
+    var profilesMap = state.teamProfiles || {};
+    Object.keys(rostersMap).forEach(function(tid) {
+      var pList = Array.isArray(rostersMap[tid]) ? rostersMap[tid] : [];
+      var prof = profilesMap[tid] || {};
+      var keepersArr = Array.isArray(prof.keepers) ? prof.keepers : [];
+      var pTags = prof.playerTags || {};
+      pList.forEach(function(pl) {
+        var pid = String(pl.id || "");
+        var isKeeper = keepersArr.indexOf(pid) !== -1 ? "LOCKED KEEPER" : "";
+        var tagStatus = pTags[pid] || "";
+        rosterRows.push([
+          safeSheetCell(tName(tid)),
+          safeSheetCell(pid),
+          safeSheetCell(pl.name || ""),
+          safeSheetCell(pl.pos || ""),
+          safeSheetCell(pl.nflTeam || ""),
+          safeSheetCell(pl.slot || "Bench"),
+          Number(pl.pts) || 0,
+          safeSheetCell(isKeeper),
+          safeSheetCell(tagStatus)
+        ]);
+      });
+    });
+    sheets.espnRostersSheet.getRange(1, 1, rosterRows.length, rosterRows[0].length).setValues(rosterRows);
+    sheets.espnRostersSheet.getRange(1, 1, 1, rosterRows[0].length).setFontWeight("bold");
+  }
+
+  // 5. Rebuild ESPN_HISTORY_BACKUP tab if espnData.seasonStandings is present
+  if (sheets.espnHistorySheet && state.espnData && state.espnData.seasonStandings) {
+    sheets.espnHistorySheet.clearContents();
+    var histRows = [[
+      "Season Year", "Final Rank", "Manager ID", "ESPN Team Name", "Wins", "Losses", "Ties",
+      "Points For (PF)", "Points Against (PA)", "All-Play W", "All-Play L", "Champion?"
+    ]];
+    var standingsByYr = state.espnData.seasonStandings || {};
+    Object.keys(standingsByYr).sort().reverse().forEach(function(yr) {
+      var rows = Array.isArray(standingsByYr[yr]) ? standingsByYr[yr] : [];
+      rows.forEach(function(r) {
+        histRows.push([
+          Number(yr) || yr,
+          Number(r.finalStanding) || 0,
+          safeSheetCell(r.managerId || ""),
+          safeSheetCell(r.teamName || ""),
+          Number(r.wins) || 0,
+          Number(r.losses) || 0,
+          Number(r.ties) || 0,
+          Number(r.pointsFor) || 0,
+          Number(r.pointsAgainst) || 0,
+          Number(r.allPlayWins) || 0,
+          Number(r.allPlayLosses) || 0,
+          r.isChampion ? "CHAMPION 🏆" : ""
+        ]);
+      });
+    });
+    sheets.espnHistorySheet.getRange(1, 1, histRows.length, histRows[0].length).setValues(histRows);
+    sheets.espnHistorySheet.getRange(1, 1, 1, histRows[0].length).setFontWeight("bold");
+  }
 }
+
