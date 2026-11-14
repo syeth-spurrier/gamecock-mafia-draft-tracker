@@ -1,0 +1,459 @@
+{
+  "version": "5.0",
+  "updatedAt": 0,
+  "baseUpcomingYear": 2027,
+  "leaguePassphraseHash": "ed82a630acbc4c03fe026e616f3002f5d7ffd51a462cc9023efca21b90a1bd4e",
+  "commishPinHash": "9dc15277bc17bbea84f404584d0deff365108b37ccff158a6b2311ddcc5a6b8a",
+  "teams": [
+    {
+      "id": "syeth",
+      "name": "Syeth"
+    },
+    {
+      "id": "corbyn",
+      "name": "Corbyn"
+    },
+    {
+      "id": "chris",
+      "name": "Chris"
+    },
+    {
+      "id": "boss",
+      "name": "Boss"
+    },
+    {
+      "id": "geltz",
+      "name": "Geltz"
+    },
+    {
+      "id": "matt",
+      "name": "Matt"
+    },
+    {
+      "id": "dylan",
+      "name": "Dylan"
+    },
+    {
+      "id": "leo",
+      "name": "Leo"
+    },
+    {
+      "id": "mary",
+      "name": "Mary"
+    },
+    {
+      "id": "josh",
+      "name": "Josh"
+    }
+  ],
+  "trades": [
+    {
+      "id": "T-2026-01",
+      "year": 2026,
+      "date": "2026 / 2027 Sheet",
+      "teamA": "syeth",
+      "teamB": "chris",
+      "teamC": null,
+      "headline": "Chris gives 2026 1st (#3) & 2027 3rd; Syeth gives AJ Brown & David Montgomery",
+      "notes": "Multi-year deal: Gives Syeth #3 overall in 2026 plus two 2027 3rd-round picks (Syeth's 3rd + Chris's 3rd) entering the Trevor Lawrence deal.",
+      "directTransfers": [
+        {
+          "year": 2026,
+          "round": 1,
+          "originalOwner": "chris",
+          "fromOwner": "chris",
+          "toOwner": "syeth"
+        },
+        {
+          "year": 2027,
+          "round": 3,
+          "originalOwner": "chris",
+          "fromOwner": "chris",
+          "toOwner": "syeth"
+        }
+      ],
+      "pools": [],
+      "conditionals": []
+    },
+    {
+      "id": "T-2026-02",
+      "year": 2026,
+      "date": "2026 / 2027 Sheet",
+      "teamA": "boss",
+      "teamB": "geltz",
+      "teamC": null,
+      "headline": "Geltz gives 2026 2nd (#11) & 2027 2nd; Boss gives Cam Skattebo & 2027 3rd",
+      "notes": "Multi-year deal spanning 2026 (Rd 2 #11) and 2027 (Rd 2 & Rd 3).",
+      "directTransfers": [
+        {
+          "year": 2026,
+          "round": 2,
+          "originalOwner": "geltz",
+          "fromOwner": "geltz",
+          "toOwner": "boss"
+        },
+        {
+          "year": 2027,
+          "round": 2,
+          "originalOwner": "geltz",
+          "fromOwner": "geltz",
+          "toOwner": "boss"
+        },
+        {
+          "year": 2027,
+          "round": 3,
+          "originalOwner": "boss",
+          "fromOwner": "boss",
+          "toOwner": "geltz"
+        }
+      ],
+      "pools": [],
+      "conditionals": []
+    },
+    {
+      "id": "T-2026-03",
+      "year": 2026,
+      "date": "2026 Sheet",
+      "teamA": "chris",
+      "teamB": "dylan",
+      "teamC": null,
+      "headline": "Chris gives Davante Adams; Dylan gives 2nd (#13) & 3rd (#28)",
+      "notes": "",
+      "directTransfers": [
+        {
+          "year": 2026,
+          "round": 2,
+          "originalOwner": "dylan",
+          "fromOwner": "dylan",
+          "toOwner": "chris"
+        },
+        {
+          "year": 2026,
+          "round": 3,
+          "originalOwner": "dylan",
+          "fromOwner": "dylan",
+          "toOwner": "chris"
+        }
+      ],
+      "pools": [],
+      "conditionals": []
+    },
+    {
+      "id": "T-2026-04",
+      "year": 2026,
+      "date": "2026 Sheet",
+      "teamA": "corbyn",
+      "teamB": "josh",
+      "teamC": null,
+      "headline": "Josh gives 2nd (#20); Corbyn gives D'Andre Swift",
+      "notes": "",
+      "directTransfers": [
+        {
+          "year": 2026,
+          "round": 2,
+          "originalOwner": "josh",
+          "fromOwner": "josh",
+          "toOwner": "corbyn"
+        }
+      ],
+      "pools": [],
+      "conditionals": []
+    },
+    {
+      "id": "T-2026-05",
+      "year": 2026,
+      "date": "2026 Sheet",
+      "teamA": "syeth",
+      "teamB": "chris",
+      "teamC": null,
+      "headline": "Syeth traded Zay Flowers in 2025; Chris owes 2026 3rd (#23)",
+      "notes": "",
+      "directTransfers": [
+        {
+          "year": 2026,
+          "round": 3,
+          "originalOwner": "chris",
+          "fromOwner": "chris",
+          "toOwner": "syeth"
+        }
+      ],
+      "pools": [],
+      "conditionals": []
+    },
+    {
+      "id": "T-2026-06",
+      "year": 2026,
+      "date": "2026 Sheet",
+      "teamA": "matt",
+      "teamB": "syeth",
+      "teamC": null,
+      "headline": "Syeth gives 3rd (#27); Matt gives Travis Kelce",
+      "notes": "",
+      "directTransfers": [
+        {
+          "year": 2026,
+          "round": 3,
+          "originalOwner": "syeth",
+          "fromOwner": "syeth",
+          "toOwner": "matt"
+        }
+      ],
+      "pools": [],
+      "conditionals": []
+    },
+    {
+      "id": "T-2026-07",
+      "year": 2026,
+      "date": "2026 Sheet",
+      "teamA": "corbyn",
+      "teamB": "mary",
+      "teamC": null,
+      "headline": "Mary gives 4th (#32); Corbyn gives George Pickens",
+      "notes": "",
+      "directTransfers": [
+        {
+          "year": 2026,
+          "round": 4,
+          "originalOwner": "mary",
+          "fromOwner": "mary",
+          "toOwner": "corbyn"
+        }
+      ],
+      "pools": [],
+      "conditionals": []
+    },
+    {
+      "id": "T-2026-08",
+      "year": 2026,
+      "date": "2026 Sheet",
+      "teamA": "corbyn",
+      "teamB": "matt",
+      "teamC": null,
+      "headline": "Matt gives Travis Hunter & 5th (#42); Corbyn gives Malik Nabers & Michael Pittman Jr.",
+      "notes": "",
+      "directTransfers": [
+        {
+          "year": 2026,
+          "round": 5,
+          "originalOwner": "matt",
+          "fromOwner": "matt",
+          "toOwner": "corbyn"
+        }
+      ],
+      "pools": [],
+      "conditionals": []
+    },
+    {
+      "id": "T-2026-09",
+      "year": 2026,
+      "date": "2026 Sheet",
+      "teamA": "dylan",
+      "teamB": "leo",
+      "teamC": null,
+      "headline": "Dylan gets Brock Purdy, Blake Cashman & 6th (#55); Leo gets Rhamondre Stevenson, J.J. McCarthy, Jonathan Greenard & 7th (#68)",
+      "notes": "",
+      "directTransfers": [
+        {
+          "year": 2026,
+          "round": 6,
+          "originalOwner": "leo",
+          "fromOwner": "leo",
+          "toOwner": "dylan"
+        },
+        {
+          "year": 2026,
+          "round": 7,
+          "originalOwner": "dylan",
+          "fromOwner": "dylan",
+          "toOwner": "leo"
+        }
+      ],
+      "pools": [],
+      "conditionals": []
+    },
+    {
+      "id": "T-2026-10",
+      "year": 2026,
+      "date": "2026 Sheet",
+      "teamA": "dylan",
+      "teamB": "josh",
+      "teamC": null,
+      "headline": "Josh gives 6th (#60); Dylan gives Romeo Doubs",
+      "notes": "",
+      "directTransfers": [
+        {
+          "year": 2026,
+          "round": 6,
+          "originalOwner": "josh",
+          "fromOwner": "josh",
+          "toOwner": "dylan"
+        }
+      ],
+      "pools": [],
+      "conditionals": []
+    },
+    {
+      "id": "T-2027-03",
+      "year": 2027,
+      "date": "2027 Sheet",
+      "teamA": "corbyn",
+      "teamB": "geltz",
+      "teamC": null,
+      "headline": "Corbyn traded Judkins; Geltz owes 2027 1st",
+      "notes": "",
+      "directTransfers": [
+        {
+          "year": 2027,
+          "round": 1,
+          "originalOwner": "geltz",
+          "fromOwner": "geltz",
+          "toOwner": "corbyn"
+        }
+      ],
+      "pools": [],
+      "conditionals": []
+    },
+    {
+      "id": "T-2027-04",
+      "year": 2027,
+      "date": "2027 Sheet",
+      "teamA": "geltz",
+      "teamB": "josh",
+      "teamC": null,
+      "headline": "Geltz gives Gesicki; Josh gives Rico Dowdle + 2027 5th",
+      "notes": "Gives Geltz two 2027 5th-round picks (Geltz's 5th + Josh's 5th) entering the Keenan Allen deal.",
+      "directTransfers": [
+        {
+          "year": 2027,
+          "round": 5,
+          "originalOwner": "josh",
+          "fromOwner": "josh",
+          "toOwner": "geltz"
+        }
+      ],
+      "pools": [],
+      "conditionals": []
+    },
+    {
+      "id": "T-2027-05",
+      "year": 2027,
+      "date": "2027 Sheet",
+      "teamA": "corbyn",
+      "teamB": "syeth",
+      "teamC": null,
+      "headline": "Corbyn trades Trevor Lawrence; Syeth gives 2027 3rd + 9/10 Pick Swap (whatever favors Corbyn)",
+      "notes": "Syeth holds Syeth's 3rd and Chris's 3rd (Later-of-two pool). In Rounds 9 or 10, Corbyn moves up in whichever single round Syeth has an earlier pick than Corbyn.",
+      "directTransfers": [],
+      "pools": [
+        {
+          "id": "POOL-2027-R3-SYETH-CORBYN",
+          "year": 2027,
+          "round": 3,
+          "poolHolder": "syeth",
+          "owedTo": "corbyn",
+          "candidateOriginalOwners": [
+            "syeth",
+            "chris"
+          ],
+          "rule": "LATER_OF_TWO",
+          "ruleLabel": "Later of Syeth's 2027 3rd or Chris's 2027 3rd (Resolved once 2027 Draft Order is set)",
+          "resolvedOriginalOwner": null
+        }
+      ],
+      "conditionals": [
+        {
+          "id": "COND-2027-R9R10-CORBYN-SYETH",
+          "year": 2027,
+          "roundsInvolved": [
+            9,
+            10
+          ],
+          "teamA": "corbyn",
+          "teamB": "syeth",
+          "favoredTeam": "corbyn",
+          "swapType": "SINGLE_FAVORED_ROUND",
+          "summary": "Rounds 9 or 10 Pick Swap — Corbyn moves up in whichever round (9th or 10th) Syeth has an earlier pick than Corbyn",
+          "isResolved": false,
+          "resolvedRound": null,
+          "resolutionNote": ""
+        }
+      ]
+    },
+    {
+      "id": "T-2027-06",
+      "year": 2027,
+      "date": "2027 Sheet",
+      "teamA": "geltz",
+      "teamB": "chris",
+      "teamC": null,
+      "headline": "Geltz trades 2027 5th; Chris trades Keenan Allen",
+      "notes": "Geltz holds Geltz's 2027 5th and Josh's 2027 5th; 1 of the 2 goes to Chris.",
+      "directTransfers": [],
+      "pools": [
+        {
+          "id": "POOL-2027-R5-GELTZ-CHRIS",
+          "year": 2027,
+          "round": 5,
+          "poolHolder": "geltz",
+          "owedTo": "chris",
+          "candidateOriginalOwners": [
+            "geltz",
+            "josh"
+          ],
+          "rule": "UNASSIGNED",
+          "ruleLabel": "1 of 2 from Geltz's 5th-Round Pool (Geltz's 5th or Josh's 5th — Pending designation)",
+          "resolvedOriginalOwner": null
+        }
+      ],
+      "conditionals": []
+    }
+  ],
+  "pendingTrades": [],
+  "draftOrders": {
+    "2026": {
+      "isLocked": true,
+      "slots": [
+        "josh",
+        "matt",
+        "chris",
+        "boss",
+        "corbyn",
+        "leo",
+        "syeth",
+        "dylan",
+        "mary",
+        "geltz"
+      ]
+    },
+    "2027": {
+      "isLocked": false,
+      "slots": [
+        "syeth",
+        "corbyn",
+        "chris",
+        "boss",
+        "geltz",
+        "matt",
+        "dylan",
+        "leo",
+        "mary",
+        "josh"
+      ]
+    },
+    "2028": {
+      "isLocked": false,
+      "slots": [
+        "syeth",
+        "corbyn",
+        "chris",
+        "boss",
+        "geltz",
+        "matt",
+        "dylan",
+        "leo",
+        "mary",
+        "josh"
+      ]
+    }
+  }
+}

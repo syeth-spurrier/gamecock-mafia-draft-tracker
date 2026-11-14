@@ -1,0 +1,19 @@
+{
+  "name": "Gamecock Mafia Draft & Pick Tracker",
+  "short_name": "GCM Picks",
+  "description": "Official Gamecock Mafia Fantasy Football Off-Season & In-Season Draft Pick Tracker",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait-primary",
+  "background_color": "#0b0f19",
+  "theme_color": "#111827",
+  "icons": [
+    {
+      "src": "./icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}
