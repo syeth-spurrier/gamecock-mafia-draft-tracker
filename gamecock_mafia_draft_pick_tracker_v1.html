@@ -92,11 +92,109 @@
       --usc-garnet: #73000A;
       --usc-garnet-bright: #99000F;
       --usc-garnet-hi: #CC1429;
+      --theme-hero-grad: linear-gradient(135deg, #590007 0%, #73000A 38%, #141418 100%);
+      --theme-btn-grad: linear-gradient(180deg, #99000F 0%, #73000A 100%);
+      --theme-btn-hover: linear-gradient(180deg, #B30012 0%, #87000C 100%);
+      --theme-border-hi: #CC1429;
+      --theme-glow: rgba(153, 0, 15, 0.55);
+    }
+    /* Covert Colorway 1: Sandstorm Noir (Default USC Garnet & Obsidian Black) */
+    body.theme-sandstorm_noir {
+      --bg-obsidian: #09090B;
+      --bg-surface: #121215;
+      --usc-garnet: #73000A;
+      --usc-garnet-bright: #99000F;
+      --usc-garnet-hi: #CC1429;
+      --theme-hero-grad: linear-gradient(135deg, #590007 0%, #73000A 38%, #141418 100%);
+      --theme-btn-grad: linear-gradient(180deg, #99000F 0%, #73000A 100%);
+      --theme-btn-hover: linear-gradient(180deg, #B30012 0%, #87000C 100%);
+      --theme-border-hi: #CC1429;
+      --theme-glow: rgba(153, 0, 15, 0.55);
+    }
+    /* Covert Colorway 2: Chapel Sky (UNC Tarheel Blue, White & Navy) */
+    body.theme-chapel_sky {
+      --bg-obsidian: #0A1426;
+      --bg-surface: #112240;
+      --usc-garnet: #13294B;
+      --usc-garnet-bright: #2B6CB0;
+      --usc-garnet-hi: #4B9CD3;
+      --theme-hero-grad: linear-gradient(135deg, #13294B 0%, #4B9CD3 52%, #0F1E36 100%);
+      --theme-btn-grad: linear-gradient(180deg, #4B9CD3 0%, #1E4E8C 100%);
+      --theme-btn-hover: linear-gradient(180deg, #63B3ED 0%, #2B6CB0 100%);
+      --theme-border-hi: #7BAFD4;
+      --theme-glow: rgba(75, 156, 211, 0.55);
+    }
+    /* Covert Colorway 3: Honolulu Gridiron (Detroit Lions Honolulu Blue, Silver & White) */
+    body.theme-honolulu_gridiron {
+      --bg-obsidian: #07131E;
+      --bg-surface: #0F2133;
+      --usc-garnet: #005A8B;
+      --usc-garnet-bright: #0076B6;
+      --usc-garnet-hi: #38BDF8;
+      --theme-hero-grad: linear-gradient(135deg, #00446B 0%, #0076B6 48%, #273444 100%);
+      --theme-btn-grad: linear-gradient(180deg, #0076B6 0%, #005582 100%);
+      --theme-btn-hover: linear-gradient(180deg, #0088D1 0%, #00669C 100%);
+      --theme-border-hi: #B0B7BC;
+      --theme-glow: rgba(0, 118, 182, 0.55);
+    }
+    /* Covert Colorway 4: Foundry Orange (Cleveland Browns Orange, Seal Brown & White) */
+    body.theme-foundry_orange {
+      --bg-obsidian: #140B04;
+      --bg-surface: #231409;
+      --usc-garnet: #311D00;
+      --usc-garnet-bright: #CC3000;
+      --usc-garnet-hi: #FF3C00;
+      --theme-hero-grad: linear-gradient(135deg, #311D00 0%, #B82B00 45%, #1C1006 100%);
+      --theme-btn-grad: linear-gradient(180deg, #FF3C00 0%, #B32A00 100%);
+      --theme-btn-hover: linear-gradient(180deg, #FF5722 0%, #CC3000 100%);
+      --theme-border-hi: #FF3C00;
+      --theme-glow: rgba(255, 60, 0, 0.5);
+    }
+    /* Covert Colorway 5: Emerald Sound '98 (Seattle Seahawks Retro Royal Blue, Action Green, Silver & White) */
+    body.theme-emerald_sound {
+      --bg-obsidian: #071526;
+      --bg-surface: #0D223D;
+      --usc-garnet: #004B8D;
+      --usc-garnet-bright: #1E6B3A;
+      --usc-garnet-hi: #69BE28;
+      --theme-hero-grad: linear-gradient(135deg, #004B8D 0%, #196F3D 52%, #0D223D 100%);
+      --theme-btn-grad: linear-gradient(180deg, #2E8B57 0%, #004B8D 100%);
+      --theme-btn-hover: linear-gradient(180deg, #69BE28 0%, #005A9C 100%);
+      --theme-border-hi: #69BE28;
+      --theme-glow: rgba(105, 190, 40, 0.5);
+    }
+    /* Covert Colorway 6: Upstate Kitties (Clemson Troll Trap — Irreversible Sparkly Hot Pink!) */
+    @keyframes kittySparkleShift {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+    body.theme-upstate_kitties {
+      --bg-obsidian: #2D061F;
+      --bg-surface: #4A0E34;
+      --usc-garnet: #BE185D;
+      --usc-garnet-bright: #EC4899;
+      --usc-garnet-hi: #FF1493;
+      --theme-hero-grad: linear-gradient(135deg, #FF1493 0%, #EC4899 35%, #A855F7 70%, #FF69B4 100%);
+      --theme-btn-grad: linear-gradient(180deg, #FF1493 0%, #BE185D 100%);
+      --theme-btn-hover: linear-gradient(180deg, #FF69B4 0%, #DB2777 100%);
+      --theme-border-hi: #F472B6;
+      --theme-glow: rgba(255, 20, 147, 0.75);
+      background-image:
+        radial-gradient(circle at 15% 25%, rgba(255, 182, 193, 0.25) 0, transparent 25%),
+        radial-gradient(circle at 85% 20%, rgba(255, 20, 147, 0.28) 0, transparent 30%),
+        radial-gradient(circle at 50% 80%, rgba(236, 72, 153, 0.22) 0, transparent 35%);
+    }
+    body.theme-upstate_kitties .app-card {
+      background: rgba(74, 14, 52, 0.9);
+      border-color: rgba(255, 105, 180, 0.55);
+      box-shadow: 0 4px 24px rgba(255, 20, 147, 0.3);
     }
     body {
       background-color: var(--bg-obsidian);
       color: #FAFAFA;
       font-feature-settings: "cv02", "cv03", "cv04", "cv11";
+      transition: background-color 0.25s ease;
     }
     ::-webkit-scrollbar {
       width: 6px;
@@ -120,7 +218,7 @@
       scrollbar-width: none;
     }
     .app-card {
-      background: #121215;
+      background: var(--bg-surface);
       border: 1px solid #24242B;
       border-radius: 0.875rem;
       box-shadow: 0 4px 20px rgba(0, 0, 0, 0.45);
@@ -131,9 +229,9 @@
       border-radius: 0.75rem;
     }
     .garnet-hero-banner {
-      background: linear-gradient(135deg, #590007 0%, #73000A 38%, #141418 100%);
-      border: 1px solid rgba(204, 20, 41, 0.45);
-      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.55), inset 0 1px 0 rgba(255, 255, 255, 0.1);
+      background: var(--theme-hero-grad);
+      border: 1px solid var(--theme-border-hi);
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.55), inset 0 1px 0 rgba(255, 255, 255, 0.14);
     }
     .btn-action {
       display: inline-flex;
@@ -165,19 +263,19 @@
       gap: 0.45rem;
       font-weight: 700;
       border-radius: 0.5rem;
-      border: 1px solid #CC1429;
-      background: linear-gradient(180deg, #99000F 0%, #73000A 100%);
+      border: 1px solid var(--theme-border-hi);
+      background: var(--theme-btn-grad);
       color: #ffffff;
-      box-shadow: 0 2px 10px rgba(115, 0, 10, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.2);
+      box-shadow: 0 2px 10px var(--theme-glow), inset 0 1px 0 rgba(255, 255, 255, 0.2);
       transition: all 0.14s ease;
       cursor: pointer;
       user-select: none;
     }
     .btn-garnet:hover {
-      background: linear-gradient(180deg, #B30012 0%, #87000C 100%);
-      border-color: #F43F5E;
+      background: var(--theme-btn-hover);
+      border-color: #FFFFFF;
       transform: translateY(-1px);
-      box-shadow: 0 4px 14px rgba(153, 0, 15, 0.65), inset 0 1px 0 rgba(255, 255, 255, 0.28);
+      box-shadow: 0 4px 14px var(--theme-glow), inset 0 1px 0 rgba(255, 255, 255, 0.28);
     }
     .btn-pending {
       display: inline-flex;
@@ -230,6 +328,19 @@
     .round-row-compact:hover {
       background-color: rgba(39, 39, 42, 0.45);
     }
+    .kitty-curse-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.2rem;
+      padding: 0.1rem 0.42rem;
+      border-radius: 9999px;
+      background: linear-gradient(90deg, #FF1493, #A855F7);
+      color: #FFFFFF;
+      font-weight: 900;
+      font-size: 0.68rem;
+      border: 1px solid #FBCFE8;
+      box-shadow: 0 0 8px rgba(255, 20, 147, 0.7);
+    }
     @media print {
       body {
         background: #ffffff !important;
@@ -237,8 +348,8 @@
         -webkit-print-color-adjust: exact;
         print-color-adjust: exact;
       }
-      header, footer, #mobileBottomNav, #topContextBanner, #passphraseGateOverlay, #toastStack, .no-print,
-      #inspectModal, #tradeModal, #orderConfigModal, #espnExportModal, #archiveModal, #cloudSyncModal, #confirmModal, #pinModal, #moreToolsModal {
+      header, footer, #mobileBottomNav, #topContextBanner, #incomingTradeAlertBanner, #passphraseGateOverlay, #toastStack, .no-print,
+      #inspectModal, #tradeModal, #orderConfigModal, #espnExportModal, #archiveModal, #cloudSyncModal, #confirmModal, #pinModal, #moreToolsModal, #leagueBrandingModal {
         display: none !important;
       }
       main {
@@ -254,19 +365,19 @@
     }
   </style>
 </head>
-<body class="min-h-screen flex flex-col font-sans antialiased selection:bg-[#73000A] selection:text-white pb-20 lg:pb-0">
+<body class="theme-sandstorm_noir min-h-screen flex flex-col font-sans antialiased selection:bg-[#73000A] selection:text-white pb-20 lg:pb-0">
 
   <!-- ========================================================= -->
   <!-- LIGHTWEIGHT LEAGUE PASSPHRASE & MY FRANCHISE GATE OVERLAY -->
   <!-- ========================================================= -->
   <div id="passphraseGateOverlay" class="fixed inset-0 z-[90] bg-[#09090B] flex items-center justify-center p-4 overflow-y-auto">
     <div class="bg-[#121215] border border-[#73000A] rounded-2xl max-w-md w-full p-6 sm:p-8 shadow-2xl text-center space-y-5 my-6">
-      <div class="w-16 h-16 mx-auto rounded-2xl garnet-hero-banner flex items-center justify-center shadow-xl">
+      <div id="gateBrandAvatarBox" class="w-16 h-16 mx-auto rounded-2xl garnet-hero-banner flex items-center justify-center shadow-xl overflow-hidden">
         <span class="font-display font-extrabold text-2xl tracking-wider text-white">GCM</span>
       </div>
       <div class="space-y-1">
         <span class="static-badge bg-[#73000A]/40 text-amber-300 border border-[#CC1429]/50">Official Franchise Portal</span>
-        <h2 class="text-2xl font-black tracking-tight text-white">GAMECOCK MAFIA</h2>
+        <h2 id="gateBrandTitleText" class="text-2xl font-black tracking-tight text-white">GAMECOCK MAFIA</h2>
         <p class="text-xs text-zinc-400">Select your franchise and enter the league passphrase to manage your picks, War Room trade block, and deals.</p>
       </div>
       <div class="space-y-3 text-left">
@@ -327,46 +438,67 @@
   <!-- STREAMLINED NATIVE APPLICATION HEADER                     -->
   <!-- ========================================================= -->
   <header id="appHeaderShell" class="hidden bg-[#09090B]/95 backdrop-blur-md border-b border-zinc-800/90 sticky top-0 z-40">
-    <div class="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8">
+    <div class="max-w-7xl mx-auto px-2.5 sm:px-6 lg:px-8">
       
-      <!-- Single Compact Top Bar: Brand + Live Sync Pill | Year Switcher | My Team + Log Trade + Gear -->
-      <div class="flex items-center justify-between py-2.5 gap-2">
+      <!-- Single Compact Top Bar: Brand + Always-Visible Live Sync Pill | Year Dropdown | My Team + Propose Trade + Gear -->
+      <div class="flex items-center justify-between py-2 gap-1.5 sm:gap-2.5">
         
-        <!-- Left: Brand Identity + Live Sync Dot -->
-        <div class="flex items-center gap-2.5 min-w-0">
-          <div class="w-9 h-9 sm:w-10 sm:h-10 rounded-xl garnet-hero-banner flex items-center justify-center flex-shrink-0">
-            <span class="font-display font-extrabold text-base sm:text-lg tracking-wider text-white">GCM</span>
-          </div>
+        <!-- Left: Editable GCM Brand Identity + Clear Mobile/Desktop Live Sync Pill -->
+        <div class="flex items-center gap-2 min-w-0">
+          <button
+            type="button"
+            id="headerBrandAvatarBtn"
+            onclick="handleHeaderBrandClick()"
+            class="relative w-9 h-9 sm:w-10 sm:h-10 rounded-xl garnet-hero-banner flex items-center justify-center flex-shrink-0 overflow-hidden cursor-pointer group"
+            title="Gamecock Mafia Official Brand (Commissioner can click to customize)"
+          >
+            <div id="headerBrandAvatarBox" class="w-full h-full flex items-center justify-center">
+              <span class="font-display font-extrabold text-base sm:text-lg tracking-wider text-white">GCM</span>
+            </div>
+            <span id="headerBrandEditBadge" class="hidden absolute -bottom-0.5 -right-0.5 w-4 h-4 rounded-full bg-amber-400 text-black text-[9px] font-black items-center justify-center shadow">
+              <i class="fa-solid fa-pen"></i>
+            </span>
+          </button>
           <div class="min-w-0">
-            <div class="flex items-center gap-2">
-              <h1 class="text-sm sm:text-base font-black tracking-tight text-white truncate">
+            <div class="flex flex-wrap items-center gap-1.5">
+              <h1 id="headerBrandTitleText" onclick="handleHeaderBrandClick()" class="text-xs sm:text-base font-black tracking-tight text-white truncate max-w-[115px] sm:max-w-none cursor-pointer">
                 GAMECOCK MAFIA
               </h1>
-              <button onclick="manualSyncRefresh()" class="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full bg-zinc-900 border border-zinc-800 text-[10px] font-semibold text-zinc-300 hover:border-zinc-600 transition cursor-pointer" title="Click to sync latest live updates from Google Sheet">
-                <span id="syncStatusDot" class="w-1.5 h-1.5 rounded-full bg-emerald-400 inline-block"></span>
-                <span id="syncStatusText" class="hidden sm:inline">Live</span>
-                <i id="manualSyncSpinner" class="fa-solid fa-rotate text-[9px] text-zinc-400"></i>
+              <!-- Always-Visible Mobile & Desktop Live Sync Button -->
+              <button onclick="manualSyncRefresh()" id="headerSyncPillBtn" class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-zinc-900/95 border border-emerald-500/40 text-[10px] font-bold text-emerald-300 hover:border-emerald-400 transition cursor-pointer flex-shrink-0 shadow-sm" title="Tap to sync latest live updates from Google Sheet">
+                <span id="syncStatusDot" class="w-1.5 h-1.5 rounded-full bg-emerald-400 inline-block flex-shrink-0"></span>
+                <span id="syncStatusText" class="inline truncate max-w-[68px] sm:max-w-none">Sync</span>
+                <i id="manualSyncSpinner" class="fa-solid fa-rotate text-[9px] text-emerald-300"></i>
               </button>
             </div>
-            <p class="text-[10px] text-zinc-400 hidden sm:block truncate">
-              Off-Season & In-Season Draft Pick Tracker <span id="lastSyncedTicker" class="text-zinc-500"></span>
+            <p id="headerBrandSubtitleWrap" class="text-[10px] text-zinc-400 hidden sm:block truncate">
+              <span id="headerBrandSubtitleText">Off-Season & In-Season Draft Pick Tracker</span> <span id="lastSyncedTicker" class="text-zinc-500"></span>
             </p>
           </div>
         </div>
 
-        <!-- Center: Rolling 2-Year Switcher Pills -->
-        <div class="flex items-center bg-[#121215] p-1 rounded-xl border border-zinc-800 overflow-x-auto no-scrollbar">
-          <div id="dynamicYearTabsContainer" class="flex items-center gap-1">
-            <!-- Dynamically populated (2026 / 2027) -->
+        <!-- Center: Compact Year Dropdown Selector (2026 / 2027 / 2028 + 2018-2025 Archive) -->
+        <div class="flex items-center flex-shrink-0">
+          <div class="relative flex items-center">
+            <label for="headerYearDropdownSelect" class="sr-only">Select Draft Season</label>
+            <select
+              id="headerYearDropdownSelect"
+              onchange="handleHeaderYearDropdownChange(this.value)"
+              class="bg-[#121215] hover:bg-zinc-900 text-white font-extrabold text-xs sm:text-sm rounded-xl px-2.5 sm:px-3.5 py-1.5 border border-[#CC1429]/70 focus:outline-none focus:border-amber-400 cursor-pointer shadow-sm"
+            >
+              <!-- Populated by renderDynamicYearTabs() -->
+            </select>
           </div>
+          <!-- Hidden legacy container kept in DOM for script compatibility -->
+          <div id="dynamicYearTabsContainer" class="hidden" aria-hidden="true"></div>
         </div>
 
-        <!-- Right: My Team Pill + Primary "+ Log Trade" CTA + Gear (More/Tools) -->
-        <div class="flex items-center gap-1.5 sm:gap-2 flex-shrink-0">
+        <!-- Right: My Team Pill + Primary "+ Propose Trade" CTA + Gear (More/Tools) -->
+        <div class="flex items-center gap-1 sm:gap-2 flex-shrink-0">
           <!-- Mobile My Team Pill -->
           <button onclick="openSwitchFranchiseGate()" id="mobileMyTeamBadgeBtn" class="lg:hidden btn-action px-2 py-1.5 text-[11px] text-amber-300" title="Switch active franchise">
             <i class="fa-solid fa-user-shield text-[#CC1429]"></i>
-            <span id="mobileMyTeamBadgeLabel">My Team</span>
+            <span id="mobileMyTeamBadgeLabel" class="max-w-[64px] truncate">My Team</span>
           </button>
 
           <!-- Desktop My Team Pill -->
@@ -385,10 +517,10 @@
             <i class="fa-solid fa-rotate-left"></i>
           </button>
 
-          <!-- Primary CTA: + Log Trade -->
-          <button onclick="openContextualTradeModal()" class="btn-garnet px-3 sm:px-3.5 py-1.5 sm:py-2 text-xs font-extrabold">
-            <i class="fa-solid fa-plus"></i>
-            <span id="headerLogTradeBtnLabel">Log Trade</span>
+          <!-- Primary CTA: + Propose Trade -->
+          <button onclick="openContextualTradeModal()" class="btn-garnet px-2.5 sm:px-3.5 py-1.5 sm:py-2 text-xs font-extrabold whitespace-nowrap">
+            <i class="fa-solid fa-paper-plane"></i>
+            <span id="headerLogTradeBtnLabel">Propose Trade</span>
           </button>
 
           <!-- Commissioner Quick Badge (Desktop) -->
@@ -402,9 +534,9 @@
           </button>
 
           <!-- Gear / More Tools & Settings Button -->
-          <button onclick="openMoreToolsModal()" id="headerMoreToolsBtn" class="btn-action px-2.5 py-1.5 sm:py-2 text-xs text-zinc-200 relative" title="Tools, Archive, Export & Commissioner Settings">
+          <button onclick="openMoreToolsModal()" id="headerMoreToolsBtn" class="btn-action px-2 sm:px-2.5 py-1.5 sm:py-2 text-xs text-zinc-200 relative" title="Color Schemes, Tools, Archive, Export & Commissioner Settings">
             <i class="fa-solid fa-gear text-zinc-300"></i>
-            <span class="hidden sm:inline">Tools</span>
+            <span class="hidden sm:inline">Settings</span>
             <span id="headerAdminActiveDot" class="hidden w-2 h-2 rounded-full bg-emerald-400 absolute -top-0.5 -right-0.5"></span>
           </button>
         </div>
@@ -487,6 +619,9 @@
       <p id="printHeaderSubtitle" class="text-xs"></p>
     </div>
 
+    <!-- INCOMING TRADE PROPOSAL ALERT BANNER (SHOWN WHEN LOGGED-IN TEAM HAS AN OFFER AWAITING CONFIRMATION) -->
+    <div id="incomingTradeAlertBanner" class="hidden no-print"></div>
+
     <!-- COMMISSIONER-ONLY DRAFT SHEET CONTROL BAR (HIDDEN FOR REGULAR MEMBERS) -->
     <div id="topContextBanner" class="hidden app-card border-emerald-600/50 p-3.5 sm:p-4 flex-col lg:flex-row lg:items-center justify-between gap-3">
       <!-- Dynamically populated only when Commissioner Mode is unlocked -->
@@ -530,7 +665,7 @@
               <h2 class="text-base sm:text-lg font-black text-white">2-Team Pick Comparison & Tap-to-Trade Simulator</h2>
             </div>
             <p class="text-xs text-zinc-400 mt-0.5">
-              Select any trade partner below and tap any settled pick to simulate a deal live, then click <strong class="text-white">Submit Official Trade →</strong>.
+              Select any trade partner below and tap any settled pick to simulate a deal live, then click <strong class="text-white">Propose Trade →</strong>.
             </p>
           </div>
 
@@ -661,7 +796,10 @@
     <!-- ======================================================= -->
     <section id="section-feed" class="hidden space-y-4">
       
-      <!-- Legacy Pending Queue (Only shown if imported legacy JSON had items) -->
+      <!-- Hall of Shame Banner (Shown when any manager triggered the Upstate Kitties Curse) -->
+      <div id="hallOfShameFeedBanner" class="hidden"></div>
+
+      <!-- Active Trade Proposals Queue (Requires Partner Confirmation before marking Official) -->
       <div id="pendingQueueContainer" class="hidden bg-amber-950/30 border border-amber-500/60 rounded-2xl p-4 space-y-3">
         <!-- Populated by JS -->
       </div>
@@ -724,14 +862,14 @@
   <footer id="appFooterShell" class="hidden border-t border-zinc-900 py-4 mt-8 no-print">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-2 text-[11px] text-zinc-500">
       <div class="flex items-center gap-2">
-        <span class="font-bold text-zinc-400">Gamecock Mafia Draft & Pick Tracker v6.0</span>
+        <span class="font-bold text-zinc-400">Gamecock Mafia Draft & Pick Tracker v6.5</span>
         <span>•</span>
         <span>Est. 2018</span>
       </div>
       <div class="flex flex-wrap items-center gap-2">
         <button onclick="openArchiveModal()" class="hover:text-zinc-300 transition cursor-pointer">2018–2025 Archive</button>
         <span>•</span>
-        <button onclick="openMoreToolsModal()" class="hover:text-zinc-300 transition cursor-pointer">Tools & Settings ⚙</button>
+        <button onclick="openMoreToolsModal()" class="hover:text-zinc-300 transition cursor-pointer">Settings & Color Schemes ⚙</button>
         <div id="adminFooterControls" class="hidden items-center gap-2">
           <span>•</span>
           <button onclick="openCloudSyncModal()" class="text-emerald-400 hover:underline cursor-pointer">Live Sheet Sync</button>
@@ -762,16 +900,16 @@
     </div>
   </div>
 
-  <!-- 2. UNIFIED TRADE LOGGER & IN-PLACE EDITOR MODAL (SUPPORTS 2-WAY & 3-WAY TRADES) -->
+  <!-- 2. UNIFIED TRADE PROPOSAL & IN-PLACE EDITOR MODAL (SUPPORTS 2-WAY & 3-WAY TRADES) -->
   <div id="tradeModal" class="hidden fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4 overflow-y-auto">
     <div class="bg-[#111827] border border-slate-700 rounded-2xl max-w-2xl w-full p-5 sm:p-6 shadow-2xl space-y-4 my-8 max-h-[92vh] overflow-y-auto">
       <div class="flex items-center justify-between border-b border-slate-800 pb-3">
         <div>
           <div class="flex flex-wrap items-center gap-2">
-            <h3 id="tradeModalHeading" class="text-lg font-black text-white">Log League Trade</h3>
+            <h3 id="tradeModalHeading" class="text-lg font-black text-white">Propose League Trade</h3>
             <span id="tradeModalModeBadge" class="static-badge bg-rose-950 text-rose-300 border border-rose-700"></span>
           </div>
-          <p id="tradeModalSubheadingText" class="text-xs text-slate-400 mt-0.5">Log an official trade involving your franchise. Any multi-pick pools or conditional round swaps are marked <strong class="text-pending-300">Pending Final</strong> until finalized in Admin Mode.</p>
+          <p id="tradeModalSubheadingText" class="text-xs text-slate-400 mt-0.5">Propose a trade involving your franchise. The trade partner(s) must confirm before picks move and the trade becomes official.</p>
         </div>
         <button onclick="closeModal('tradeModal')" class="btn-action px-2.5 py-1 text-xs text-slate-300">
           <i class="fa-solid fa-xmark"></i> Close
@@ -792,21 +930,21 @@
           </div>
           <div class="grid grid-cols-1 sm:grid-cols-3 gap-3" id="tradeManagersGrid">
             <div>
-              <label id="formTeamALabel" class="block text-[11px] font-semibold text-rose-300 mb-1">Manager 1 (My Franchise)</label>
+              <label id="formTeamALabel" class="block text-[11px] font-semibold text-rose-300 mb-1">Proposing Team (My Franchise)</label>
               <select id="formTeamA" required onchange="refreshQuickPickRows()" class="w-full bg-[#0b0f19] text-white font-bold rounded-xl px-3 py-2.5 border border-slate-700 focus:border-rose-500 focus:outline-none"></select>
             </div>
             <div>
-              <label class="block text-[11px] font-semibold text-sky-300 mb-1">Trade Partner (Manager 2)</label>
+              <label class="block text-[11px] font-semibold text-sky-300 mb-1">Trade Partner (Must Confirm)</label>
               <select id="formTeamB" required onchange="refreshQuickPickRows()" class="w-full bg-[#0b0f19] text-white font-bold rounded-xl px-3 py-2.5 border border-slate-700 focus:border-rose-500 focus:outline-none"></select>
             </div>
             <div id="formTeamCContainer" class="hidden">
-              <label class="block text-[11px] font-semibold text-amber-300 mb-1">Manager 3 (3-Way)</label>
+              <label class="block text-[11px] font-semibold text-amber-300 mb-1">Manager 3 (3-Way — Must Confirm)</label>
               <select id="formTeamC" onchange="refreshQuickPickRows()" class="w-full bg-[#0b0f19] text-amber-200 font-bold rounded-xl px-3 py-2.5 border border-amber-600/60 focus:border-amber-400 focus:outline-none"></select>
             </div>
           </div>
         </div>
 
-        <!-- Step 2: Trade Headline, Logged By & Additional Notes -->
+        <!-- Step 2: Trade Headline, Proposed By & Additional Notes -->
         <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
           <div class="sm:col-span-2 space-y-2">
             <div>
@@ -820,7 +958,7 @@
           <div class="space-y-2">
             <div>
               <label class="block font-bold text-slate-300 uppercase mb-1">
-                Logged By
+                Proposed By
               </label>
               <select id="formSubmittedBy" class="w-full bg-[#0b0f19] text-emerald-300 font-bold text-xs rounded-xl px-3 py-2.5 border border-slate-700 focus:border-rose-500 focus:outline-none"></select>
             </div>
@@ -838,7 +976,7 @@
           <div class="flex flex-wrap items-center justify-between gap-2">
             <div>
               <span class="font-bold text-slate-200 uppercase">3. Draft Pick(s) Moved in This Trade</span>
-              <p class="text-[11px] text-slate-400">Settled picks apply immediately. Multi-pick pools are tagged Pending Final for Admin resolution.</p>
+              <p class="text-[11px] text-slate-400">Picks transfer automatically once all involved partners confirm. Multi-pick pools are tagged Pending Final for Admin resolution.</p>
             </div>
             <button type="button" onclick="addQuickPickRow()" class="btn-action px-2.5 py-1.5 text-[11px] text-sky-300">
               <i class="fa-solid fa-plus"></i> Add Pick Movement
@@ -878,14 +1016,22 @@
           </div>
         </div>
 
+        <!-- Commissioner-Only Option: Log Immediately as Official vs Send as Proposal -->
+        <div id="formAdminLogImmediatelyWrap" class="hidden bg-emerald-950/30 border border-emerald-600/50 p-3 rounded-xl">
+          <label class="flex items-center gap-2.5 cursor-pointer">
+            <input type="checkbox" id="formAdminLogImmediately" checked onchange="syncTradeModalRoleUI(Boolean(document.getElementById('editingTradeId').value))" class="w-4 h-4 rounded text-emerald-500 bg-slate-900 border-slate-600">
+            <span class="font-bold text-emerald-300">Commissioner Mode: Log Immediately as Official (Bypass Partner Confirmation)</span>
+          </label>
+        </div>
+
         <!-- Submit Footer -->
         <div class="flex flex-wrap items-center justify-between gap-2 pt-2 border-t border-slate-800">
           <span id="formRoleHint" class="text-[11px] text-slate-400"></span>
           <div class="flex items-center space-x-2.5">
             <button type="button" onclick="closeModal('tradeModal')" class="btn-action px-4 py-2 text-xs text-slate-300">Cancel</button>
             <button type="submit" class="btn-garnet px-5 py-2 text-xs">
-              <i class="fa-solid fa-check"></i>
-              <span id="formSubmitBtnText">Log Official Trade</span>
+              <i class="fa-solid fa-paper-plane"></i>
+              <span id="formSubmitBtnText">Propose Trade</span>
             </button>
           </div>
         </div>
@@ -1101,13 +1247,13 @@
           </div>
         </div>
 
-        <!-- 5. Commissioner Manager Team PIN Reset & Overview -->
+        <!-- 5. Commissioner Manager Team PIN, Upstate Kitties Curse & Off-Season Flair Manager -->
         <div class="bg-[#0b0f19] border border-slate-800 rounded-xl p-4 space-y-2.5">
-          <div class="font-bold text-emerald-300 uppercase"><i class="fa-solid fa-users-gear mr-1"></i>5. Franchise Manager Personal Team PINs (Admin Reset)</div>
+          <div class="font-bold text-emerald-300 uppercase"><i class="fa-solid fa-users-gear mr-1"></i>5. Franchise PINs, Upstate Kitties Curse & Off-Season Flair (Admin Controls)</div>
           <p class="text-slate-400 text-[11px]">
-            Managers can optionally set a personal 4–8 digit PIN on their franchise War Room to lock their team identity. If a manager forgets their Team PIN, you can clear it here.
+            Reset a manager's forgotten Personal Team PIN, lift (or inflict) the <strong class="text-pink-400">Upstate Kitties 8==D</strong> curse, or award <strong class="text-amber-300">🏆 Champ</strong> / <strong class="text-sky-300">🚽 Toilet Bowl</strong> flair beside any team's name.
           </p>
-          <div id="adminTeamPinManagerList" class="grid grid-cols-2 sm:grid-cols-5 gap-2 pt-1">
+          <div id="adminTeamPinManagerList" class="grid grid-cols-1 sm:grid-cols-2 gap-2 pt-1">
             <!-- Populated by JS -->
           </div>
         </div>
@@ -1152,17 +1298,17 @@
     </div>
   </div>
 
-  <!-- 9. MORE TOOLS, ARCHIVE, EXPORT & COMMISSIONER SETTINGS MODAL (GEAR MENU) -->
+  <!-- 9. MORE TOOLS, COLOR SCHEMES, ARCHIVE, EXPORT & COMMISSIONER SETTINGS MODAL (GEAR MENU) -->
   <div id="moreToolsModal" class="hidden fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4 overflow-y-auto">
-    <div class="bg-[#121215] border border-zinc-700 rounded-2xl max-w-xl w-full p-5 sm:p-6 shadow-2xl space-y-5 my-8">
+    <div class="bg-[#121215] border border-zinc-700 rounded-2xl max-w-xl w-full p-5 sm:p-6 shadow-2xl space-y-5 my-8 max-h-[92vh] overflow-y-auto">
       <div class="flex items-center justify-between border-b border-zinc-800 pb-3">
         <div class="flex items-center gap-2.5">
           <div class="w-9 h-9 rounded-xl garnet-hero-banner flex items-center justify-center text-white text-sm">
             <i class="fa-solid fa-gear"></i>
           </div>
           <div>
-            <h3 class="text-base font-black text-white">League Tools, History & Admin Settings</h3>
-            <p class="text-[11px] text-zinc-400">Quick access to sharing, historical vault, exports, and Commissioner controls</p>
+            <h3 class="text-base font-black text-white">Settings, Color Schemes & League Tools</h3>
+            <p class="text-[11px] text-zinc-400">Personalize your app colorway, share links, inspect history, or unlock Commissioner controls</p>
           </div>
         </div>
         <button onclick="closeModal('moreToolsModal')" class="btn-action px-2.5 py-1 text-xs text-zinc-300">
@@ -1170,13 +1316,28 @@
         </button>
       </div>
 
-      <!-- Section 1: My Franchise & Sharing -->
+      <!-- Section 0: Covert Color Scheme Picker -->
       <div class="space-y-2">
+        <div class="flex items-center justify-between">
+          <span class="text-[10px] font-extrabold uppercase tracking-wider text-amber-300"><i class="fa-solid fa-palette mr-1"></i>App Colorway / Theme</span>
+          <span id="colorSchemeLockStatusText" class="text-[10px] text-zinc-400">Swap anytime</span>
+        </div>
+        <div id="colorSchemeGridContainer" class="grid grid-cols-2 sm:grid-cols-3 gap-2">
+          <!-- Populated dynamically by renderColorSchemePicker() -->
+        </div>
+      </div>
+
+      <!-- Section 1: My Franchise & Sharing -->
+      <div class="space-y-2 pt-2 border-t border-zinc-800">
         <div class="text-[10px] font-extrabold uppercase tracking-wider text-zinc-400">My Franchise & Quick Share</div>
         <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
           <button onclick="closeModal('moreToolsModal'); openSwitchFranchiseGate();" class="btn-action justify-start px-3.5 py-2.5 text-xs text-zinc-100">
             <i class="fa-solid fa-user-shield text-[#CC1429] w-4"></i>
             <span>Switch My Franchise Identity ⇄</span>
+          </button>
+          <button onclick="closeModal('moreToolsModal'); switchMainTab('ledger'); uiState.warRoomDrawerOpen = true; renderAll();" class="btn-action justify-start px-3.5 py-2.5 text-xs text-amber-300">
+            <i class="fa-solid fa-id-badge text-amber-400 w-4"></i>
+            <span>Edit Team Name & Avatar Block ✎</span>
           </button>
           <button onclick="closeModal('moreToolsModal'); copyManagerLedgerForChat();" class="btn-action justify-start px-3.5 py-2.5 text-xs text-emerald-300">
             <i class="fa-solid fa-comment-sms text-emerald-400 w-4"></i>
@@ -1186,15 +1347,11 @@
             <i class="fa-solid fa-bookmark text-sky-400 w-4"></i>
             <span>Copy Personalized View Link</span>
           </button>
-          <button onclick="closeModal('moreToolsModal'); manualSyncRefresh();" class="btn-action justify-start px-3.5 py-2.5 text-xs text-zinc-200">
-            <i class="fa-solid fa-rotate text-emerald-400 w-4"></i>
-            <span>Sync Latest Live Data Now</span>
-          </button>
         </div>
       </div>
 
       <!-- Section 2: League Vault & Exports -->
-      <div class="space-y-2">
+      <div class="space-y-2 pt-2 border-t border-zinc-800">
         <div class="text-[10px] font-extrabold uppercase tracking-wider text-zinc-400">League Vault, ESPN & Backups</div>
         <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
           <button onclick="closeModal('moreToolsModal'); openArchiveModal();" class="btn-action justify-start px-3.5 py-2.5 text-xs text-amber-300">
@@ -1227,13 +1384,17 @@
             <i class="fa-solid fa-key w-4"></i>
             <span id="moreToolsCommishToggleLabel">Unlock Commissioner Mode</span>
           </button>
+          <button onclick="closeModal('moreToolsModal'); openLeagueBrandingModal();" class="btn-action justify-start px-3.5 py-2.5 text-xs text-amber-300">
+            <i class="fa-solid fa-crown text-amber-400 w-4"></i>
+            <span>Edit GCM Avatar & League Title</span>
+          </button>
           <button onclick="closeModal('moreToolsModal'); openOrderConfigModal();" class="btn-action justify-start px-3.5 py-2.5 text-xs text-amber-300">
             <i class="fa-solid fa-list-ol text-amber-400 w-4"></i>
             <span>Set 1–10 Snake Draft Order</span>
           </button>
           <button onclick="closeModal('moreToolsModal'); openCloudSyncModal();" class="btn-action justify-start px-3.5 py-2.5 text-xs text-sky-300">
             <i class="fa-solid fa-cloud-arrow-up text-sky-400 w-4"></i>
-            <span>Live Sheet Sync & PIN Security</span>
+            <span>PINs, Curse Reset & Live Sync</span>
           </button>
           <button onclick="closeModal('moreToolsModal'); advanceSeasonWindow(1);" class="btn-action justify-start px-3.5 py-2.5 text-xs text-zinc-300">
             <i class="fa-solid fa-forward-step text-amber-400 w-4"></i>
@@ -1244,9 +1405,70 @@
             <span>Import JSON Backup</span>
             <input type="file" accept=".json" onchange="closeModal('moreToolsModal'); importLeagueBackup(event)" class="hidden">
           </label>
-          <button onclick="closeModal('moreToolsModal'); confirmResetToSeed();" class="btn-action justify-start px-3.5 py-2.5 text-xs text-rose-300">
+          <button onclick="closeModal('moreToolsModal'); confirmResetToSeed();" class="btn-action justify-start px-3.5 py-2.5 text-xs text-rose-300 sm:col-span-2">
             <i class="fa-solid fa-rotate-left text-rose-400 w-4"></i>
             <span>Reset to Official Seed</span>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 10. COMMISSIONER LEAGUE BRANDING & GCM AVATAR EDITOR MODAL -->
+  <div id="leagueBrandingModal" class="hidden fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4 overflow-y-auto">
+    <div class="bg-[#121215] border border-zinc-700 rounded-2xl max-w-md w-full p-5 sm:p-6 shadow-2xl space-y-4 my-8">
+      <div class="flex items-center justify-between border-b border-zinc-800 pb-3">
+        <div class="flex items-center gap-2.5">
+          <div class="w-9 h-9 rounded-xl garnet-hero-banner flex items-center justify-center text-white text-sm">
+            <i class="fa-solid fa-crown"></i>
+          </div>
+          <div>
+            <h3 class="text-base font-black text-white">Edit League Branding & GCM Avatar</h3>
+            <p class="text-[11px] text-zinc-400">Commissioner Mode • Syncs across all 10 managers</p>
+          </div>
+        </div>
+        <button onclick="closeModal('leagueBrandingModal')" class="btn-action px-2.5 py-1 text-xs text-zinc-300">
+          <i class="fa-solid fa-xmark"></i> Close
+        </button>
+      </div>
+
+      <div class="space-y-3 text-xs">
+        <div>
+          <label class="block text-[10px] font-extrabold uppercase tracking-wider text-amber-300 mb-1">Top-Left Avatar Monogram (1–4 Chars) or Emoji</label>
+          <div class="grid grid-cols-2 gap-2">
+            <input id="brandAvatarTextInput" type="text" maxlength="4" placeholder="GCM" class="bg-[#09090B] text-white font-display font-black text-sm rounded-xl px-3 py-2 border border-zinc-700 focus:border-[#CC1429] focus:outline-none uppercase">
+            <input id="brandAvatarEmojiInput" type="text" maxlength="4" placeholder="Optional Emoji (e.g. 🐔 🏆)" class="bg-[#09090B] text-white text-sm rounded-xl px-3 py-2 border border-zinc-700 focus:border-[#CC1429] focus:outline-none">
+          </div>
+        </div>
+
+        <div>
+          <label class="block text-[10px] font-extrabold uppercase tracking-wider text-sky-300 mb-1">Custom League Logo Image (Upload or Paste URL)</label>
+          <div class="flex flex-col gap-2">
+            <input id="brandAvatarImageUrlInput" type="text" placeholder="Paste image URL or upload below..." class="w-full bg-[#09090B] text-zinc-200 text-xs rounded-xl px-3 py-2 border border-zinc-700 focus:border-sky-400 focus:outline-none">
+            <div class="flex items-center gap-2">
+              <label class="btn-action px-3 py-1.5 text-xs text-emerald-300 cursor-pointer">
+                <i class="fa-solid fa-image"></i> Upload Logo Image
+                <input type="file" accept="image/*" onchange="handleBrandLogoFileUpload(event)" class="hidden">
+              </label>
+              <button type="button" onclick="document.getElementById('brandAvatarImageUrlInput').value='';" class="btn-action px-2.5 py-1.5 text-xs text-rose-300">Clear Image</button>
+            </div>
+          </div>
+        </div>
+
+        <div>
+          <label class="block text-[10px] font-extrabold uppercase tracking-wider text-zinc-300 mb-1">League Title</label>
+          <input id="brandLeagueTitleInput" type="text" maxlength="40" placeholder="GAMECOCK MAFIA" class="w-full bg-[#09090B] text-white font-black text-sm rounded-xl px-3 py-2 border border-zinc-700 focus:border-[#CC1429] focus:outline-none">
+        </div>
+
+        <div>
+          <label class="block text-[10px] font-extrabold uppercase tracking-wider text-zinc-300 mb-1">League Subtitle</label>
+          <input id="brandLeagueSubtitleInput" type="text" maxlength="80" placeholder="Off-Season & In-Season Draft Pick Tracker" class="w-full bg-[#09090B] text-zinc-300 text-xs rounded-xl px-3 py-2 border border-zinc-700 focus:border-[#CC1429] focus:outline-none">
+        </div>
+
+        <div class="flex justify-end gap-2 pt-2 border-t border-zinc-800">
+          <button type="button" onclick="closeModal('leagueBrandingModal')" class="btn-action px-4 py-2 text-xs text-zinc-300">Cancel</button>
+          <button type="button" onclick="saveLeagueBrandingFromModal()" class="btn-garnet px-5 py-2 text-xs">
+            <i class="fa-solid fa-check"></i> Save League Branding
           </button>
         </div>
       </div>
@@ -2115,6 +2337,14 @@
 
       const sanitizeTrade = tr => {
         if (!tr || typeof tr !== "object") return null;
+        const cleanReactions = {};
+        if (tr.reactions && typeof tr.reactions === "object" && !Array.isArray(tr.reactions)) {
+          ["🔥", "🤝", "🌮", "💀"].forEach(em => {
+            if (Array.isArray(tr.reactions[em])) {
+              cleanReactions[em] = tr.reactions[em].slice(0, 20).map(safeId).filter(Boolean);
+            }
+          });
+        }
         return {
           id: safeId(tr.id || "T-IMPORT"),
           year: Number(tr.year) || 2027,
@@ -2125,6 +2355,11 @@
           headline: cleanStr(tr.headline, 400),
           notes: cleanStr(tr.notes, 800),
           submittedBy: tr.submittedBy ? cleanStr(tr.submittedBy, 60) : undefined,
+          proposerTeamId: tr.proposerTeamId ? safeId(tr.proposerTeamId) : undefined,
+          confirmedBy: Array.isArray(tr.confirmedBy) ? tr.confirmedBy.slice(0, 5).map(safeId).filter(Boolean) : undefined,
+          requiredTeams: Array.isArray(tr.requiredTeams) ? tr.requiredTeams.slice(0, 5).map(safeId).filter(Boolean) : undefined,
+          proposedAt: Number(tr.proposedAt) > 0 ? Number(tr.proposedAt) : undefined,
+          reactions: cleanReactions,
           directTransfers: Array.isArray(tr.directTransfers)
             ? tr.directTransfers.slice(0, 60).map(dt => ({
                 year: Number(dt.year) || 2027,
@@ -2189,6 +2424,14 @@
       const sanitizedProfiles = {};
       validTeams.forEach(t => {
         sanitizedProfiles[t.id] = {
+          customTeamName: "",
+          avatarType: "MONOGRAM",
+          avatarText: "",
+          avatarEmoji: "",
+          avatarBg: "",
+          avatarImageDataUrl: "",
+          upstateKittyCursed: false,
+          flairBadge: "",
           tradeBlockNote: "",
           lookingFor: "",
           needsChips: [],
@@ -2216,6 +2459,16 @@
             ? pRaw.needsChips.slice(0, 12).map(c => cleanStr(c, 32).trim()).filter(Boolean)
             : [];
           const prof = {
+            customTeamName: cleanStr(pRaw.customTeamName, 24).trim(),
+            avatarType: ["MONOGRAM", "EMOJI", "IMAGE"].includes(pRaw.avatarType) ? pRaw.avatarType : "MONOGRAM",
+            avatarText: cleanStr(pRaw.avatarText, 4).trim().toUpperCase(),
+            avatarEmoji: cleanStr(pRaw.avatarEmoji, 8).trim(),
+            avatarBg: cleanStr(pRaw.avatarBg, 24).trim(),
+            avatarImageDataUrl: typeof pRaw.avatarImageDataUrl === "string" && (pRaw.avatarImageDataUrl.startsWith("data:image/") || pRaw.avatarImageDataUrl.startsWith("https://"))
+              ? cleanStr(pRaw.avatarImageDataUrl, 35000).trim()
+              : "",
+            upstateKittyCursed: Boolean(pRaw.upstateKittyCursed),
+            flairBadge: ["CHAMP", "TOILET", ""].includes(pRaw.flairBadge) ? pRaw.flairBadge : "",
             tradeBlockNote: cleanStr(pRaw.tradeBlockNote, 240).trim(),
             lookingFor: cleanStr(pRaw.lookingFor, 160).trim(),
             needsChips: cleanChips,
@@ -2232,10 +2485,36 @@
         }
       }
 
+      const rawBrand = (raw.leagueBranding && typeof raw.leagueBranding === "object") ? raw.leagueBranding : {};
+      const sanitizedBranding = {
+        avatarText: cleanStr(rawBrand.avatarText || "GCM", 4).trim().toUpperCase() || "GCM",
+        avatarEmoji: cleanStr(rawBrand.avatarEmoji || "", 8).trim(),
+        avatarImageDataUrl: typeof rawBrand.avatarImageDataUrl === "string" && (rawBrand.avatarImageDataUrl.startsWith("data:image/") || rawBrand.avatarImageDataUrl.startsWith("https://"))
+          ? cleanStr(rawBrand.avatarImageDataUrl, 35000).trim()
+          : "",
+        title: cleanStr(rawBrand.title || "GAMECOCK MAFIA", 40).trim() || "GAMECOCK MAFIA",
+        subtitle: cleanStr(rawBrand.subtitle || "Off-Season & In-Season Draft Pick Tracker", 80).trim() || "Off-Season & In-Season Draft Pick Tracker"
+      };
+
+      const sanitizedShame = Array.isArray(raw.hallOfShame)
+        ? raw.hallOfShame.slice(0, 30).map(item => {
+            const tid = safeId(item?.teamId);
+            const tName = cleanStr(item?.teamName || tid, 40);
+            return {
+              teamId: tid,
+              teamName: tName,
+              message: cleanStr(item?.message || `${tName} selected the 'Upstate Kitties' colorway and activated the Sparkly Pink 8==D Curse!`, 240),
+              timestamp: Number(item?.timestamp) || 0
+            };
+          }).filter(x => x.teamId && x.message)
+        : [];
+
       const out = {
-        version: "6.0",
+        version: "6.5",
         updatedAt: Number(raw.updatedAt) > 0 ? Number(raw.updatedAt) : 0,
         baseUpcomingYear: Math.min(2035, Math.max(2026, Number(raw.baseUpcomingYear) || 2027)),
+        leagueBranding: sanitizedBranding,
+        hallOfShame: sanitizedShame,
         teams: validTeams,
         teamProfiles: sanitizedProfiles,
         trades: raw.trades.slice(0, 500).map(sanitizeTrade).filter(Boolean),
@@ -2326,6 +2605,14 @@
       const defaultProfiles = {};
       DEFAULT_TEAMS.forEach(t => {
         defaultProfiles[t.id] = {
+          customTeamName: "",
+          avatarType: "MONOGRAM",
+          avatarText: "",
+          avatarEmoji: "",
+          avatarBg: "",
+          avatarImageDataUrl: "",
+          upstateKittyCursed: false,
+          flairBadge: "",
           tradeBlockNote: "",
           lookingFor: "",
           needsChips: [],
@@ -2334,12 +2621,20 @@
         };
       });
       return {
-        version: "6.0",
+        version: "6.5",
         updatedAt: 0,
         baseUpcomingYear: 2027,
         leaguePassphraseVerifier: DEFAULT_PASSPHRASE_VERIFIER,
         commishPinVerifier: DEFAULT_PIN_VERIFIER,
         encryptedCloudSyncUrl: DEFAULT_ENCRYPTED_SYNC_URL,
+        leagueBranding: {
+          avatarText: "GCM",
+          avatarEmoji: "",
+          avatarImageDataUrl: "",
+          title: "GAMECOCK MAFIA",
+          subtitle: "Off-Season & In-Season Draft Pick Tracker"
+        },
+        hallOfShame: [],
         teams: JSON.parse(JSON.stringify(DEFAULT_TEAMS)),
         teamProfiles: defaultProfiles,
         trades: JSON.parse(JSON.stringify(SEED_TRADES)),
@@ -2451,6 +2746,14 @@
       (leagueDB.teams || DEFAULT_TEAMS).forEach(t => {
         if (!leagueDB.teamProfiles[t.id]) {
           leagueDB.teamProfiles[t.id] = {
+            customTeamName: "",
+            avatarType: "MONOGRAM",
+            avatarText: "",
+            avatarEmoji: "",
+            avatarBg: "",
+            avatarImageDataUrl: "",
+            upstateKittyCursed: false,
+            flairBadge: "",
             tradeBlockNote: "",
             lookingFor: "",
             needsChips: [],
@@ -2631,14 +2934,34 @@
       }
     }
 
-    function getTeamName(teamId, overrideMap = null) {
-      if (overrideMap && overrideMap[teamId]) return overrideMap[teamId];
+    function getOriginalManagerName(teamId) {
       const t = (leagueDB?.teams || DEFAULT_TEAMS).find(x => x.id === teamId);
       return t ? t.name : String(teamId || "");
     }
 
+    function getTeamName(teamId, overrideMap = null, includeBadges = true) {
+      if (overrideMap && overrideMap[teamId]) return overrideMap[teamId];
+      const baseName = getOriginalManagerName(teamId);
+      const prof = leagueDB?.teamProfiles?.[teamId];
+      let display = baseName;
+      if (prof && prof.customTeamName && prof.customTeamName.toLowerCase() !== baseName.toLowerCase()) {
+        display = `${prof.customTeamName} (@${baseName})`;
+      }
+      if (includeBadges && prof) {
+        if (prof.flairBadge === "CHAMP") display += " 🏆";
+        else if (prof.flairBadge === "TOILET") display += " 🚽";
+        if (prof.upstateKittyCursed) display += " 8==D";
+      }
+      return display;
+    }
+
     function getTeamObj(teamId) {
-      return (leagueDB?.teams || DEFAULT_TEAMS).find(x => x.id === teamId) || { id: safeId(teamId), name: String(teamId || "") };
+      const base = (leagueDB?.teams || DEFAULT_TEAMS).find(x => x.id === teamId) || { id: safeId(teamId), name: String(teamId || "") };
+      return {
+        id: base.id,
+        name: getTeamName(teamId),
+        originalName: base.name
+      };
     }
 
     /* -----------------------------------------------------------
@@ -2842,7 +3165,7 @@
         const isTyping = tag === "INPUT" || tag === "TEXTAREA" || tag === "SELECT";
 
         if (e.key === "Escape") {
-          ["inspectModal", "tradeModal", "orderConfigModal", "espnExportModal", "archiveModal", "cloudSyncModal", "confirmModal", "pinModal", "moreToolsModal"].forEach(id => closeModal(id));
+          ["inspectModal", "tradeModal", "orderConfigModal", "espnExportModal", "archiveModal", "cloudSyncModal", "confirmModal", "pinModal", "moreToolsModal", "leagueBrandingModal"].forEach(id => closeModal(id));
           return;
         }
 
@@ -2875,6 +3198,132 @@
       }
     }
 
+    const COLOR_THEME_STORAGE_KEY = "gamecock_mafia_color_theme";
+    const COVERT_COLOR_SCHEMES = [
+      { id: "sandstorm_noir",    label: "Sandstorm Noir",    sub: "Garnet & Obsidian", dots: ["#73000A", "#CC1429", "#09090B"] },
+      { id: "chapel_sky",        label: "Chapel Sky",        sub: "Sky, White & Navy", dots: ["#4B9CD3", "#FFFFFF", "#13294B"] },
+      { id: "honolulu_gridiron", label: "Honolulu Gridiron", sub: "Blue, Silver & White", dots: ["#0076B6", "#B0B7BC", "#FFFFFF"] },
+      { id: "foundry_orange",    label: "Foundry Orange",    sub: "Orange, Brown & White", dots: ["#FF3C00", "#311D00", "#FFFFFF"] },
+      { id: "emerald_sound",     label: "Emerald Sound '98", sub: "Royal, Green & Silver", dots: ["#004B8D", "#69BE28", "#9EA2A2"] },
+      { id: "upstate_kitties",   label: "Upstate Kitties",   sub: "Orange & Regal Purple", dots: ["#F56600", "#522D80", "#FFFFFF"], isTrap: true }
+    ];
+
+    function isCurrentTeamKittyCursed() {
+      const myId = uiState.myTeam || "syeth";
+      return Boolean(leagueDB?.teamProfiles?.[myId]?.upstateKittyCursed);
+    }
+
+    function getEffectiveColorTheme() {
+      if (isCurrentTeamKittyCursed()) {
+        return "upstate_kitties";
+      }
+      try {
+        const saved = localStorage.getItem(COLOR_THEME_STORAGE_KEY) || "sandstorm_noir";
+        if (COVERT_COLOR_SCHEMES.some(s => s.id === saved && s.id !== "upstate_kitties")) {
+          return saved;
+        }
+      } catch (e) {}
+      return "sandstorm_noir";
+    }
+
+    function applyColorTheme(forceThemeId = null) {
+      const themeId = forceThemeId || getEffectiveColorTheme();
+      uiState.colorTheme = themeId;
+      COVERT_COLOR_SCHEMES.forEach(s => document.body.classList.remove(`theme-${s.id}`));
+      document.body.classList.add(`theme-${themeId}`);
+    }
+
+    async function selectColorTheme(themeId) {
+      const myId = uiState.myTeam || "syeth";
+      const prof = getTeamProfile(myId);
+
+      // If already cursed, block non-Admin from escaping Upstate Kitties!
+      if (prof.upstateKittyCursed && themeId !== "upstate_kitties" && !uiState.isCommish) {
+        showToast("🚨 NICE TRY! The Upstate Kitties Curse (8==D) is locked until the Commissioner pardons you!", "error");
+        applyColorTheme("upstate_kitties");
+        renderColorSchemePicker();
+        return;
+      }
+
+      if (themeId === "upstate_kitties") {
+        const origName = getOriginalManagerName(myId);
+        prof.upstateKittyCursed = true;
+        prof.updatedAt = Date.now();
+        if (!Array.isArray(leagueDB.hallOfShame)) leagueDB.hallOfShame = [];
+        const alreadyLogged = leagueDB.hallOfShame.some(x => x.teamId === myId);
+        if (!alreadyLogged) {
+          leagueDB.hallOfShame.unshift({
+            teamId: myId,
+            teamName: origName,
+            message: `${origName} selected the 'Upstate Kitties' colorway and activated the Sparkly Pink 8==D Curse!`,
+            timestamp: Date.now()
+          });
+        }
+        try { localStorage.setItem(COLOR_THEME_STORAGE_KEY, "upstate_kitties"); } catch (e) {}
+        leagueDB.updatedAt = Date.now();
+        saveDatabase(false);
+        applyColorTheme("upstate_kitties");
+        renderColorSchemePicker();
+        populateStaticFormControls();
+        renderAll();
+        showToast("🎀 UPSTATE KITTIES ACTIVATED! Everything is sparkly pink & 8==D is locked beside your name until Commissioner help!", "error");
+        await pushTeamProfileToCloud(myId);
+        return;
+      }
+
+      // If Commissioner is testing and switches away from Upstate Kitties on their own team, lift curse for self
+      if (uiState.isCommish && prof.upstateKittyCursed) {
+        prof.upstateKittyCursed = false;
+        prof.updatedAt = Date.now();
+        saveDatabase(true, `LIFT_KITTY_CURSE:${myId}`);
+      }
+
+      try { localStorage.setItem(COLOR_THEME_STORAGE_KEY, themeId); } catch (e) {}
+      applyColorTheme(themeId);
+      renderColorSchemePicker();
+      renderAll();
+      const chosenObj = COVERT_COLOR_SCHEMES.find(s => s.id === themeId);
+      if (chosenObj) {
+        showToast(`Applied "${chosenObj.label}" color scheme!`, "success");
+      }
+    }
+
+    function renderColorSchemePicker() {
+      const grid = document.getElementById("colorSchemeGridContainer");
+      const statusEl = document.getElementById("colorSchemeLockStatusText");
+      if (!grid) return;
+      const activeTheme = getEffectiveColorTheme();
+      const cursed = isCurrentTeamKittyCursed();
+
+      if (statusEl) {
+        statusEl.innerHTML = cursed
+          ? `<span class="text-pink-400 font-bold">🎀 Locked by Upstate Kitties Curse (Ask Commish to Reset)</span>`
+          : `Swap colorways anytime`;
+      }
+
+      grid.innerHTML = COVERT_COLOR_SCHEMES.map(sc => {
+        const isCurrent = sc.id === activeTheme;
+        const isLockedOut = cursed && sc.id !== "upstate_kitties" && !uiState.isCommish;
+        const dotsHtml = sc.dots.map(c => `<span class="w-3 h-3 rounded-full border border-white/30 inline-block" style="background:${c}"></span>`).join("");
+        return `
+          <button
+            type="button"
+            onclick="selectColorTheme('${sc.id}')"
+            class="p-2.5 rounded-xl border text-left transition flex flex-col justify-between gap-1.5 cursor-pointer ${isCurrent ? 'bg-zinc-900 border-amber-400 shadow-md' : 'bg-[#09090B] border-zinc-800 hover:border-zinc-600'} ${isLockedOut ? 'opacity-50' : ''}"
+          >
+            <div class="flex items-center justify-between gap-1">
+              <span class="text-xs font-extrabold text-white truncate">${escapeHtml(sc.label)}</span>
+              ${isCurrent ? `<i class="fa-solid fa-circle-check text-amber-400 text-xs"></i>` : ''}
+            </div>
+            <div class="flex items-center justify-between gap-1">
+              <div class="flex items-center gap-1">${dotsHtml}</div>
+              <span class="text-[10px] text-zinc-400 truncate">${escapeHtml(sc.sub)}</span>
+            </div>
+          </button>
+        `;
+      }).join("");
+    }
+
     function openMoreToolsModal() {
       const lbl = document.getElementById("moreToolsMyTeamLabel");
       if (lbl) lbl.textContent = getTeamName(uiState.myTeam || "syeth");
@@ -2883,13 +3332,143 @@
         adminSec.classList.toggle("hidden", !uiState.isCommish);
         adminSec.classList.toggle("grid", Boolean(uiState.isCommish));
       }
+      renderColorSchemePicker();
       updateCommishButtonState();
       openModal("moreToolsModal");
     }
 
+    function renderLeagueBrandingHeader() {
+      const brand = leagueDB?.leagueBranding || {
+        avatarText: "GCM",
+        avatarEmoji: "",
+        avatarImageDataUrl: "",
+        title: "GAMECOCK MAFIA",
+        subtitle: "Off-Season & In-Season Draft Pick Tracker"
+      };
+      const avatarHtml = brand.avatarImageDataUrl
+        ? `<img src="${escapeHtml(brand.avatarImageDataUrl)}" alt="League Logo" class="w-full h-full object-cover">`
+        : brand.avatarEmoji
+        ? `<span class="text-lg sm:text-xl leading-none">${escapeHtml(brand.avatarEmoji)}</span>`
+        : `<span class="font-display font-extrabold text-base sm:text-lg tracking-wider text-white">${escapeHtml(brand.avatarText || "GCM")}</span>`;
+
+      const gateAvatarHtml = brand.avatarImageDataUrl
+        ? `<img src="${escapeHtml(brand.avatarImageDataUrl)}" alt="League Logo" class="w-full h-full object-cover">`
+        : brand.avatarEmoji
+        ? `<span class="text-3xl leading-none">${escapeHtml(brand.avatarEmoji)}</span>`
+        : `<span class="font-display font-extrabold text-2xl tracking-wider text-white">${escapeHtml(brand.avatarText || "GCM")}</span>`;
+
+      const hdrBox = document.getElementById("headerBrandAvatarBox");
+      if (hdrBox) hdrBox.innerHTML = avatarHtml;
+      const gateBox = document.getElementById("gateBrandAvatarBox");
+      if (gateBox) gateBox.innerHTML = gateAvatarHtml;
+
+      const hdrTitle = document.getElementById("headerBrandTitleText");
+      if (hdrTitle) hdrTitle.textContent = brand.title || "GAMECOCK MAFIA";
+      const gateTitle = document.getElementById("gateBrandTitleText");
+      if (gateTitle) gateTitle.textContent = brand.title || "GAMECOCK MAFIA";
+      const hdrSub = document.getElementById("headerBrandSubtitleText");
+      if (hdrSub) hdrSub.textContent = brand.subtitle || "Off-Season & In-Season Draft Pick Tracker";
+
+      const editBadge = document.getElementById("headerBrandEditBadge");
+      if (editBadge) {
+        editBadge.classList.toggle("hidden", !uiState.isCommish);
+        editBadge.classList.toggle("flex", Boolean(uiState.isCommish));
+      }
+    }
+
+    function handleHeaderBrandClick() {
+      if (uiState.isCommish) {
+        openLeagueBrandingModal();
+      } else {
+        switchMainTab("ledger");
+      }
+    }
+
+    function openLeagueBrandingModal() {
+      if (!requireCommish()) return;
+      const brand = leagueDB?.leagueBranding || {};
+      const txtEl = document.getElementById("brandAvatarTextInput");
+      const emEl = document.getElementById("brandAvatarEmojiInput");
+      const urlEl = document.getElementById("brandAvatarImageUrlInput");
+      const titleEl = document.getElementById("brandLeagueTitleInput");
+      const subEl = document.getElementById("brandLeagueSubtitleInput");
+      if (txtEl) txtEl.value = brand.avatarText || "GCM";
+      if (emEl) emEl.value = brand.avatarEmoji || "";
+      if (urlEl) urlEl.value = brand.avatarImageDataUrl || "";
+      if (titleEl) titleEl.value = brand.title || "GAMECOCK MAFIA";
+      if (subEl) subEl.value = brand.subtitle || "Off-Season & In-Season Draft Pick Tracker";
+      openModal("leagueBrandingModal");
+    }
+
+    function resizeImageFileToDataUrl(file, maxDim = 96) {
+      return new Promise((resolve, reject) => {
+        if (!file) return reject(new Error("No file"));
+        const reader = new FileReader();
+        reader.onload = e => {
+          const img = new Image();
+          img.onload = () => {
+            const canvas = document.createElement("canvas");
+            let w = img.width || maxDim;
+            let h = img.height || maxDim;
+            const scale = Math.min(maxDim / w, maxDim / h, 1);
+            w = Math.max(1, Math.round(w * scale));
+            h = Math.max(1, Math.round(h * scale));
+            canvas.width = w;
+            canvas.height = h;
+            const ctx = canvas.getContext("2d");
+            ctx.drawImage(img, 0, 0, w, h);
+            resolve(canvas.toDataURL("image/jpeg", 0.82));
+          };
+          img.onerror = reject;
+          img.src = e.target.result;
+        };
+        reader.onerror = reject;
+        reader.readAsDataURL(file);
+      });
+    }
+
+    async function handleBrandLogoFileUpload(event) {
+      const file = event?.target?.files?.[0];
+      if (!file) return;
+      try {
+        const dataUrl = await resizeImageFileToDataUrl(file, 96);
+        const urlEl = document.getElementById("brandAvatarImageUrlInput");
+        if (urlEl) urlEl.value = dataUrl;
+        showToast("Logo image resized & ready to save!", "success");
+      } catch (e) {
+        showToast("Could not process image file.", "error");
+      }
+    }
+
+    function saveLeagueBrandingFromModal() {
+      if (!requireCommish()) return;
+      pushUndoState("Update League Branding & GCM Avatar");
+      const txt = cleanStr(document.getElementById("brandAvatarTextInput")?.value || "GCM", 4).trim().toUpperCase() || "GCM";
+      const emoji = cleanStr(document.getElementById("brandAvatarEmojiInput")?.value || "", 8).trim();
+      const imgUrl = cleanStr(document.getElementById("brandAvatarImageUrlInput")?.value || "", 35000).trim();
+      const title = cleanStr(document.getElementById("brandLeagueTitleInput")?.value || "GAMECOCK MAFIA", 40).trim() || "GAMECOCK MAFIA";
+      const subtitle = cleanStr(document.getElementById("brandLeagueSubtitleInput")?.value || "Off-Season & In-Season Draft Pick Tracker", 80).trim();
+
+      leagueDB.leagueBranding = {
+        avatarText: txt,
+        avatarEmoji: emoji,
+        avatarImageDataUrl: (imgUrl.startsWith("data:image/") || imgUrl.startsWith("https://")) ? imgUrl : "",
+        title,
+        subtitle
+      };
+      saveDatabase(true, "UPDATE_LEAGUE_BRANDING");
+      closeModal("leagueBrandingModal");
+      renderAll();
+      showToast("Updated GCM Avatar & League Branding!", "success");
+    }
+
     function getTeamInitials(teamId) {
-      const name = getTeamName(teamId) || "TM";
-      const clean = name.replace(/[^A-Za-z0-9 ]/g, "").trim();
+      const prof = leagueDB?.teamProfiles?.[teamId];
+      if (prof && prof.avatarText) {
+        return prof.avatarText.slice(0, 4).toUpperCase();
+      }
+      const name = (prof && prof.customTeamName) ? prof.customTeamName : getOriginalManagerName(teamId);
+      const clean = (name || "TM").replace(/[^A-Za-z0-9 ]/g, "").trim();
       const parts = clean.split(/\s+/);
       if (parts.length >= 2) {
         return (parts[0][0] + parts[1][0]).toUpperCase();
@@ -2897,12 +3476,29 @@
       return clean.slice(0, 2).toUpperCase();
     }
 
+    function renderTeamAvatarHtml(teamId, sizeClasses = "w-7 h-7 text-xs", roundedClass = "rounded-lg") {
+      const prof = leagueDB?.teamProfiles?.[teamId] || {};
+      const bgStyle = prof.upstateKittyCursed
+        ? "background:linear-gradient(135deg,#FF1493,#A855F7);border-color:#FBCFE8;"
+        : prof.avatarBg
+        ? `background:${escapeHtml(prof.avatarBg)};border-color:rgba(255,255,255,0.28);`
+        : "";
+      if (prof.avatarType === "IMAGE" && prof.avatarImageDataUrl) {
+        return `<span class="${sizeClasses} ${roundedClass} bg-[#09090B] border border-[#CC1429]/70 overflow-hidden inline-flex items-center justify-center flex-shrink-0" style="${bgStyle}"><img src="${escapeHtml(prof.avatarImageDataUrl)}" alt="" class="w-full h-full object-cover"></span>`;
+      }
+      if (prof.avatarType === "EMOJI" && prof.avatarEmoji) {
+        return `<span class="${sizeClasses} ${roundedClass} bg-[#73000A] border border-[#CC1429]/70 text-white inline-flex items-center justify-center flex-shrink-0" style="${bgStyle}">${escapeHtml(prof.avatarEmoji)}</span>`;
+      }
+      const mono = escapeHtml(getTeamInitials(teamId));
+      return `<span class="${sizeClasses} ${roundedClass} bg-[#73000A] border border-[#CC1429]/70 text-white font-display font-black tracking-wider inline-flex items-center justify-center flex-shrink-0" style="${bgStyle}">${mono}</span>`;
+    }
+
     function getLeagueCapitalRanks(state) {
       const entries = (leagueDB?.teams || DEFAULT_TEAMS).map(t => {
         const m = getManagerCapitalMetrics(t.id, state);
         return {
           id: t.id,
-          name: t.name,
+          name: getTeamName(t.id),
           totalPicks: m.effectivePickCount,
           earlyPicks: m.earlyCapitalCount,
           midPicks: m.midCapitalCount,
@@ -2954,7 +3550,7 @@
         const chips = Array.isArray(tp.needsChips) ? tp.needsChips : [];
         if (tp.tradeBlockNote || tp.lookingFor || chips.length > 0 || onBlockPicks.length > 0) {
           activeBlockEntries.push({
-            team: t,
+            team: { id: t.id, name: getTeamName(t.id) },
             tradeBlockNote: tp.tradeBlockNote,
             lookingFor: tp.lookingFor,
             needsChips: chips,
@@ -2966,35 +3562,47 @@
       return { activeBlockEntries, totalOtbPicks };
     }
 
+    function handleHeaderYearDropdownChange(val) {
+      if (val === "ARCHIVE_2018_2025") {
+        const sel = document.getElementById("headerYearDropdownSelect");
+        if (sel) sel.value = String(uiState.activeYear);
+        openArchiveModal();
+        return;
+      }
+      const yr = Number(val);
+      if (!isNaN(yr) && yr >= 2026) {
+        selectDraftYear(yr);
+      }
+    }
+
     function renderDynamicYearTabs() {
       const container = document.getElementById("dynamicYearTabsContainer");
+      const dropdown = document.getElementById("headerYearDropdownSelect");
       const base = leagueDB.baseUpcomingYear || 2027;
-      if (!container) return;
       const years = getVisibleDraftYears();
 
-      container.innerHTML = years.map(yr => {
-        const isSelected = yr === uiState.activeYear;
-        const yrState = evaluateYearState(yr);
-        const pendingCount = yrState.activePools.length + yrState.activeConditionals.length;
+      if (dropdown) {
+        const yearOpts = years.map(yr => {
+          const isSelected = yr === uiState.activeYear;
+          const yrState = evaluateYearState(yr);
+          const pendingCount = yrState.activePools.length + yrState.activeConditionals.length;
+          const roleTag = yr < base
+            ? "Completed"
+            : yr === base
+            ? "Upcoming"
+            : "+2 Yrs Out";
+          const pendingTag = pendingCount > 0 ? ` • ${pendingCount} Pending` : "";
+          return `<option value="${Number(yr)}" ${isSelected ? 'selected' : ''}>📅 ${Number(yr)} Draft (${roleTag}${pendingTag})</option>`;
+        }).join("");
+        dropdown.innerHTML = `${yearOpts}<option value="ARCHIVE_2018_2025">📚 2018–2025 Past Drafts Archive ↗</option>`;
+      }
 
-        let tagHtml = "";
-        if (yr < base) {
-          tagHtml = `<span class="hidden sm:inline-block px-1.5 py-0.2 text-[9px] rounded bg-zinc-800 text-zinc-300 border border-zinc-700">Final</span>`;
-        } else if (pendingCount > 0) {
-          tagHtml = `<span class="px-1.5 py-0.2 text-[9px] rounded bg-amber-950 text-amber-300 border border-amber-500/50 font-mono">${pendingCount}</span>`;
-        }
-
-        const btnClass = isSelected
-          ? "px-3 py-1 rounded-lg text-xs font-extrabold transition whitespace-nowrap flex items-center gap-1.5 bg-[#73000A] text-white shadow border border-[#CC1429]/80 cursor-pointer"
-          : "px-3 py-1 rounded-lg text-xs font-bold transition whitespace-nowrap flex items-center gap-1.5 text-zinc-400 hover:text-white hover:bg-zinc-800/70 cursor-pointer";
-
-        return `
-          <button onclick="selectDraftYear(${Number(yr)})" class="${btnClass}">
-            <span>${Number(yr)}</span>
-            ${tagHtml}
-          </button>
-        `;
-      }).join("");
+      if (container) {
+        container.innerHTML = years.map(yr => {
+          const isSelected = yr === uiState.activeYear;
+          return `<button onclick="selectDraftYear(${Number(yr)})" class="${isSelected ? 'active' : ''}">${Number(yr)}</button>`;
+        }).join("");
+      }
     }
 
     function renderAll() {
@@ -3012,6 +3620,8 @@
         uiState.activitySubTab = "PENDING_FINAL";
       }
 
+      applyColorTheme();
+      renderLeagueBrandingHeader();
       renderDynamicYearTabs();
       updateUndoButtonUI();
       updateMyTeamHeaderBadges();
@@ -3057,10 +3667,12 @@
       });
 
       const pendingCount = state.activePools.length + state.activeConditionals.length;
+      const openProposalsCount = Array.isArray(leagueDB.pendingTrades) ? leagueDB.pendingTrades.length : 0;
       const navPoolBadge = document.getElementById("navPoolBadge");
       if (navPoolBadge) {
-        navPoolBadge.textContent = `${pendingCount} Pending`;
-        navPoolBadge.classList.toggle("hidden", pendingCount === 0);
+        const totalBadgeCount = pendingCount + openProposalsCount;
+        navPoolBadge.textContent = openProposalsCount > 0 ? `${openProposalsCount} Offer${openProposalsCount > 1 ? 's' : ''}` : `${pendingCount} Pending`;
+        navPoolBadge.classList.toggle("hidden", totalBadgeCount === 0);
       }
 
       const navFeedBadge = document.getElementById("navFeedBadge");
@@ -3070,8 +3682,9 @@
 
       const mobActBadge = document.getElementById("mobActivityBadge");
       if (mobActBadge) {
-        mobActBadge.textContent = pendingCount > 0 ? pendingCount : state.yearTrades.length;
-        mobActBadge.classList.toggle("hidden", pendingCount === 0 && state.yearTrades.length === 0);
+        const actNum = openProposalsCount > 0 ? openProposalsCount : (pendingCount > 0 ? pendingCount : state.yearTrades.length);
+        mobActBadge.textContent = actNum;
+        mobActBadge.classList.toggle("hidden", actNum === 0);
       }
 
       const { activeBlockEntries } = getActiveTradeBlockEntries(state);
@@ -3096,6 +3709,9 @@
       }
 
       updateCommishButtonState();
+      if (typeof renderIncomingTradeAlertBanner === "function") {
+        renderIncomingTradeAlertBanner();
+      }
       renderTopContextBanner(state);
 
       // Keep dropdowns and key containers fresh so switching tabs or programmatic inspection is instant
@@ -3132,7 +3748,7 @@
       if (dLbl) dLbl.textContent = `My Team: ${myName}${hasPin ? " 🔒" : ""}`;
       if (mLbl) mLbl.textContent = `${myName}${hasPin ? " 🔒" : ""}`;
       if (tradeBtnLbl) {
-        tradeBtnLbl.textContent = uiState.isCommish ? "Log Any Trade" : `Log ${myName} Trade`;
+        tradeBtnLbl.textContent = "Propose Trade";
       }
     }
 
@@ -3375,6 +3991,14 @@
       if (!leagueDB.teamProfiles) leagueDB.teamProfiles = {};
       if (!leagueDB.teamProfiles[tid]) {
         leagueDB.teamProfiles[tid] = {
+          customTeamName: "",
+          avatarType: "MONOGRAM",
+          avatarText: "",
+          avatarEmoji: "",
+          avatarBg: "",
+          avatarImageDataUrl: "",
+          upstateKittyCursed: false,
+          flairBadge: "NONE",
           tradeBlockNote: "",
           lookingFor: "",
           needsChips: [],
@@ -3456,25 +4080,75 @@
       await pushTeamProfileToCloud(managedTeamId);
     }
 
+    function setWarRoomQuickEmoji(em) {
+      const emEl = document.getElementById("warRoomAvatarEmojiInput");
+      const imgEl = document.getElementById("warRoomAvatarImageInput");
+      if (emEl) emEl.value = em;
+      if (imgEl && em) imgEl.value = "";
+    }
+
+    async function handleTeamAvatarFileUpload(event) {
+      const file = event?.target?.files?.[0];
+      if (!file) return;
+      try {
+        const dataUrl = await resizeImageFileToDataUrl(file, 96);
+        const imgEl = document.getElementById("warRoomAvatarImageInput");
+        if (imgEl) imgEl.value = dataUrl;
+        showToast("Team avatar image resized & ready — click Save War Room!", "success");
+      } catch (e) {
+        showToast("Could not process team avatar image.", "error");
+      }
+    }
+
     async function saveMyTeamWarRoom() {
       const managedTeamId = uiState.isCommish ? uiState.selectedManager : uiState.myTeam;
       if (!uiState.isCommish && managedTeamId !== uiState.myTeam) {
         showToast("You can only edit your own franchise War Room.", "error");
         return;
       }
+      const customNameEl = document.getElementById("warRoomCustomTeamNameInput");
+      const avTextEl = document.getElementById("warRoomAvatarTextInput");
+      const avEmojiEl = document.getElementById("warRoomAvatarEmojiInput");
+      const avBgEl = document.getElementById("warRoomAvatarBgInput");
+      const avImgEl = document.getElementById("warRoomAvatarImageInput");
       const noteEl = document.getElementById("warRoomBlockNoteInput");
       const lookEl = document.getElementById("warRoomLookingForInput");
+
       const prof = getTeamProfile(managedTeamId);
+      if (customNameEl) {
+        prof.customTeamName = cleanStr(customNameEl.value, 24).trim();
+      }
+      const nextText = avTextEl ? cleanStr(avTextEl.value, 4).trim().toUpperCase() : (prof.avatarText || "");
+      const nextEmoji = avEmojiEl ? cleanStr(avEmojiEl.value, 8).trim() : (prof.avatarEmoji || "");
+      const nextBg = avBgEl ? cleanStr(avBgEl.value, 24).trim() : (prof.avatarBg || "");
+      const nextImg = avImgEl ? cleanStr(avImgEl.value, 35000).trim() : (prof.avatarImageDataUrl || "");
+
+      prof.avatarText = nextText;
+      prof.avatarEmoji = nextEmoji;
+      prof.avatarBg = /^#[0-9A-Fa-f]{3,8}$/.test(nextBg) ? nextBg : "";
+      prof.avatarImageDataUrl = (nextImg.startsWith("data:image/") || nextImg.startsWith("https://")) ? nextImg : "";
+
+      if (prof.avatarImageDataUrl) {
+        prof.avatarType = "IMAGE";
+      } else if (prof.avatarEmoji) {
+        prof.avatarType = "EMOJI";
+      } else {
+        prof.avatarType = "MONOGRAM";
+      }
+
       prof.tradeBlockNote = cleanStr(noteEl ? noteEl.value : "", 240).trim();
       prof.lookingFor = cleanStr(lookEl ? lookEl.value : "", 160).trim();
       prof.updatedAt = Date.now();
       leagueDB.updatedAt = Date.now();
       saveDatabase(false);
       uiState.warRoomDrawerOpen = false;
+      populateStaticFormControls();
       renderAll();
-      showToast(`Saved ${getTeamName(managedTeamId)}'s Trade Block & Team Needs!`, "success");
+      showToast(`Saved ${getTeamName(managedTeamId)}'s Identity, Avatar & War Room!`, "success");
       await pushTeamProfileToCloud(managedTeamId);
     }
+
+    const QUICK_AVATAR_EMOJIS = ["🐓", "🏈", "👑", "🔥", "💀", "🦁", "🐏", "⚡", "🎯", "🏴‍☠️", "💎", "🚀"];
 
     function renderTeamWarRoomSection(state) {
       const box = document.getElementById("teamWarRoomContainer");
@@ -3482,7 +4156,7 @@
 
       const managedTeamId = uiState.isCommish ? uiState.selectedManager : uiState.myTeam;
       const managedName = escapeHtml(getTeamName(managedTeamId));
-      const initials = escapeHtml(getTeamInitials(managedTeamId));
+      const origMgrName = escapeHtml(getOriginalManagerName(managedTeamId));
       const prof = getTeamProfile(managedTeamId);
       const hasPin = doesTeamHavePersonalPin(managedTeamId);
 
@@ -3511,7 +4185,7 @@
           ? `<div class="flex items-center gap-1.5">
                <span class="text-[10px] font-bold uppercase text-emerald-400">Admin Inspect:</span>
                <select onchange="selectManagerInLedger(this.value)" class="bg-[#09090B] text-white text-xs font-extrabold rounded-lg px-2.5 py-1 border border-emerald-500/50 focus:outline-none cursor-pointer">
-                 ${leagueDB.teams.map(t => `<option value="${safeId(t.id)}" ${t.id === managedTeamId ? 'selected' : ''}>${escapeHtml(t.name)}</option>`).join("")}
+                 ${leagueDB.teams.map(t => `<option value="${safeId(t.id)}" ${t.id === managedTeamId ? 'selected' : ''}>${escapeHtml(getTeamName(t.id))}</option>`).join("")}
                </select>
              </div>`
           : "";
@@ -3522,11 +4196,9 @@
             <div class="garnet-hero-banner p-4 sm:p-5">
               <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
                 
-                <!-- Left: Avatar Monogram + Franchise Name + League Capital Rank Pills -->
+                <!-- Left: Custom Avatar Block + Franchise Name + League Capital Rank Pills -->
                 <div class="flex items-start sm:items-center gap-3.5">
-                  <div class="w-12 h-12 sm:w-14 sm:h-14 rounded-2xl bg-[#09090B]/90 border-2 border-[#CC1429] flex items-center justify-center flex-shrink-0 shadow-lg">
-                    <span class="font-display font-black text-xl sm:text-2xl text-white tracking-wider">${initials}</span>
-                  </div>
+                  ${renderTeamAvatarHtml(managedTeamId, "w-12 h-12 sm:w-14 sm:h-14 text-xl sm:text-2xl shadow-lg", "rounded-2xl")}
                   <div class="space-y-1 min-w-0">
                     <div class="flex flex-wrap items-center gap-2">
                       <h2 class="text-xl sm:text-2xl font-black text-white tracking-tight">${managedName}</h2>
@@ -3556,7 +4228,7 @@
                 <div class="flex flex-wrap items-center gap-2 self-start lg:self-center flex-shrink-0">
                   <button onclick="toggleWarRoomDrawer()" id="toggleWarRoomDrawerBtn" class="btn-action px-3 py-1.5 text-xs ${uiState.warRoomDrawerOpen ? 'border-amber-400 text-amber-300 bg-zinc-900' : 'text-zinc-100 bg-[#09090B]/85'}">
                     <i class="fa-solid fa-pen-to-square text-amber-400"></i>
-                    <span>${uiState.warRoomDrawerOpen ? 'Close War Room ▴' : 'Edit War Room & Needs ✎'}</span>
+                    <span>${uiState.warRoomDrawerOpen ? 'Close War Room ▴' : 'Edit Team Name, Avatar & Needs ✎'}</span>
                   </button>
                   <button onclick="switchMainTab('tradecenter')" class="btn-action px-3 py-1.5 text-xs text-sky-300 bg-[#09090B]/85">
                     <i class="fa-solid fa-scale-balanced"></i>
@@ -3573,7 +4245,7 @@
                     <span class="text-[10px] font-extrabold uppercase tracking-wider text-zinc-300"><i class="fa-solid fa-bullhorn text-amber-400 mr-1"></i>Trade Block Status:</span>
                     ${prof.tradeBlockNote
                       ? `<span class="text-xs font-bold text-white">"${escapeHtml(prof.tradeBlockNote)}"</span>`
-                      : `<span class="text-xs text-zinc-400 italic">No Trade Block note posted yet — click "Edit War Room & Needs ✎" or tag any pick below with 🏷️ OTB.</span>`}
+                      : `<span class="text-xs text-zinc-400 italic">No Trade Block note posted yet — click "Edit Team Name, Avatar & Needs ✎" or tag any pick below with 🏷️ OTB.</span>`}
                     ${statusChipsHtml}
                   </div>
                   ${otbPillsHtml}
@@ -3582,16 +4254,60 @@
             </div>
 
             <!-- Collapsible War Room Editor Drawer (keeps inputs always in DOM for instant editing & tests) -->
-            <div id="warRoomEditDrawer" class="${uiState.warRoomDrawerOpen ? 'block' : 'hidden'} bg-[#121215] border-t border-zinc-800 p-4 space-y-3.5">
+            <div id="warRoomEditDrawer" class="${uiState.warRoomDrawerOpen ? 'block' : 'hidden'} bg-[#121215] border-t border-zinc-800 p-4 space-y-4">
               <div class="flex flex-wrap items-center justify-between gap-2">
                 <span class="text-xs font-black uppercase tracking-wider text-amber-300 flex items-center gap-1.5">
                   <i class="fa-solid fa-sliders"></i>
-                  <span>Customize ${managedName}'s Trade Block & Team Needs</span>
+                  <span>Customize ${origMgrName}'s Team Identity, Avatar Block & Trade Block</span>
                 </span>
                 <button onclick="saveMyTeamWarRoom()" class="btn-garnet px-3.5 py-1.5 text-xs">
                   <i class="fa-solid fa-bullhorn"></i>
-                  <span>Save & Post to Trade Block</span>
+                  <span>Save Team Identity & War Room</span>
                 </button>
+              </div>
+
+              <!-- Custom Team Name + Avatar Block Customizer -->
+              <div class="bg-[#09090B] border border-zinc-800 rounded-xl p-3.5 space-y-3">
+                <div class="text-[10px] font-extrabold uppercase tracking-wider text-sky-400 flex items-center gap-1.5">
+                  <i class="fa-solid fa-id-card"></i>
+                  <span>Team Name & Avatar Block Customizer (Displays as Custom Name (@${origMgrName}))</span>
+                </div>
+                <div class="grid grid-cols-1 sm:grid-cols-12 gap-3">
+                  <div class="sm:col-span-5">
+                    <label for="warRoomCustomTeamNameInput" class="block text-[10px] font-bold uppercase text-zinc-400 mb-1">Custom Franchise Name (Max 24 chars)</label>
+                    <input id="warRoomCustomTeamNameInput" type="text" maxlength="24" value="${escapeHtml(prof.customTeamName || "")}" placeholder="e.g., Sandstorm Cartel (leave blank for ${origMgrName})" class="w-full bg-[#121215] text-white text-xs font-bold rounded-lg px-3 py-2 border border-zinc-700 focus:border-[#CC1429] focus:outline-none">
+                  </div>
+                  <div class="sm:col-span-2">
+                    <label for="warRoomAvatarTextInput" class="block text-[10px] font-bold uppercase text-zinc-400 mb-1">Monogram (1-4)</label>
+                    <input id="warRoomAvatarTextInput" type="text" maxlength="4" value="${escapeHtml(prof.avatarText || "")}" placeholder="${escapeHtml(getTeamInitials(managedTeamId))}" class="w-full bg-[#121215] text-white text-xs font-mono font-bold uppercase rounded-lg px-2.5 py-2 border border-zinc-700 focus:border-[#CC1429] focus:outline-none">
+                  </div>
+                  <div class="sm:col-span-2">
+                    <label for="warRoomAvatarEmojiInput" class="block text-[10px] font-bold uppercase text-zinc-400 mb-1">Emoji Icon</label>
+                    <input id="warRoomAvatarEmojiInput" type="text" maxlength="8" value="${escapeHtml(prof.avatarEmoji || "")}" placeholder="🐓 / 🏈" class="w-full bg-[#121215] text-white text-xs rounded-lg px-2.5 py-2 border border-zinc-700 focus:border-[#CC1429] focus:outline-none">
+                  </div>
+                  <div class="sm:col-span-3">
+                    <label for="warRoomAvatarBgInput" class="block text-[10px] font-bold uppercase text-zinc-400 mb-1">Avatar Block Color</label>
+                    <div class="flex items-center gap-1.5">
+                      <input id="warRoomAvatarBgInput" type="text" maxlength="16" value="${escapeHtml(prof.avatarBg || "")}" placeholder="#73000A" class="w-full bg-[#121215] text-white text-xs font-mono rounded-lg px-2.5 py-2 border border-zinc-700 focus:border-[#CC1429] focus:outline-none">
+                      <input type="color" value="${/^#[0-9A-Fa-f]{6}$/.test(prof.avatarBg || '') ? prof.avatarBg : '#73000A'}" onchange="document.getElementById('warRoomAvatarBgInput').value = this.value" class="w-8 h-8 rounded cursor-pointer bg-transparent border-0">
+                    </div>
+                  </div>
+                </div>
+
+                <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 pt-1">
+                  <div class="flex flex-wrap items-center gap-1">
+                    <span class="text-[10px] text-zinc-400 font-bold mr-1">Quick Emoji:</span>
+                    ${QUICK_AVATAR_EMOJIS.map(em => `<button type="button" onclick="setWarRoomQuickEmoji('${em}')" class="w-6 h-6 rounded bg-zinc-900 hover:bg-zinc-800 border border-zinc-700 text-xs flex items-center justify-center cursor-pointer">${em}</button>`).join("")}
+                    <button type="button" onclick="setWarRoomQuickEmoji('')" class="px-2 py-0.5 rounded bg-zinc-900 hover:bg-zinc-800 border border-zinc-700 text-[10px] text-zinc-400 cursor-pointer">Use Text</button>
+                  </div>
+                  <div class="flex items-center gap-2">
+                    <input id="warRoomAvatarImageInput" type="text" value="${escapeHtml(prof.avatarImageDataUrl || "")}" placeholder="Or Image URL / Upload →" class="w-44 bg-[#121215] text-white text-[11px] font-mono rounded-lg px-2.5 py-1.5 border border-zinc-700 focus:outline-none">
+                    <label class="btn-action px-2.5 py-1.5 text-[11px] text-sky-300 cursor-pointer whitespace-nowrap">
+                      <i class="fa-solid fa-upload"></i> Upload
+                      <input type="file" accept="image/*" onchange="handleTeamAvatarFileUpload(event)" class="hidden">
+                    </label>
+                  </div>
+                </div>
               </div>
 
               <!-- 1-Tap Quick Status & Position Needs Chips -->
@@ -3652,23 +4368,22 @@
           : `<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
                ${activeBlockEntries.map(entry => {
                  const isMe = entry.team.id === uiState.myTeam;
-                 const tInitials = escapeHtml(getTeamInitials(entry.team.id));
                  return `
                    <div class="bg-[#09090B] border ${isMe ? 'border-[#CC1429]/70' : 'border-zinc-800'} rounded-xl p-3.5 flex flex-col justify-between gap-3 hover:border-zinc-700 transition">
                      <div class="space-y-2">
                        <div class="flex items-center justify-between gap-2">
-                         <div class="flex items-center gap-2">
-                           <span class="w-7 h-7 rounded-lg bg-[#73000A] border border-[#CC1429]/60 text-white font-display font-black text-xs flex items-center justify-center">${tInitials}</span>
-                           <span class="text-sm font-black text-white">${escapeHtml(entry.team.name)}</span>
+                         <div class="flex items-center gap-2 min-w-0">
+                           ${renderTeamAvatarHtml(entry.team.id, "w-7 h-7 text-xs", "rounded-lg")}
+                           <span class="text-sm font-black text-white truncate">${escapeHtml(entry.team.name)}</span>
                            ${isMe ? `<span class="static-badge bg-zinc-900 text-amber-300 border border-amber-500/50">My Team</span>` : ''}
                          </div>
                          ${entry.team.id !== uiState.selectedManager ? `
-                           <div class="flex items-center gap-1">
+                           <div class="flex items-center gap-1 flex-shrink-0">
                              <button onclick="compareWithSelectedManager('${safeId(entry.team.id)}')" class="btn-action px-2 py-1 text-[10px] text-sky-300" title="Load ${escapeHtml(entry.team.name)} in Trade Machine below">
                                Compare ⚖
                              </button>
                              <button onclick="openTradeModalWithPair('${safeId(uiState.selectedManager)}', '${safeId(entry.team.id)}')" class="btn-garnet px-2 py-1 text-[10px]">
-                               Trade ⇄
+                               Propose ⇄
                              </button>
                            </div>
                          ` : ''}
@@ -3751,9 +4466,9 @@
             <td class="py-3 px-3 font-mono font-black text-center text-zinc-400">#${rank}</td>
             <td class="py-3 px-3 font-black text-white">
               <div class="flex items-center gap-2">
-                <span class="w-6 h-6 rounded-md bg-zinc-900 border border-zinc-700 text-[10px] font-display font-extrabold text-zinc-200 flex items-center justify-center">${escapeHtml(getTeamInitials(team.id))}</span>
+                ${renderTeamAvatarHtml(team.id, "w-6 h-6 text-[10px]", "rounded-md")}
                 <button onclick="selectManagerInLedger('${safeId(team.id)}')" class="hover:text-[#CC1429] flex items-center gap-1.5 cursor-pointer text-left">
-                  <span>${escapeHtml(team.name)}</span>
+                  <span>${escapeHtml(getTeamName(team.id))}</span>
                   ${isMyTeam ? `<span class="static-badge bg-[#73000A] text-white border border-[#CC1429]">My Team</span>` : ''}
                 </button>
               </div>
@@ -3987,8 +4702,8 @@
               const hasOtb = Object.values(tp.pickTags || {}).includes("ON_BLOCK") || Boolean(tp.tradeBlockNote);
               return `
                 <button onclick="selectCompareManagerB('${safeId(t.id)}')" class="px-2.5 py-1 rounded-lg text-xs font-bold border transition whitespace-nowrap flex items-center gap-1.5 cursor-pointer ${active ? 'bg-sky-950 text-white border-sky-400 shadow' : 'bg-[#09090B] text-zinc-300 border-zinc-800 hover:border-zinc-600'}">
-                  <span class="w-4 h-4 rounded bg-zinc-800 text-[9px] font-display font-black flex items-center justify-center text-zinc-200">${escapeHtml(getTeamInitials(t.id))}</span>
-                  <span>${escapeHtml(t.name)}</span>
+                  ${renderTeamAvatarHtml(t.id, "w-4 h-4 text-[9px]", "rounded")}
+                  <span>${escapeHtml(getTeamName(t.id))}</span>
                   ${hasOtb ? `<span class="w-1.5 h-1.5 rounded-full bg-amber-400" title="Active on Trade Block"></span>` : ''}
                 </button>
               `;
@@ -4040,14 +4755,14 @@
               <span class="static-badge bg-amber-950 text-amber-300 border border-amber-500">
                 <i class="fa-solid fa-bolt"></i> Proposed Deal Staged (${uiState.whatIfSwaps.length} Pick${uiState.whatIfSwaps.length > 1 ? 's' : ''})
               </span>
-              <span class="text-xs text-zinc-300">Review simulated pick delta below or submit directly to the official ledger.</span>
+              <span class="text-xs text-zinc-300">Review simulated pick delta below or propose this trade to ${escapeHtml(teamB.name)}.</span>
             </div>
             <div class="flex items-center gap-2">
               <button onclick="resetWhatIfSandbox()" class="btn-action px-3 py-1.5 text-xs text-zinc-300">
                 <i class="fa-solid fa-rotate-left"></i> Reset
               </button>
               <button onclick="openTradeModalFromWhatIf()" class="btn-garnet px-4 py-1.5 text-xs">
-                <i class="fa-solid fa-paper-plane"></i> Submit Official Trade (${uiState.whatIfSwaps.length}) →
+                <i class="fa-solid fa-paper-plane"></i> Propose Trade (${uiState.whatIfSwaps.length}) →
               </button>
             </div>
           </div>
@@ -4084,13 +4799,11 @@
           <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
             <!-- Team 1 Card -->
             <div class="bg-[#09090B] border border-[#CC1429]/60 rounded-xl p-3.5 flex items-center justify-between gap-3">
-              <div class="flex items-center gap-3">
-                <div class="w-10 h-10 rounded-xl bg-[#73000A] border border-[#CC1429] flex items-center justify-center font-display font-black text-white text-sm">
-                  ${escapeHtml(getTeamInitials(teamA.id))}
-                </div>
-                <div>
+              <div class="flex items-center gap-3 min-w-0">
+                ${renderTeamAvatarHtml(teamA.id, "w-10 h-10 text-sm", "rounded-xl")}
+                <div class="min-w-0">
                   <div class="flex items-center gap-2">
-                    <span class="text-base font-black text-white">${escapeHtml(teamA.name)}</span>
+                    <span class="text-base font-black text-white truncate">${escapeHtml(teamA.name)}</span>
                     <span class="text-[10px] font-extrabold uppercase text-[#CC1429]">Team 1</span>
                   </div>
                   <div class="text-xs text-zinc-400">
@@ -4100,19 +4813,17 @@
                 </div>
               </div>
               <button onclick="openTradeModalWithPair('${safeId(teamA.id)}', '${safeId(teamB.id)}')" class="btn-garnet px-3 py-1.5 text-xs whitespace-nowrap">
-                <i class="fa-solid fa-right-left"></i> Log Deal
+                <i class="fa-solid fa-paper-plane"></i> Propose Trade
               </button>
             </div>
 
             <!-- Team 2 Card -->
             <div class="bg-[#09090B] border border-sky-500/60 rounded-xl p-3.5 flex items-center justify-between gap-3">
-              <div class="flex items-center gap-3">
-                <div class="w-10 h-10 rounded-xl bg-sky-950 border border-sky-400 flex items-center justify-center font-display font-black text-sky-200 text-sm">
-                  ${escapeHtml(getTeamInitials(teamB.id))}
-                </div>
-                <div>
+              <div class="flex items-center gap-3 min-w-0">
+                ${renderTeamAvatarHtml(teamB.id, "w-10 h-10 text-sm", "rounded-xl")}
+                <div class="min-w-0">
                   <div class="flex items-center gap-2">
-                    <span class="text-base font-black text-white">${escapeHtml(teamB.name)}</span>
+                    <span class="text-base font-black text-white truncate">${escapeHtml(teamB.name)}</span>
                     <span class="text-[10px] font-extrabold uppercase text-sky-400">Partner</span>
                   </div>
                   <div class="text-xs text-zinc-400">
@@ -5083,13 +5794,280 @@
     }
 
     /* -----------------------------------------------------------
-       9. TAB 5: UNIFIED ACTIVITY & VISUAL SLEEPER-STYLE TRADE CARDS
+       9. TAB 5: UNIFIED ACTIVITY, MULTI-TEAM PROPOSALS & REACTIONS
        ----------------------------------------------------------- */
+    const TRADE_REACTION_EMOJIS = ["🔥", "🤝", "🌮", "💀"];
+
+    function validateTradePickOwnership(tradeObj) {
+      const transfers = Array.isArray(tradeObj?.directTransfers) ? tradeObj.directTransfers : [];
+      for (const dt of transfers) {
+        if (dt.generatedByCondId) continue;
+        const yrState = evaluateYearState(dt.year);
+        const pick = yrState.picks.find(p => p.round === Number(dt.round) && p.originalOwner === dt.originalOwner);
+        if (!pick) {
+          return { ok: false, error: `Invalid pick: ${dt.year} Rd ${dt.round} (${getTeamName(dt.originalOwner)}).` };
+        }
+        const expectedSender = dt.fromOwner || dt.originalOwner;
+        if (pick.currentOwner !== expectedSender) {
+          return {
+            ok: false,
+            error: `Pick conflict: ${getTeamName(dt.originalOwner)}'s ${dt.year} Rd ${dt.round} is currently owned by ${getTeamName(pick.currentOwner)}, not ${getTeamName(expectedSender)}.`
+          };
+        }
+      }
+      return { ok: true };
+    }
+
+    function autoCancelOverlappingProposals(finalizedTrade) {
+      if (!Array.isArray(leagueDB.pendingTrades) || leagueDB.pendingTrades.length === 0) return;
+      const movedKeys = new Set(
+        (finalizedTrade?.directTransfers || []).map(dt => `${Number(dt.year)}-${Number(dt.round)}-${dt.originalOwner}`)
+      );
+      if (movedKeys.size === 0) return;
+      leagueDB.pendingTrades = leagueDB.pendingTrades.filter(pt => {
+        if (pt.id === finalizedTrade.id) return false;
+        const hasConflict = (pt.directTransfers || []).some(dt =>
+          movedKeys.has(`${Number(dt.year)}-${Number(dt.round)}-${dt.originalOwner}`)
+        );
+        return !hasConflict;
+      });
+    }
+
+    function getProposalRequiredTeams(pt) {
+      return [pt.teamA, pt.teamB, pt.teamC].filter(Boolean);
+    }
+
+    function isProposalFullyApproved(pt) {
+      const req = getProposalRequiredTeams(pt);
+      const apps = pt.approvals && typeof pt.approvals === "object" ? pt.approvals : {};
+      return req.length >= 2 && req.every(tid => Boolean(apps[tid]));
+    }
+
+    function renderIncomingTradeAlertBanner() {
+      const banner = document.getElementById("incomingTradeAlertBanner");
+      if (!banner) return;
+      const myTeam = uiState.myTeam || uiState.selectedManager;
+      const pendingList = Array.isArray(leagueDB?.pendingTrades) ? leagueDB.pendingTrades : [];
+
+      const awaitingMe = pendingList.filter(pt => {
+        const req = getProposalRequiredTeams(pt);
+        const apps = pt.approvals || {};
+        return req.includes(myTeam) && !apps[myTeam];
+      });
+
+      if (awaitingMe.length === 0) {
+        banner.classList.add("hidden");
+        banner.innerHTML = "";
+        return;
+      }
+
+      banner.classList.remove("hidden");
+      banner.innerHTML = awaitingMe.map(pt => {
+        const proposerName = escapeHtml(getTeamName(pt.proposedBy || pt.teamA));
+        const teamsStr = getProposalRequiredTeams(pt).map(id => escapeHtml(getTeamName(id))).join(" ↔ ");
+        const yrs = getTradeAffectedYears(pt).map(Number).join("/");
+        return `
+          <div class="bg-gradient-to-r from-[#73000A]/90 via-[#121215] to-amber-950/80 border-2 border-amber-400 rounded-2xl p-3.5 sm:p-4 shadow-2xl flex flex-col lg:flex-row lg:items-center justify-between gap-3">
+            <div class="space-y-1">
+              <div class="flex flex-wrap items-center gap-2">
+                <span class="static-badge bg-amber-400 text-black font-black animate-pulse">
+                  <i class="fa-solid fa-bell"></i> INCOMING TRADE PROPOSAL
+                </span>
+                <span class="text-xs sm:text-sm font-black text-white">${yrs} Deal from ${proposerName}: ${teamsStr}</span>
+                <span class="text-[11px] font-mono text-amber-200">(${escapeHtml(pt.id)})</span>
+              </div>
+              <div class="text-xs font-bold text-amber-100">"${escapeHtml(pt.headline)}"</div>
+              ${pt.notes ? `<div class="text-[11px] text-zinc-300">Note: ${escapeHtml(pt.notes)}</div>` : ''}
+            </div>
+            <div class="flex flex-wrap items-center gap-1.5 flex-shrink-0">
+              <button onclick="confirmTradeProposal('${safeId(pt.id)}')" class="btn-garnet bg-emerald-700 hover:bg-emerald-600 border-emerald-400 px-3 py-1.5 text-xs">
+                <i class="fa-solid fa-check"></i>
+                <span>Confirm & Accept ✓</span>
+              </button>
+              <button onclick="counterTradeProposal('${safeId(pt.id)}')" class="btn-action px-2.5 py-1.5 text-xs text-sky-300">
+                <i class="fa-solid fa-right-left"></i>
+                <span>Counter ⇄</span>
+              </button>
+              <button onclick="declineTradeProposal('${safeId(pt.id)}')" class="btn-action px-2.5 py-1.5 text-xs text-rose-300">
+                <i class="fa-solid fa-xmark"></i>
+                <span>Decline</span>
+              </button>
+              <button onclick="copyProposalPingForChat('${safeId(pt.id)}')" class="btn-action px-2.5 py-1.5 text-xs text-amber-300" title="Copy Offer Ping for Chat">
+                <i class="fa-solid fa-comment-dots"></i>
+                <span>Ping Chat</span>
+              </button>
+            </div>
+          </div>
+        `;
+      }).join("");
+    }
+
+    async function confirmTradeProposal(propId, overrideResponder = null) {
+      const pid = safeId(propId);
+      const idx = (leagueDB.pendingTrades || []).findIndex(p => p.id === pid);
+      if (idx === -1) return;
+      const pt = leagueDB.pendingTrades[idx];
+      const responder = overrideResponder
+        ? safeId(overrideResponder)
+        : (uiState.isCommish ? (getProposalRequiredTeams(pt).find(t => !(pt.approvals || {})[t]) || uiState.myTeam) : uiState.myTeam);
+      const requiredTeams = getProposalRequiredTeams(pt);
+
+      if (!uiState.isCommish && !requiredTeams.includes(responder)) {
+        showToast("Only teams involved in this trade can confirm it.", "error");
+        return;
+      }
+
+      const conflictCheck = validateTradePickOwnership(pt);
+      if (!conflictCheck.ok) {
+        showToast(conflictCheck.error, "error");
+        return;
+      }
+
+      if (!pt.approvals || typeof pt.approvals !== "object") pt.approvals = {};
+      if (uiState.isCommish) {
+        requiredTeams.forEach(t => { pt.approvals[t] = true; });
+      } else {
+        pt.approvals[responder] = true;
+      }
+
+      if (isProposalFullyApproved(pt)) {
+        const finalized = JSON.parse(JSON.stringify(pt));
+        finalized.id = generateUniqueTradeId(finalized.year || uiState.activeYear);
+        finalized.status = "OFFICIAL";
+        finalized.reactions = finalized.reactions || {};
+        leagueDB.pendingTrades.splice(idx, 1);
+        autoCancelOverlappingProposals(finalized);
+        leagueDB.trades.push(finalized);
+        leagueDB.updatedAt = Date.now();
+        saveDatabase(false);
+        renderAll();
+        postTradeToChatWebhookIfConfigured(finalized);
+        showToast(`Trade confirmed by all teams! Official Trade ${finalized.id} is now LIVE!`, "success");
+      } else {
+        const remaining = requiredTeams.filter(t => !pt.approvals[t]).map(t => getTeamName(t)).join(" & ");
+        leagueDB.updatedAt = Date.now();
+        saveDatabase(false);
+        renderAll();
+        showToast(`Confirmed by ${getTeamName(responder)}! Waiting on ${remaining} to finalize.`, "info");
+      }
+
+      if (getActiveCloudSyncUrl()) {
+        await pushProposalResponseToCloud(pid, "ACCEPT", responder, "");
+      }
+    }
+
+    async function declineTradeProposal(propId) {
+      const pid = safeId(propId);
+      const idx = (leagueDB.pendingTrades || []).findIndex(p => p.id === pid);
+      if (idx === -1) return;
+      const pt = leagueDB.pendingTrades[idx];
+      const responder = uiState.myTeam || uiState.selectedManager;
+      const requiredTeams = getProposalRequiredTeams(pt);
+      if (!uiState.isCommish && !requiredTeams.includes(responder)) {
+        showToast("Only teams involved in this trade can decline it.", "error");
+        return;
+      }
+      leagueDB.pendingTrades.splice(idx, 1);
+      leagueDB.updatedAt = Date.now();
+      saveDatabase(false);
+      renderAll();
+      showToast(`Declined trade proposal ${pid}.`, "info");
+      if (getActiveCloudSyncUrl()) {
+        await pushProposalResponseToCloud(pid, "DECLINE", responder, "");
+      }
+    }
+
+    async function withdrawTradeProposal(propId) {
+      const pid = safeId(propId);
+      const idx = (leagueDB.pendingTrades || []).findIndex(p => p.id === pid);
+      if (idx === -1) return;
+      const pt = leagueDB.pendingTrades[idx];
+      const myTeam = uiState.myTeam || uiState.selectedManager;
+      if (!uiState.isCommish && pt.proposedBy !== myTeam && pt.teamA !== myTeam) {
+        showToast("Only the proposing manager (or Commissioner) can withdraw this offer.", "error");
+        return;
+      }
+      leagueDB.pendingTrades.splice(idx, 1);
+      leagueDB.updatedAt = Date.now();
+      saveDatabase(false);
+      renderAll();
+      showToast(`Withdrew trade proposal ${pid}.`, "info");
+      if (getActiveCloudSyncUrl()) {
+        await pushProposalResponseToCloud(pid, "WITHDRAW", myTeam, "");
+      }
+    }
+
+    function counterTradeProposal(propId) {
+      const pid = safeId(propId);
+      const pt = (leagueDB.pendingTrades || []).find(p => p.id === pid);
+      if (!pt) return;
+
+      const myTeam = uiState.myTeam || pt.teamB;
+      const partner = pt.teamA === myTeam ? pt.teamB : pt.teamA;
+
+      uiState.selectedManager = uiState.isCommish ? pt.teamA : myTeam;
+      uiState.compareManagerB = partner;
+      uiState.ledgerViewMode = "COMPARE";
+      uiState.whatIfActive = true;
+      uiState.activeYear = Number(pt.year) || uiState.activeYear;
+      uiState.whatIfSwaps = (pt.directTransfers || []).map(dt => ({
+        round: Number(dt.round),
+        originalOwner: safeId(dt.originalOwner),
+        fromTeam: safeId(dt.fromOwner || dt.originalOwner),
+        toTeam: safeId(dt.toOwner)
+      }));
+      uiState.activeTab = "tradecenter";
+      renderAll();
+      showToast(`Loaded ${pt.id} into Trade Machine — adjust picks and click Propose Trade to counter!`, "info");
+    }
+
+    function copyProposalPingForChat(propId) {
+      const pt = (leagueDB.pendingTrades || []).find(p => p.id === safeId(propId));
+      if (!pt) return;
+      const teamsStr = getProposalRequiredTeams(pt).map(id => getTeamName(id)).join(" ↔ ");
+      const waitingOn = getProposalRequiredTeams(pt)
+        .filter(id => !(pt.approvals || {})[id])
+        .map(id => getTeamName(id))
+        .join(" & ");
+      const shareUrl = window.location.origin + window.location.pathname + `?year=${Number(pt.year || uiState.activeYear)}&tab=feed`;
+      const lines = [
+        `📨 GAMECOCK MAFIA TRADE PROPOSAL (${pt.id})`,
+        `🤝 Teams: ${teamsStr}`,
+        `📝 Offer: ${pt.headline}`,
+        `⏳ Awaiting Confirmation From: ${waitingOn || "Partner"}`,
+        `🔗 Open Tracker to Confirm or Counter: ${shareUrl}`
+      ];
+      copyTextToClipboard(lines.join("\n"), `Copied Trade Offer Ping (${pt.id}) for group chat!`);
+    }
+
+    async function toggleTradeReaction(tradeId, emoji) {
+      if (!TRADE_REACTION_EMOJIS.includes(emoji)) return;
+      const tr = (leagueDB.trades || []).find(t => t.id === safeId(tradeId));
+      if (!tr) return;
+      const myTeam = safeId(uiState.myTeam || uiState.selectedManager || "syeth");
+      if (!tr.reactions || typeof tr.reactions !== "object") tr.reactions = {};
+      if (!Array.isArray(tr.reactions[emoji])) tr.reactions[emoji] = [];
+
+      const idx = tr.reactions[emoji].indexOf(myTeam);
+      if (idx !== -1) {
+        tr.reactions[emoji].splice(idx, 1);
+      } else {
+        tr.reactions[emoji].push(myTeam);
+      }
+      leagueDB.updatedAt = Date.now();
+      saveDatabase(false);
+      renderAll();
+      if (getActiveCloudSyncUrl()) {
+        await pushTradeReactionToCloud(tr.id, emoji, myTeam);
+      }
+    }
+
     function renderTradeFeedSection(passedState) {
       const state = passedState || evaluateYearState(uiState.activeYear);
       const container = document.getElementById("tradeReceiptsContainer");
       const titleEl = document.getElementById("feedTitleText");
       const pendingBox = document.getElementById("pendingQueueContainer");
+      const shameBox = document.getElementById("hallOfShameFeedBanner");
       const scopeFilter = document.getElementById("feedScopeFilter")?.value || "ACTIVE_YEAR";
       const poolsSection = document.getElementById("section-pools");
 
@@ -5100,7 +6078,7 @@
       const subTab = uiState.activitySubTab || "ALL";
 
       if (subPendingBadge) {
-        subPendingBadge.textContent = state.activePools.length + state.activeConditionals.length;
+        subPendingBadge.textContent = state.activePools.length + state.activeConditionals.length + (leagueDB.pendingTrades?.length || 0);
       }
 
       if (subAllBtn && subPendingBtn && subMyBtn) {
@@ -5121,37 +6099,93 @@
         poolsSection.classList.toggle("hidden", !(subTab === "PENDING_FINAL" || (uiState.isCommish && hasAnyPendingInYear && subTab === "ALL")));
       }
 
+      // Render Hall of Shame callout if anyone clicked Upstate Kitties
+      if (shameBox) {
+        const shameList = Array.isArray(leagueDB.hallOfShame) ? leagueDB.hallOfShame : [];
+        if (shameList.length > 0) {
+          shameBox.classList.remove("hidden");
+          shameBox.innerHTML = shameList.slice(0, 5).map(sh => `
+            <div class="flex flex-wrap items-center justify-between gap-2 text-xs">
+              <div class="flex items-center gap-2">
+                <span class="px-2 py-0.5 rounded bg-pink-600 text-white font-black uppercase text-[10px]">🚨 Hall of Shame</span>
+                <span class="font-bold text-pink-200">${escapeHtml(sh.message)}</span>
+              </div>
+              <span class="text-[10px] font-mono text-pink-300/80">${escapeHtml(sh.date || "")}</span>
+            </div>
+          `).join("");
+        } else {
+          shameBox.classList.add("hidden");
+          shameBox.innerHTML = "";
+        }
+      }
+
       if (!container) return;
 
       const sourceTrades = scopeFilter === "ALL_YEARS" ? [...leagueDB.trades] : [...state.yearTrades];
+      const myTeamId = uiState.myTeam || uiState.selectedManager;
 
       if (pendingBox) {
-        if (leagueDB.pendingTrades.length > 0) {
+        if (Array.isArray(leagueDB.pendingTrades) && leagueDB.pendingTrades.length > 0) {
           pendingBox.classList.remove("hidden");
           pendingBox.innerHTML = `
-            <div class="flex items-center justify-between">
+            <div class="flex flex-wrap items-center justify-between gap-2">
               <div class="text-xs font-extrabold text-amber-300 uppercase tracking-wider flex items-center gap-2">
-                <i class="fa-solid fa-inbox"></i>
-                <span>Pending League Trade Submissions (${leagueDB.pendingTrades.length})</span>
+                <i class="fa-solid fa-paper-plane"></i>
+                <span>Open Trade Proposals Awaiting Partner Confirmation (${leagueDB.pendingTrades.length})</span>
               </div>
-              <span class="text-[11px] text-amber-200/80">Commissioner approval required</span>
+              <span class="text-[11px] text-amber-200/80">Every involved team must confirm before picks transfer</span>
             </div>
-            <div class="space-y-2">
+            <div class="space-y-2.5">
               ${leagueDB.pendingTrades.map((pt, idx) => {
-                const pTeams = [pt.teamA, pt.teamB, pt.teamC].filter(Boolean).map(id => escapeHtml(getTeamName(id))).join(" ↔ ");
+                const reqTeams = getProposalRequiredTeams(pt);
+                const apps = pt.approvals || {};
+                const pTeams = reqTeams.map(id => escapeHtml(getTeamName(id))).join(" ↔ ");
+                const canConfirm = reqTeams.includes(myTeamId) && !apps[myTeamId];
+                const isProposer = pt.proposedBy === myTeamId || pt.teamA === myTeamId;
+
+                const statusPills = reqTeams.map(tid => {
+                  const ok = Boolean(apps[tid]);
+                  return `<span class="px-2 py-0.5 rounded-full text-[10px] font-bold border ${ok ? 'bg-emerald-950/90 text-emerald-300 border-emerald-500/60' : 'bg-amber-950/90 text-amber-300 border-amber-500/60'}">${ok ? '✓' : '⏳'} ${escapeHtml(getTeamName(tid))}</span>`;
+                }).join("");
+
                 return `
-                  <div class="bg-[#09090B] border border-amber-500/40 rounded-xl p-3 flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs">
-                    <div>
-                      <div class="font-bold text-white">${getTradeAffectedYears(pt).map(Number).join("/")} Trade: ${pTeams}</div>
-                      <div class="text-zinc-300">${escapeHtml(pt.headline)}</div>
+                  <div class="bg-[#09090B] border border-amber-500/50 rounded-xl p-3.5 flex flex-col lg:flex-row lg:items-center justify-between gap-3 text-xs">
+                    <div class="space-y-1.5">
+                      <div class="flex flex-wrap items-center gap-2">
+                        <span class="font-mono text-[11px] font-bold text-amber-300 bg-amber-950/60 px-2 py-0.5 rounded border border-amber-500/40">${escapeHtml(pt.id || `PROP-${idx + 1}`)}</span>
+                        <span class="font-black text-white text-sm">${getTradeAffectedYears(pt).map(Number).join("/")} Proposal: ${pTeams}</span>
+                        <span class="text-[11px] text-zinc-400">• ${escapeHtml(pt.date || "")}</span>
+                      </div>
+                      <div class="text-zinc-200 font-semibold">${escapeHtml(pt.headline)}</div>
+                      <div class="flex flex-wrap items-center gap-1.5 pt-0.5">
+                        <span class="text-[10px] font-extrabold uppercase text-zinc-400">Sign-Off Status:</span>
+                        ${statusPills}
+                      </div>
                     </div>
-                    <div class="flex items-center gap-2 flex-shrink-0">
+                    <div class="flex flex-wrap items-center gap-1.5 flex-shrink-0">
+                      ${canConfirm ? `
+                        <button onclick="confirmTradeProposal('${safeId(pt.id)}')" class="btn-garnet bg-emerald-700 hover:bg-emerald-600 border-emerald-400 px-3 py-1.5 text-xs">
+                          <i class="fa-solid fa-check"></i> Confirm & Accept ✓
+                        </button>
+                        <button onclick="counterTradeProposal('${safeId(pt.id)}')" class="btn-action px-2.5 py-1.5 text-xs text-sky-300">
+                          Counter ⇄
+                        </button>
+                        <button onclick="declineTradeProposal('${safeId(pt.id)}')" class="btn-action px-2.5 py-1.5 text-xs text-rose-300">
+                          Decline ✕
+                        </button>
+                      ` : ''}
+                      ${isProposer ? `
+                        <button onclick="withdrawTradeProposal('${safeId(pt.id)}')" class="btn-action px-2.5 py-1.5 text-xs text-rose-300">
+                          <i class="fa-solid fa-rotate-left"></i> Withdraw
+                        </button>
+                      ` : ''}
+                      <button onclick="copyProposalPingForChat('${safeId(pt.id)}')" class="btn-action px-2.5 py-1.5 text-xs text-amber-300" title="Copy Offer Ping for Group Chat">
+                        <i class="fa-solid fa-comment-dots"></i> Copy Offer Ping 💬
+                      </button>
                       ${uiState.isCommish ? `
-                        <button onclick="approvePendingSubmission(${Number(idx)})" class="btn-garnet px-3 py-1.5 text-xs">Approve</button>
-                        <button onclick="rejectPendingSubmission(${Number(idx)})" class="btn-action px-3 py-1.5 text-xs text-rose-300">Reject</button>
-                      ` : `
-                        <span class="static-badge bg-amber-950 text-amber-300 border border-amber-700">Awaiting Admin</span>
-                      `}
+                        <button onclick="approvePendingSubmission(${Number(idx)})" class="btn-garnet px-2.5 py-1.5 text-xs" title="Commissioner Force-Approve">Force Approve</button>
+                        <button onclick="rejectPendingSubmission(${Number(idx)})" class="btn-action px-2.5 py-1.5 text-xs text-rose-400" title="Commissioner Delete"><i class="fa-solid fa-trash"></i></button>
+                      ` : ''}
                     </div>
                   </div>
                 `;
@@ -5165,7 +6199,6 @@
 
       const query = (document.getElementById("feedSearchInput")?.value || "").toLowerCase().trim();
       const typeFilter = document.getElementById("feedTypeFilter")?.value || "ALL";
-      const myTeamId = uiState.myTeam || uiState.selectedManager;
 
       let trades = sourceTrades;
 
@@ -5262,16 +6295,34 @@
           return `
             <div class="bg-[#09090B] border border-zinc-800/90 rounded-xl p-3 space-y-2">
               <div class="flex items-center justify-between border-b border-zinc-800/80 pb-1.5">
-                <div class="flex items-center gap-2">
-                  <span class="w-5 h-5 rounded-md bg-[#73000A] border border-[#CC1429]/50 flex items-center justify-center text-[10px] font-black text-white">${escapeHtml(getTeamName(tid).slice(0, 2).toUpperCase())}</span>
-                  <span class="text-xs font-black uppercase tracking-wider text-white">${tName} Receives</span>
+                <div class="flex items-center gap-2 min-w-0">
+                  ${renderTeamAvatarHtml(tid, "w-5 h-5 text-[10px]", "rounded-md")}
+                  <span class="text-xs font-black uppercase tracking-wider text-white truncate">${tName} Receives</span>
                 </div>
-                <span class="text-[10px] font-mono text-zinc-500">${receivedItems.length} Pick Asset${receivedItems.length === 1 ? '' : 's'}</span>
+                <span class="text-[10px] font-mono text-zinc-500 flex-shrink-0">${receivedItems.length} Pick Asset${receivedItems.length === 1 ? '' : 's'}</span>
               </div>
               <div class="space-y-1.5">
                 ${receivedItems.length > 0 ? receivedItems.join("") : `<div class="text-[11px] text-zinc-400 italic py-1">Players / non-pick assets in headline below</div>`}
               </div>
             </div>
+          `;
+        }).join("");
+
+        const reactionsObj = tr.reactions && typeof tr.reactions === "object" ? tr.reactions : {};
+        const reactionButtonsHtml = TRADE_REACTION_EMOJIS.map(em => {
+          const list = Array.isArray(reactionsObj[em]) ? reactionsObj[em] : [];
+          const hasMine = list.includes(myTeamId);
+          const tooltip = list.length > 0 ? list.map(id => getTeamName(id)).join(", ") : `React with ${em}`;
+          return `
+            <button
+              type="button"
+              onclick="toggleTradeReaction('${safeId(tr.id)}', '${em}')"
+              title="${escapeHtml(tooltip)}"
+              class="px-2 py-0.5 rounded-full text-[11px] font-bold border transition inline-flex items-center gap-1 cursor-pointer ${hasMine ? 'bg-[#73000A] text-white border-[#CC1429]' : 'bg-[#09090B] text-zinc-400 border-zinc-800 hover:border-zinc-600 hover:text-zinc-200'}"
+            >
+              <span>${em}</span>
+              ${list.length > 0 ? `<span class="font-mono text-[10px]">${list.length}</span>` : ''}
+            </button>
           `;
         }).join("");
 
@@ -5319,10 +6370,15 @@
               ${teamColsHtml}
             </div>
 
-            <!-- Full Deal Headline & Notes Footer -->
-            <div class="bg-[#09090B]/90 border border-zinc-800/80 rounded-xl px-3.5 py-2.5 space-y-1">
-              <div class="text-xs font-bold text-zinc-200"><span class="text-zinc-500 uppercase tracking-wider text-[10px] mr-1.5">Full Terms:</span>${escapeHtml(tr.headline)}</div>
-              ${tr.notes ? `<p class="text-[11px] text-zinc-400">${escapeHtml(tr.notes)}</p>` : ''}
+            <!-- Full Deal Headline, Notes & 1-Tap Reactions Footer -->
+            <div class="bg-[#09090B]/90 border border-zinc-800/80 rounded-xl px-3.5 py-2.5 flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+              <div class="space-y-1">
+                <div class="text-xs font-bold text-zinc-200"><span class="text-zinc-500 uppercase tracking-wider text-[10px] mr-1.5">Full Terms:</span>${escapeHtml(tr.headline)}</div>
+                ${tr.notes ? `<p class="text-[11px] text-zinc-400">${escapeHtml(tr.notes)}</p>` : ''}
+              </div>
+              <div class="flex items-center gap-1 flex-shrink-0">
+                ${reactionButtonsHtml}
+              </div>
             </div>
           </div>
         `;
@@ -5534,7 +6590,7 @@
     }
 
     /* -----------------------------------------------------------
-       11. UNIFIED TRADE LOGGER & IN-PLACE EDITOR (2-WAY & 3-WAY)
+       11. UNIFIED TRADE PROPOSER & IN-PLACE EDITOR (2-WAY & 3-WAY)
        ----------------------------------------------------------- */
     function populateStaticFormControls() {
       const selA = document.getElementById("formTeamA");
@@ -5548,24 +6604,24 @@
 
       if (selA && selB && selC) {
         if (uiState.isCommish) {
-          selA.innerHTML = leagueDB.teams.map((t, i) => `<option value="${safeId(t.id)}" ${i === 0 ? 'selected' : ''}>${escapeHtml(t.name)}</option>`).join("");
-          selB.innerHTML = leagueDB.teams.map((t, i) => `<option value="${safeId(t.id)}" ${i === 1 ? 'selected' : ''}>${escapeHtml(t.name)}</option>`).join("");
-          selC.innerHTML = leagueDB.teams.map((t, i) => `<option value="${safeId(t.id)}" ${i === 2 ? 'selected' : ''}>${escapeHtml(t.name)}</option>`).join("");
+          selA.innerHTML = leagueDB.teams.map((t, i) => `<option value="${safeId(t.id)}" ${i === 0 ? 'selected' : ''}>${escapeHtml(getTeamName(t.id))}</option>`).join("");
+          selB.innerHTML = leagueDB.teams.map((t, i) => `<option value="${safeId(t.id)}" ${i === 1 ? 'selected' : ''}>${escapeHtml(getTeamName(t.id))}</option>`).join("");
+          selC.innerHTML = leagueDB.teams.map((t, i) => `<option value="${safeId(t.id)}" ${i === 2 ? 'selected' : ''}>${escapeHtml(getTeamName(t.id))}</option>`).join("");
           selA.disabled = false;
         } else {
           // Standard Manager Mode: Manager 1 is strictly locked to the manager's own franchise
           selA.innerHTML = `<option value="${safeId(myTeamId)}" selected>${escapeHtml(myTeamName)} (My Franchise)</option>`;
           selA.disabled = true;
           const otherTeams = leagueDB.teams.filter(t => t.id !== myTeamId);
-          selB.innerHTML = otherTeams.map((t, i) => `<option value="${safeId(t.id)}" ${i === 0 ? 'selected' : ''}>${escapeHtml(t.name)}</option>`).join("");
-          selC.innerHTML = otherTeams.map((t, i) => `<option value="${safeId(t.id)}" ${i === 1 ? 'selected' : ''}>${escapeHtml(t.name)}</option>`).join("");
+          selB.innerHTML = otherTeams.map((t, i) => `<option value="${safeId(t.id)}" ${i === 0 ? 'selected' : ''}>${escapeHtml(getTeamName(t.id))}</option>`).join("");
+          selC.innerHTML = otherTeams.map((t, i) => `<option value="${safeId(t.id)}" ${i === 1 ? 'selected' : ''}>${escapeHtml(getTeamName(t.id))}</option>`).join("");
         }
       }
 
       if (submittedBySel) {
         if (uiState.isCommish) {
           submittedBySel.innerHTML =
-            leagueDB.teams.map(t => `<option value="${escapeHtml(t.name)}">${escapeHtml(t.name)}</option>`).join("") +
+            leagueDB.teams.map(t => `<option value="${escapeHtml(getTeamName(t.id))}">${escapeHtml(getTeamName(t.id))}</option>`).join("") +
             `<option value="Commissioner" selected>Commissioner</option>`;
           submittedBySel.disabled = false;
         } else {
@@ -5577,7 +6633,7 @@
       if (boardTeamFilter) {
         const currentFilter = boardTeamFilter.value || "ALL";
         boardTeamFilter.innerHTML = `<option value="ALL">Highlight: All 10 Managers</option>` +
-          leagueDB.teams.map(t => `<option value="${safeId(t.id)}" ${t.id === currentFilter ? 'selected' : ''}>Highlight: ${escapeHtml(t.name)}</option>`).join("");
+          leagueDB.teams.map(t => `<option value="${safeId(t.id)}" ${t.id === currentFilter ? 'selected' : ''}>Highlight: ${escapeHtml(getTeamName(t.id))}</option>`).join("");
       }
     }
 
@@ -5610,8 +6666,8 @@
       populateStaticFormControls();
       document.getElementById("editingTradeId").value = "";
       document.getElementById("tradeModalHeading").textContent = uiState.isCommish
-        ? "Log League Trade (Admin — Any Teams)"
-        : `Log ${getTeamName(uiState.myTeam)} Trade`;
+        ? "Propose or Log League Trade (Admin)"
+        : `Propose ${getTeamName(uiState.myTeam)} Trade`;
       document.getElementById("newTradeForm").reset();
       document.getElementById("formCondBox").classList.add("hidden");
       toggleThreeWayTrade(false);
@@ -5759,22 +6815,41 @@
       const badge = document.getElementById("tradeModalModeBadge");
       const roleHint = document.getElementById("formRoleHint");
       const submitText = document.getElementById("formSubmitBtnText");
+      const adminImmWrap = document.getElementById("formAdminLogImmediatelyWrap");
+      const adminImmCheck = document.getElementById("formAdminLogImmediately");
 
       if (uiState.isCommish) {
+        if (adminImmWrap) {
+          adminImmWrap.classList.toggle("hidden", Boolean(isEditing));
+          adminImmWrap.classList.toggle("flex", !isEditing);
+        }
+        const logImm = isEditing || !adminImmCheck || adminImmCheck.checked;
         if (badge) {
           badge.className = "static-badge bg-emerald-950 text-emerald-300 border border-emerald-700";
-          badge.textContent = isEditing ? "In-Place Admin Editor" : "Commissioner Direct Entry";
+          badge.textContent = isEditing ? "In-Place Admin Editor" : (logImm ? "Commissioner Direct Entry" : "Admin Trade Proposal");
         }
-        if (roleHint) roleHint.textContent = "Updates all affected draft years, ledgers, and boards immediately (Undo supported).";
-        if (submitText) submitText.textContent = isEditing ? "Save Trade Changes" : "Save & Apply to Board";
+        if (roleHint) {
+          roleHint.textContent = isEditing
+            ? "Updates all affected draft years, ledgers, and boards immediately (Undo supported)."
+            : (logImm ? "Commissioner Mode: Logs directly as an official trade (or uncheck above to send as a partner proposal)." : "Sends trade proposal requiring confirmation from all involved teams.");
+        }
+        if (submitText) {
+          submitText.textContent = isEditing ? "Save Trade Changes" : (logImm ? "Log Official Trade Now" : "Send Trade Proposal");
+        }
       } else {
+        if (adminImmWrap) {
+          adminImmWrap.classList.add("hidden");
+          adminImmWrap.classList.remove("flex");
+        }
         const myName = getTeamName(uiState.myTeam || "syeth");
         if (badge) {
           badge.className = "static-badge bg-amber-950 text-amber-300 border border-amber-500/80";
-          badge.textContent = `${myName} Franchise Trade`;
+          badge.textContent = `${myName} Trade Proposal`;
         }
-        if (roleHint) roleHint.textContent = `Logging as ${myName}: Either participating manager can log a trade involving their own team! Settled picks apply immediately; conditions are marked Pending Final for Admin resolution.`;
-        if (submitText) submitText.textContent = `Log ${myName} Trade`;
+        if (roleHint) {
+          roleHint.textContent = `Proposing as ${myName}: Requires confirmation from the other involved team(s) before picks transfer and the trade is marked Official!`;
+        }
+        if (submitText) submitText.textContent = `Propose Trade`;
       }
     }
 
@@ -5912,12 +6987,12 @@
       const submittedBy = cleanStr(document.getElementById("formSubmittedBy")?.value || (uiState.isCommish ? "Commissioner" : getTeamName(uiState.myTeam || teamA)), 60);
       const isCond = document.getElementById("formIsConditional").checked;
 
-      // Team-Management Boundary: In standard mode, a manager can only log trades involving their own franchise!
+      // Team-Management Boundary: In standard mode, a manager can only propose trades involving their own franchise!
       if (!uiState.isCommish) {
         const myId = safeId(uiState.myTeam || "syeth");
         const participants = [teamA, teamB, ...(teamC ? [teamC] : [])];
         if (!participants.includes(myId) || teamA !== myId) {
-          showToast(`You can only log trades involving your own franchise (${getTeamName(myId)}). Unlock Commissioner Mode to log deals between other teams.`, "error");
+          showToast(`You can only propose trades involving your own franchise (${getTeamName(myId)}). Unlock Commissioner Mode to manage deals between other teams.`, "error");
           return;
         }
       }
@@ -6059,8 +7134,60 @@
         return;
       }
 
-      const newTradeObj = {
-        id: generateUniqueTradeId(primaryYear),
+      const adminLogImm = uiState.isCommish && (document.getElementById("formAdminLogImmediately")?.checked !== false);
+
+      // Validate pick ownership before creating proposal or official trade
+      const tempCandidate = { directTransfers };
+      const conflictCheck = validateTradePickOwnership(tempCandidate);
+      if (!conflictCheck.ok) {
+        showToast(conflictCheck.error, "error");
+        return;
+      }
+
+      // Reset What-If Sandbox once trade is proposed or logged
+      uiState.whatIfSwaps = [];
+      uiState.whatIfActive = false;
+
+      if (adminLogImm) {
+        const newTradeObj = {
+          id: generateUniqueTradeId(primaryYear),
+          year: primaryYear,
+          date: dateStr,
+          teamA,
+          teamB,
+          teamC,
+          headline: summary,
+          notes: notesStr,
+          submittedBy,
+          directTransfers,
+          pools,
+          conditionals,
+          reactions: {}
+        };
+        const hasConditions = pools.length > 0 || conditionals.length > 0;
+        const yrsLabel = getTradeAffectedYears(newTradeObj).join(" & ");
+        pushUndoState(`Log New Trade ${newTradeObj.id}`);
+        autoCancelOverlappingProposals(newTradeObj);
+        leagueDB.trades.push(newTradeObj);
+        saveDatabase(true, `ADMIN_LOG_TRADE_${newTradeObj.id}`);
+        postTradeToChatWebhookIfConfigured(newTradeObj);
+        uiState.activeYear = primaryYear;
+        closeModal("tradeModal");
+        renderAll();
+        showToast(
+          hasConditions
+            ? `Logged ${newTradeObj.id} (${yrsLabel})! Settled picks applied; conditions marked Pending Final.`
+            : `Official trade ${newTradeObj.id} (${yrsLabel}) is LIVE across all boards & ledgers!`,
+          "success"
+        );
+        return;
+      }
+
+      // Standard Manager (or Admin choosing Send as Proposal): Create Multi-Team Proposal in pendingTrades
+      const proposerId = uiState.isCommish ? teamA : safeId(uiState.myTeam || teamA);
+      const proposalId = `PROP-${primaryYear}-${String((leagueDB.pendingTrades?.length || 0) + 1).padStart(2, "0")}-${Date.now().toString().slice(-3)}`;
+      const proposalObj = {
+        id: proposalId,
         year: primaryYear,
         date: dateStr,
         teamA,
@@ -6069,67 +7196,62 @@
         headline: summary,
         notes: notesStr,
         submittedBy,
+        proposedBy: proposerId,
+        approvals: { [proposerId]: true },
+        status: "PENDING",
+        replyNote: "",
+        createdAt: Date.now(),
         directTransfers,
         pools,
         conditionals
       };
 
-      const hasConditions = pools.length > 0 || conditionals.length > 0;
-      const yrsLabel = getTradeAffectedYears(newTradeObj).join(" & ");
+      if (!Array.isArray(leagueDB.pendingTrades)) leagueDB.pendingTrades = [];
+      leagueDB.pendingTrades.push(proposalObj);
+      leagueDB.updatedAt = Date.now();
+      saveDatabase(false);
 
-      // Reset What-If Sandbox once official trade is logged
-      uiState.whatIfSwaps = [];
-      uiState.whatIfActive = false;
-
-      if (uiState.isCommish) {
-        pushUndoState(`Log New Trade ${newTradeObj.id}`);
-        leagueDB.trades.push(newTradeObj);
-        saveDatabase(true, `ADMIN_LOG_TRADE_${newTradeObj.id}`);
+      if (getActiveCloudSyncUrl()) {
+        pushTradeProposalToCloud(proposalObj);
       } else {
-        // Member trade rule: All 10 managers log trades directly as final!
-        // Conditions remain Pending Final until finalized by Admin in Commissioner Mode.
-        leagueDB.trades.push(newTradeObj);
-        leagueDB.updatedAt = Date.now();
-        saveDatabase(false);
-        if (getActiveCloudSyncUrl()) {
-          pushMemberTradeToCloud(newTradeObj);
-        } else {
-          updateSyncStatusUI("Local Trade Logged", false, false);
-        }
+        updateSyncStatusUI("Proposal Saved Locally", false, false);
       }
 
-      postTradeToChatWebhookIfConfigured(newTradeObj);
+      const otherPartners = [teamA, teamB, teamC]
+        .filter(Boolean)
+        .filter(id => id !== proposerId)
+        .map(id => getTeamName(id))
+        .join(" & ");
+
       uiState.activeYear = primaryYear;
       closeModal("tradeModal");
       renderAll();
-
-      if (hasConditions) {
-        showToast(`Logged ${newTradeObj.id} (${yrsLabel})! Settled picks applied; conditions marked Pending Final for Admin.`, "success");
-      } else {
-        showToast(`Official trade ${newTradeObj.id} (${yrsLabel}) is LIVE across all boards & ledgers!`, "success");
-      }
+      showToast(`Trade Proposal ${proposalId} sent! Awaiting confirmation from ${otherPartners} before marking final.`, "success");
     }
 
     function approvePendingSubmission(idx) {
       if (!requireCommish()) return;
-      pushUndoState("Approve Pending Trade Submission");
+      pushUndoState("Approve Pending Trade Proposal");
       const item = leagueDB.pendingTrades.splice(idx, 1)[0];
       if (item) {
         item.id = generateUniqueTradeId(item.year || uiState.activeYear);
+        item.status = "OFFICIAL";
+        item.reactions = item.reactions || {};
+        autoCancelOverlappingProposals(item);
         leagueDB.trades.push(item);
         saveDatabase(true, `APPROVE_PENDING_${item.id}`);
         renderAll();
-        showToast(`Approved & applied trade ${item.id}!`, "success");
+        showToast(`Approved & finalized trade ${item.id}!`, "success");
       }
     }
 
     function rejectPendingSubmission(idx) {
       if (!requireCommish()) return;
-      pushUndoState("Reject Pending Trade Submission");
+      pushUndoState("Reject Pending Trade Proposal");
       leagueDB.pendingTrades.splice(idx, 1);
       saveDatabase(true, "REJECT_PENDING_SUBMISSION");
       renderAll();
-      showToast("Removed pending trade submission.", "info");
+      showToast("Removed pending trade proposal.", "info");
     }
 
     /* -----------------------------------------------------------
@@ -6943,7 +8065,7 @@
       sel.innerHTML = `<option value="">— Select Your Franchise (10 Teams) —</option>` +
         leagueDB.teams.map(t => {
           const hasPin = doesTeamHavePersonalPin(t.id);
-          return `<option value="${escapeHtml(t.id)}" ${t.id === targetId ? "selected" : ""}>${escapeHtml(t.name)}${hasPin ? " 🔒 (PIN Protected)" : ""}</option>`;
+          return `<option value="${escapeHtml(t.id)}" ${t.id === targetId ? "selected" : ""}>${escapeHtml(getTeamName(t.id))}${hasPin ? " 🔒 (PIN Protected)" : ""}</option>`;
         }).join("");
       onGateFranchiseSelectChange();
     }
@@ -7282,21 +8404,75 @@
       if (!container || !leagueDB || !Array.isArray(leagueDB.teams)) return;
       container.innerHTML = leagueDB.teams.map(t => {
         const hasPin = doesTeamHavePersonalPin(t.id);
+        const prof = getTeamProfile(t.id);
+        const isCursed = Boolean(prof.upstateKittyCursed);
+        const flair = prof.flairBadge || "NONE";
         return `
-          <div class="flex items-center justify-between gap-2 px-2.5 py-2 rounded-lg bg-slate-900/80 border border-slate-800">
-            <div class="flex items-center gap-2 min-w-0">
-              <span class="w-2 h-2 rounded-full ${hasPin ? "bg-emerald-400" : "bg-slate-600"}"></span>
-              <span class="text-xs font-bold text-white truncate">${escapeHtml(t.name)}</span>
-              <span class="text-[10px] ${hasPin ? "text-emerald-300" : "text-slate-500"}">${hasPin ? "PIN Active" : "No PIN"}</span>
+          <div class="flex flex-col gap-1.5 px-2.5 py-2 rounded-lg bg-slate-900/80 border ${isCursed ? 'border-pink-500/70' : 'border-slate-800'}">
+            <div class="flex items-center justify-between gap-2">
+              <div class="flex items-center gap-2 min-w-0">
+                <span class="w-2 h-2 rounded-full ${hasPin ? "bg-emerald-400" : "bg-slate-600"}"></span>
+                <span class="text-xs font-bold text-white truncate">${escapeHtml(getTeamName(t.id))}</span>
+                <span class="text-[10px] ${hasPin ? "text-emerald-300" : "text-slate-500"}">${hasPin ? "PIN" : "Open"}</span>
+              </div>
+              ${hasPin ? `
+                <button onclick="adminClearTeamPin('${escapeHtml(t.id)}')" class="px-2 py-0.5 rounded bg-rose-950/70 hover:bg-rose-900 border border-rose-500/40 text-rose-200 text-[10px] font-bold cursor-pointer">
+                  Reset PIN
+                </button>
+              ` : `<span class="text-[10px] text-slate-600">No PIN</span>`}
             </div>
-            ${hasPin ? `
-              <button onclick="adminClearTeamPin('${escapeHtml(t.id)}')" class="px-2 py-1 rounded bg-rose-950/70 hover:bg-rose-900 border border-rose-500/40 text-rose-200 text-[10px] font-bold">
-                Reset PIN
+            <div class="flex flex-wrap items-center justify-between gap-1 pt-1 border-t border-slate-800/80">
+              <div class="flex items-center gap-1">
+                <button onclick="adminSetTeamFlair('${escapeHtml(t.id)}', '${flair === 'CHAMP' ? 'NONE' : 'CHAMP'}')" class="px-1.5 py-0.5 rounded text-[10px] font-bold border cursor-pointer ${flair === 'CHAMP' ? 'bg-amber-950 text-amber-300 border-amber-500' : 'bg-slate-950 text-slate-400 border-slate-800 hover:text-white'}" title="Toggle Reigning Champ Badge">
+                  🏆 Champ
+                </button>
+                <button onclick="adminSetTeamFlair('${escapeHtml(t.id)}', '${flair === 'TOILET' ? 'NONE' : 'TOILET'}')" class="px-1.5 py-0.5 rounded text-[10px] font-bold border cursor-pointer ${flair === 'TOILET' ? 'bg-amber-950 text-amber-200 border-amber-500' : 'bg-slate-950 text-slate-400 border-slate-800 hover:text-white'}" title="Toggle Toilet Bowl Badge">
+                  🚽 Toilet
+                </button>
+              </div>
+              <button onclick="adminToggleKittyCurse('${escapeHtml(t.id)}')" class="px-2 py-0.5 rounded text-[10px] font-bold border cursor-pointer ${isCursed ? 'bg-pink-950 text-pink-200 border-pink-400 hover:bg-pink-900' : 'bg-slate-950 text-slate-400 border-slate-800 hover:text-pink-300'}">
+                ${isCursed ? '✨ Lift 8==D Curse' : '🐾 Inflict Kitty Curse'}
               </button>
-            ` : `<span class="text-[10px] text-slate-600">Unlocked</span>`}
+            </div>
           </div>
         `;
       }).join("");
+    }
+
+    async function adminToggleKittyCurse(teamId) {
+      if (!requireCommish()) return;
+      const prof = getTeamProfile(teamId);
+      prof.upstateKittyCursed = !prof.upstateKittyCursed;
+      prof.updatedAt = Date.now();
+      if (!prof.upstateKittyCursed && Array.isArray(leagueDB.hallOfShame)) {
+        leagueDB.hallOfShame = leagueDB.hallOfShame.filter(h => h.teamId !== teamId);
+      }
+      if (!prof.upstateKittyCursed && teamId === uiState.myTeam && uiState.colorTheme === "upstate_kitties") {
+        uiState.colorTheme = "sandstorm_noir";
+        try { localStorage.setItem(COLOR_THEME_STORAGE_KEY, "sandstorm_noir"); } catch (e) {}
+      }
+      saveDatabase(true, `ADMIN_TOGGLE_KITTY_CURSE:${teamId}`);
+      renderAdminTeamPinResetList();
+      populateStaticFormControls();
+      renderAll();
+      showToast(
+        prof.upstateKittyCursed
+          ? `Inflicted Upstate Kitties (8==D) curse on ${getOriginalManagerName(teamId)}!`
+          : `Lifted Upstate Kitties curse from ${getOriginalManagerName(teamId)}!`,
+        "info"
+      );
+    }
+
+    async function adminSetTeamFlair(teamId, flair) {
+      if (!requireCommish()) return;
+      const prof = getTeamProfile(teamId);
+      prof.flairBadge = ["CHAMP", "TOILET"].includes(flair) ? flair : "NONE";
+      prof.updatedAt = Date.now();
+      saveDatabase(true, `ADMIN_SET_FLAIR:${teamId}:${prof.flairBadge}`);
+      renderAdminTeamPinResetList();
+      populateStaticFormControls();
+      renderAll();
+      showToast(`Updated flair badge for ${getTeamName(teamId)}.`, "success");
     }
 
     async function adminClearTeamPin(teamId) {
@@ -7918,6 +9094,136 @@
       }
     }
 
+    async function pushTradeProposalToCloud(proposalObj) {
+      const customUrl = getActiveCloudSyncUrl();
+      if (!customUrl || !proposalObj) return false;
+
+      updateSyncStatusUI("Syncing Proposal...", false, false);
+      try {
+        const payload = {
+          action: "PROPOSE_MEMBER_TRADE",
+          passHash: uiState.verifiedPassHash || leagueDB?.leaguePassphraseHash || "",
+          proposal: proposalObj,
+          fallbackBaseState: sanitizeStateForPublicExport(leagueDB)
+        };
+        const res = await fetch(customUrl, {
+          method: "POST",
+          redirect: "follow",
+          headers: { "Content-Type": "text/plain;charset=utf-8" },
+          body: JSON.stringify(payload)
+        });
+        const resJson = await res.json().catch(() => null);
+        if (res.ok && resJson && resJson.ok && resJson.state) {
+          const validated = validateAndSanitizeDatabase(resJson.state);
+          if (validated) {
+            await mergePreservedSecurityMetadata(validated);
+            uiState.sheetNeedsInitialSeed = false;
+            leagueDB = validated;
+            normalizeAndDeduplicateTrades(leagueDB);
+            ensureRollingWindowYearsExist();
+            saveDatabase(false);
+            uiState.lastSyncedAt = Date.now();
+            renderAll();
+          }
+          updateSyncStatusUI("Live Sheet Synced ✓", true, false);
+          return true;
+        } else {
+          updateSyncStatusUI("Proposal Saved Locally", false, true);
+          if (resJson?.error) showToast(`Cloud sync note: ${resJson.error}`, "error");
+          return false;
+        }
+      } catch (e) {
+        console.warn("Trade proposal cloud sync warning:", e);
+        updateSyncStatusUI("Proposal Saved Locally", false, true);
+        return false;
+      }
+    }
+
+    async function pushProposalResponseToCloud(proposalId, responseAction, responderTeamId, replyNote = "") {
+      const customUrl = getActiveCloudSyncUrl();
+      if (!customUrl || !proposalId) return false;
+
+      updateSyncStatusUI("Syncing Trade Status...", false, false);
+      try {
+        const payload = {
+          action: "RESPOND_TRADE_PROPOSAL",
+          passHash: uiState.verifiedPassHash || leagueDB?.leaguePassphraseHash || "",
+          proposalId,
+          responseAction,
+          responderTeamId,
+          replyNote,
+          commishAuthHash: uiState.isCommish ? (uiState.commishSessionHash || leagueDB?.commishPinHash || "") : "",
+          fallbackBaseState: sanitizeStateForPublicExport(leagueDB)
+        };
+        const res = await fetch(customUrl, {
+          method: "POST",
+          redirect: "follow",
+          headers: { "Content-Type": "text/plain;charset=utf-8" },
+          body: JSON.stringify(payload)
+        });
+        const resJson = await res.json().catch(() => null);
+        if (res.ok && resJson && resJson.ok && resJson.state) {
+          const validated = validateAndSanitizeDatabase(resJson.state);
+          if (validated) {
+            await mergePreservedSecurityMetadata(validated);
+            uiState.sheetNeedsInitialSeed = false;
+            leagueDB = validated;
+            normalizeAndDeduplicateTrades(leagueDB);
+            ensureRollingWindowYearsExist();
+            saveDatabase(false);
+            uiState.lastSyncedAt = Date.now();
+            renderAll();
+          }
+          updateSyncStatusUI("Live Sheet Synced ✓", true, false);
+          return true;
+        } else {
+          updateSyncStatusUI("Saved Locally", false, true);
+          if (resJson?.error) showToast(`Cloud sync note: ${resJson.error}`, "error");
+          return false;
+        }
+      } catch (e) {
+        console.warn("Proposal response cloud sync warning:", e);
+        updateSyncStatusUI("Saved Locally", false, true);
+        return false;
+      }
+    }
+
+    async function pushTradeReactionToCloud(tradeId, emoji, teamId) {
+      const customUrl = getActiveCloudSyncUrl();
+      if (!customUrl || !tradeId || !emoji || !teamId) return false;
+      try {
+        const payload = {
+          action: "REACT_TO_TRADE",
+          passHash: uiState.verifiedPassHash || leagueDB?.leaguePassphraseHash || "",
+          tradeId,
+          emoji,
+          teamId,
+          fallbackBaseState: sanitizeStateForPublicExport(leagueDB)
+        };
+        const res = await fetch(customUrl, {
+          method: "POST",
+          redirect: "follow",
+          headers: { "Content-Type": "text/plain;charset=utf-8" },
+          body: JSON.stringify(payload)
+        });
+        const resJson = await res.json().catch(() => null);
+        if (res.ok && resJson && resJson.ok && resJson.state) {
+          const validated = validateAndSanitizeDatabase(resJson.state);
+          if (validated) {
+            await mergePreservedSecurityMetadata(validated);
+            leagueDB = validated;
+            saveDatabase(false);
+            uiState.lastSyncedAt = Date.now();
+            renderTradeFeedSection();
+          }
+          return true;
+        }
+      } catch (e) {
+        // Non-blocking reaction sync
+      }
+      return false;
+    }
+
     async function pushTeamProfileToCloud(teamId, prevTeamPinHashOverride = "") {
       const customUrl = getActiveCloudSyncUrl();
       if (!customUrl || !teamId) return false;
@@ -7935,6 +9241,14 @@
           teamId,
           teamPinHash: prevTeamPinHashOverride || uiState.myTeamPinHash || getSavedTeamPinHash(teamId) || "",
           profile: {
+            customTeamName: prof.customTeamName || "",
+            avatarType: prof.avatarType || "MONOGRAM",
+            avatarText: prof.avatarText || "",
+            avatarEmoji: prof.avatarEmoji || "",
+            avatarBg: prof.avatarBg || "",
+            avatarImageDataUrl: prof.avatarImageDataUrl || "",
+            upstateKittyCursed: Boolean(prof.upstateKittyCursed),
+            flairBadge: prof.flairBadge || "",
             tradeBlockNote: prof.tradeBlockNote || "",
             lookingFor: prof.lookingFor || "",
             needsChips: Array.isArray(prof.needsChips) ? prof.needsChips : [],

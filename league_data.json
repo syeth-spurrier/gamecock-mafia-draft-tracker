@@ -1,10 +1,18 @@
 {
-  "version": "6.0",
+  "version": "6.5",
   "updatedAt": 0,
   "baseUpcomingYear": 2027,
   "leaguePassphraseVerifier": "eafd2c26f6979985a54ab2573dd6b5adf47275fb991ae6cdf1512a8b037cc385",
   "commishPinVerifier": "f03f4a5f4e5dc70446e6a5191311eb62fb045b12440f99b4bdb49c5e4048bb59",
   "encryptedCloudSyncUrl": "ea6e4579eca7e2d4f5ae7d1858ec182b79ad5a18b3baac29253084d14d45031cf418be69f7373c0b3bbd0dfb97c8be8bc93c854342b2a7b6c1f4ff90e2f03524f8d6d7944110421831469af3cd4efaa5c0845aa92d7b7368038c6fc5cf2c400a134cc1e320d6b065da6e17ea9976d4a7",
+  "leagueBranding": {
+    "avatarText": "GCM",
+    "avatarEmoji": "",
+    "avatarImageDataUrl": "",
+    "title": "GAMECOCK MAFIA",
+    "subtitle": "Off-Season & In-Season Draft Pick Tracker"
+  },
+  "hallOfShame": [],
   "teams": [
     {
       "id": "syeth",
@@ -49,6 +57,14 @@
   ],
   "teamProfiles": {
     "syeth": {
+      "customTeamName": "",
+      "avatarType": "MONOGRAM",
+      "avatarText": "",
+      "avatarEmoji": "",
+      "avatarBg": "",
+      "avatarImageDataUrl": "",
+      "upstateKittyCursed": false,
+      "flairBadge": "",
       "tradeBlockNote": "",
       "lookingFor": "",
       "needsChips": [],
@@ -56,6 +72,14 @@
       "updatedAt": 0
     },
     "corbyn": {
+      "customTeamName": "",
+      "avatarType": "MONOGRAM",
+      "avatarText": "",
+      "avatarEmoji": "",
+      "avatarBg": "",
+      "avatarImageDataUrl": "",
+      "upstateKittyCursed": false,
+      "flairBadge": "",
       "tradeBlockNote": "",
       "lookingFor": "",
       "needsChips": [],
@@ -63,6 +87,14 @@
       "updatedAt": 0
     },
     "chris": {
+      "customTeamName": "",
+      "avatarType": "MONOGRAM",
+      "avatarText": "",
+      "avatarEmoji": "",
+      "avatarBg": "",
+      "avatarImageDataUrl": "",
+      "upstateKittyCursed": false,
+      "flairBadge": "",
       "tradeBlockNote": "",
       "lookingFor": "",
       "needsChips": [],
@@ -70,6 +102,14 @@
       "updatedAt": 0
     },
     "boss": {
+      "customTeamName": "",
+      "avatarType": "MONOGRAM",
+      "avatarText": "",
+      "avatarEmoji": "",
+      "avatarBg": "",
+      "avatarImageDataUrl": "",
+      "upstateKittyCursed": false,
+      "flairBadge": "",
       "tradeBlockNote": "",
       "lookingFor": "",
       "needsChips": [],
@@ -77,6 +117,14 @@
       "updatedAt": 0
     },
     "geltz": {
+      "customTeamName": "",
+      "avatarType": "MONOGRAM",
+      "avatarText": "",
+      "avatarEmoji": "",
+      "avatarBg": "",
+      "avatarImageDataUrl": "",
+      "upstateKittyCursed": false,
+      "flairBadge": "",
       "tradeBlockNote": "",
       "lookingFor": "",
       "needsChips": [],
@@ -84,6 +132,14 @@
       "updatedAt": 0
     },
     "matt": {
+      "customTeamName": "",
+      "avatarType": "MONOGRAM",
+      "avatarText": "",
+      "avatarEmoji": "",
+      "avatarBg": "",
+      "avatarImageDataUrl": "",
+      "upstateKittyCursed": false,
+      "flairBadge": "",
       "tradeBlockNote": "",
       "lookingFor": "",
       "needsChips": [],
@@ -91,6 +147,14 @@
       "updatedAt": 0
     },
     "dylan": {
+      "customTeamName": "",
+      "avatarType": "MONOGRAM",
+      "avatarText": "",
+      "avatarEmoji": "",
+      "avatarBg": "",
+      "avatarImageDataUrl": "",
+      "upstateKittyCursed": false,
+      "flairBadge": "",
       "tradeBlockNote": "",
       "lookingFor": "",
       "needsChips": [],
@@ -98,6 +162,14 @@
       "updatedAt": 0
     },
     "leo": {
+      "customTeamName": "",
+      "avatarType": "MONOGRAM",
+      "avatarText": "",
+      "avatarEmoji": "",
+      "avatarBg": "",
+      "avatarImageDataUrl": "",
+      "upstateKittyCursed": false,
+      "flairBadge": "",
       "tradeBlockNote": "",
       "lookingFor": "",
       "needsChips": [],
@@ -105,6 +177,14 @@
       "updatedAt": 0
     },
     "mary": {
+      "customTeamName": "",
+      "avatarType": "MONOGRAM",
+      "avatarText": "",
+      "avatarEmoji": "",
+      "avatarBg": "",
+      "avatarImageDataUrl": "",
+      "upstateKittyCursed": false,
+      "flairBadge": "",
       "tradeBlockNote": "",
       "lookingFor": "",
       "needsChips": [],
@@ -112,6 +192,14 @@
       "updatedAt": 0
     },
     "josh": {
+      "customTeamName": "",
+      "avatarType": "MONOGRAM",
+      "avatarText": "",
+      "avatarEmoji": "",
+      "avatarBg": "",
+      "avatarImageDataUrl": "",
+      "upstateKittyCursed": false,
+      "flairBadge": "",
       "tradeBlockNote": "",
       "lookingFor": "",
       "needsChips": [],
