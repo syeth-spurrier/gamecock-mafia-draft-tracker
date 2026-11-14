@@ -2,7 +2,7 @@
 <html lang="en" class="dark">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, viewport-fit=cover">
   <meta name="referrer" content="no-referrer">
   <title>Gamecock Mafia — Official Draft & Pick Tracker</title>
   <!-- Mobile PWA & Home Screen App Meta -->
@@ -341,8 +341,30 @@
       border: 1px solid #FBCFE8;
       box-shadow: 0 0 8px rgba(255, 20, 147, 0.7);
     }
+    html, body {
+      width: 100%;
+      max-width: 100vw;
+      overflow-x: hidden;
+      overscroll-behavior-x: none;
+      touch-action: manipulation;
+      -webkit-text-size-adjust: 100%;
+    }
+    body.native-app-shell {
+      height: 100vh;
+      height: 100dvh;
+      height: var(--app-dvh, 100dvh);
+      max-height: var(--app-dvh, 100dvh);
+      overflow: hidden;
+    }
+    select, input, textarea {
+      max-width: 100%;
+    }
     @media print {
-      body {
+      html, body, body.native-app-shell {
+        height: auto !important;
+        max-height: none !important;
+        overflow: visible !important;
+        display: block !important;
         background: #ffffff !important;
         color: #09090b !important;
         -webkit-print-color-adjust: exact;
@@ -352,7 +374,10 @@
       #inspectModal, #tradeModal, #orderConfigModal, #espnExportModal, #archiveModal, #cloudSyncModal, #confirmModal, #pinModal, #moreToolsModal, #leagueBrandingModal {
         display: none !important;
       }
-      main {
+      main, #appMainShell {
+        height: auto !important;
+        max-height: none !important;
+        overflow: visible !important;
         max-width: 100% !important;
         padding: 0.25in !important;
       }
@@ -365,19 +390,19 @@
     }
   </style>
 </head>
-<body class="theme-sandstorm_noir min-h-screen flex flex-col font-sans antialiased selection:bg-[#73000A] selection:text-white pb-20 lg:pb-0">
+<body class="theme-sandstorm_noir native-app-shell flex flex-col font-sans antialiased selection:bg-[#73000A] selection:text-white">
 
   <!-- ========================================================= -->
   <!-- LIGHTWEIGHT LEAGUE PASSPHRASE & MY FRANCHISE GATE OVERLAY -->
   <!-- ========================================================= -->
-  <div id="passphraseGateOverlay" class="fixed inset-0 z-[90] bg-[#09090B] flex items-center justify-center p-4 overflow-y-auto">
-    <div class="bg-[#121215] border border-[#73000A] rounded-2xl max-w-md w-full p-6 sm:p-8 shadow-2xl text-center space-y-5 my-6">
-      <div id="gateBrandAvatarBox" class="w-16 h-16 mx-auto rounded-2xl garnet-hero-banner flex items-center justify-center shadow-xl overflow-hidden">
+  <div id="passphraseGateOverlay" class="fixed inset-0 z-[90] bg-[#09090B] flex items-center justify-center p-3 sm:p-4 overflow-y-auto overflow-x-hidden">
+    <div class="bg-[#121215] border border-[#73000A] rounded-2xl max-w-md w-full p-5 sm:p-8 shadow-2xl text-center space-y-4 sm:space-y-5 my-4">
+      <div id="gateBrandAvatarBox" class="w-14 h-14 sm:w-16 sm:h-16 mx-auto rounded-2xl garnet-hero-banner flex items-center justify-center shadow-xl overflow-hidden">
         <span class="font-display font-extrabold text-2xl tracking-wider text-white">GCM</span>
       </div>
       <div class="space-y-1">
         <span class="static-badge bg-[#73000A]/40 text-amber-300 border border-[#CC1429]/50">Official Franchise Portal</span>
-        <h2 id="gateBrandTitleText" class="text-2xl font-black tracking-tight text-white">GAMECOCK MAFIA</h2>
+        <h2 id="gateBrandTitleText" class="text-xl sm:text-2xl font-black tracking-tight text-white">GAMECOCK MAFIA</h2>
         <p class="text-xs text-zinc-400">Select your franchise and enter the league passphrase to manage your picks, War Room trade block, and deals.</p>
       </div>
       <div class="space-y-3 text-left">
@@ -420,7 +445,7 @@
             autocomplete="off"
             placeholder="Enter League Passphrase"
             onkeydown="if(event.key==='Enter') authenticateLeaguePassphrase()"
-            class="w-full text-center text-lg tracking-widest uppercase bg-[#09090B] border border-zinc-700 rounded-xl py-2.5 px-4 text-amber-300 font-mono font-bold focus:border-[#CC1429] focus:outline-none"
+            class="w-full text-center text-base sm:text-lg tracking-widest uppercase bg-[#09090B] border border-zinc-700 rounded-xl py-2.5 px-4 text-amber-300 font-mono font-bold focus:border-[#CC1429] focus:outline-none"
           >
         </div>
 
@@ -435,72 +460,44 @@
   </div>
 
   <!-- ========================================================= -->
-  <!-- STREAMLINED NATIVE APPLICATION HEADER                     -->
+  <!-- UNCLUTTERED NATIVE HEADER (SEPARATED MOBILE 2-ROW STRIP)  -->
   <!-- ========================================================= -->
-  <header id="appHeaderShell" class="hidden bg-[#09090B]/95 backdrop-blur-md border-b border-zinc-800/90 sticky top-0 z-40">
-    <div class="max-w-7xl mx-auto px-2.5 sm:px-6 lg:px-8">
-      
-      <!-- Single Compact Top Bar: Brand + Always-Visible Live Sync Pill | Year Dropdown | My Team + Propose Trade + Gear -->
-      <div class="flex items-center justify-between py-2 gap-1.5 sm:gap-2.5">
-        
-        <!-- Left: Editable GCM Brand Identity + Clear Mobile/Desktop Live Sync Pill -->
-        <div class="flex items-center gap-2 min-w-0">
+  <header id="appHeaderShell" class="hidden flex-shrink-0 w-full bg-[#09090B]/98 backdrop-blur-md border-b border-zinc-800/90 z-40">
+    <div class="max-w-7xl w-full mx-auto px-2.5 sm:px-6 lg:px-8">
+
+      <!-- Responsive Header Grid:
+           Mobile (<lg): Row 1 = GCM Brand (Left) + Propose/Settings (Right); Row 2 = Sync (Left) | My Team (Mid) | Year Dropdown (Right)
+           Desktop (lg+): Clean Single Row with Brand | Sync + Year | My Team + Propose + Admin + Settings -->
+      <div class="py-2 grid grid-cols-12 items-center gap-y-1.5 gap-x-1.5 lg:flex lg:items-center lg:justify-between lg:gap-3">
+
+        <!-- Zone 1: Editable GCM Brand Tile & League Title (Mobile Row 1 Left / Desktop Order 1) -->
+        <div class="col-span-6 min-w-0 flex items-center gap-2 lg:order-1 lg:flex-shrink-0">
           <button
             type="button"
             id="headerBrandAvatarBtn"
             onclick="handleHeaderBrandClick()"
-            class="relative w-9 h-9 sm:w-10 sm:h-10 rounded-xl garnet-hero-banner flex items-center justify-center flex-shrink-0 overflow-hidden cursor-pointer group"
+            class="relative w-8 h-8 sm:w-10 sm:h-10 rounded-xl garnet-hero-banner flex items-center justify-center flex-shrink-0 overflow-hidden cursor-pointer group"
             title="Gamecock Mafia Official Brand (Commissioner can click to customize)"
           >
             <div id="headerBrandAvatarBox" class="w-full h-full flex items-center justify-center">
-              <span class="font-display font-extrabold text-base sm:text-lg tracking-wider text-white">GCM</span>
+              <span class="font-display font-extrabold text-sm sm:text-lg tracking-wider text-white">GCM</span>
             </div>
-            <span id="headerBrandEditBadge" class="hidden absolute -bottom-0.5 -right-0.5 w-4 h-4 rounded-full bg-amber-400 text-black text-[9px] font-black items-center justify-center shadow">
+            <span id="headerBrandEditBadge" class="hidden absolute -bottom-0.5 -right-0.5 w-3.5 h-3.5 rounded-full bg-amber-400 text-black text-[8px] font-black items-center justify-center shadow">
               <i class="fa-solid fa-pen"></i>
             </span>
           </button>
           <div class="min-w-0">
-            <div class="flex flex-wrap items-center gap-1.5">
-              <h1 id="headerBrandTitleText" onclick="handleHeaderBrandClick()" class="text-xs sm:text-base font-black tracking-tight text-white truncate max-w-[115px] sm:max-w-none cursor-pointer">
-                GAMECOCK MAFIA
-              </h1>
-              <!-- Always-Visible Mobile & Desktop Live Sync Button -->
-              <button onclick="manualSyncRefresh()" id="headerSyncPillBtn" class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-zinc-900/95 border border-emerald-500/40 text-[10px] font-bold text-emerald-300 hover:border-emerald-400 transition cursor-pointer flex-shrink-0 shadow-sm" title="Tap to sync latest live updates from Google Sheet">
-                <span id="syncStatusDot" class="w-1.5 h-1.5 rounded-full bg-emerald-400 inline-block flex-shrink-0"></span>
-                <span id="syncStatusText" class="inline truncate max-w-[68px] sm:max-w-none">Sync</span>
-                <i id="manualSyncSpinner" class="fa-solid fa-rotate text-[9px] text-emerald-300"></i>
-              </button>
-            </div>
-            <p id="headerBrandSubtitleWrap" class="text-[10px] text-zinc-400 hidden sm:block truncate">
+            <h1 id="headerBrandTitleText" onclick="handleHeaderBrandClick()" class="text-xs sm:text-base font-black tracking-tight text-white truncate cursor-pointer">
+              GAMECOCK MAFIA
+            </h1>
+            <p id="headerBrandSubtitleWrap" class="text-[10px] text-zinc-400 hidden xl:block truncate">
               <span id="headerBrandSubtitleText">Off-Season & In-Season Draft Pick Tracker</span> <span id="lastSyncedTicker" class="text-zinc-500"></span>
             </p>
           </div>
         </div>
 
-        <!-- Center: Compact Year Dropdown Selector (2026 / 2027 / 2028 + 2018-2025 Archive) -->
-        <div class="flex items-center flex-shrink-0">
-          <div class="relative flex items-center">
-            <label for="headerYearDropdownSelect" class="sr-only">Select Draft Season</label>
-            <select
-              id="headerYearDropdownSelect"
-              onchange="handleHeaderYearDropdownChange(this.value)"
-              class="bg-[#121215] hover:bg-zinc-900 text-white font-extrabold text-xs sm:text-sm rounded-xl px-2.5 sm:px-3.5 py-1.5 border border-[#CC1429]/70 focus:outline-none focus:border-amber-400 cursor-pointer shadow-sm"
-            >
-              <!-- Populated by renderDynamicYearTabs() -->
-            </select>
-          </div>
-          <!-- Hidden legacy container kept in DOM for script compatibility -->
-          <div id="dynamicYearTabsContainer" class="hidden" aria-hidden="true"></div>
-        </div>
-
-        <!-- Right: My Team Pill + Primary "+ Propose Trade" CTA + Gear (More/Tools) -->
-        <div class="flex items-center gap-1 sm:gap-2 flex-shrink-0">
-          <!-- Mobile My Team Pill -->
-          <button onclick="openSwitchFranchiseGate()" id="mobileMyTeamBadgeBtn" class="lg:hidden btn-action px-2 py-1.5 text-[11px] text-amber-300" title="Switch active franchise">
-            <i class="fa-solid fa-user-shield text-[#CC1429]"></i>
-            <span id="mobileMyTeamBadgeLabel" class="max-w-[64px] truncate">My Team</span>
-          </button>
-
+        <!-- Zone 2: Primary Propose Trade CTA + Settings Gear (Mobile Row 1 Right / Desktop Order 3) -->
+        <div class="col-span-6 flex items-center justify-end gap-1.5 lg:order-3 lg:flex-shrink-0">
           <!-- Desktop My Team Pill -->
           <button onclick="openSwitchFranchiseGate()" id="desktopMyTeamBadgeBtn" class="hidden lg:inline-flex btn-action px-3 py-1.5 text-xs text-zinc-100" title="Switch active franchise on this device">
             <span class="w-2 h-2 rounded-full bg-[#CC1429]"></span>
@@ -513,13 +510,13 @@
             <i class="fa-solid fa-rotate-left"></i>
             <span id="desktopUndoLabel" class="hidden md:inline">Undo</span>
           </button>
-          <button onclick="performUndo()" id="mobileUndoBtn" class="hidden lg:hidden btn-action px-2 py-1.5 text-xs text-amber-300" title="Undo">
+          <button onclick="performUndo()" id="mobileUndoBtn" class="hidden lg:hidden btn-action px-2 py-1.5 text-[11px] text-amber-300" title="Undo">
             <i class="fa-solid fa-rotate-left"></i>
           </button>
 
-          <!-- Primary CTA: + Propose Trade -->
-          <button onclick="openContextualTradeModal()" class="btn-garnet px-2.5 sm:px-3.5 py-1.5 sm:py-2 text-xs font-extrabold whitespace-nowrap">
-            <i class="fa-solid fa-paper-plane"></i>
+          <!-- Primary CTA: Propose Trade -->
+          <button onclick="openContextualTradeModal()" class="btn-garnet px-2.5 sm:px-3.5 py-1.5 text-[11px] sm:text-xs font-extrabold whitespace-nowrap">
+            <i class="fa-solid fa-paper-plane text-[10px] sm:text-xs"></i>
             <span id="headerLogTradeBtnLabel">Propose Trade</span>
           </button>
 
@@ -534,16 +531,53 @@
           </button>
 
           <!-- Gear / More Tools & Settings Button -->
-          <button onclick="openMoreToolsModal()" id="headerMoreToolsBtn" class="btn-action px-2 sm:px-2.5 py-1.5 sm:py-2 text-xs text-zinc-200 relative" title="Color Schemes, Tools, Archive, Export & Commissioner Settings">
+          <button onclick="openMoreToolsModal()" id="headerMoreToolsBtn" class="btn-action px-2 sm:px-2.5 py-1.5 text-xs text-zinc-200 relative" title="Color Schemes, Tools, Archive, Export & Commissioner Settings">
             <i class="fa-solid fa-gear text-zinc-300"></i>
             <span class="hidden sm:inline">Settings</span>
             <span id="headerAdminActiveDot" class="hidden w-2 h-2 rounded-full bg-emerald-400 absolute -top-0.5 -right-0.5"></span>
           </button>
         </div>
 
+        <!-- Zone 3: Separated Control Bar — Sync Button (Left) | Mobile My Team (Center) | Year Dropdown (Right)
+             Completely separated on Mobile Row 2 so Sync, GCM Tile, and Year Selector NEVER overlap! -->
+        <div class="col-span-12 pt-1.5 border-t border-zinc-800/80 grid grid-cols-12 gap-1.5 items-center lg:order-2 lg:pt-0 lg:border-t-0 lg:flex lg:items-center lg:gap-2.5 lg:w-auto">
+
+          <!-- Left Slot (Cols 1–4 on Mobile): Dedicated Live Sync Button -->
+          <div class="col-span-4 min-w-0 lg:w-auto">
+            <button onclick="manualSyncRefresh()" id="headerSyncPillBtn" class="w-full lg:w-auto inline-flex items-center justify-center gap-1.5 px-2 lg:px-3 py-1 lg:py-1.5 rounded-lg bg-zinc-900/95 border border-emerald-500/45 text-[10px] lg:text-xs font-bold text-emerald-300 hover:border-emerald-400 transition cursor-pointer shadow-sm min-w-0" title="Tap to sync latest live updates from Google Sheet">
+              <span id="syncStatusDot" class="w-1.5 h-1.5 rounded-full bg-emerald-400 inline-block flex-shrink-0"></span>
+              <span id="syncStatusText" class="truncate">Sync</span>
+              <i id="manualSyncSpinner" class="fa-solid fa-rotate text-[9px] text-emerald-300 flex-shrink-0"></i>
+            </button>
+          </div>
+
+          <!-- Middle Slot (Cols 5–8 on Mobile): Active Franchise Switcher -->
+          <div class="col-span-4 min-w-0 lg:hidden">
+            <button onclick="openSwitchFranchiseGate()" id="mobileMyTeamBadgeBtn" class="w-full btn-action px-2 py-1 text-[10px] text-amber-300 min-w-0" title="Switch active franchise">
+              <i class="fa-solid fa-user-shield text-[#CC1429] flex-shrink-0 text-[10px]"></i>
+              <span id="mobileMyTeamBadgeLabel" class="truncate">My Team</span>
+            </button>
+          </div>
+
+          <!-- Right Slot (Cols 9–12 on Mobile): Separated Season / Year Dropdown -->
+          <div class="col-span-4 min-w-0 lg:w-auto flex items-center justify-end">
+            <label for="headerYearDropdownSelect" class="sr-only">Select Draft Season</label>
+            <select
+              id="headerYearDropdownSelect"
+              onchange="handleHeaderYearDropdownChange(this.value)"
+              class="w-full lg:w-auto max-w-full bg-[#121215] hover:bg-zinc-900 text-white font-extrabold text-[11px] sm:text-xs rounded-lg px-2 sm:px-3 py-1 lg:py-1.5 border border-[#CC1429]/70 focus:outline-none focus:border-amber-400 cursor-pointer shadow-sm truncate"
+            >
+              <!-- Populated by renderDynamicYearTabs() -->
+            </select>
+            <!-- Hidden legacy container kept in DOM for script compatibility -->
+            <div id="dynamicYearTabsContainer" class="hidden" aria-hidden="true"></div>
+          </div>
+
+        </div>
+
       </div>
 
-      <!-- Desktop Segmented 5-Tab Navigation Bar (Hidden on Mobile, replaced by Sticky Bottom Bar) -->
+      <!-- Desktop Segmented 5-Tab Navigation Bar (Hidden on Mobile; Mobile uses Always-Present Docked Bottom Tab Bar) -->
       <nav class="hidden lg:flex items-center gap-1 pt-1 border-t border-zinc-800/80 overflow-x-auto no-scrollbar">
         <button onclick="switchMainTab('ledger')" id="navTab-ledger" class="nav-tab-btn px-4 py-2.5 text-xs font-extrabold border-b-2 transition whitespace-nowrap flex items-center gap-2 cursor-pointer">
           <i class="fa-solid fa-shield-halved"></i>
@@ -581,302 +615,304 @@
   </header>
 
   <!-- ========================================================= -->
-  <!-- STICKY MOBILE BOTTOM 5-TAB BAR (SLEEPER / ESPN STYLE)     -->
+  <!-- SCROLLABLE NATIVE MAIN WORKSPACE (ZERO HORIZONTAL SCROLL) -->
   <!-- ========================================================= -->
-  <nav id="mobileBottomNav" class="hidden lg:hidden fixed bottom-0 inset-x-0 z-40 bg-[#09090B]/95 backdrop-blur-md border-t border-zinc-800 px-1 py-1.5 grid grid-cols-5 gap-0.5 no-print">
-    <button onclick="switchMainTab('ledger')" id="mobTab-ledger" class="flex flex-col items-center justify-center py-1 rounded-lg text-[10px] font-bold transition cursor-pointer">
-      <i class="fa-solid fa-shield-halved text-sm mb-0.5"></i>
-      <span>My Team</span>
-    </button>
-    <button onclick="switchMainTab('tradecenter')" id="mobTab-tradecenter" class="flex flex-col items-center justify-center py-1 rounded-lg text-[10px] font-bold transition relative cursor-pointer">
-      <i class="fa-solid fa-scale-balanced text-sm mb-0.5"></i>
-      <span>Trade Ctr</span>
-      <span id="mobTradeBlockBadge" class="hidden absolute top-0.5 right-3 w-2 h-2 rounded-full bg-amber-400"></span>
-    </button>
-    <button onclick="switchMainTab('board')" id="mobTab-board" class="flex flex-col items-center justify-center py-1 rounded-lg text-[10px] font-bold transition cursor-pointer">
-      <i class="fa-solid fa-table-cells text-sm mb-0.5"></i>
-      <span>Board</span>
-    </button>
-    <button onclick="switchMainTab('capital')" id="mobTab-capital" class="flex flex-col items-center justify-center py-1 rounded-lg text-[10px] font-bold transition cursor-pointer">
-      <i class="fa-solid fa-ranking-star text-sm mb-0.5"></i>
-      <span>Capital</span>
-    </button>
-    <button onclick="switchMainTab('feed')" id="mobTab-feed" class="flex flex-col items-center justify-center py-1 rounded-lg text-[10px] font-bold transition relative cursor-pointer">
-      <i class="fa-solid fa-bolt text-sm mb-0.5"></i>
-      <span>Activity</span>
-      <span id="mobActivityBadge" class="hidden absolute top-0.5 right-3 px-1 text-[8px] rounded-full bg-[#CC1429] text-white font-mono">0</span>
-    </button>
-  </nav>
+  <main id="appMainShell" class="hidden flex-1 min-h-0 w-full overflow-y-auto overflow-x-hidden overscroll-y-contain">
+    <div class="max-w-7xl w-full mx-auto px-2.5 sm:px-6 lg:px-8 py-3 sm:py-5 space-y-4">
 
-  <!-- ========================================================= -->
-  <!-- MAIN WORKSPACE                                            -->
-  <!-- ========================================================= -->
-  <main id="appMainShell" class="hidden flex-grow max-w-7xl w-full mx-auto px-3 sm:px-6 lg:px-8 py-4 sm:py-6 space-y-5">
-
-    <!-- PRINT-ONLY DRAFT NIGHT HEADER -->
-    <div class="print-banner hidden">
-      <h1 class="text-xl font-black">GAMECOCK MAFIA — OFFICIAL DRAFT & PICK TRACKER SHEET</h1>
-      <p id="printHeaderSubtitle" class="text-xs"></p>
-    </div>
-
-    <!-- INCOMING TRADE PROPOSAL ALERT BANNER (SHOWN WHEN LOGGED-IN TEAM HAS AN OFFER AWAITING CONFIRMATION) -->
-    <div id="incomingTradeAlertBanner" class="hidden no-print"></div>
-
-    <!-- COMMISSIONER-ONLY DRAFT SHEET CONTROL BAR (HIDDEN FOR REGULAR MEMBERS) -->
-    <div id="topContextBanner" class="hidden app-card border-emerald-600/50 p-3.5 sm:p-4 flex-col lg:flex-row lg:items-center justify-between gap-3">
-      <!-- Dynamically populated only when Commissioner Mode is unlocked -->
-    </div>
-
-    <!-- ======================================================= -->
-    <!-- TAB 1: MY TEAM (HERO BANNER + COMPACT 1-20 PICK TABLE)  -->
-    <!-- ======================================================= -->
-    <section id="section-ledger" class="space-y-4">
-      
-      <!-- Sleek ESPN/Sleeper Franchise Header Banner + Collapsible War Room Drawer -->
-      <div id="teamWarRoomContainer" class="no-print">
-        <!-- Populated by JS -->
+      <!-- PRINT-ONLY DRAFT NIGHT HEADER -->
+      <div class="print-banner hidden">
+        <h1 class="text-xl font-black">GAMECOCK MAFIA — OFFICIAL DRAFT & PICK TRACKER SHEET</h1>
+        <p id="printHeaderSubtitle" class="text-xs"></p>
       </div>
 
-      <!-- Compact 1-Line Round 1–20 Pick Table -->
-      <div id="selectedManagerLedger" class="space-y-3">
-        <!-- Populated by JS -->
+      <!-- INCOMING TRADE PROPOSAL ALERT BANNER (SHOWN WHEN LOGGED-IN TEAM HAS AN OFFER AWAITING CONFIRMATION) -->
+      <div id="incomingTradeAlertBanner" class="hidden no-print"></div>
+
+      <!-- COMMISSIONER-ONLY DRAFT SHEET CONTROL BAR (HIDDEN FOR REGULAR MEMBERS) -->
+      <div id="topContextBanner" class="hidden app-card border-emerald-600/50 p-3 sm:p-4 flex-col lg:flex-row lg:items-center justify-between gap-3">
+        <!-- Dynamically populated only when Commissioner Mode is unlocked -->
       </div>
 
-    </section>
+      <!-- ======================================================= -->
+      <!-- TAB 1: MY TEAM (HERO BANNER + COMPACT 1-20 PICK LIST)   -->
+      <!-- ======================================================= -->
+      <section id="section-ledger" class="space-y-3.5">
 
-    <!-- ======================================================= -->
-    <!-- TAB 2: TRADE CENTER (ACTIVE BLOCK + TRADE MACHINE)      -->
-    <!-- ======================================================= -->
-    <section id="section-tradecenter" class="hidden space-y-5">
-
-      <!-- League-Wide Active Trade Block Cards -->
-      <div id="leagueTradeBlockContainer" class="space-y-3">
-        <!-- Populated by JS -->
-      </div>
-
-      <!-- Always-Ready 2-Team Trade Machine (Compare & Interactive Tap-to-Swap Sandbox) -->
-      <div class="app-card p-4 sm:p-5 space-y-4">
-        <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-3 border-b border-zinc-800 pb-3.5">
-          <div>
-            <div class="flex items-center gap-2">
-              <span class="static-badge bg-[#73000A] text-white border border-[#CC1429]">
-                <i class="fa-solid fa-scale-balanced"></i> Trade Machine
-              </span>
-              <h2 class="text-base sm:text-lg font-black text-white">2-Team Pick Comparison & Tap-to-Trade Simulator</h2>
-            </div>
-            <p class="text-xs text-zinc-400 mt-0.5">
-              Select any trade partner below and tap any settled pick to simulate a deal live, then click <strong class="text-white">Propose Trade →</strong>.
-            </p>
-          </div>
-
-          <!-- Uniform Side-by-Side Dropdowns (Team 1 Locked in Standard Mode, Team 2 Partner) -->
-          <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5 w-full lg:w-auto lg:min-w-[520px]">
-            <div>
-              <label for="ledgerManagerSelect" id="ledgerManagerSelectLabel" class="block text-[10px] font-extrabold uppercase tracking-wider text-[#CC1429] mb-1">
-                Team 1 (My Franchise)
-              </label>
-              <select id="ledgerManagerSelect" onchange="selectManagerInLedger(this.value)" class="w-full bg-[#09090B] text-white font-extrabold text-xs rounded-xl px-3 py-2 border border-zinc-700 focus:outline-none focus:border-[#CC1429] cursor-pointer">
-                <!-- Populated by JS -->
-              </select>
-            </div>
-            <div id="compareManagerBWrapper">
-              <label for="ledgerCompareManagerSelect" id="ledgerCompareManagerSelectLabel" class="block text-[10px] font-extrabold uppercase tracking-wider text-sky-400 mb-1">
-                Team 2 (Trade Partner)
-              </label>
-              <select id="ledgerCompareManagerSelect" onchange="selectCompareManagerB(this.value)" class="w-full bg-[#09090B] text-white font-extrabold text-xs rounded-xl px-3 py-2 border border-zinc-700 focus:outline-none focus:border-sky-400 cursor-pointer">
-                <!-- Populated by JS -->
-              </select>
-            </div>
-          </div>
-        </div>
-
-        <!-- 1-Tap Partner Avatar Strip -->
-        <div id="tradeMachinePartnerBar" class="flex items-center gap-1.5 overflow-x-auto no-scrollbar pb-1">
+        <!-- Sleek ESPN/Sleeper Franchise Header Banner + Collapsible War Room Drawer -->
+        <div id="teamWarRoomContainer" class="no-print">
           <!-- Populated by JS -->
         </div>
 
-        <!-- Interactive Side-by-Side Comparison & Tap-to-Trade Workspace -->
-        <div id="tradeMachineWorkspace" class="space-y-4">
+        <!-- Mobile-Native Round Cards + Desktop 1-Line Round 1–20 Table -->
+        <div id="selectedManagerLedger" class="space-y-3">
           <!-- Populated by JS -->
         </div>
-      </div>
 
-    </section>
+      </section>
 
-    <!-- ======================================================= -->
-    <!-- TAB 3: FULL 200-PICK DRAFT BOARD (MATRIX & ROUND CARDS) -->
-    <!-- ======================================================= -->
-    <section id="section-board" class="hidden space-y-4">
-      
-      <!-- Controls Bar -->
-      <div class="no-print app-card p-4 flex flex-col lg:flex-row lg:items-center justify-between gap-3">
-        <div class="space-y-0.5">
-          <div class="flex flex-wrap items-center gap-2">
-            <h2 id="boardHeading" class="text-base sm:text-lg font-black text-white">2027 Official Draft Board</h2>
-            <span id="boardOrderStatusBadge" class="static-badge"></span>
-          </div>
-          <p id="boardSubheading" class="text-xs text-zinc-400"></p>
+      <!-- ======================================================= -->
+      <!-- TAB 2: TRADE CENTER (ACTIVE BLOCK + TRADE MACHINE)      -->
+      <!-- ======================================================= -->
+      <section id="section-tradecenter" class="hidden space-y-4">
+
+        <!-- League-Wide Active Trade Block Cards -->
+        <div id="leagueTradeBlockContainer" class="space-y-3">
+          <!-- Populated by JS -->
         </div>
 
-        <div class="flex flex-wrap items-center gap-2">
-          <!-- Board Layout Mode Switcher (Matrix vs Cards) -->
-          <div class="inline-flex items-center bg-[#09090B] p-0.5 rounded-lg border border-zinc-800">
-            <button onclick="setBoardDisplayMode('MATRIX')" id="boardModeMatrixBtn" class="px-2.5 py-1 rounded-md text-xs font-bold transition cursor-pointer">
-              <i class="fa-solid fa-table-cells mr-1"></i>10×20 Matrix
+        <!-- Always-Ready 2-Team Trade Machine (Compare & Interactive Tap-to-Swap Sandbox) -->
+        <div class="app-card p-3 sm:p-5 space-y-3.5">
+          <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-3 border-b border-zinc-800 pb-3">
+            <div class="min-w-0">
+              <div class="flex flex-wrap items-center gap-2">
+                <span class="static-badge bg-[#73000A] text-white border border-[#CC1429]">
+                  <i class="fa-solid fa-scale-balanced"></i> Trade Machine
+                </span>
+                <h2 class="text-sm sm:text-lg font-black text-white">2-Team Pick Comparison & Tap-to-Trade</h2>
+              </div>
+              <p class="text-[11px] sm:text-xs text-zinc-400 mt-0.5">
+                Pick a trade partner and tap any settled pick below to stage a swap, then tap <strong class="text-white">Propose Trade →</strong>.
+              </p>
+            </div>
+
+            <!-- Uniform Side-by-Side Dropdowns (Fits 100% of mobile width) -->
+            <div class="grid grid-cols-2 gap-2 w-full lg:w-[460px] max-w-full">
+              <div class="min-w-0">
+                <label for="ledgerManagerSelect" id="ledgerManagerSelectLabel" class="block text-[10px] font-extrabold uppercase tracking-wider text-[#CC1429] mb-1 truncate">
+                  Team 1 (My Team)
+                </label>
+                <select id="ledgerManagerSelect" onchange="selectManagerInLedger(this.value)" class="w-full min-w-0 bg-[#09090B] text-white font-extrabold text-xs rounded-xl px-2.5 py-2 border border-zinc-700 focus:outline-none focus:border-[#CC1429] cursor-pointer truncate">
+                  <!-- Populated by JS -->
+                </select>
+              </div>
+              <div id="compareManagerBWrapper" class="min-w-0">
+                <label for="ledgerCompareManagerSelect" id="ledgerCompareManagerSelectLabel" class="block text-[10px] font-extrabold uppercase tracking-wider text-sky-400 mb-1 truncate">
+                  Team 2 (Partner)
+                </label>
+                <select id="ledgerCompareManagerSelect" onchange="selectCompareManagerB(this.value)" class="w-full min-w-0 bg-[#09090B] text-white font-extrabold text-xs rounded-xl px-2.5 py-2 border border-zinc-700 focus:outline-none focus:border-sky-400 cursor-pointer truncate">
+                  <!-- Populated by JS -->
+                </select>
+              </div>
+            </div>
+          </div>
+
+          <!-- 1-Tap Partner Avatar Strip -->
+          <div id="tradeMachinePartnerBar" class="flex items-center gap-1.5 overflow-x-auto no-scrollbar pb-1 max-w-full">
+            <!-- Populated by JS -->
+          </div>
+
+          <!-- Interactive Side-by-Side Comparison & Tap-to-Trade Workspace -->
+          <div id="tradeMachineWorkspace" class="space-y-3.5 min-w-0 max-w-full">
+            <!-- Populated by JS -->
+          </div>
+        </div>
+
+      </section>
+
+      <!-- ======================================================= -->
+      <!-- TAB 3: FULL 200-PICK DRAFT BOARD (CARDS & MATRIX)       -->
+      <!-- ======================================================= -->
+      <section id="section-board" class="hidden space-y-3.5">
+
+        <!-- Controls Bar -->
+        <div class="no-print app-card p-3 sm:p-4 flex flex-col lg:flex-row lg:items-center justify-between gap-2.5">
+          <div class="space-y-0.5 min-w-0">
+            <div class="flex flex-wrap items-center gap-2">
+              <h2 id="boardHeading" class="text-sm sm:text-lg font-black text-white">2027 Official Draft Board</h2>
+              <span id="boardOrderStatusBadge" class="static-badge"></span>
+            </div>
+            <p id="boardSubheading" class="text-[11px] sm:text-xs text-zinc-400 break-words"></p>
+          </div>
+
+          <div class="flex flex-wrap items-center gap-1.5 sm:gap-2">
+            <!-- Board Layout Mode Switcher (Cards default on Mobile, Matrix default on Desktop) -->
+            <div class="inline-flex items-center bg-[#09090B] p-0.5 rounded-lg border border-zinc-800">
+              <button onclick="setBoardDisplayMode('CARDS')" id="boardModeCardsBtn" class="px-2.5 py-1 rounded-md text-[11px] sm:text-xs font-bold transition cursor-pointer">
+                <i class="fa-solid fa-grip mr-1"></i>Round Cards
+              </button>
+              <button onclick="setBoardDisplayMode('MATRIX')" id="boardModeMatrixBtn" class="px-2.5 py-1 rounded-md text-[11px] sm:text-xs font-bold transition cursor-pointer">
+                <i class="fa-solid fa-table-cells mr-1"></i>10×20 Grid
+              </button>
+            </div>
+
+            <!-- Team Highlight Filter -->
+            <select id="boardFilterTeamSelect" onchange="renderDraftBoardSection()" class="bg-[#09090B] text-[11px] sm:text-xs font-semibold text-zinc-200 rounded-lg px-2 py-1.5 border border-zinc-700 focus:outline-none focus:border-[#CC1429] cursor-pointer max-w-[160px] sm:max-w-none truncate">
+              <option value="ALL">Highlight: All 10 Teams</option>
+            </select>
+
+            <!-- Traded Only Toggle Button -->
+            <button onclick="toggleBoardTradedFilter()" id="boardTradedToggleBtn" class="btn-action px-2.5 py-1.5 text-[11px] sm:text-xs text-zinc-200">
+              <i class="fa-solid fa-right-left text-sky-400"></i>
+              <span id="boardTradedToggleLabel">Traded Rds</span>
             </button>
-            <button onclick="setBoardDisplayMode('CARDS')" id="boardModeCardsBtn" class="px-2.5 py-1 rounded-md text-xs font-bold transition cursor-pointer">
-              <i class="fa-solid fa-grip mr-1"></i>Round Cards
+
+            <!-- Configure Draft Order Button (Commissioner Only) -->
+            <button onclick="openOrderConfigModal()" id="boardSetOrderBtn" class="hidden btn-action px-2.5 py-1.5 text-[11px] sm:text-xs text-amber-300">
+              <i class="fa-solid fa-sliders"></i>
+              <span>Set 1–10 Order</span>
+            </button>
+
+            <!-- ESPN / CSV / Print Export Modal Button -->
+            <button onclick="openEspnExportModal()" class="btn-garnet px-2.5 py-1.5 text-[11px] sm:text-xs">
+              <i class="fa-solid fa-file-export"></i>
+              <span>ESPN / Print ↗</span>
             </button>
           </div>
-
-          <!-- Team Highlight Filter -->
-          <select id="boardFilterTeamSelect" onchange="renderDraftBoardSection()" class="bg-[#09090B] text-xs font-semibold text-zinc-200 rounded-lg px-2.5 py-1.5 border border-zinc-700 focus:outline-none focus:border-[#CC1429] cursor-pointer">
-            <option value="ALL">Highlight: All 10 Teams</option>
-          </select>
-
-          <!-- Traded Only Toggle Button -->
-          <button onclick="toggleBoardTradedFilter()" id="boardTradedToggleBtn" class="btn-action px-2.5 py-1.5 text-xs text-zinc-200">
-            <i class="fa-solid fa-right-left text-sky-400"></i>
-            <span id="boardTradedToggleLabel">Traded Rounds Only</span>
-          </button>
-
-          <!-- Configure Draft Order Button (Commissioner Only) -->
-          <button onclick="openOrderConfigModal()" id="boardSetOrderBtn" class="hidden btn-action px-3 py-1.5 text-xs text-amber-300">
-            <i class="fa-solid fa-sliders"></i>
-            <span>Set 1–10 Order</span>
-          </button>
-
-          <!-- ESPN / CSV / Print Export Modal Button -->
-          <button onclick="openEspnExportModal()" class="btn-garnet px-3 py-1.5 text-xs">
-            <i class="fa-solid fa-file-export"></i>
-            <span>ESPN / Print ↗</span>
-          </button>
-        </div>
-      </div>
-
-      <!-- Compact Visual Legend -->
-      <div class="app-card px-4 py-2 flex flex-wrap items-center justify-between gap-2 text-xs">
-        <div class="flex flex-wrap items-center gap-4">
-          <span class="font-bold text-zinc-400 uppercase tracking-wider text-[10px]">Legend:</span>
-          <span class="flex items-center gap-1.5 text-zinc-300 text-[11px]">
-            <span class="w-2.5 h-2.5 rounded bg-zinc-900 border border-zinc-700 inline-block"></span> Original Held
-          </span>
-          <span class="flex items-center gap-1.5 text-sky-300 text-[11px]">
-            <span class="w-2.5 h-2.5 rounded bg-sky-950 border border-sky-500 inline-block"></span> Acquired via Trade
-          </span>
-          <span class="flex items-center gap-1.5 text-amber-300 font-semibold text-[11px]">
-            <span class="w-2.5 h-2.5 rounded bg-[#73000A] border border-amber-400 inline-block"></span> Pending Final (Pool / Swap)
-          </span>
-        </div>
-        <span class="no-print text-[11px] text-zinc-400">
-          Tap any cell to inspect trade chain
-        </span>
-      </div>
-
-      <!-- Draft Board Container -->
-      <div id="draftBoardGridContainer" class="space-y-3">
-        <!-- Populated by JS -->
-      </div>
-
-    </section>
-
-    <!-- ======================================================= -->
-    <!-- TAB 4: LEAGUE CAPITAL (10-TEAM STANDINGS & RANKINGS)    -->
-    <!-- ======================================================= -->
-    <section id="section-capital" class="hidden space-y-4">
-      <div id="leagueCapitalStandingsContainer" class="space-y-4">
-        <!-- Populated by JS -->
-      </div>
-      <!-- Legacy drawer ID alias for backward compatibility -->
-      <div id="leagueCapitalDrawer" class="hidden"></div>
-    </section>
-
-    <!-- ======================================================= -->
-    <!-- TAB 5: UNIFIED ACTIVITY (VISUAL TRADE CARDS & PENDING)  -->
-    <!-- ======================================================= -->
-    <section id="section-feed" class="hidden space-y-4">
-      
-      <!-- Hall of Shame Banner (Shown when any manager triggered the Upstate Kitties Curse) -->
-      <div id="hallOfShameFeedBanner" class="hidden"></div>
-
-      <!-- Active Trade Proposals Queue (Requires Partner Confirmation before marking Official) -->
-      <div id="pendingQueueContainer" class="hidden bg-amber-950/30 border border-amber-500/60 rounded-2xl p-4 space-y-3">
-        <!-- Populated by JS -->
-      </div>
-
-      <!-- Activity Header, Sub-Navigation Pills & Search -->
-      <div class="no-print app-card p-4 flex flex-col lg:flex-row lg:items-center justify-between gap-3">
-        <div class="flex flex-wrap items-center gap-1.5">
-          <button onclick="setActivitySubTab('ALL')" id="actSubTab-ALL" class="px-3 py-1.5 rounded-lg text-xs font-extrabold transition cursor-pointer">
-            All Trades
-          </button>
-          <button onclick="setActivitySubTab('PENDING_FINAL')" id="actSubTab-PENDING_FINAL" class="px-3 py-1.5 rounded-lg text-xs font-extrabold transition flex items-center gap-1.5 cursor-pointer">
-            <i class="fa-solid fa-hourglass-half text-amber-400"></i>
-            <span>Pending Final / Conditionals</span>
-            <span id="actSubTabPendingBadge" class="px-1.5 py-0.2 rounded-full text-[10px] font-mono bg-amber-950 text-amber-300 border border-amber-500/50">0</span>
-          </button>
-          <button onclick="setActivitySubTab('MY_TEAM')" id="actSubTab-MY_TEAM" class="px-3 py-1.5 rounded-lg text-xs font-extrabold transition cursor-pointer">
-            My Team's Deals
-          </button>
         </div>
 
-        <div class="flex flex-wrap items-center gap-2">
-          <div class="relative flex-grow sm:flex-grow-0">
-            <i class="fa-solid fa-magnifying-glass absolute left-3 top-2.5 text-zinc-500 text-xs"></i>
-            <input type="text" id="feedSearchInput" oninput="renderTradeFeedSection()" placeholder="Search manager, player, pick..." class="bg-[#09090B] text-xs text-zinc-200 pl-8 pr-3 py-1.5 rounded-lg border border-zinc-700 focus:outline-none focus:border-[#CC1429] w-full sm:w-56">
+        <!-- Compact Visual Legend -->
+        <div class="app-card px-3 py-2 flex flex-wrap items-center justify-between gap-2 text-[11px]">
+          <div class="flex flex-wrap items-center gap-2.5 sm:gap-4">
+            <span class="font-bold text-zinc-400 uppercase tracking-wider text-[10px]">Legend:</span>
+            <span class="flex items-center gap-1 text-zinc-300">
+              <span class="w-2 h-2 rounded bg-zinc-900 border border-zinc-700 inline-block"></span> Own
+            </span>
+            <span class="flex items-center gap-1 text-emerald-300">
+              <span class="w-2 h-2 rounded bg-emerald-950 border border-emerald-500 inline-block"></span> Traded
+            </span>
+            <span class="flex items-center gap-1 text-amber-300 font-semibold">
+              <span class="w-2 h-2 rounded bg-[#73000A] border border-amber-400 inline-block"></span> Pending Final
+            </span>
           </div>
-
-          <select id="feedScopeFilter" onchange="renderTradeFeedSection()" class="bg-[#09090B] text-xs font-semibold text-amber-300 rounded-lg px-2.5 py-1.5 border border-zinc-700 cursor-pointer">
-            <option value="ACTIVE_YEAR">Active Year Only</option>
-            <option value="ALL_YEARS">All Active Years (2026+)</option>
-          </select>
-
-          <select id="feedTypeFilter" onchange="renderTradeFeedSection()" class="hidden bg-[#09090B] text-xs font-semibold text-zinc-200 rounded-lg px-2.5 py-1.5 border border-zinc-700">
-            <option value="ALL">All Transactions</option>
-            <option value="POOL_COND">Conditional / Pending Final Only</option>
-            <option value="MULTI_YEAR">Multi-Year Deals Only</option>
-            <option value="SETTLED">Settled Trades Only</option>
-          </select>
+          <span class="no-print text-[10px] sm:text-[11px] text-zinc-400">
+            Tap any pick to inspect chain
+          </span>
         </div>
-      </div>
 
-      <!-- Conditional Trades, Multi-Pick Pools & Favorable Swaps Resolution Section -->
-      <div id="section-pools" class="space-y-3">
-        <div id="poolsResolutionContainer" class="space-y-3">
+        <!-- Draft Board Container -->
+        <div id="draftBoardGridContainer" class="space-y-3 min-w-0 max-w-full">
           <!-- Populated by JS -->
         </div>
-      </div>
 
-      <!-- Sleeper-Style Visual Trade Cards List -->
-      <div id="tradeReceiptsContainer" class="space-y-3">
-        <!-- Populated by JS -->
-      </div>
+      </section>
 
-    </section>
+      <!-- ======================================================= -->
+      <!-- TAB 4: LEAGUE CAPITAL (10-TEAM STANDINGS & RANKINGS)    -->
+      <!-- ======================================================= -->
+      <section id="section-capital" class="hidden space-y-3.5">
+        <div id="leagueCapitalStandingsContainer" class="space-y-3.5 min-w-0 max-w-full">
+          <!-- Populated by JS -->
+        </div>
+        <!-- Legacy drawer ID alias for backward compatibility -->
+        <div id="leagueCapitalDrawer" class="hidden"></div>
+      </section>
 
+      <!-- ======================================================= -->
+      <!-- TAB 5: UNIFIED ACTIVITY (VISUAL TRADE CARDS & PENDING)  -->
+      <!-- ======================================================= -->
+      <section id="section-feed" class="hidden space-y-3.5">
+
+        <!-- Hall of Shame Banner (Shown when any manager triggered the Upstate Kitties Curse) -->
+        <div id="hallOfShameFeedBanner" class="hidden app-card border-pink-500/70 p-3 space-y-1.5"></div>
+
+        <!-- Active Trade Proposals Queue (Requires Partner Confirmation before marking Official) -->
+        <div id="pendingQueueContainer" class="hidden bg-amber-950/30 border border-amber-500/60 rounded-2xl p-3 sm:p-4 space-y-3">
+          <!-- Populated by JS -->
+        </div>
+
+        <!-- Activity Header, Sub-Navigation Pills & Search -->
+        <div class="no-print app-card p-3 sm:p-4 flex flex-col lg:flex-row lg:items-center justify-between gap-2.5">
+          <div class="flex flex-wrap items-center gap-1.5">
+            <button onclick="setActivitySubTab('ALL')" id="actSubTab-ALL" class="px-2.5 sm:px-3 py-1.5 rounded-lg text-[11px] sm:text-xs font-extrabold transition cursor-pointer">
+              All Trades
+            </button>
+            <button onclick="setActivitySubTab('PENDING_FINAL')" id="actSubTab-PENDING_FINAL" class="px-2.5 sm:px-3 py-1.5 rounded-lg text-[11px] sm:text-xs font-extrabold transition flex items-center gap-1 cursor-pointer">
+              <i class="fa-solid fa-hourglass-half text-amber-400"></i>
+              <span>Pending Final</span>
+              <span id="actSubTabPendingBadge" class="px-1.5 py-0.2 rounded-full text-[10px] font-mono bg-amber-950 text-amber-300 border border-amber-500/50">0</span>
+            </button>
+            <button onclick="setActivitySubTab('MY_TEAM')" id="actSubTab-MY_TEAM" class="px-2.5 sm:px-3 py-1.5 rounded-lg text-[11px] sm:text-xs font-extrabold transition cursor-pointer">
+              My Deals
+            </button>
+          </div>
+
+          <div class="flex items-center gap-2 w-full lg:w-auto">
+            <div class="relative flex-1 sm:flex-initial">
+              <i class="fa-solid fa-magnifying-glass absolute left-2.5 top-2.5 text-zinc-500 text-xs"></i>
+              <input type="text" id="feedSearchInput" oninput="renderTradeFeedSection()" placeholder="Search manager, player, pick..." class="bg-[#09090B] text-xs text-zinc-200 pl-8 pr-2.5 py-1.5 rounded-lg border border-zinc-700 focus:outline-none focus:border-[#CC1429] w-full sm:w-52">
+            </div>
+
+            <select id="feedScopeFilter" onchange="renderTradeFeedSection()" class="bg-[#09090B] text-[11px] sm:text-xs font-semibold text-amber-300 rounded-lg px-2 py-1.5 border border-zinc-700 cursor-pointer flex-shrink-0">
+              <option value="ACTIVE_YEAR">Active Yr</option>
+              <option value="ALL_YEARS">All Yrs</option>
+            </select>
+
+            <select id="feedTypeFilter" onchange="renderTradeFeedSection()" class="hidden bg-[#09090B] text-xs font-semibold text-zinc-200 rounded-lg px-2.5 py-1.5 border border-zinc-700">
+              <option value="ALL">All Transactions</option>
+              <option value="POOL_COND">Conditional / Pending Final Only</option>
+              <option value="MULTI_YEAR">Multi-Year Deals Only</option>
+              <option value="SETTLED">Settled Trades Only</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- Conditional Trades, Multi-Pick Pools & Favorable Swaps Resolution Section -->
+        <div id="section-pools" class="space-y-3">
+          <div id="poolsResolutionContainer" class="space-y-3">
+            <!-- Populated by JS -->
+          </div>
+        </div>
+
+        <!-- Sleeper-Style Visual Trade Cards List -->
+        <div id="tradeReceiptsContainer" class="space-y-3">
+          <!-- Populated by JS -->
+        </div>
+
+      </section>
+
+      <!-- ========================================================= -->
+      <!-- MINIMAL FOOTER (INSIDE SCROLLABLE WORKSPACE)              -->
+      <!-- ========================================================= -->
+      <footer id="appFooterShell" class="hidden border-t border-zinc-900 pt-4 pb-2 mt-6 no-print">
+        <div class="flex flex-col sm:flex-row items-center justify-between gap-2 text-[11px] text-zinc-500">
+          <div class="flex items-center gap-2">
+            <span class="font-bold text-zinc-400">Gamecock Mafia Draft & Pick Tracker v6.6</span>
+            <span>•</span>
+            <span>Est. 2018</span>
+          </div>
+          <div class="flex flex-wrap items-center justify-center gap-2">
+            <button onclick="openArchiveModal()" class="hover:text-zinc-300 transition cursor-pointer">2018–2025 Archive</button>
+            <span>•</span>
+            <button onclick="openMoreToolsModal()" class="hover:text-zinc-300 transition cursor-pointer">Settings & Colorways ⚙</button>
+            <div id="adminFooterControls" class="hidden items-center gap-2">
+              <span>•</span>
+              <button onclick="openCloudSyncModal()" class="text-emerald-400 hover:underline cursor-pointer">Live Sheet Sync</button>
+            </div>
+          </div>
+        </div>
+      </footer>
+
+    </div>
   </main>
 
   <!-- ========================================================= -->
-  <!-- MINIMAL FOOTER                                            -->
+  <!-- ALWAYS-PRESENT DOCKED MOBILE BOTTOM 5-TAB NAVIGATION BAR  -->
   <!-- ========================================================= -->
-  <footer id="appFooterShell" class="hidden border-t border-zinc-900 py-4 mt-8 no-print">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-2 text-[11px] text-zinc-500">
-      <div class="flex items-center gap-2">
-        <span class="font-bold text-zinc-400">Gamecock Mafia Draft & Pick Tracker v6.5</span>
-        <span>•</span>
-        <span>Est. 2018</span>
-      </div>
-      <div class="flex flex-wrap items-center gap-2">
-        <button onclick="openArchiveModal()" class="hover:text-zinc-300 transition cursor-pointer">2018–2025 Archive</button>
-        <span>•</span>
-        <button onclick="openMoreToolsModal()" class="hover:text-zinc-300 transition cursor-pointer">Settings & Color Schemes ⚙</button>
-        <div id="adminFooterControls" class="hidden items-center gap-2">
-          <span>•</span>
-          <button onclick="openCloudSyncModal()" class="text-emerald-400 hover:underline cursor-pointer">Live Sheet Sync</button>
-        </div>
-      </div>
-    </div>
-  </footer>
+  <nav id="mobileBottomNav" class="hidden lg:hidden flex-shrink-0 w-full z-40 bg-[#09090B] border-t border-zinc-800 px-1 pt-1.5 pb-[max(0.45rem,env(safe-area-inset-bottom))] grid grid-cols-5 gap-0.5 shadow-[0_-6px_20px_rgba(0,0,0,0.65)] no-print">
+    <button onclick="switchMainTab('ledger')" id="mobTab-ledger" class="flex flex-col items-center justify-center py-1 rounded-lg text-[10px] font-bold transition cursor-pointer min-w-0">
+      <i class="fa-solid fa-shield-halved text-sm mb-0.5"></i>
+      <span class="truncate">My Team</span>
+    </button>
+    <button onclick="switchMainTab('tradecenter')" id="mobTab-tradecenter" class="flex flex-col items-center justify-center py-1 rounded-lg text-[10px] font-bold transition relative cursor-pointer min-w-0">
+      <i class="fa-solid fa-scale-balanced text-sm mb-0.5"></i>
+      <span class="truncate">Trade Ctr</span>
+      <span id="mobTradeBlockBadge" class="hidden absolute top-0.5 right-2.5 w-2 h-2 rounded-full bg-amber-400"></span>
+    </button>
+    <button onclick="switchMainTab('board')" id="mobTab-board" class="flex flex-col items-center justify-center py-1 rounded-lg text-[10px] font-bold transition cursor-pointer min-w-0">
+      <i class="fa-solid fa-table-cells text-sm mb-0.5"></i>
+      <span class="truncate">Board</span>
+    </button>
+    <button onclick="switchMainTab('capital')" id="mobTab-capital" class="flex flex-col items-center justify-center py-1 rounded-lg text-[10px] font-bold transition cursor-pointer min-w-0">
+      <i class="fa-solid fa-ranking-star text-sm mb-0.5"></i>
+      <span class="truncate">Capital</span>
+    </button>
+    <button onclick="switchMainTab('feed')" id="mobTab-feed" class="flex flex-col items-center justify-center py-1 rounded-lg text-[10px] font-bold transition relative cursor-pointer min-w-0">
+      <i class="fa-solid fa-bolt text-sm mb-0.5"></i>
+      <span class="truncate">Activity</span>
+      <span id="mobActivityBadge" class="hidden absolute top-0.5 right-2 px-1 text-[8px] rounded-full bg-[#CC1429] text-white font-mono">0</span>
+    </button>
+  </nav>
 
   <!-- ========================================================= -->
   <!-- INTERACTIVE MODALS                                        -->
@@ -1168,30 +1204,30 @@
   </div>
 
   <!-- 6. COMMISSIONER SYNC & SECURITY SETTINGS MODAL -->
-  <div id="cloudSyncModal" class="hidden fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4 overflow-y-auto">
-    <div class="bg-[#111827] border border-slate-700 rounded-2xl max-w-2xl w-full p-5 sm:p-6 shadow-2xl space-y-4 my-8 max-h-[90vh] overflow-y-auto">
-      <div class="flex items-center justify-between border-b border-slate-800 pb-3">
-        <div>
-          <h3 class="text-lg font-black text-white flex items-center gap-2">
+  <div id="cloudSyncModal" class="hidden fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-2.5 sm:p-4 overflow-y-auto overflow-x-hidden">
+    <div class="bg-[#111827] border border-slate-700 rounded-2xl max-w-2xl w-full p-4 sm:p-6 shadow-2xl space-y-4 my-4 max-h-[88dvh] overflow-y-auto overflow-x-hidden">
+      <div class="flex items-center justify-between border-b border-slate-800 pb-3 gap-2">
+        <div class="min-w-0">
+          <h3 class="text-base sm:text-lg font-black text-white flex items-center gap-2">
             <i class="fa-solid fa-cloud text-sky-400"></i>
-            <span>Commissioner Live Sync, Backup & Security Settings</span>
+            <span>Commissioner Live Sync, Backup & Franchise Controls</span>
           </h3>
-          <p class="text-xs text-slate-400">Configure GitHub Pages + Google Sheet 2-way live sync, chat alerts, league passphrase, Admin PIN, and manager PIN resets.</p>
+          <p class="text-[11px] sm:text-xs text-slate-400">Configure 2-way Google Sheet live sync, passphrase, Admin PIN, and franchise PIN/flair/curse controls.</p>
         </div>
-        <button onclick="closeModal('cloudSyncModal')" class="btn-action px-2.5 py-1 text-xs text-slate-300">
+        <button onclick="closeModal('cloudSyncModal')" class="btn-action px-2.5 py-1 text-xs text-slate-300 flex-shrink-0">
           <i class="fa-solid fa-xmark"></i> Close
         </button>
       </div>
 
       <div class="space-y-4 text-xs text-slate-300">
         <!-- Option B (Primary): Google Sheet + Apps Script 2-Way Live Sync -->
-        <div class="bg-[#0b0f19] border border-sky-700/60 rounded-xl p-4 space-y-2.5">
+        <div class="bg-[#0b0f19] border border-sky-700/60 rounded-xl p-3.5 sm:p-4 space-y-2.5">
           <div class="flex flex-wrap items-center justify-between gap-2">
             <span class="font-bold text-sky-300 uppercase"><i class="fa-solid fa-bolt mr-1"></i>1. Google Sheet 2-Way Live Sync & Automatic Drive Backup</span>
             <span class="static-badge bg-emerald-950 text-emerald-300 border border-emerald-700">True 2-Way Live</span>
           </div>
           <p class="text-slate-400">
-            Paste your Google Apps Script Web App URL (<code class="text-sky-300">/exec</code>) from your Google Sheet. Once saved and exported to <code class="text-emerald-300">league_data.json</code> on GitHub Pages, all 10 managers sync live in real time and mirror every trade to your Google Sheet tabs!
+            Paste your Google Apps Script Web App URL (<code class="text-sky-300">/exec</code>) from your Google Sheet. Once saved, all 10 managers sync live in real time and mirror every trade to your Google Sheet tabs.
           </p>
           <div class="flex flex-col sm:flex-row gap-2">
             <input type="url" id="customSyncUrlInput" placeholder="https://script.google.com/macros/s/.../exec" class="flex-1 bg-slate-900 text-white rounded-lg px-3 py-2 border border-slate-700 focus:border-sky-500 focus:outline-none font-mono text-[11px]">
@@ -1199,22 +1235,22 @@
           </div>
           <div class="flex flex-wrap gap-2 pt-1">
             <button onclick="initializeRemoteSheetFromLocal()" class="btn-action px-3 py-1.5 text-xs text-emerald-300">
-              <i class="fa-solid fa-cloud-arrow-up"></i> Push / Seed Current Data to Google Sheet Now
+              <i class="fa-solid fa-cloud-arrow-up"></i> Push / Seed Current Data Now
             </button>
             <button onclick="fetchRemoteJsonNow()" class="btn-action px-3 py-1.5 text-xs text-sky-300">
-              <i class="fa-solid fa-rotate"></i> Pull Latest from Remote Now
+              <i class="fa-solid fa-rotate"></i> Pull Latest Now
             </button>
             <button onclick="copyShareableSnapshotLink()" class="btn-action px-3 py-1.5 text-xs text-amber-300">
-              <i class="fa-solid fa-link"></i> Copy Shareable URL Snapshot
+              <i class="fa-solid fa-link"></i> Copy Snapshot Link
             </button>
           </div>
         </div>
 
         <!-- Optional Discord / GroupMe Webhook -->
-        <div class="bg-[#0b0f19] border border-slate-800 rounded-xl p-4 space-y-2">
+        <div class="bg-[#0b0f19] border border-slate-800 rounded-xl p-3.5 sm:p-4 space-y-2">
           <div class="font-bold text-indigo-300 uppercase"><i class="fa-solid fa-bell mr-1"></i>2. Optional Group Chat Trade Alert Webhook (Discord / Slack)</div>
           <p class="text-slate-400">
-            Optional HTTPS webhook URL to automatically post formatted trade receipts to your league Discord channel whenever any manager logs a trade.
+            Optional HTTPS webhook URL to automatically post formatted trade receipts to your league chat whenever a trade is confirmed.
           </p>
           <div class="flex flex-col sm:flex-row gap-2">
             <input type="url" id="chatWebhookUrlInput" placeholder="https://discord.com/api/webhooks/..." class="flex-1 bg-slate-900 text-white rounded-lg px-3 py-2 border border-slate-700 focus:border-indigo-500 focus:outline-none font-mono text-[11px]">
@@ -1224,7 +1260,7 @@
 
         <!-- Security Row: League Passphrase & Commissioner PIN -->
         <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
-          <div class="bg-[#0b0f19] border border-slate-800 rounded-xl p-4 space-y-2.5">
+          <div class="bg-[#0b0f19] border border-slate-800 rounded-xl p-3.5 sm:p-4 space-y-2.5">
             <div class="font-bold text-rose-300 uppercase"><i class="fa-solid fa-shield-halved mr-1"></i>3. League Passphrase</div>
             <p class="text-slate-400 text-[11px]">
               Case-insensitive passphrase required to view the site. Stored only as a salted SHA-256 hash.
@@ -1235,7 +1271,7 @@
             </div>
           </div>
 
-          <div class="bg-[#0b0f19] border border-slate-800 rounded-xl p-4 space-y-2.5">
+          <div class="bg-[#0b0f19] border border-slate-800 rounded-xl p-3.5 sm:p-4 space-y-2.5">
             <div class="font-bold text-amber-300 uppercase"><i class="fa-solid fa-key mr-1"></i>4. Commissioner PIN</div>
             <p class="text-slate-400 text-[11px]">
               4–16 char PIN for resolving Pending Final trades, locking orders & editing receipts.
@@ -1248,7 +1284,7 @@
         </div>
 
         <!-- 5. Commissioner Manager Team PIN, Upstate Kitties Curse & Off-Season Flair Manager -->
-        <div class="bg-[#0b0f19] border border-slate-800 rounded-xl p-4 space-y-2.5">
+        <div class="bg-[#0b0f19] border border-slate-800 rounded-xl p-3.5 sm:p-4 space-y-2.5">
           <div class="font-bold text-emerald-300 uppercase"><i class="fa-solid fa-users-gear mr-1"></i>5. Franchise PINs, Upstate Kitties Curse & Off-Season Flair (Admin Controls)</div>
           <p class="text-slate-400 text-[11px]">
             Reset a manager's forgotten Personal Team PIN, lift (or inflict) the <strong class="text-pink-400">Upstate Kitties 8==D</strong> curse, or award <strong class="text-amber-300">🏆 Champ</strong> / <strong class="text-sky-300">🚽 Toilet Bowl</strong> flair beside any team's name.
@@ -1257,13 +1293,25 @@
             <!-- Populated by JS -->
           </div>
         </div>
+
+        <!-- Clear Confirm & Lock-In Footer -->
+        <div class="sticky bottom-0 -mx-4 sm:-mx-6 -mb-4 sm:-mb-6 px-4 sm:px-6 py-3 bg-[#111827]/98 border-t border-slate-800 flex flex-wrap items-center justify-between gap-2">
+          <span class="text-[11px] text-slate-400">Tap <strong class="text-white">Confirm Settings</strong> to lock in & sync all changes.</span>
+          <div class="flex items-center gap-2 ml-auto">
+            <button type="button" onclick="closeModal('cloudSyncModal')" class="btn-action px-3.5 py-2 text-xs text-slate-300">Cancel</button>
+            <button type="button" id="confirmCommishSettingsBtn" onclick="confirmCommissionerSyncModal()" class="btn-garnet px-4 py-2 text-xs">
+              <i class="fa-solid fa-circle-check"></i>
+              <span>Confirm Settings</span>
+            </button>
+          </div>
+        </div>
       </div>
     </div>
   </div>
 
   <!-- 7. CONFIRMATION MODAL (PREVENTS ACCIDENTAL DELETES / RESETS) -->
-  <div id="confirmModal" class="hidden fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4">
-    <div class="bg-[#111827] border border-slate-700 rounded-2xl max-w-md w-full p-6 shadow-2xl space-y-4">
+  <div id="confirmModal" class="hidden fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-3 sm:p-4">
+    <div class="bg-[#111827] border border-slate-700 rounded-2xl max-w-md w-full p-5 sm:p-6 shadow-2xl space-y-4">
       <div class="flex items-center gap-3">
         <div class="w-10 h-10 rounded-xl bg-rose-950 border border-rose-500/50 flex items-center justify-center text-rose-400 text-lg flex-shrink-0">
           <i class="fa-solid fa-triangle-exclamation"></i>
@@ -1281,8 +1329,8 @@
   </div>
 
   <!-- 8. COMMISSIONER PIN MODAL -->
-  <div id="pinModal" class="hidden fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4">
-    <div class="bg-[#111827] border border-slate-700 rounded-2xl max-w-sm w-full p-6 shadow-2xl text-center space-y-4">
+  <div id="pinModal" class="hidden fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-3 sm:p-4">
+    <div class="bg-[#111827] border border-slate-700 rounded-2xl max-w-sm w-full p-5 sm:p-6 shadow-2xl text-center space-y-4">
       <div class="w-12 h-12 mx-auto rounded-xl bg-rose-950 border border-rose-500/50 flex items-center justify-center text-rose-400 text-xl">
         <i class="fa-solid fa-user-shield"></i>
       </div>
@@ -1299,51 +1347,59 @@
   </div>
 
   <!-- 9. MORE TOOLS, COLOR SCHEMES, ARCHIVE, EXPORT & COMMISSIONER SETTINGS MODAL (GEAR MENU) -->
-  <div id="moreToolsModal" class="hidden fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4 overflow-y-auto">
-    <div class="bg-[#121215] border border-zinc-700 rounded-2xl max-w-xl w-full p-5 sm:p-6 shadow-2xl space-y-5 my-8 max-h-[92vh] overflow-y-auto">
-      <div class="flex items-center justify-between border-b border-zinc-800 pb-3">
-        <div class="flex items-center gap-2.5">
-          <div class="w-9 h-9 rounded-xl garnet-hero-banner flex items-center justify-center text-white text-sm">
+  <div id="moreToolsModal" class="hidden fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-2.5 sm:p-4 overflow-y-auto overflow-x-hidden">
+    <div class="bg-[#121215] border border-zinc-700 rounded-2xl max-w-xl w-full p-4 sm:p-6 shadow-2xl space-y-4 my-4 max-h-[88dvh] overflow-y-auto overflow-x-hidden">
+      <div class="flex items-center justify-between border-b border-zinc-800 pb-3 gap-2">
+        <div class="flex items-center gap-2.5 min-w-0">
+          <div class="w-8 h-8 sm:w-9 sm:h-9 rounded-xl garnet-hero-banner flex items-center justify-center text-white text-sm flex-shrink-0">
             <i class="fa-solid fa-gear"></i>
           </div>
-          <div>
-            <h3 class="text-base font-black text-white">Settings, Color Schemes & League Tools</h3>
-            <p class="text-[11px] text-zinc-400">Personalize your app colorway, share links, inspect history, or unlock Commissioner controls</p>
+          <div class="min-w-0">
+            <h3 class="text-sm sm:text-base font-black text-white truncate">Settings, Display Colors & League Tools</h3>
+            <p class="text-[11px] text-zinc-400">Select a display colorway and tap <strong class="text-white">Confirm</strong> to lock it in</p>
           </div>
         </div>
-        <button onclick="closeModal('moreToolsModal')" class="btn-action px-2.5 py-1 text-xs text-zinc-300">
+        <button onclick="cancelMoreToolsModal()" class="btn-action px-2.5 py-1 text-xs text-zinc-300 flex-shrink-0">
           <i class="fa-solid fa-xmark"></i> Close
         </button>
       </div>
 
-      <!-- Section 0: Covert Color Scheme Picker -->
-      <div class="space-y-2">
-        <div class="flex items-center justify-between">
-          <span class="text-[10px] font-extrabold uppercase tracking-wider text-amber-300"><i class="fa-solid fa-palette mr-1"></i>App Colorway / Theme</span>
-          <span id="colorSchemeLockStatusText" class="text-[10px] text-zinc-400">Swap anytime</span>
+      <!-- Section 0: Covert Color Scheme Picker + Explicit Confirm Bar -->
+      <div class="space-y-2.5 bg-[#09090B]/70 border border-zinc-800 rounded-xl p-3">
+        <div class="flex flex-wrap items-center justify-between gap-1">
+          <span class="text-[10px] font-extrabold uppercase tracking-wider text-amber-300"><i class="fa-solid fa-palette mr-1"></i>Display Colorway / Theme</span>
+          <span id="colorSchemeLockStatusText" class="text-[10px] text-zinc-400">Select below, then tap Confirm</span>
         </div>
         <div id="colorSchemeGridContainer" class="grid grid-cols-2 sm:grid-cols-3 gap-2">
           <!-- Populated dynamically by renderColorSchemePicker() -->
         </div>
+        <!-- Explicit Display Color Confirm Bar -->
+        <div id="colorSchemeConfirmBar" class="pt-2 border-t border-zinc-800/90 flex flex-wrap items-center justify-between gap-2">
+          <span id="colorSchemePendingLabel" class="text-[11px] font-semibold text-zinc-300">Active: Sandstorm Noir</span>
+          <button type="button" id="confirmColorThemeBtn" onclick="confirmPendingColorTheme()" class="btn-garnet px-3.5 py-1.5 text-xs">
+            <i class="fa-solid fa-circle-check"></i>
+            <span>Confirm Display Color</span>
+          </button>
+        </div>
       </div>
 
       <!-- Section 1: My Franchise & Sharing -->
-      <div class="space-y-2 pt-2 border-t border-zinc-800">
+      <div class="space-y-2 pt-1 border-t border-zinc-800">
         <div class="text-[10px] font-extrabold uppercase tracking-wider text-zinc-400">My Franchise & Quick Share</div>
         <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
-          <button onclick="closeModal('moreToolsModal'); openSwitchFranchiseGate();" class="btn-action justify-start px-3.5 py-2.5 text-xs text-zinc-100">
+          <button onclick="cancelMoreToolsModal(); openSwitchFranchiseGate();" class="btn-action justify-start px-3 py-2 text-xs text-zinc-100">
             <i class="fa-solid fa-user-shield text-[#CC1429] w-4"></i>
             <span>Switch My Franchise Identity ⇄</span>
           </button>
-          <button onclick="closeModal('moreToolsModal'); switchMainTab('ledger'); uiState.warRoomDrawerOpen = true; renderAll();" class="btn-action justify-start px-3.5 py-2.5 text-xs text-amber-300">
+          <button onclick="cancelMoreToolsModal(); switchMainTab('ledger'); uiState.warRoomDrawerOpen = true; renderAll();" class="btn-action justify-start px-3 py-2 text-xs text-amber-300">
             <i class="fa-solid fa-id-badge text-amber-400 w-4"></i>
-            <span>Edit Team Name & Avatar Block ✎</span>
+            <span>Customize Team Name & Avatar ✎</span>
           </button>
-          <button onclick="closeModal('moreToolsModal'); copyManagerLedgerForChat();" class="btn-action justify-start px-3.5 py-2.5 text-xs text-emerald-300">
+          <button onclick="cancelMoreToolsModal(); copyManagerLedgerForChat();" class="btn-action justify-start px-3 py-2 text-xs text-emerald-300">
             <i class="fa-solid fa-comment-sms text-emerald-400 w-4"></i>
             <span>Copy My Picks for Group Chat</span>
           </button>
-          <button onclick="closeModal('moreToolsModal'); copyPersonalizedViewLink();" class="btn-action justify-start px-3.5 py-2.5 text-xs text-sky-300">
+          <button onclick="cancelMoreToolsModal(); copyPersonalizedViewLink();" class="btn-action justify-start px-3 py-2 text-xs text-sky-300">
             <i class="fa-solid fa-bookmark text-sky-400 w-4"></i>
             <span>Copy Personalized View Link</span>
           </button>
@@ -1351,22 +1407,22 @@
       </div>
 
       <!-- Section 2: League Vault & Exports -->
-      <div class="space-y-2 pt-2 border-t border-zinc-800">
+      <div class="space-y-2 pt-1 border-t border-zinc-800">
         <div class="text-[10px] font-extrabold uppercase tracking-wider text-zinc-400">League Vault, ESPN & Backups</div>
         <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
-          <button onclick="closeModal('moreToolsModal'); openArchiveModal();" class="btn-action justify-start px-3.5 py-2.5 text-xs text-amber-300">
+          <button onclick="cancelMoreToolsModal(); openArchiveModal();" class="btn-action justify-start px-3 py-2 text-xs text-amber-300">
             <i class="fa-solid fa-book-bookmark text-amber-400 w-4"></i>
             <span>2018–2025 Archive & Trade Stats ↗</span>
           </button>
-          <button onclick="closeModal('moreToolsModal'); openEspnExportModal();" class="btn-action justify-start px-3.5 py-2.5 text-xs text-zinc-100">
+          <button onclick="cancelMoreToolsModal(); openEspnExportModal();" class="btn-action justify-start px-3 py-2 text-xs text-zinc-100">
             <i class="fa-solid fa-file-export text-[#CC1429] w-4"></i>
             <span>ESPN / CSV / Print Draft Sheet</span>
           </button>
-          <button onclick="exportLeagueBackup()" class="btn-action justify-start px-3.5 py-2.5 text-xs text-zinc-300">
+          <button onclick="exportLeagueBackup()" class="btn-action justify-start px-3 py-2 text-xs text-zinc-300">
             <i class="fa-solid fa-download text-emerald-400 w-4"></i>
             <span>Export league_data.json Backup</span>
           </button>
-          <button onclick="closeModal('moreToolsModal'); lockLeaguePassphrase();" class="btn-action justify-start px-3.5 py-2.5 text-xs text-zinc-400">
+          <button onclick="cancelMoreToolsModal(); lockLeaguePassphrase();" class="btn-action justify-start px-3 py-2 text-xs text-zinc-400">
             <i class="fa-solid fa-lock text-zinc-500 w-4"></i>
             <span>Lock Passphrase on Device</span>
           </button>
@@ -1374,40 +1430,52 @@
       </div>
 
       <!-- Section 3: Commissioner Controls -->
-      <div class="space-y-2 pt-2 border-t border-zinc-800">
+      <div class="space-y-2 pt-1 border-t border-zinc-800">
         <div class="flex items-center justify-between">
           <span class="text-[10px] font-extrabold uppercase tracking-wider text-amber-400">Commissioner / Admin Controls</span>
           <span id="moreToolsCommishStatusBadge" class="static-badge bg-zinc-900 text-zinc-400 border border-zinc-700">Locked</span>
         </div>
         <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
-          <button onclick="closeModal('moreToolsModal'); openPinModal();" id="moreToolsCommishToggleBtn" class="btn-garnet justify-start px-3.5 py-2.5 text-xs">
+          <button onclick="cancelMoreToolsModal(); openPinModal();" id="moreToolsCommishToggleBtn" class="btn-garnet justify-start px-3 py-2 text-xs">
             <i class="fa-solid fa-key w-4"></i>
             <span id="moreToolsCommishToggleLabel">Unlock Commissioner Mode</span>
           </button>
-          <button onclick="closeModal('moreToolsModal'); openLeagueBrandingModal();" class="btn-action justify-start px-3.5 py-2.5 text-xs text-amber-300">
+          <button onclick="cancelMoreToolsModal(); openLeagueBrandingModal();" class="btn-action justify-start px-3 py-2 text-xs text-amber-300">
             <i class="fa-solid fa-crown text-amber-400 w-4"></i>
             <span>Edit GCM Avatar & League Title</span>
           </button>
-          <button onclick="closeModal('moreToolsModal'); openOrderConfigModal();" class="btn-action justify-start px-3.5 py-2.5 text-xs text-amber-300">
+          <button onclick="cancelMoreToolsModal(); openOrderConfigModal();" class="btn-action justify-start px-3 py-2 text-xs text-amber-300">
             <i class="fa-solid fa-list-ol text-amber-400 w-4"></i>
             <span>Set 1–10 Snake Draft Order</span>
           </button>
-          <button onclick="closeModal('moreToolsModal'); openCloudSyncModal();" class="btn-action justify-start px-3.5 py-2.5 text-xs text-sky-300">
+          <button onclick="cancelMoreToolsModal(); openCloudSyncModal();" class="btn-action justify-start px-3 py-2 text-xs text-sky-300">
             <i class="fa-solid fa-cloud-arrow-up text-sky-400 w-4"></i>
             <span>PINs, Curse Reset & Live Sync</span>
           </button>
-          <button onclick="closeModal('moreToolsModal'); advanceSeasonWindow(1);" class="btn-action justify-start px-3.5 py-2.5 text-xs text-zinc-300">
+          <button onclick="cancelMoreToolsModal(); advanceSeasonWindow(1);" class="btn-action justify-start px-3 py-2 text-xs text-zinc-300">
             <i class="fa-solid fa-forward-step text-amber-400 w-4"></i>
             <span>Roll Season Window (+1 Year)</span>
           </button>
-          <label class="btn-action justify-start px-3.5 py-2.5 text-xs text-zinc-300 cursor-pointer">
+          <label class="btn-action justify-start px-3 py-2 text-xs text-zinc-300 cursor-pointer">
             <i class="fa-solid fa-upload text-amber-400 w-4"></i>
             <span>Import JSON Backup</span>
-            <input type="file" accept=".json" onchange="closeModal('moreToolsModal'); importLeagueBackup(event)" class="hidden">
+            <input type="file" accept=".json" onchange="cancelMoreToolsModal(); importLeagueBackup(event)" class="hidden">
           </label>
-          <button onclick="closeModal('moreToolsModal'); confirmResetToSeed();" class="btn-action justify-start px-3.5 py-2.5 text-xs text-rose-300 sm:col-span-2">
+          <button onclick="cancelMoreToolsModal(); confirmResetToSeed();" class="btn-action justify-start px-3 py-2 text-xs text-rose-300 sm:col-span-2">
             <i class="fa-solid fa-rotate-left text-rose-400 w-4"></i>
             <span>Reset to Official Seed</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Sticky Bottom Confirm & Close Bar -->
+      <div class="sticky bottom-0 -mx-4 sm:-mx-6 -mb-4 sm:-mb-6 px-4 sm:px-6 py-3 bg-[#121215]/98 border-t border-zinc-800 flex items-center justify-between gap-2">
+        <span class="text-[11px] text-zinc-400">Confirm to lock in your display settings</span>
+        <div class="flex items-center gap-2">
+          <button type="button" onclick="cancelMoreToolsModal()" class="btn-action px-3.5 py-2 text-xs text-zinc-300">Cancel</button>
+          <button type="button" id="confirmSettingsModalBtn" onclick="confirmSettingsModalChanges()" class="btn-garnet px-4 py-2 text-xs">
+            <i class="fa-solid fa-circle-check"></i>
+            <span>Confirm</span>
           </button>
         </div>
       </div>
@@ -1415,8 +1483,8 @@
   </div>
 
   <!-- 10. COMMISSIONER LEAGUE BRANDING & GCM AVATAR EDITOR MODAL -->
-  <div id="leagueBrandingModal" class="hidden fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4 overflow-y-auto">
-    <div class="bg-[#121215] border border-zinc-700 rounded-2xl max-w-md w-full p-5 sm:p-6 shadow-2xl space-y-4 my-8">
+  <div id="leagueBrandingModal" class="hidden fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-2.5 sm:p-4 overflow-y-auto overflow-x-hidden">
+    <div class="bg-[#121215] border border-zinc-700 rounded-2xl max-w-md w-full p-4 sm:p-6 shadow-2xl space-y-4 my-4 max-h-[88dvh] overflow-y-auto">
       <div class="flex items-center justify-between border-b border-zinc-800 pb-3">
         <div class="flex items-center gap-2.5">
           <div class="w-9 h-9 rounded-xl garnet-hero-banner flex items-center justify-center text-white text-sm">
@@ -1467,8 +1535,8 @@
 
         <div class="flex justify-end gap-2 pt-2 border-t border-zinc-800">
           <button type="button" onclick="closeModal('leagueBrandingModal')" class="btn-action px-4 py-2 text-xs text-zinc-300">Cancel</button>
-          <button type="button" onclick="saveLeagueBrandingFromModal()" class="btn-garnet px-5 py-2 text-xs">
-            <i class="fa-solid fa-check"></i> Save League Branding
+          <button type="button" id="confirmLeagueBrandingBtn" onclick="saveLeagueBrandingFromModal()" class="btn-garnet px-5 py-2 text-xs">
+            <i class="fa-solid fa-circle-check"></i> Confirm GCM Branding
           </button>
         </div>
       </div>
@@ -1476,7 +1544,7 @@
   </div>
 
   <!-- TOAST NOTIFICATION CONTAINER -->
-  <div id="toastStack" class="fixed bottom-16 lg:bottom-5 right-4 z-50 flex flex-col gap-2 pointer-events-none"></div>
+  <div id="toastStack" class="fixed bottom-[4.5rem] lg:bottom-5 inset-x-3 sm:left-auto sm:right-4 sm:max-w-sm z-[95] flex flex-col gap-2 pointer-events-none"></div>
   <!-- ========================================================= -->
   <!-- APPLICATION LOGIC, UNIFIED RECEIPTS & SMART POOL ENGINE   -->
   <!-- ========================================================= -->
@@ -2006,6 +2074,9 @@
       whatIfActive: true,           // Always-ready tap-to-swap in Trade Machine
       whatIfSwaps: [],              // [{ round, originalOwner, fromTeam, toTeam }]
       warRoomDrawerOpen: false,     // Collapsible War Room Edit Drawer on My Team tab
+      warRoomDirty: false,          // Tracks unconfirmed edits inside Team Customization drawer
+      warRoomSnapshot: null,        // Snapshot for clean Cancel inside Team Customization drawer
+      pendingColorTheme: null,      // Staged display colorway waiting for Confirm click
       showCapitalDrawer: false,
       ledgerFilter: "ALL",          // 'ALL' | 'HOLDINGS' | 'TRADED_AWAY'
       showUnchangedRounds: true,    // Compact 1-line table shows all 20 rounds by default
@@ -3153,7 +3224,28 @@
     /* -----------------------------------------------------------
        4. MASTER UI RENDER ORCHESTRATOR & KEYBOARD SHORTCUTS
        ----------------------------------------------------------- */
+    function syncMobileViewportHeight() {
+      try {
+        if (
+          typeof window !== "undefined" &&
+          typeof document !== "undefined" &&
+          document.documentElement &&
+          document.documentElement.style &&
+          typeof window.innerHeight === "number" &&
+          window.innerHeight > 0
+        ) {
+          document.documentElement.style.setProperty("--app-dvh", `${window.innerHeight}px`);
+        }
+      } catch (e) {}
+    }
+
     window.addEventListener("DOMContentLoaded", async () => {
+      syncMobileViewportHeight();
+      window.addEventListener("resize", syncMobileViewportHeight);
+      window.addEventListener("orientationchange", () => setTimeout(syncMobileViewportHeight, 100));
+      if (typeof window !== "undefined" && typeof window.innerWidth === "number" && window.innerWidth > 0 && window.innerWidth < 768) {
+        uiState.boardDisplayMode = "CARDS";
+      }
       loadDatabase();
       applyUrlDeepLinksOnLoad();
       populateStaticFormControls();
@@ -3165,7 +3257,8 @@
         const isTyping = tag === "INPUT" || tag === "TEXTAREA" || tag === "SELECT";
 
         if (e.key === "Escape") {
-          ["inspectModal", "tradeModal", "orderConfigModal", "espnExportModal", "archiveModal", "cloudSyncModal", "confirmModal", "pinModal", "moreToolsModal", "leagueBrandingModal"].forEach(id => closeModal(id));
+          cancelMoreToolsModal();
+          ["inspectModal", "tradeModal", "orderConfigModal", "espnExportModal", "archiveModal", "cloudSyncModal", "confirmModal", "pinModal", "leagueBrandingModal"].forEach(id => closeModal(id));
           return;
         }
 
@@ -3233,6 +3326,50 @@
       document.body.classList.add(`theme-${themeId}`);
     }
 
+    function stageColorThemeSelection(themeId) {
+      const myId = uiState.myTeam || "syeth";
+      const prof = getTeamProfile(myId);
+      if (prof.upstateKittyCursed && themeId !== "upstate_kitties" && !uiState.isCommish) {
+        showToast("🚨 NICE TRY! The Upstate Kitties Curse (8==D) is locked until the Commissioner pardons you!", "error");
+        uiState.pendingColorTheme = "upstate_kitties";
+        applyColorTheme("upstate_kitties");
+        renderColorSchemePicker();
+        return;
+      }
+      uiState.pendingColorTheme = themeId;
+      // Preview non-trap colorways live while keeping Upstate Kitties disguised until Confirm is tapped
+      if (themeId !== "upstate_kitties") {
+        applyColorTheme(themeId);
+      }
+      renderColorSchemePicker();
+    }
+
+    async function confirmPendingColorTheme() {
+      const target = uiState.pendingColorTheme || getEffectiveColorTheme();
+      await selectColorTheme(target);
+      uiState.pendingColorTheme = getEffectiveColorTheme();
+      renderColorSchemePicker();
+    }
+
+    async function confirmSettingsModalChanges() {
+      const activeBefore = getEffectiveColorTheme();
+      const target = uiState.pendingColorTheme || activeBefore;
+      if (target !== activeBefore || (target === "upstate_kitties" && !isCurrentTeamKittyCursed())) {
+        await selectColorTheme(target);
+      } else {
+        applyColorTheme(activeBefore);
+        showToast("✓ Settings & display preferences confirmed!", "success");
+      }
+      uiState.pendingColorTheme = null;
+      closeModal("moreToolsModal");
+    }
+
+    function cancelMoreToolsModal() {
+      uiState.pendingColorTheme = null;
+      applyColorTheme(getEffectiveColorTheme());
+      closeModal("moreToolsModal");
+    }
+
     async function selectColorTheme(themeId) {
       const myId = uiState.myTeam || "syeth";
       const prof = getTeamProfile(myId);
@@ -3240,6 +3377,7 @@
       // If already cursed, block non-Admin from escaping Upstate Kitties!
       if (prof.upstateKittyCursed && themeId !== "upstate_kitties" && !uiState.isCommish) {
         showToast("🚨 NICE TRY! The Upstate Kitties Curse (8==D) is locked until the Commissioner pardons you!", "error");
+        uiState.pendingColorTheme = "upstate_kitties";
         applyColorTheme("upstate_kitties");
         renderColorSchemePicker();
         return;
@@ -3260,6 +3398,7 @@
           });
         }
         try { localStorage.setItem(COLOR_THEME_STORAGE_KEY, "upstate_kitties"); } catch (e) {}
+        uiState.pendingColorTheme = "upstate_kitties";
         leagueDB.updatedAt = Date.now();
         saveDatabase(false);
         applyColorTheme("upstate_kitties");
@@ -3279,41 +3418,61 @@
       }
 
       try { localStorage.setItem(COLOR_THEME_STORAGE_KEY, themeId); } catch (e) {}
+      uiState.pendingColorTheme = themeId;
       applyColorTheme(themeId);
       renderColorSchemePicker();
       renderAll();
       const chosenObj = COVERT_COLOR_SCHEMES.find(s => s.id === themeId);
       if (chosenObj) {
-        showToast(`Applied "${chosenObj.label}" color scheme!`, "success");
+        showToast(`✓ Confirmed & locked in "${chosenObj.label}" display colorway!`, "success");
       }
     }
 
     function renderColorSchemePicker() {
       const grid = document.getElementById("colorSchemeGridContainer");
       const statusEl = document.getElementById("colorSchemeLockStatusText");
+      const pendingLbl = document.getElementById("colorSchemePendingLabel");
+      const confirmBtn = document.getElementById("confirmColorThemeBtn");
       if (!grid) return;
       const activeTheme = getEffectiveColorTheme();
+      const stagedTheme = uiState.pendingColorTheme || activeTheme;
+      const hasUnconfirmed = stagedTheme !== activeTheme;
       const cursed = isCurrentTeamKittyCursed();
 
       if (statusEl) {
         statusEl.innerHTML = cursed
           ? `<span class="text-pink-400 font-bold">🎀 Locked by Upstate Kitties Curse (Ask Commish to Reset)</span>`
-          : `Swap colorways anytime`;
+          : hasUnconfirmed
+          ? `<span class="text-amber-300 font-bold">Selection staged — tap Confirm below!</span>`
+          : `Select below, then tap Confirm`;
+      }
+
+      const stagedObj = COVERT_COLOR_SCHEMES.find(s => s.id === stagedTheme) || COVERT_COLOR_SCHEMES[0];
+      if (pendingLbl) {
+        pendingLbl.innerHTML = hasUnconfirmed
+          ? `Selected: <strong class="text-amber-300">${escapeHtml(stagedObj.label)}</strong> <span class="text-[10px] text-amber-400">(Unconfirmed)</span>`
+          : `Confirmed: <strong class="text-emerald-300">${escapeHtml(stagedObj.label)} ✓</strong>`;
+      }
+      if (confirmBtn) {
+        confirmBtn.className = hasUnconfirmed
+          ? "btn-garnet px-3.5 py-1.5 text-xs ring-2 ring-amber-400/80 shadow-lg"
+          : "btn-action border-emerald-600/70 text-emerald-300 px-3.5 py-1.5 text-xs";
       }
 
       grid.innerHTML = COVERT_COLOR_SCHEMES.map(sc => {
-        const isCurrent = sc.id === activeTheme;
+        const isStaged = sc.id === stagedTheme;
+        const isSaved = sc.id === activeTheme;
         const isLockedOut = cursed && sc.id !== "upstate_kitties" && !uiState.isCommish;
         const dotsHtml = sc.dots.map(c => `<span class="w-3 h-3 rounded-full border border-white/30 inline-block" style="background:${c}"></span>`).join("");
         return `
           <button
             type="button"
-            onclick="selectColorTheme('${sc.id}')"
-            class="p-2.5 rounded-xl border text-left transition flex flex-col justify-between gap-1.5 cursor-pointer ${isCurrent ? 'bg-zinc-900 border-amber-400 shadow-md' : 'bg-[#09090B] border-zinc-800 hover:border-zinc-600'} ${isLockedOut ? 'opacity-50' : ''}"
+            onclick="stageColorThemeSelection('${sc.id}')"
+            class="p-2.5 rounded-xl border text-left transition flex flex-col justify-between gap-1.5 cursor-pointer ${isStaged ? (isSaved ? 'bg-zinc-900 border-emerald-400 shadow-md' : 'bg-zinc-900 border-amber-400 ring-1 ring-amber-400/60 shadow-md') : 'bg-[#09090B] border-zinc-800 hover:border-zinc-600'} ${isLockedOut ? 'opacity-50' : ''}"
           >
             <div class="flex items-center justify-between gap-1">
               <span class="text-xs font-extrabold text-white truncate">${escapeHtml(sc.label)}</span>
-              ${isCurrent ? `<i class="fa-solid fa-circle-check text-amber-400 text-xs"></i>` : ''}
+              ${isStaged ? `<i class="fa-solid ${isSaved ? 'fa-circle-check text-emerald-400' : 'fa-clock text-amber-400'} text-xs"></i>` : ''}
             </div>
             <div class="flex items-center justify-between gap-1">
               <div class="flex items-center gap-1">${dotsHtml}</div>
@@ -3325,6 +3484,7 @@
     }
 
     function openMoreToolsModal() {
+      uiState.pendingColorTheme = getEffectiveColorTheme();
       const lbl = document.getElementById("moreToolsMyTeamLabel");
       if (lbl) lbl.textContent = getTeamName(uiState.myTeam || "syeth");
       const adminSec = document.getElementById("moreToolsAdminActionsGrid");
@@ -3459,7 +3619,7 @@
       saveDatabase(true, "UPDATE_LEAGUE_BRANDING");
       closeModal("leagueBrandingModal");
       renderAll();
-      showToast("Updated GCM Avatar & League Branding!", "success");
+      showToast("✓ Confirmed & locked in GCM Avatar & League Branding!", "success");
     }
 
     function getTeamInitials(teamId) {
@@ -3587,14 +3747,14 @@
           const yrState = evaluateYearState(yr);
           const pendingCount = yrState.activePools.length + yrState.activeConditionals.length;
           const roleTag = yr < base
-            ? "Completed"
+            ? "Done"
             : yr === base
-            ? "Upcoming"
-            : "+2 Yrs Out";
-          const pendingTag = pendingCount > 0 ? ` • ${pendingCount} Pending` : "";
-          return `<option value="${Number(yr)}" ${isSelected ? 'selected' : ''}>📅 ${Number(yr)} Draft (${roleTag}${pendingTag})</option>`;
+            ? "Live"
+            : "+2 Yr";
+          const pendingTag = pendingCount > 0 ? ` • ${pendingCount}!` : "";
+          return `<option value="${Number(yr)}" ${isSelected ? 'selected' : ''}>${Number(yr)} Draft (${roleTag}${pendingTag})</option>`;
         }).join("");
-        dropdown.innerHTML = `${yearOpts}<option value="ARCHIVE_2018_2025">📚 2018–2025 Past Drafts Archive ↗</option>`;
+        dropdown.innerHTML = `${yearOpts}<option value="ARCHIVE_2018_2025">📚 2018–25 Archive ↗</option>`;
       }
 
       if (container) {
@@ -3658,8 +3818,8 @@
         }
         if (mobBtn) {
           mobBtn.className = isCurrent
-            ? "flex flex-col items-center justify-center py-1 rounded-lg text-[10px] font-extrabold text-white bg-[#73000A]/50 border border-[#CC1429]/60 transition relative cursor-pointer"
-            : "flex flex-col items-center justify-center py-1 rounded-lg text-[10px] font-bold text-zinc-400 hover:text-zinc-200 transition relative cursor-pointer";
+            ? "flex flex-col items-center justify-center py-1.5 min-h-[46px] rounded-lg text-[10px] font-extrabold text-white bg-[#73000A]/60 border border-[#CC1429]/70 transition relative cursor-pointer"
+            : "flex flex-col items-center justify-center py-1.5 min-h-[46px] rounded-lg text-[10px] font-bold text-zinc-400 hover:text-zinc-200 transition relative cursor-pointer";
         }
         if (sec) {
           sec.classList.toggle("hidden", !isCurrent);
@@ -3765,6 +3925,8 @@
       } else {
         uiState.activeTab = tab;
       }
+      const mainEl = document.getElementById("appMainShell");
+      if (mainEl) mainEl.scrollTop = 0;
       renderAll();
     }
 
@@ -4059,7 +4221,43 @@
 
     function toggleWarRoomDrawer() {
       uiState.warRoomDrawerOpen = !uiState.warRoomDrawerOpen;
+      if (uiState.warRoomDrawerOpen) {
+        const managedTeamId = uiState.isCommish ? uiState.selectedManager : uiState.myTeam;
+        uiState.warRoomSnapshot = JSON.parse(JSON.stringify(getTeamProfile(managedTeamId)));
+        uiState.warRoomDirty = false;
+      } else {
+        uiState.warRoomDirty = false;
+        uiState.warRoomSnapshot = null;
+      }
       renderTeamWarRoomSection(evaluateYearState(uiState.activeYear));
+    }
+
+    function markWarRoomDirty() {
+      uiState.warRoomDirty = true;
+      const hint = document.getElementById("warRoomConfirmHint");
+      if (hint) {
+        hint.innerHTML = `<span class="text-amber-300 font-bold"><i class="fa-solid fa-circle-exclamation mr-1"></i>Unsaved edits — tap Confirm Team Changes to lock in!</span>`;
+      }
+    }
+
+    async function cancelWarRoomEdits() {
+      const managedTeamId = uiState.isCommish ? uiState.selectedManager : uiState.myTeam;
+      if (uiState.warRoomSnapshot && leagueDB && leagueDB.teamProfiles) {
+        leagueDB.teamProfiles[managedTeamId] = JSON.parse(JSON.stringify(uiState.warRoomSnapshot));
+        leagueDB.updatedAt = Date.now();
+        saveDatabase(false);
+        if (uiState.warRoomDirty) {
+          await pushTeamProfileToCloud(managedTeamId);
+        }
+      }
+      const pinInp = document.getElementById("warRoomTeamPinInput");
+      if (pinInp) pinInp.value = "";
+      uiState.warRoomDrawerOpen = false;
+      uiState.warRoomDirty = false;
+      uiState.warRoomSnapshot = null;
+      populateStaticFormControls();
+      renderAll();
+      showToast("Closed team customization without unconfirmed changes.", "info");
     }
 
     async function toggleWarRoomChip(chipLabel) {
@@ -4073,6 +4271,7 @@
       } else {
         prof.needsChips.push(chipLabel);
       }
+      uiState.warRoomDirty = true;
       prof.updatedAt = Date.now();
       leagueDB.updatedAt = Date.now();
       saveDatabase(false);
@@ -4085,6 +4284,7 @@
       const imgEl = document.getElementById("warRoomAvatarImageInput");
       if (emEl) emEl.value = em;
       if (imgEl && em) imgEl.value = "";
+      markWarRoomDirty();
     }
 
     async function handleTeamAvatarFileUpload(event) {
@@ -4094,10 +4294,15 @@
         const dataUrl = await resizeImageFileToDataUrl(file, 96);
         const imgEl = document.getElementById("warRoomAvatarImageInput");
         if (imgEl) imgEl.value = dataUrl;
-        showToast("Team avatar image resized & ready — click Save War Room!", "success");
+        markWarRoomDirty();
+        showToast("Team avatar image resized & ready — tap Confirm Team Changes!", "success");
       } catch (e) {
         showToast("Could not process team avatar image.", "error");
       }
+    }
+
+    async function confirmTeamCustomization() {
+      return await saveMyTeamWarRoom();
     }
 
     async function saveMyTeamWarRoom() {
@@ -4113,8 +4318,26 @@
       const avImgEl = document.getElementById("warRoomAvatarImageInput");
       const noteEl = document.getElementById("warRoomBlockNoteInput");
       const lookEl = document.getElementById("warRoomLookingForInput");
+      const pinEl = document.getElementById("warRoomTeamPinInput");
 
       const prof = getTeamProfile(managedTeamId);
+      let prevTeamPinHash = "";
+      const rawPin = (pinEl ? pinEl.value : "").trim();
+      if (rawPin.length > 0) {
+        if (rawPin.length < 4 || rawPin.length > 8) {
+          showToast("Personal Team PIN must be 4 to 8 characters.", "error");
+          return;
+        }
+        prevTeamPinHash = uiState.myTeamPinHash || getSavedTeamPinHash(managedTeamId) || "";
+        const wireTeamPinHash = await sha256Hex(TEAM_PIN_SALT + managedTeamId + ":" + rawPin);
+        const verifier = await sha256Hex(PIN_VERIFIER_SALT + wireTeamPinHash);
+        prof.teamPinVerifier = verifier;
+        prof.teamPinHash = wireTeamPinHash;
+        uiState.myTeamPinHash = wireTeamPinHash;
+        saveTeamPinHashLocally(managedTeamId, wireTeamPinHash);
+        if (pinEl) pinEl.value = "";
+      }
+
       if (customNameEl) {
         prof.customTeamName = cleanStr(customNameEl.value, 24).trim();
       }
@@ -4142,10 +4365,12 @@
       leagueDB.updatedAt = Date.now();
       saveDatabase(false);
       uiState.warRoomDrawerOpen = false;
+      uiState.warRoomDirty = false;
+      uiState.warRoomSnapshot = null;
       populateStaticFormControls();
       renderAll();
-      showToast(`Saved ${getTeamName(managedTeamId)}'s Identity, Avatar & War Room!`, "success");
-      await pushTeamProfileToCloud(managedTeamId);
+      showToast(`✓ Confirmed & locked in changes for ${getTeamName(managedTeamId)}!`, "success");
+      await pushTeamProfileToCloud(managedTeamId, prevTeamPinHash);
     }
 
     const QUICK_AVATAR_EMOJIS = ["🐓", "🏈", "👑", "🔥", "💀", "🦁", "🐏", "⚡", "🎯", "🏴‍☠️", "💎", "🚀"];
@@ -4182,9 +4407,9 @@
           : "";
 
         const adminSwitcherHtml = uiState.isCommish
-          ? `<div class="flex items-center gap-1.5">
-               <span class="text-[10px] font-bold uppercase text-emerald-400">Admin Inspect:</span>
-               <select onchange="selectManagerInLedger(this.value)" class="bg-[#09090B] text-white text-xs font-extrabold rounded-lg px-2.5 py-1 border border-emerald-500/50 focus:outline-none cursor-pointer">
+          ? `<div class="flex items-center gap-1.5 max-w-full">
+               <span class="text-[10px] font-bold uppercase text-emerald-400 whitespace-nowrap">Admin:</span>
+               <select onchange="selectManagerInLedger(this.value)" class="bg-[#09090B] text-white text-xs font-extrabold rounded-lg px-2 py-1 border border-emerald-500/50 focus:outline-none cursor-pointer max-w-[160px] truncate">
                  ${leagueDB.teams.map(t => `<option value="${safeId(t.id)}" ${t.id === managedTeamId ? 'selected' : ''}>${escapeHtml(getTeamName(t.id))}</option>`).join("")}
                </select>
              </div>`
@@ -4193,15 +4418,15 @@
         box.innerHTML = `
           <div class="app-card overflow-hidden">
             <!-- Top Garnet & Obsidian Franchise Hero Strip -->
-            <div class="garnet-hero-banner p-4 sm:p-5">
-              <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
+            <div class="garnet-hero-banner p-3 sm:p-5">
+              <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-3">
                 
                 <!-- Left: Custom Avatar Block + Franchise Name + League Capital Rank Pills -->
-                <div class="flex items-start sm:items-center gap-3.5">
-                  ${renderTeamAvatarHtml(managedTeamId, "w-12 h-12 sm:w-14 sm:h-14 text-xl sm:text-2xl shadow-lg", "rounded-2xl")}
-                  <div class="space-y-1 min-w-0">
-                    <div class="flex flex-wrap items-center gap-2">
-                      <h2 class="text-xl sm:text-2xl font-black text-white tracking-tight">${managedName}</h2>
+                <div class="flex items-start sm:items-center gap-3 min-w-0">
+                  ${renderTeamAvatarHtml(managedTeamId, "w-11 h-11 sm:w-14 sm:h-14 text-lg sm:text-2xl shadow-lg", "rounded-2xl")}
+                  <div class="space-y-1 min-w-0 flex-1">
+                    <div class="flex flex-wrap items-center gap-1.5 sm:gap-2">
+                      <h2 class="text-lg sm:text-2xl font-black text-white tracking-tight break-words">${managedName}</h2>
                       <span class="static-badge bg-zinc-900/90 text-amber-300 border border-amber-500/50">
                         ${uiState.isCommish ? 'Admin Inspecting' : 'My Franchise'}
                       </span>
@@ -4210,12 +4435,12 @@
                     </div>
 
                     <!-- League Rank & Pick Power Badges -->
-                    <div class="flex flex-wrap items-center gap-1.5 text-xs">
+                    <div class="flex flex-wrap items-center gap-1.5 text-[11px] sm:text-xs">
                       <span class="px-2 py-0.5 rounded-md bg-[#09090B]/80 border border-zinc-700/80 text-zinc-200 font-semibold">
-                        <strong class="text-white font-mono">${myRankInfo.totalPicks}</strong> Total Picks <span class="text-amber-300 font-mono">(Rank #${myRankInfo.totalRank})</span>
+                        <strong class="text-white font-mono">${myRankInfo.totalPicks}</strong> Total Picks <span class="text-amber-300 font-mono">(#${myRankInfo.totalRank})</span>
                       </span>
                       <span class="px-2 py-0.5 rounded-md bg-[#09090B]/80 border border-zinc-700/80 text-zinc-200 font-semibold">
-                        <strong class="text-amber-300 font-mono">${myRankInfo.earlyPicks}</strong> Top-5 Rd Picks <span class="text-emerald-300 font-mono">(Rank #${myRankInfo.earlyRank})</span>
+                        <strong class="text-amber-300 font-mono">${myRankInfo.earlyPicks}</strong> Top-5 Rds <span class="text-emerald-300 font-mono">(#${myRankInfo.earlyRank})</span>
                       </span>
                       <span class="px-2 py-0.5 rounded-md bg-[#09090B]/80 border border-zinc-700/80 text-zinc-300 font-mono text-[11px]">
                         <span class="text-sky-300">+${myRankInfo.inCount} In</span> / <span class="text-rose-300">-${myRankInfo.outCount} Out</span>
@@ -4225,27 +4450,27 @@
                 </div>
 
                 <!-- Right: Quick Actions (Edit War Room Drawer + Open Trade Machine) -->
-                <div class="flex flex-wrap items-center gap-2 self-start lg:self-center flex-shrink-0">
-                  <button onclick="toggleWarRoomDrawer()" id="toggleWarRoomDrawerBtn" class="btn-action px-3 py-1.5 text-xs ${uiState.warRoomDrawerOpen ? 'border-amber-400 text-amber-300 bg-zinc-900' : 'text-zinc-100 bg-[#09090B]/85'}">
+                <div class="grid grid-cols-2 sm:flex sm:flex-wrap items-center gap-1.5 sm:gap-2 w-full lg:w-auto flex-shrink-0">
+                  <button onclick="toggleWarRoomDrawer()" id="toggleWarRoomDrawerBtn" class="btn-action px-2.5 sm:px-3 py-1.5 text-[11px] sm:text-xs ${uiState.warRoomDrawerOpen ? 'border-amber-400 text-amber-300 bg-zinc-900' : 'text-zinc-100 bg-[#09090B]/85'}">
                     <i class="fa-solid fa-pen-to-square text-amber-400"></i>
-                    <span>${uiState.warRoomDrawerOpen ? 'Close War Room ▴' : 'Edit Team Name, Avatar & Needs ✎'}</span>
+                    <span class="truncate">${uiState.warRoomDrawerOpen ? 'Close Setup ▴' : 'Customize Team ✎'}</span>
                   </button>
-                  <button onclick="switchMainTab('tradecenter')" class="btn-action px-3 py-1.5 text-xs text-sky-300 bg-[#09090B]/85">
+                  <button onclick="switchMainTab('tradecenter')" class="btn-action px-2.5 sm:px-3 py-1.5 text-[11px] sm:text-xs text-sky-300 bg-[#09090B]/85">
                     <i class="fa-solid fa-scale-balanced"></i>
-                    <span>Trade Machine (${activeBlockEntries.length} Active) →</span>
+                    <span class="truncate">Trade Machine (${activeBlockEntries.length}) →</span>
                   </button>
                 </div>
 
               </div>
 
               <!-- Active War Room Status Bar (Always visible when populated, ultra-compact) -->
-              <div class="mt-3 pt-2.5 border-t border-white/10 flex flex-col sm:flex-row sm:items-center justify-between gap-2">
-                <div class="space-y-1">
+              <div class="mt-2.5 pt-2 border-t border-white/10 flex flex-col sm:flex-row sm:items-center justify-between gap-1.5">
+                <div class="space-y-1 min-w-0">
                   <div class="flex flex-wrap items-center gap-1.5">
-                    <span class="text-[10px] font-extrabold uppercase tracking-wider text-zinc-300"><i class="fa-solid fa-bullhorn text-amber-400 mr-1"></i>Trade Block Status:</span>
+                    <span class="text-[10px] font-extrabold uppercase tracking-wider text-zinc-300"><i class="fa-solid fa-bullhorn text-amber-400 mr-1"></i>Trade Block:</span>
                     ${prof.tradeBlockNote
-                      ? `<span class="text-xs font-bold text-white">"${escapeHtml(prof.tradeBlockNote)}"</span>`
-                      : `<span class="text-xs text-zinc-400 italic">No Trade Block note posted yet — click "Edit Team Name, Avatar & Needs ✎" or tag any pick below with 🏷️ OTB.</span>`}
+                      ? `<span class="text-xs font-bold text-white break-words">"${escapeHtml(prof.tradeBlockNote)}"</span>`
+                      : `<span class="text-[11px] sm:text-xs text-zinc-400 italic">No Trade Block note posted — tap "Customize Team ✎" or tag any pick with 🏷️ OTB.</span>`}
                     ${statusChipsHtml}
                   </div>
                   ${otbPillsHtml}
@@ -4254,42 +4479,44 @@
             </div>
 
             <!-- Collapsible War Room Editor Drawer (keeps inputs always in DOM for instant editing & tests) -->
-            <div id="warRoomEditDrawer" class="${uiState.warRoomDrawerOpen ? 'block' : 'hidden'} bg-[#121215] border-t border-zinc-800 p-4 space-y-4">
+            <div id="warRoomEditDrawer" class="${uiState.warRoomDrawerOpen ? 'block' : 'hidden'} bg-[#121215] border-t border-zinc-800 p-3.5 sm:p-4 space-y-3.5">
               <div class="flex flex-wrap items-center justify-between gap-2">
                 <span class="text-xs font-black uppercase tracking-wider text-amber-300 flex items-center gap-1.5">
                   <i class="fa-solid fa-sliders"></i>
-                  <span>Customize ${origMgrName}'s Team Identity, Avatar Block & Trade Block</span>
+                  <span>Customize ${origMgrName}'s Team Identity, Avatar & Trade Block</span>
                 </span>
-                <button onclick="saveMyTeamWarRoom()" class="btn-garnet px-3.5 py-1.5 text-xs">
-                  <i class="fa-solid fa-bullhorn"></i>
-                  <span>Save Team Identity & War Room</span>
+                <button type="button" onclick="confirmTeamCustomization()" class="btn-garnet px-3 py-1.5 text-xs">
+                  <i class="fa-solid fa-circle-check"></i>
+                  <span>Confirm Team Changes</span>
                 </button>
               </div>
 
               <!-- Custom Team Name + Avatar Block Customizer -->
-              <div class="bg-[#09090B] border border-zinc-800 rounded-xl p-3.5 space-y-3">
+              <div class="bg-[#09090B] border border-zinc-800 rounded-xl p-3 sm:p-3.5 space-y-3">
                 <div class="text-[10px] font-extrabold uppercase tracking-wider text-sky-400 flex items-center gap-1.5">
                   <i class="fa-solid fa-id-card"></i>
-                  <span>Team Name & Avatar Block Customizer (Displays as Custom Name (@${origMgrName}))</span>
+                  <span>Team Name & Avatar Customizer (Displays as Custom Name (@${origMgrName}))</span>
                 </div>
-                <div class="grid grid-cols-1 sm:grid-cols-12 gap-3">
+                <div class="grid grid-cols-1 sm:grid-cols-12 gap-2.5 sm:gap-3">
                   <div class="sm:col-span-5">
                     <label for="warRoomCustomTeamNameInput" class="block text-[10px] font-bold uppercase text-zinc-400 mb-1">Custom Franchise Name (Max 24 chars)</label>
-                    <input id="warRoomCustomTeamNameInput" type="text" maxlength="24" value="${escapeHtml(prof.customTeamName || "")}" placeholder="e.g., Sandstorm Cartel (leave blank for ${origMgrName})" class="w-full bg-[#121215] text-white text-xs font-bold rounded-lg px-3 py-2 border border-zinc-700 focus:border-[#CC1429] focus:outline-none">
+                    <input id="warRoomCustomTeamNameInput" oninput="markWarRoomDirty()" type="text" maxlength="24" value="${escapeHtml(prof.customTeamName || "")}" placeholder="e.g., Sandstorm Cartel (leave blank for ${origMgrName})" class="w-full bg-[#121215] text-white text-xs font-bold rounded-lg px-3 py-2 border border-zinc-700 focus:border-[#CC1429] focus:outline-none">
                   </div>
-                  <div class="sm:col-span-2">
-                    <label for="warRoomAvatarTextInput" class="block text-[10px] font-bold uppercase text-zinc-400 mb-1">Monogram (1-4)</label>
-                    <input id="warRoomAvatarTextInput" type="text" maxlength="4" value="${escapeHtml(prof.avatarText || "")}" placeholder="${escapeHtml(getTeamInitials(managedTeamId))}" class="w-full bg-[#121215] text-white text-xs font-mono font-bold uppercase rounded-lg px-2.5 py-2 border border-zinc-700 focus:border-[#CC1429] focus:outline-none">
-                  </div>
-                  <div class="sm:col-span-2">
-                    <label for="warRoomAvatarEmojiInput" class="block text-[10px] font-bold uppercase text-zinc-400 mb-1">Emoji Icon</label>
-                    <input id="warRoomAvatarEmojiInput" type="text" maxlength="8" value="${escapeHtml(prof.avatarEmoji || "")}" placeholder="🐓 / 🏈" class="w-full bg-[#121215] text-white text-xs rounded-lg px-2.5 py-2 border border-zinc-700 focus:border-[#CC1429] focus:outline-none">
+                  <div class="grid grid-cols-2 gap-2 sm:col-span-4">
+                    <div>
+                      <label for="warRoomAvatarTextInput" class="block text-[10px] font-bold uppercase text-zinc-400 mb-1">Monogram (1-4)</label>
+                      <input id="warRoomAvatarTextInput" oninput="markWarRoomDirty()" type="text" maxlength="4" value="${escapeHtml(prof.avatarText || "")}" placeholder="${escapeHtml(getTeamInitials(managedTeamId))}" class="w-full bg-[#121215] text-white text-xs font-mono font-bold uppercase rounded-lg px-2.5 py-2 border border-zinc-700 focus:border-[#CC1429] focus:outline-none">
+                    </div>
+                    <div>
+                      <label for="warRoomAvatarEmojiInput" class="block text-[10px] font-bold uppercase text-zinc-400 mb-1">Emoji Icon</label>
+                      <input id="warRoomAvatarEmojiInput" oninput="markWarRoomDirty()" type="text" maxlength="8" value="${escapeHtml(prof.avatarEmoji || "")}" placeholder="🐓 / 🏈" class="w-full bg-[#121215] text-white text-xs rounded-lg px-2.5 py-2 border border-zinc-700 focus:border-[#CC1429] focus:outline-none">
+                    </div>
                   </div>
                   <div class="sm:col-span-3">
                     <label for="warRoomAvatarBgInput" class="block text-[10px] font-bold uppercase text-zinc-400 mb-1">Avatar Block Color</label>
                     <div class="flex items-center gap-1.5">
-                      <input id="warRoomAvatarBgInput" type="text" maxlength="16" value="${escapeHtml(prof.avatarBg || "")}" placeholder="#73000A" class="w-full bg-[#121215] text-white text-xs font-mono rounded-lg px-2.5 py-2 border border-zinc-700 focus:border-[#CC1429] focus:outline-none">
-                      <input type="color" value="${/^#[0-9A-Fa-f]{6}$/.test(prof.avatarBg || '') ? prof.avatarBg : '#73000A'}" onchange="document.getElementById('warRoomAvatarBgInput').value = this.value" class="w-8 h-8 rounded cursor-pointer bg-transparent border-0">
+                      <input id="warRoomAvatarBgInput" oninput="markWarRoomDirty()" type="text" maxlength="16" value="${escapeHtml(prof.avatarBg || "")}" placeholder="#73000A" class="w-full bg-[#121215] text-white text-xs font-mono rounded-lg px-2.5 py-2 border border-zinc-700 focus:border-[#CC1429] focus:outline-none">
+                      <input type="color" value="${/^#[0-9A-Fa-f]{6}$/.test(prof.avatarBg || '') ? prof.avatarBg : '#73000A'}" onchange="document.getElementById('warRoomAvatarBgInput').value = this.value; markWarRoomDirty();" class="w-8 h-8 rounded cursor-pointer bg-transparent border-0 flex-shrink-0">
                     </div>
                   </div>
                 </div>
@@ -4300,9 +4527,9 @@
                     ${QUICK_AVATAR_EMOJIS.map(em => `<button type="button" onclick="setWarRoomQuickEmoji('${em}')" class="w-6 h-6 rounded bg-zinc-900 hover:bg-zinc-800 border border-zinc-700 text-xs flex items-center justify-center cursor-pointer">${em}</button>`).join("")}
                     <button type="button" onclick="setWarRoomQuickEmoji('')" class="px-2 py-0.5 rounded bg-zinc-900 hover:bg-zinc-800 border border-zinc-700 text-[10px] text-zinc-400 cursor-pointer">Use Text</button>
                   </div>
-                  <div class="flex items-center gap-2">
-                    <input id="warRoomAvatarImageInput" type="text" value="${escapeHtml(prof.avatarImageDataUrl || "")}" placeholder="Or Image URL / Upload →" class="w-44 bg-[#121215] text-white text-[11px] font-mono rounded-lg px-2.5 py-1.5 border border-zinc-700 focus:outline-none">
-                    <label class="btn-action px-2.5 py-1.5 text-[11px] text-sky-300 cursor-pointer whitespace-nowrap">
+                  <div class="flex items-center gap-2 w-full sm:w-auto">
+                    <input id="warRoomAvatarImageInput" oninput="markWarRoomDirty()" type="text" value="${escapeHtml(prof.avatarImageDataUrl || "")}" placeholder="Or Image URL / Upload →" class="flex-1 sm:w-44 min-w-0 bg-[#121215] text-white text-[11px] font-mono rounded-lg px-2.5 py-1.5 border border-zinc-700 focus:outline-none">
+                    <label class="btn-action px-2.5 py-1.5 text-[11px] text-sky-300 cursor-pointer whitespace-nowrap flex-shrink-0">
                       <i class="fa-solid fa-upload"></i> Upload
                       <input type="file" accept="image/*" onchange="handleTeamAvatarFileUpload(event)" class="hidden">
                     </label>
@@ -4328,26 +4555,44 @@
               <div class="grid grid-cols-1 sm:grid-cols-12 gap-3">
                 <div class="sm:col-span-7">
                   <label for="warRoomBlockNoteInput" class="block text-[10px] font-extrabold uppercase tracking-wider text-zinc-400 mb-1">Trade Block Headline / Availability Note</label>
-                  <input id="warRoomBlockNoteInput" type="text" maxlength="240" value="${escapeHtml(prof.tradeBlockNote || "")}" placeholder="e.g., Shopping 2027 2nd & WR depth for an RB1" class="w-full bg-[#09090B] text-white text-xs rounded-lg px-3 py-2 border border-zinc-700 focus:border-[#CC1429] focus:outline-none">
+                  <input id="warRoomBlockNoteInput" oninput="markWarRoomDirty()" type="text" maxlength="240" value="${escapeHtml(prof.tradeBlockNote || "")}" placeholder="e.g., Shopping 2027 2nd & WR depth for an RB1" class="w-full bg-[#09090B] text-white text-xs rounded-lg px-3 py-2 border border-zinc-700 focus:border-[#CC1429] focus:outline-none">
                 </div>
                 <div class="sm:col-span-5">
                   <label for="warRoomLookingForInput" class="block text-[10px] font-extrabold uppercase tracking-wider text-zinc-400 mb-1">Custom Seeking / Needs Note</label>
-                  <input id="warRoomLookingForInput" type="text" maxlength="160" value="${escapeHtml(prof.lookingFor || "")}" placeholder="e.g., RB1, Early 2027 Picks" class="w-full bg-[#09090B] text-white text-xs rounded-lg px-3 py-2 border border-zinc-700 focus:border-[#CC1429] focus:outline-none">
+                  <input id="warRoomLookingForInput" oninput="markWarRoomDirty()" type="text" maxlength="160" value="${escapeHtml(prof.lookingFor || "")}" placeholder="e.g., RB1, Early 2027 Picks" class="w-full bg-[#09090B] text-white text-xs rounded-lg px-3 py-2 border border-zinc-700 focus:border-[#CC1429] focus:outline-none">
                 </div>
               </div>
 
               <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 pt-2 border-t border-zinc-800/80 text-[11px] text-zinc-400">
-                <span><i class="fa-solid fa-shield-halved text-emerald-400 mr-1"></i>Optional Personal Team PIN prevents other managers from claiming ${managedName} on shared links.</span>
-                <div class="flex items-center gap-1.5">
-                  <input id="warRoomTeamPinInput" type="password" maxlength="16" placeholder="${hasPin ? 'Change Team PIN' : 'Set 4–8 Digit PIN'}" class="w-36 bg-[#09090B] text-white text-[11px] font-mono rounded-lg px-2.5 py-1.5 border border-zinc-700 focus:border-emerald-500 focus:outline-none">
-                  <button onclick="saveMyTeamPersonalPin()" class="btn-action px-2.5 py-1.5 text-[11px] text-emerald-300">
+                <span><i class="fa-solid fa-shield-halved text-emerald-400 mr-1"></i>Optional Personal Team PIN protects ${managedName} on shared links.</span>
+                <div class="flex flex-wrap items-center gap-1.5">
+                  <input id="warRoomTeamPinInput" oninput="markWarRoomDirty()" type="password" maxlength="16" placeholder="${hasPin ? 'Change PIN (4–8)' : 'Set 4–8 Digit PIN'}" class="w-36 bg-[#09090B] text-white text-[11px] font-mono rounded-lg px-2.5 py-1.5 border border-zinc-700 focus:border-emerald-500 focus:outline-none">
+                  <button type="button" onclick="saveMyTeamPersonalPin()" class="btn-action px-2.5 py-1.5 text-[11px] text-emerald-300">
                     <i class="fa-solid fa-key"></i> ${hasPin ? 'Update PIN' : 'Set PIN'}
                   </button>
                   ${hasPin ? `
-                    <button onclick="clearMyTeamPersonalPin()" class="btn-action px-2 py-1.5 text-[11px] text-rose-300">
+                    <button type="button" onclick="clearMyTeamPersonalPin()" class="btn-action px-2 py-1.5 text-[11px] text-rose-300">
                       Clear
                     </button>
                   ` : ''}
+                </div>
+              </div>
+
+              <!-- Explicit Team Customization Confirm & Lock-In Bar -->
+              <div id="warRoomConfirmBar" class="pt-3 border-t border-zinc-800 flex flex-col sm:flex-row sm:items-center justify-between gap-2.5 bg-[#09090B]/90 -mx-3.5 sm:-mx-4 -mb-3.5 sm:-mb-4 px-3.5 sm:px-4 py-3">
+                <span id="warRoomConfirmHint" class="text-[11px] text-zinc-300">
+                  ${uiState.warRoomDirty
+                    ? `<span class="text-amber-300 font-bold"><i class="fa-solid fa-circle-exclamation mr-1"></i>Changes ready — tap Confirm Team Changes to lock in!</span>`
+                    : `Make your team edits above, then tap <strong class="text-white">Confirm Team Changes</strong> to lock them in.`}
+                </span>
+                <div class="flex items-center justify-end gap-2 flex-shrink-0">
+                  <button type="button" onclick="cancelWarRoomEdits()" class="btn-action px-3.5 py-2 text-xs text-zinc-300">
+                    Cancel
+                  </button>
+                  <button type="button" id="confirmWarRoomChangesBtn" onclick="confirmTeamCustomization()" class="btn-garnet px-4 py-2 text-xs">
+                    <i class="fa-solid fa-circle-check"></i>
+                    <span>Confirm Team Changes</span>
+                  </button>
                 </div>
               </div>
             </div>
@@ -4369,13 +4614,13 @@
                ${activeBlockEntries.map(entry => {
                  const isMe = entry.team.id === uiState.myTeam;
                  return `
-                   <div class="bg-[#09090B] border ${isMe ? 'border-[#CC1429]/70' : 'border-zinc-800'} rounded-xl p-3.5 flex flex-col justify-between gap-3 hover:border-zinc-700 transition">
-                     <div class="space-y-2">
+                   <div class="bg-[#09090B] border ${isMe ? 'border-[#CC1429]/70' : 'border-zinc-800'} rounded-xl p-3 sm:p-3.5 flex flex-col justify-between gap-2.5 hover:border-zinc-700 transition min-w-0">
+                     <div class="space-y-2 min-w-0">
                        <div class="flex items-center justify-between gap-2">
                          <div class="flex items-center gap-2 min-w-0">
                            ${renderTeamAvatarHtml(entry.team.id, "w-7 h-7 text-xs", "rounded-lg")}
-                           <span class="text-sm font-black text-white truncate">${escapeHtml(entry.team.name)}</span>
-                           ${isMe ? `<span class="static-badge bg-zinc-900 text-amber-300 border border-amber-500/50">My Team</span>` : ''}
+                           <span class="text-xs sm:text-sm font-black text-white truncate">${escapeHtml(entry.team.name)}</span>
+                           ${isMe ? `<span class="static-badge bg-zinc-900 text-amber-300 border border-amber-500/50 flex-shrink-0">My Team</span>` : ''}
                          </div>
                          ${entry.team.id !== uiState.selectedManager ? `
                            <div class="flex items-center gap-1 flex-shrink-0">
@@ -4389,7 +4634,7 @@
                          ` : ''}
                        </div>
 
-                       ${entry.tradeBlockNote ? `<p class="text-xs text-zinc-200 font-medium">"${escapeHtml(entry.tradeBlockNote)}"</p>` : ''}
+                       ${entry.tradeBlockNote ? `<p class="text-xs text-zinc-200 font-medium break-words">"${escapeHtml(entry.tradeBlockNote)}"</p>` : ''}
 
                        ${(entry.needsChips.length > 0 || entry.lookingFor) ? `
                          <div class="flex flex-wrap items-center gap-1">
@@ -4411,17 +4656,17 @@
              </div>`;
 
         tradeBlockBox.innerHTML = `
-          <div class="app-card p-4 sm:p-5 space-y-3">
+          <div class="app-card p-3.5 sm:p-5 space-y-3">
             <div class="flex flex-wrap items-center justify-between gap-2">
-              <div class="flex items-center gap-2">
-                <span class="static-badge bg-amber-950 text-amber-300 border border-amber-500/60">
+              <div class="flex items-center gap-2 min-w-0">
+                <span class="static-badge bg-amber-950 text-amber-300 border border-amber-500/60 flex-shrink-0">
                   <i class="fa-solid fa-fire-flame-curved"></i> Live Block
                 </span>
-                <h2 class="text-base sm:text-lg font-black text-white">League-Wide Active Trade Block (${activeBlockEntries.length} Active)</h2>
+                <h2 class="text-sm sm:text-lg font-black text-white truncate">Active Trade Block (${activeBlockEntries.length})</h2>
               </div>
-              <button onclick="switchMainTab('ledger'); uiState.warRoomDrawerOpen = true; renderAll();" class="btn-action px-3 py-1 text-xs text-amber-300">
+              <button onclick="switchMainTab('ledger'); uiState.warRoomDrawerOpen = true; renderAll();" class="btn-action px-2.5 sm:px-3 py-1 text-[11px] sm:text-xs text-amber-300">
                 <i class="fa-solid fa-bullhorn"></i>
-                <span>Update My Block & Needs</span>
+                <span>Update My Block</span>
               </button>
             </div>
             ${cardsHtml}
@@ -4433,6 +4678,7 @@
     function buildLeagueCapitalTableHtml(state, includeCloseBtn = false) {
       const { sortedStandings } = getLeagueCapitalRanks(state);
 
+      let mobileCardsHtml = "";
       const rowsHtml = sortedStandings.map((item, idx) => {
         const team = item;
         const m = item.metrics;
@@ -4460,6 +4706,44 @@
         }
 
         const powerPct = Math.min(100, Math.max(15, Math.round((m.effectivePickCount / 25) * 100)));
+
+        mobileCardsHtml += `
+          <div class="p-3 space-y-2 ${isMyTeam ? 'bg-[#73000A]/20' : 'bg-[#09090B]/50'}">
+            <div class="flex items-center justify-between gap-2">
+              <div class="flex items-center gap-2 min-w-0">
+                <span class="font-mono font-black text-xs text-zinc-400 w-5 flex-shrink-0">#${rank}</span>
+                ${renderTeamAvatarHtml(team.id, "w-7 h-7 text-[10px]", "rounded-lg")}
+                <button onclick="selectManagerInLedger('${safeId(team.id)}')" class="font-black text-xs sm:text-sm text-white hover:text-[#CC1429] truncate text-left cursor-pointer">
+                  ${escapeHtml(getTeamName(team.id))}
+                </button>
+                ${isMyTeam ? `<span class="static-badge bg-[#73000A] text-white border border-[#CC1429] flex-shrink-0">Me</span>` : ''}
+              </div>
+              <div class="flex items-center gap-1.5 flex-shrink-0">
+                ${team.id !== uiState.selectedManager ? `
+                  <button onclick="compareWithSelectedManager('${safeId(team.id)}')" class="btn-action px-2 py-1 text-[10px] text-sky-300">
+                    Compare ⚖
+                  </button>
+                ` : `<span class="text-[10px] text-zinc-500 font-bold">Active</span>`}
+              </div>
+            </div>
+            <div class="flex flex-wrap items-center gap-1.5 text-[11px] font-mono">
+              <span class="px-2 py-0.5 rounded bg-zinc-900 border border-zinc-800 ${net > 0 ? 'text-emerald-300' : net < 0 ? 'text-rose-300' : 'text-zinc-200'} font-bold">
+                ${m.effectivePickCount} Picks (${net >= 0 ? '+' + net : net})
+              </span>
+              <span class="px-2 py-0.5 rounded bg-zinc-900 border border-zinc-800 text-amber-300 font-bold">
+                Top-5 Rds: ${m.earlyCapitalCount}
+              </span>
+              <span class="px-2 py-0.5 rounded bg-zinc-900 border border-zinc-800 text-zinc-300">
+                <span class="text-sky-300">+${inTotal}</span> / <span class="text-rose-300">-${outTotal}</span>
+              </span>
+              ${pendingTotal > 0 ? `<span class="static-badge bg-amber-950 text-amber-300 border border-amber-500/60">${pendingTotal} Pending</span>` : ''}
+            </div>
+            <div class="flex flex-wrap items-center gap-1">
+              <span class="text-[10px] font-bold uppercase text-zinc-500 mr-0.5">Rds 1–3:</span>
+              ${r1to3Picks.length > 0 ? r1to3Picks.join("") : '<span class="text-zinc-500 text-[10px]">None in Rds 1–3</span>'}
+            </div>
+          </div>
+        `;
 
         return `
           <tr class="border-b border-zinc-800/80 hover:bg-zinc-900/60 transition text-xs ${isMyTeam ? 'bg-[#73000A]/15' : ''}">
@@ -4511,16 +4795,16 @@
       }).join("");
 
       return `
-        <div class="app-card p-4 sm:p-5 space-y-4">
-          <div class="flex flex-wrap items-center justify-between gap-2 border-b border-zinc-800 pb-3">
-            <div>
+        <div class="app-card overflow-hidden">
+          <div class="p-3.5 sm:p-5 flex flex-wrap items-center justify-between gap-2 border-b border-zinc-800">
+            <div class="min-w-0">
               <div class="flex items-center gap-2">
                 <span class="static-badge bg-[#73000A] text-white border border-[#CC1429]">
                   <i class="fa-solid fa-ranking-star"></i> Standings
                 </span>
-                <h2 class="text-base sm:text-lg font-black text-white">${Number(state.year)} 10-Team Draft Capital Standings</h2>
+                <h2 class="text-sm sm:text-lg font-black text-white truncate">${Number(state.year)} 10-Team Draft Capital</h2>
               </div>
-              <p class="text-xs text-zinc-400 mt-0.5">Ranked by total draft selections and early-round firepower (Rounds 1–5). Click any manager to compare in the Trade Machine.</p>
+              <p class="text-[11px] sm:text-xs text-zinc-400 mt-0.5">Ranked by total selections & Top-5 round firepower. Tap any team to compare.</p>
             </div>
             ${includeCloseBtn ? `
               <button onclick="toggleLeagueCapitalDrawer()" class="btn-action px-2.5 py-1 text-xs text-zinc-400">
@@ -4528,7 +4812,12 @@
               </button>
             ` : ''}
           </div>
-          <div class="overflow-x-auto">
+          <!-- Mobile-Native 10-Team Standings Cards (Zero Horizontal Scroll) -->
+          <div id="mobileCapitalStandingsCards" class="md:hidden divide-y divide-zinc-800/80">
+            ${mobileCardsHtml}
+          </div>
+          <!-- Desktop 9-Column Table -->
+          <div class="hidden md:block overflow-x-auto">
             <table class="w-full text-left border-collapse">
               <thead>
                 <tr class="border-b border-zinc-800 text-[10px] font-extrabold uppercase tracking-wider text-zinc-400 bg-[#09090B]">
@@ -4730,15 +5019,15 @@
         const cellB = summarizeManagerRoundHoldings(teamB.id, r, state, teamA.id);
 
         rowsHtml += `
-          <div class="grid grid-cols-12 gap-2 items-center bg-[#09090B] border border-zinc-800/90 rounded-xl px-2.5 py-2 hover:border-zinc-700 transition">
-            <div class="col-span-5 flex flex-wrap items-center gap-1.5 pr-1">
+          <div class="grid grid-cols-12 gap-1 sm:gap-2 items-center bg-[#09090B] border border-zinc-800/90 rounded-xl px-2 sm:px-2.5 py-2 hover:border-zinc-700 transition">
+            <div class="col-span-5 min-w-0 flex flex-wrap items-center gap-1 sm:gap-1.5 pr-0.5 sm:pr-1">
               ${cellA}
             </div>
-            <div class="col-span-2 flex flex-col items-center justify-center text-center bg-[#121215] rounded-lg py-1 px-1 border border-zinc-800">
-              <span class="font-mono text-xs font-black text-zinc-200">Rd ${r}</span>
-              <span class="text-[9px] text-zinc-500 font-mono">#${(r - 1) * 10 + 1}–${r * 10}</span>
+            <div class="col-span-2 min-w-0 flex flex-col items-center justify-center text-center bg-[#121215] rounded-lg py-1 px-0.5 border border-zinc-800">
+              <span class="font-mono text-[11px] sm:text-xs font-black text-zinc-200">Rd ${r}</span>
+              <span class="text-[8px] sm:text-[9px] text-zinc-500 font-mono">#${(r - 1) * 10 + 1}–${r * 10}</span>
             </div>
-            <div class="col-span-5 flex flex-wrap items-center justify-end gap-1.5 pl-1">
+            <div class="col-span-5 min-w-0 flex flex-wrap items-center justify-end gap-1 sm:gap-1.5 pl-0.5 sm:pl-1">
               ${cellB}
             </div>
           </div>
@@ -4749,42 +5038,42 @@
       const teamBReceivesSwaps = uiState.whatIfSwaps.filter(s => s.toTeam === teamB.id);
 
       const stagingBarHtml = uiState.whatIfSwaps.length > 0 ? `
-        <div class="bg-[#121215] border-2 border-amber-500/80 rounded-xl p-4 space-y-3 shadow-lg">
+        <div class="bg-[#121215] border-2 border-amber-500/80 rounded-xl p-3 sm:p-4 space-y-3 shadow-lg">
           <div class="flex flex-wrap items-center justify-between gap-2 border-b border-zinc-800 pb-2.5">
-            <div class="flex items-center gap-2">
+            <div class="flex flex-wrap items-center gap-2 min-w-0">
               <span class="static-badge bg-amber-950 text-amber-300 border border-amber-500">
                 <i class="fa-solid fa-bolt"></i> Proposed Deal Staged (${uiState.whatIfSwaps.length} Pick${uiState.whatIfSwaps.length > 1 ? 's' : ''})
               </span>
-              <span class="text-xs text-zinc-300">Review simulated pick delta below or propose this trade to ${escapeHtml(teamB.name)}.</span>
+              <span class="text-[11px] sm:text-xs text-zinc-300">Review simulated delta or propose this trade to ${escapeHtml(teamB.name)}.</span>
             </div>
-            <div class="flex items-center gap-2">
+            <div class="flex items-center gap-2 w-full sm:w-auto justify-end">
               <button onclick="resetWhatIfSandbox()" class="btn-action px-3 py-1.5 text-xs text-zinc-300">
                 <i class="fa-solid fa-rotate-left"></i> Reset
               </button>
-              <button onclick="openTradeModalFromWhatIf()" class="btn-garnet px-4 py-1.5 text-xs">
+              <button onclick="openTradeModalFromWhatIf()" class="btn-garnet px-3.5 sm:px-4 py-1.5 text-xs">
                 <i class="fa-solid fa-paper-plane"></i> Propose Trade (${uiState.whatIfSwaps.length}) →
               </button>
             </div>
           </div>
-          <div class="grid grid-cols-1 md:grid-cols-2 gap-3 text-xs">
-            <div class="bg-[#09090B] border border-zinc-800 rounded-lg p-2.5">
-              <div class="text-[10px] font-extrabold uppercase text-[#CC1429] mb-1">${escapeHtml(teamA.name)} Receives:</div>
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-2.5 sm:gap-3 text-xs">
+            <div class="bg-[#09090B] border border-zinc-800 rounded-lg p-2.5 min-w-0">
+              <div class="text-[10px] font-extrabold uppercase text-[#CC1429] mb-1 truncate">${escapeHtml(teamA.name)} Receives:</div>
               <div class="flex flex-wrap gap-1.5">
                 ${teamAReceivesSwaps.length > 0 ? teamAReceivesSwaps.map(s => `
-                  <span class="inline-flex items-center gap-1.5 bg-zinc-900 border border-amber-500/60 text-amber-200 px-2 py-0.5 rounded font-mono text-[11px] font-bold">
-                    <span>${Number(state.year)} Rd ${Number(s.round)} (${escapeHtml(getTeamName(s.originalOwner))}'s)</span>
-                    <button onclick="toggleWhatIfPickTransfer(${Number(s.round)}, '${safeId(s.originalOwner)}', '${safeId(s.fromTeam)}', '${safeId(s.toTeam)}')" class="text-rose-400 hover:text-white cursor-pointer">×</button>
+                  <span class="inline-flex items-center gap-1.5 bg-zinc-900 border border-amber-500/60 text-amber-200 px-2 py-0.5 rounded font-mono text-[11px] font-bold max-w-full">
+                    <span class="truncate">${Number(state.year)} Rd ${Number(s.round)} (${escapeHtml(getTeamName(s.originalOwner))}'s)</span>
+                    <button onclick="toggleWhatIfPickTransfer(${Number(s.round)}, '${safeId(s.originalOwner)}', '${safeId(s.fromTeam)}', '${safeId(s.toTeam)}')" class="text-rose-400 hover:text-white cursor-pointer flex-shrink-0">×</button>
                   </span>
                 `).join("") : '<span class="text-zinc-500 italic">No picks added yet (tap a pick on the right)</span>'}
               </div>
             </div>
-            <div class="bg-[#09090B] border border-zinc-800 rounded-lg p-2.5">
-              <div class="text-[10px] font-extrabold uppercase text-sky-400 mb-1">${escapeHtml(teamB.name)} Receives:</div>
+            <div class="bg-[#09090B] border border-zinc-800 rounded-lg p-2.5 min-w-0">
+              <div class="text-[10px] font-extrabold uppercase text-sky-400 mb-1 truncate">${escapeHtml(teamB.name)} Receives:</div>
               <div class="flex flex-wrap gap-1.5">
                 ${teamBReceivesSwaps.length > 0 ? teamBReceivesSwaps.map(s => `
-                  <span class="inline-flex items-center gap-1.5 bg-zinc-900 border border-amber-500/60 text-amber-200 px-2 py-0.5 rounded font-mono text-[11px] font-bold">
-                    <span>${Number(state.year)} Rd ${Number(s.round)} (${escapeHtml(getTeamName(s.originalOwner))}'s)</span>
-                    <button onclick="toggleWhatIfPickTransfer(${Number(s.round)}, '${safeId(s.originalOwner)}', '${safeId(s.fromTeam)}', '${safeId(s.toTeam)}')" class="text-rose-400 hover:text-white cursor-pointer">×</button>
+                  <span class="inline-flex items-center gap-1.5 bg-zinc-900 border border-amber-500/60 text-amber-200 px-2 py-0.5 rounded font-mono text-[11px] font-bold max-w-full">
+                    <span class="truncate">${Number(state.year)} Rd ${Number(s.round)} (${escapeHtml(getTeamName(s.originalOwner))}'s)</span>
+                    <button onclick="toggleWhatIfPickTransfer(${Number(s.round)}, '${safeId(s.originalOwner)}', '${safeId(s.fromTeam)}', '${safeId(s.toTeam)}')" class="text-rose-400 hover:text-white cursor-pointer flex-shrink-0">×</button>
                   </span>
                 `).join("") : '<span class="text-zinc-500 italic">No picks added yet (tap a pick on the left)</span>'}
               </div>
@@ -4794,45 +5083,45 @@
       ` : "";
 
       workspace.innerHTML = `
-        <div class="space-y-3.5">
+        <div class="space-y-3">
           <!-- Side-by-Side Franchise Comparison Header Cards -->
-          <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-2.5 sm:gap-3">
             <!-- Team 1 Card -->
-            <div class="bg-[#09090B] border border-[#CC1429]/60 rounded-xl p-3.5 flex items-center justify-between gap-3">
-              <div class="flex items-center gap-3 min-w-0">
-                ${renderTeamAvatarHtml(teamA.id, "w-10 h-10 text-sm", "rounded-xl")}
+            <div class="bg-[#09090B] border border-[#CC1429]/60 rounded-xl p-3 sm:p-3.5 flex flex-wrap sm:flex-nowrap items-center justify-between gap-2.5">
+              <div class="flex items-center gap-2.5 sm:gap-3 min-w-0 flex-1">
+                ${renderTeamAvatarHtml(teamA.id, "w-9 h-9 sm:w-10 sm:h-10 text-xs sm:text-sm", "rounded-xl")}
                 <div class="min-w-0">
-                  <div class="flex items-center gap-2">
-                    <span class="text-base font-black text-white truncate">${escapeHtml(teamA.name)}</span>
-                    <span class="text-[10px] font-extrabold uppercase text-[#CC1429]">Team 1</span>
+                  <div class="flex items-center gap-1.5">
+                    <span class="text-sm sm:text-base font-black text-white truncate">${escapeHtml(teamA.name)}</span>
+                    <span class="text-[10px] font-extrabold uppercase text-[#CC1429] flex-shrink-0">Team 1</span>
                   </div>
-                  <div class="text-xs text-zinc-400">
+                  <div class="text-[11px] sm:text-xs text-zinc-400">
                     Picks: <strong class="text-white font-mono">${mA.effectivePickCount}</strong>${dA.totalDelta !== 0 ? ` <span class="text-amber-300 font-mono font-bold">→ ${mA.effectivePickCount + dA.totalDelta} (${dA.totalDelta > 0 ? '+' + dA.totalDelta : dA.totalDelta})</span>` : ''} •
-                    Top-5 Rds: <strong class="text-amber-300 font-mono">${mA.earlyCapitalCount}</strong>${dA.earlyDelta !== 0 ? ` <span class="text-emerald-300 font-mono font-bold">→ ${mA.earlyCapitalCount + dA.earlyDelta}</span>` : ''}
+                    Top-5: <strong class="text-amber-300 font-mono">${mA.earlyCapitalCount}</strong>${dA.earlyDelta !== 0 ? ` <span class="text-emerald-300 font-mono font-bold">→ ${mA.earlyCapitalCount + dA.earlyDelta}</span>` : ''}
                   </div>
                 </div>
               </div>
-              <button onclick="openTradeModalWithPair('${safeId(teamA.id)}', '${safeId(teamB.id)}')" class="btn-garnet px-3 py-1.5 text-xs whitespace-nowrap">
+              <button onclick="openTradeModalWithPair('${safeId(teamA.id)}', '${safeId(teamB.id)}')" class="btn-garnet px-2.5 sm:px-3 py-1.5 text-[11px] sm:text-xs whitespace-nowrap flex-shrink-0">
                 <i class="fa-solid fa-paper-plane"></i> Propose Trade
               </button>
             </div>
 
             <!-- Team 2 Card -->
-            <div class="bg-[#09090B] border border-sky-500/60 rounded-xl p-3.5 flex items-center justify-between gap-3">
-              <div class="flex items-center gap-3 min-w-0">
-                ${renderTeamAvatarHtml(teamB.id, "w-10 h-10 text-sm", "rounded-xl")}
+            <div class="bg-[#09090B] border border-sky-500/60 rounded-xl p-3 sm:p-3.5 flex items-center justify-between gap-2.5">
+              <div class="flex items-center gap-2.5 sm:gap-3 min-w-0">
+                ${renderTeamAvatarHtml(teamB.id, "w-9 h-9 sm:w-10 sm:h-10 text-xs sm:text-sm", "rounded-xl")}
                 <div class="min-w-0">
-                  <div class="flex items-center gap-2">
-                    <span class="text-base font-black text-white truncate">${escapeHtml(teamB.name)}</span>
-                    <span class="text-[10px] font-extrabold uppercase text-sky-400">Partner</span>
+                  <div class="flex items-center gap-1.5">
+                    <span class="text-sm sm:text-base font-black text-white truncate">${escapeHtml(teamB.name)}</span>
+                    <span class="text-[10px] font-extrabold uppercase text-sky-400 flex-shrink-0">Partner</span>
                   </div>
-                  <div class="text-xs text-zinc-400">
+                  <div class="text-[11px] sm:text-xs text-zinc-400">
                     Picks: <strong class="text-white font-mono">${mB.effectivePickCount}</strong>${dB.totalDelta !== 0 ? ` <span class="text-amber-300 font-mono font-bold">→ ${mB.effectivePickCount + dB.totalDelta} (${dB.totalDelta > 0 ? '+' + dB.totalDelta : dB.totalDelta})</span>` : ''} •
-                    Top-5 Rds: <strong class="text-amber-300 font-mono">${mB.earlyCapitalCount}</strong>${dB.earlyDelta !== 0 ? ` <span class="text-emerald-300 font-mono font-bold">→ ${mB.earlyCapitalCount + dB.earlyDelta}</span>` : ''}
+                    Top-5: <strong class="text-amber-300 font-mono">${mB.earlyCapitalCount}</strong>${dB.earlyDelta !== 0 ? ` <span class="text-emerald-300 font-mono font-bold">→ ${mB.earlyCapitalCount + dB.earlyDelta}</span>` : ''}
                   </div>
                 </div>
               </div>
-              <span class="text-[11px] text-zinc-400 hidden sm:inline">Tap any pick below to swap ⇄</span>
+              <span class="text-[11px] text-zinc-400 hidden sm:inline flex-shrink-0">Tap any pick below to swap ⇄</span>
             </div>
           </div>
 
@@ -4846,8 +5135,8 @@
               </div>
               ${sharedTradesInYear.map(tr => `
                 <div class="text-xs text-zinc-200 flex items-center justify-between gap-2 bg-[#121215] px-3 py-1.5 rounded-lg border border-zinc-800/80">
-                  <span><strong class="font-mono text-amber-300">${escapeHtml(tr.id)}:</strong> ${escapeHtml(tr.headline)}</span>
-                  ${uiState.isCommish ? `<button onclick="openEditTradeModal('${safeId(tr.id)}')" class="text-[11px] text-sky-300 hover:underline whitespace-nowrap cursor-pointer">Edit ✎</button>` : ''}
+                  <span class="break-words min-w-0"><strong class="font-mono text-amber-300">${escapeHtml(tr.id)}:</strong> ${escapeHtml(tr.headline)}</span>
+                  ${uiState.isCommish ? `<button onclick="openEditTradeModal('${safeId(tr.id)}')" class="text-[11px] text-sky-300 hover:underline whitespace-nowrap cursor-pointer flex-shrink-0">Edit ✎</button>` : ''}
                 </div>
               `).join("")}
             </div>
@@ -4872,9 +5161,8 @@
       if (outPool) {
         const cands = outPool.candidateOriginalOwners.map(id => escapeHtml(getTeamName(id))).join("/");
         badges.push(`
-          <div onclick="openInspectModalForPool('${safeId(outPool.id)}')" class="pending-pool-card px-2.5 py-1 rounded-lg text-[11px] cursor-pointer inline-flex items-center gap-1.5">
-            <span class="font-bold text-amber-200"><i class="fa-solid fa-hourglass-half mr-1"></i>Pool (${cands})</span>
-            <span class="text-[10px] text-zinc-300">→ ${escapeHtml(getTeamName(outPool.owedTo))}</span>
+          <div onclick="openInspectModalForPool('${safeId(outPool.id)}')" class="pending-pool-card px-2 py-1 rounded-lg text-[10px] sm:text-[11px] cursor-pointer inline-flex items-center gap-1 max-w-full">
+            <span class="font-bold text-amber-200 truncate"><i class="fa-solid fa-hourglass-half mr-1"></i>Pool (${cands})</span>
           </div>
         `);
       } else {
@@ -4888,16 +5176,16 @@
               ? `toggleWhatIfPickTransfer(${Number(round)}, '${safeId(teamId)}', '${safeId(teamId)}', '${safeId(partnerId)}')`
               : `openInspectModalForPick(${Number(state.year)}, ${Number(round)}, '${safeId(teamId)}')`;
             badges.push(`
-              <button type="button" onclick="${clickHandler}" class="${isSimSent ? 'whatif-pick-sim opacity-60 bg-amber-950/30' : 'bg-[#121215] border border-emerald-700/70 hover:border-emerald-400'} px-2.5 py-1 rounded-lg text-xs cursor-pointer inline-flex items-center gap-1.5 transition" title="Tap to simulate swapping this pick">
-                <span class="font-mono font-bold ${isSimSent ? 'line-through text-amber-300' : 'text-emerald-300'}">${slotTxt}${tagChip}</span>
-                <span class="text-[10px] ${isSimSent ? 'text-amber-300 font-bold' : 'text-zinc-400'}">${isSimSent ? `→ ${escapeHtml(getTeamName(partnerId))}` : '⇄'}</span>
+              <button type="button" onclick="${clickHandler}" class="${isSimSent ? 'whatif-pick-sim opacity-60 bg-amber-950/30' : 'bg-[#121215] border border-emerald-700/70 hover:border-emerald-400'} px-2 sm:px-2.5 py-1 rounded-lg text-[11px] sm:text-xs cursor-pointer inline-flex items-center gap-1 sm:gap-1.5 transition max-w-full" title="Tap to simulate swapping this pick">
+                <span class="font-mono font-bold truncate ${isSimSent ? 'line-through text-amber-300' : 'text-emerald-300'}">${slotTxt}${tagChip}</span>
+                <span class="text-[10px] flex-shrink-0 ${isSimSent ? 'text-amber-300 font-bold' : 'text-zinc-400'}">${isSimSent ? '→' : '⇄'}</span>
               </button>
             `);
           } else {
             badges.push(`
-              <span onclick="openInspectModalForPick(${Number(state.year)}, ${Number(round)}, '${safeId(teamId)}')" class="bg-zinc-900/60 border border-zinc-800 px-2 py-0.5 rounded-lg text-[11px] cursor-pointer inline-flex items-center gap-1 opacity-60">
-                <span class="font-mono line-through text-zinc-500">${slotTxt}</span>
-                <span class="text-[10px] text-rose-400">→ ${escapeHtml(getTeamName(myOrig.currentOwner))}</span>
+              <span onclick="openInspectModalForPick(${Number(state.year)}, ${Number(round)}, '${safeId(teamId)}')" class="bg-zinc-900/60 border border-zinc-800 px-1.5 sm:px-2 py-0.5 rounded-lg text-[10px] sm:text-[11px] cursor-pointer inline-flex items-center gap-1 opacity-60 max-w-full">
+                <span class="font-mono line-through text-zinc-500 flex-shrink-0">${slotTxt}</span>
+                <span class="text-[10px] text-rose-400 truncate">→ ${escapeHtml(getTeamName(myOrig.currentOwner))}</span>
               </span>
             `);
           }
@@ -4911,9 +5199,9 @@
             ? `toggleWhatIfPickTransfer(${Number(round)}, '${safeId(ap.originalOwner)}', '${safeId(teamId)}', '${safeId(partnerId)}')`
             : `openInspectModalForPick(${Number(state.year)}, ${Number(round)}, '${safeId(ap.originalOwner)}')`;
           badges.push(`
-            <button type="button" onclick="${clickHandler}" class="${isSimSent ? 'whatif-pick-sim opacity-60 bg-amber-950/30' : 'bg-sky-950/50 border border-sky-500/70 hover:border-sky-300'} px-2.5 py-1 rounded-lg text-xs cursor-pointer inline-flex items-center gap-1.5 transition" title="Tap to simulate swapping this pick">
-              <span class="font-mono font-bold ${isSimSent ? 'line-through text-amber-300' : 'text-sky-200'}">${slotTxt}${tagChip}</span>
-              <span class="text-[10px] ${isSimSent ? 'text-amber-300 font-bold' : 'text-sky-300'}">${isSimSent ? `→ ${escapeHtml(getTeamName(partnerId))}` : '⇄'}</span>
+            <button type="button" onclick="${clickHandler}" class="${isSimSent ? 'whatif-pick-sim opacity-60 bg-amber-950/30' : 'bg-sky-950/50 border border-sky-500/70 hover:border-sky-300'} px-2 sm:px-2.5 py-1 rounded-lg text-[11px] sm:text-xs cursor-pointer inline-flex items-center gap-1 sm:gap-1.5 transition max-w-full" title="Tap to simulate swapping this pick">
+              <span class="font-mono font-bold truncate ${isSimSent ? 'line-through text-amber-300' : 'text-sky-200'}">${slotTxt}${tagChip}</span>
+              <span class="text-[10px] flex-shrink-0 ${isSimSent ? 'text-amber-300 font-bold' : 'text-sky-300'}">${isSimSent ? '→' : '⇄'}</span>
             </button>
           `);
         });
@@ -4923,9 +5211,9 @@
         const incomingSims = uiState.whatIfSwaps.filter(s => s.round === round && s.toTeam === teamId);
         incomingSims.forEach(sim => {
           badges.push(`
-            <button type="button" onclick="toggleWhatIfPickTransfer(${Number(round)}, '${safeId(sim.originalOwner)}', '${safeId(sim.fromTeam)}', '${safeId(sim.toTeam)}')" class="whatif-pick-sim bg-amber-950/50 px-2.5 py-1 rounded-lg text-xs cursor-pointer inline-flex items-center gap-1.5">
-              <span class="font-mono font-bold text-amber-300">+Sim: ${escapeHtml(getTeamName(sim.originalOwner))} Rd ${round}</span>
-              <span class="text-[10px] text-amber-200">×</span>
+            <button type="button" onclick="toggleWhatIfPickTransfer(${Number(round)}, '${safeId(sim.originalOwner)}', '${safeId(sim.fromTeam)}', '${safeId(sim.toTeam)}')" class="whatif-pick-sim bg-amber-950/50 px-2 py-1 rounded-lg text-[11px] cursor-pointer inline-flex items-center gap-1 max-w-full">
+              <span class="font-mono font-bold text-amber-300 truncate">+Sim: ${escapeHtml(getTeamName(sim.originalOwner))} Rd ${round}</span>
+              <span class="text-[10px] text-amber-200 flex-shrink-0">×</span>
             </button>
           `);
         });
@@ -4933,16 +5221,16 @@
 
       if (inPool) {
         badges.push(`
-          <div onclick="openInspectModalForPool('${safeId(inPool.id)}')" class="pending-pool-card px-2.5 py-1 rounded-lg text-[11px] cursor-pointer inline-flex items-center gap-1">
-            <span class="font-bold text-amber-200">+Pool Pick (${escapeHtml(getTeamName(inPool.poolHolder))})</span>
+          <div onclick="openInspectModalForPool('${safeId(inPool.id)}')" class="pending-pool-card px-2 py-1 rounded-lg text-[10px] sm:text-[11px] cursor-pointer inline-flex items-center gap-1 max-w-full">
+            <span class="font-bold text-amber-200 truncate">+Pool (${escapeHtml(getTeamName(inPool.poolHolder))})</span>
           </div>
         `);
       }
 
       if (cond) {
         badges.push(`
-          <div onclick="switchMainTab('pools')" class="pending-pool-card px-2 py-0.5 rounded-lg text-[10px] text-amber-200 cursor-pointer inline-flex items-center gap-1">
-            <i class="fa-solid fa-repeat"></i><span>Swap Rd ${cond.roundsInvolved.map(Number).join('/')}</span>
+          <div onclick="switchMainTab('pools')" class="pending-pool-card px-2 py-0.5 rounded-lg text-[10px] text-amber-200 cursor-pointer inline-flex items-center gap-1 max-w-full">
+            <i class="fa-solid fa-repeat flex-shrink-0"></i><span class="truncate">Swap Rd ${cond.roundsInvolved.map(Number).join('/')}</span>
           </div>
         `);
       }
@@ -4962,6 +5250,7 @@
       const canManagePick = uiState.isCommish || team.id === uiState.myTeam;
 
       let rowsHtml = "";
+      let mobileCardsHtml = "";
       let renderedCount = 0;
 
       for (let r = 1; r <= TOTAL_ROUNDS; r++) {
@@ -4995,9 +5284,9 @@
           const pool = outgoingPoolInRound;
           const cands = pool.candidateOriginalOwners.map(id => `${escapeHtml(getTeamName(id))}'s ${r}${getOrdinal(r)}`).join(" / ");
           holdingsPills.push(`
-            <button type="button" onclick="openInspectModalForPool('${safeId(pool.id)}')" class="pending-pool-card px-2.5 py-1 rounded-lg text-xs font-bold text-white inline-flex items-center gap-1.5 cursor-pointer">
-              <i class="fa-solid fa-hourglass-half text-amber-300"></i>
-              <span>Pending Final Pool (${cands}) → 1 to ${escapeHtml(getTeamName(pool.owedTo))}</span>
+            <button type="button" onclick="openInspectModalForPool('${safeId(pool.id)}')" class="pending-pool-card px-2.5 py-1 rounded-lg text-[11px] sm:text-xs font-bold text-white inline-flex items-center gap-1.5 cursor-pointer max-w-full text-left">
+              <i class="fa-solid fa-hourglass-half text-amber-300 flex-shrink-0"></i>
+              <span class="break-words">Pending Final Pool (${cands}) → 1 to ${escapeHtml(getTeamName(pool.owedTo))}</span>
             </button>
           `);
         } else if (isOrigHeld && uiState.ledgerFilter !== "TRADED_AWAY") {
@@ -5040,16 +5329,16 @@
             const latestReceipt = acqPick.receipts[acqPick.receipts.length - 1];
 
             holdingsPills.push(`
-              <button type="button" onclick="openInspectModalForPick(${Number(state.year)}, ${Number(r)}, '${safeId(acqPick.originalOwner)}')" class="bg-sky-950/50 hover:bg-sky-950/80 border border-sky-500/70 px-2.5 py-1 rounded-lg text-xs font-bold text-sky-200 inline-flex items-center gap-1.5 transition cursor-pointer" title="${latestReceipt ? escapeHtml(latestReceipt.headline) : `Acquired from ${origOwnerName}`}">
-                <i class="fa-solid fa-arrow-right-to-bracket text-sky-400 text-[11px]"></i>
-                <span>+${origOwnerName}'s ${r}${getOrdinal(r)}${state.orderCfg.isLocked && acqPick.overallPickNum ? ` (${escapeHtml(acqPick.formattedSlot)})` : ''}</span>
+              <button type="button" onclick="openInspectModalForPick(${Number(state.year)}, ${Number(r)}, '${safeId(acqPick.originalOwner)}')" class="bg-sky-950/50 hover:bg-sky-950/80 border border-sky-500/70 px-2.5 py-1 rounded-lg text-xs font-bold text-sky-200 inline-flex items-center gap-1.5 transition cursor-pointer max-w-full" title="${latestReceipt ? escapeHtml(latestReceipt.headline) : `Acquired from ${origOwnerName}`}">
+                <i class="fa-solid fa-arrow-right-to-bracket text-sky-400 text-[11px] flex-shrink-0"></i>
+                <span class="truncate">+${origOwnerName}'s ${r}${getOrdinal(r)}${state.orderCfg.isLocked && acqPick.overallPickNum ? ` (${escapeHtml(acqPick.formattedSlot)})` : ''}</span>
                 ${tagChip}
               </button>
             `);
 
             if (canManagePick) {
               tagToggleBtns.push(`
-                <button type="button" onclick="toggleMyPickTradeTag('${safeId(team.id)}', ${Number(state.year)}, ${Number(r)}, '${safeId(acqPick.originalOwner)}', 'ON_BLOCK')" class="px-2 py-1 rounded-md text-[10px] font-bold border transition cursor-pointer ${acqTag === 'ON_BLOCK' ? 'bg-amber-950 text-amber-300 border-amber-500' : 'bg-[#09090B] text-zinc-400 border-zinc-800 hover:text-zinc-200'}" title="Toggle ${origOwnerName}'s Rd ${r} On Trade Block">
+                <button type="button" onclick="toggleMyPickTradeTag('${safeId(team.id)}', ${Number(state.year)}, ${Number(r)}, '${safeId(acqPick.originalOwner)}', 'ON_BLOCK')" class="px-2 py-1 rounded-md text-[10px] font-bold border transition cursor-pointer max-w-[120px] truncate ${acqTag === 'ON_BLOCK' ? 'bg-amber-950 text-amber-300 border-amber-500' : 'bg-[#09090B] text-zinc-400 border-zinc-800 hover:text-zinc-200'}" title="Toggle ${origOwnerName}'s Rd ${r} On Trade Block">
                   🏷️ ${origOwnerName}
                 </button>
               `);
@@ -5062,33 +5351,35 @@
           const holderName = escapeHtml(getTeamName(pool.poolHolder));
           const cands = pool.candidateOriginalOwners.map(id => `${escapeHtml(getTeamName(id))}'s ${r}${getOrdinal(r)}`).join(" or ");
           holdingsPills.push(`
-            <button type="button" onclick="openInspectModalForPool('${safeId(pool.id)}')" class="pending-pool-card px-2.5 py-1 rounded-lg text-xs font-bold text-amber-200 inline-flex items-center gap-1.5 cursor-pointer">
-              <i class="fa-solid fa-hourglass-half text-amber-300"></i>
-              <span>+1 Pending Final from ${holderName} (${cands})</span>
+            <button type="button" onclick="openInspectModalForPool('${safeId(pool.id)}')" class="pending-pool-card px-2.5 py-1 rounded-lg text-[11px] sm:text-xs font-bold text-amber-200 inline-flex items-center gap-1.5 cursor-pointer max-w-full text-left">
+              <i class="fa-solid fa-hourglass-half text-amber-300 flex-shrink-0"></i>
+              <span class="break-words">+1 Pending Final from ${holderName} (${cands})</span>
             </button>
           `);
         }
 
         if (condInRound) {
           holdingsPills.push(`
-            <button type="button" onclick="openInspectModalForPick(${Number(state.year)}, ${Number(r)}, '${safeId(team.id)}')" class="pending-pool-card px-2.5 py-1 rounded-lg text-xs font-bold text-amber-200 inline-flex items-center gap-1.5 cursor-pointer">
-              <i class="fa-solid fa-repeat text-amber-300"></i>
-              <span>Pending Final Swap (Rd ${condInRound.roundsInvolved.map(Number).join(' or ')})</span>
+            <button type="button" onclick="openInspectModalForPick(${Number(state.year)}, ${Number(r)}, '${safeId(team.id)}')" class="pending-pool-card px-2.5 py-1 rounded-lg text-[11px] sm:text-xs font-bold text-amber-200 inline-flex items-center gap-1.5 cursor-pointer max-w-full">
+              <i class="fa-solid fa-repeat text-amber-300 flex-shrink-0"></i>
+              <span class="truncate">Pending Final Swap (Rd ${condInRound.roundsInvolved.map(Number).join(' or ')})</span>
             </button>
           `);
         }
 
         // Traded Out Pill
+        let tradedOutPillOnly = "";
         let tradedOutHtml = `<span class="text-[11px] text-zinc-600">—</span>`;
         if (isOrigTradedAway && uiState.ledgerFilter !== "HOLDINGS") {
           const currOwnerName = escapeHtml(getTeamName(myOrigPick.currentOwner));
           const latestTrade = myOrigPick.receipts[myOrigPick.receipts.length - 1];
-          tradedOutHtml = `
-            <button type="button" onclick="openInspectModalForPick(${Number(state.year)}, ${Number(r)}, '${safeId(team.id)}')" class="bg-zinc-900/90 hover:bg-zinc-800 border border-rose-800/60 px-2.5 py-1 rounded-lg text-[11px] text-zinc-300 inline-flex items-center gap-1.5 cursor-pointer transition" title="${latestTrade ? escapeHtml(latestTrade.headline) : ''}">
-              <span class="font-mono line-through text-zinc-500">Own ${r}${getOrdinal(r)}</span>
-              <span class="text-rose-400 font-bold">→ ${currOwnerName}</span>
+          tradedOutPillOnly = `
+            <button type="button" onclick="openInspectModalForPick(${Number(state.year)}, ${Number(r)}, '${safeId(team.id)}')" class="bg-zinc-900/90 hover:bg-zinc-800 border border-rose-800/60 px-2.5 py-1 rounded-lg text-[11px] text-zinc-300 inline-flex items-center gap-1.5 cursor-pointer transition max-w-full" title="${latestTrade ? escapeHtml(latestTrade.headline) : ''}">
+              <span class="font-mono line-through text-zinc-500 flex-shrink-0">Own ${r}${getOrdinal(r)}</span>
+              <span class="text-rose-400 font-bold truncate">→ ${currOwnerName}</span>
             </button>
           `;
+          tradedOutHtml = tradedOutPillOnly;
         }
 
         if (holdingsPills.length === 0) {
@@ -5098,6 +5389,23 @@
         const rowHighlight = (myAcquiredPicks.length > 0 || outgoingPoolInRound || incomingPoolInRound || condInRound)
           ? "bg-[#121215]"
           : "bg-[#09090B]/60";
+
+        mobileCardsHtml += `
+          <div class="px-3 py-2.5 space-y-1.5 ${rowHighlight}">
+            <div class="flex items-center justify-between gap-2">
+              <div class="font-mono font-black text-xs">
+                ${slotLabel}
+              </div>
+              <div class="flex flex-wrap items-center justify-end gap-1 no-print">
+                ${tagToggleBtns.join("")}
+              </div>
+            </div>
+            <div class="flex flex-wrap items-center gap-1.5 min-w-0">
+              ${holdingsPills.join("")}
+              ${tradedOutPillOnly}
+            </div>
+          </div>
+        `;
 
         rowsHtml += `
           <tr class="border-b border-zinc-800/80 hover:bg-zinc-900/70 transition ${rowHighlight}">
@@ -5124,30 +5432,39 @@
       container.innerHTML = `
         <div class="app-card overflow-hidden">
           <!-- Compact Filter & Action Header -->
-          <div class="p-3.5 sm:p-4 border-b border-zinc-800 flex flex-col sm:flex-row sm:items-center justify-between gap-2.5 bg-[#121215]">
-            <div class="flex flex-wrap items-center gap-1.5">
-              <span class="text-xs font-black uppercase tracking-wider text-white mr-1">${escapeHtml(team.name)} • ${Number(state.year)} Picks (Rds 1–20)</span>
-              <button onclick="setLedgerFilter('ALL')" class="px-2.5 py-1 rounded-lg text-xs font-bold border transition cursor-pointer ${uiState.ledgerFilter === 'ALL' ? 'bg-[#73000A] text-white border-[#CC1429]' : 'bg-[#09090B] text-zinc-400 border-zinc-800 hover:text-white'}">
+          <div class="p-3 sm:p-4 border-b border-zinc-800 flex flex-wrap items-center justify-between gap-2 bg-[#121215]">
+            <div class="flex flex-wrap items-center gap-1.5 min-w-0">
+              <span class="text-[11px] sm:text-xs font-black uppercase tracking-wider text-white mr-1 truncate max-w-full">${escapeHtml(team.name)} • ${Number(state.year)} Picks</span>
+              <button onclick="setLedgerFilter('ALL')" class="px-2 sm:px-2.5 py-1 rounded-lg text-[11px] sm:text-xs font-bold border transition cursor-pointer ${uiState.ledgerFilter === 'ALL' ? 'bg-[#73000A] text-white border-[#CC1429]' : 'bg-[#09090B] text-zinc-400 border-zinc-800 hover:text-white'}">
                 All Rounds (20)
               </button>
-              <button onclick="setLedgerFilter('HOLDINGS')" class="px-2.5 py-1 rounded-lg text-xs font-bold border transition cursor-pointer ${uiState.ledgerFilter === 'HOLDINGS' ? 'bg-[#73000A] text-white border-[#CC1429]' : 'bg-[#09090B] text-zinc-400 border-zinc-800 hover:text-white'}">
-                Held Only (${m.effectivePickCount})
+              <button onclick="setLedgerFilter('HOLDINGS')" class="px-2 sm:px-2.5 py-1 rounded-lg text-[11px] sm:text-xs font-bold border transition cursor-pointer ${uiState.ledgerFilter === 'HOLDINGS' ? 'bg-[#73000A] text-white border-[#CC1429]' : 'bg-[#09090B] text-zinc-400 border-zinc-800 hover:text-white'}">
+                Held (${m.effectivePickCount})
               </button>
-              <button onclick="setLedgerFilter('TRADED_AWAY')" class="px-2.5 py-1 rounded-lg text-xs font-bold border transition cursor-pointer ${uiState.ledgerFilter === 'TRADED_AWAY' ? 'bg-[#73000A] text-white border-[#CC1429]' : 'bg-[#09090B] text-zinc-400 border-zinc-800 hover:text-white'}">
-                Traded Out (${m.tradedAwayOriginals.length + m.outgoingPools.length})
+              <button onclick="setLedgerFilter('TRADED_AWAY')" class="px-2 sm:px-2.5 py-1 rounded-lg text-[11px] sm:text-xs font-bold border transition cursor-pointer ${uiState.ledgerFilter === 'TRADED_AWAY' ? 'bg-[#73000A] text-white border-[#CC1429]' : 'bg-[#09090B] text-zinc-400 border-zinc-800 hover:text-white'}">
+                Out (${m.tradedAwayOriginals.length + m.outgoingPools.length})
               </button>
             </div>
 
             <div class="flex items-center gap-2 no-print">
-              <button onclick="copyManagerLedgerForChat()" class="btn-action px-2.5 py-1 text-xs text-emerald-300" title="Copy formatted pick summary for group chat">
+              <button onclick="copyManagerLedgerForChat()" class="btn-action px-2.5 py-1 text-[11px] sm:text-xs text-emerald-300" title="Copy formatted pick summary for group chat">
                 <i class="fa-solid fa-copy"></i>
                 <span>Copy Picks</span>
               </button>
             </div>
           </div>
 
-          <!-- Compact 1-Line Round 1–20 Table -->
-          <div class="overflow-x-auto">
+          <!-- Mobile-Native Round 1–20 Pick Cards (Zero Horizontal Scroll) -->
+          <div id="mobileLedgerRoundCards" class="md:hidden divide-y divide-zinc-800/80">
+            ${renderedCount > 0 ? mobileCardsHtml : `
+              <div class="py-8 px-4 text-center text-xs text-zinc-500">
+                No draft picks match the selected filter for ${escapeHtml(team.name)} in ${Number(state.year)}.
+              </div>
+            `}
+          </div>
+
+          <!-- Desktop Compact 1-Line Round 1–20 Table -->
+          <div class="hidden md:block overflow-x-auto">
             <table class="w-full text-left border-collapse">
               <thead>
                 <tr class="border-b border-zinc-800 text-[10px] font-extrabold uppercase tracking-wider text-zinc-400 bg-[#09090B]">
@@ -8805,6 +9122,57 @@
         saveDatabase(true, "CLEAR_WEBHOOK_URL");
         showToast("Cleared group chat webhook.", "info");
       }
+    }
+
+    async function confirmCommissionerSyncModal() {
+      if (!requireCommish()) return;
+      const syncInp = document.getElementById("customSyncUrlInput");
+      const whInp = document.getElementById("chatWebhookUrlInput");
+      const passInp = document.getElementById("newLeaguePassphraseInput");
+      const pinInp = document.getElementById("newCommishPinInput");
+
+      const nextSync = (syncInp?.value || "").trim();
+      if (nextSync && !isValidHttpsUrl(nextSync)) {
+        showToast("Sync endpoint must be a valid https:// URL.", "error");
+        return;
+      }
+      const nextWh = (whInp?.value || "").trim();
+      if (nextWh && !isValidHttpsUrl(nextWh)) {
+        showToast("Webhook URL must be a valid https:// URL.", "error");
+        return;
+      }
+      const nextPass = (passInp?.value || "").trim().toUpperCase();
+      if (nextPass && (nextPass.length < 3 || nextPass.length > 32)) {
+        showToast("League passphrase must be between 3 and 32 characters.", "error");
+        return;
+      }
+      const nextPin = (pinInp?.value || "").trim();
+      if (nextPin && (nextPin.length < 4 || nextPin.length > 16)) {
+        showToast("Commissioner PIN must be between 4 and 16 characters.", "error");
+        return;
+      }
+
+      if (nextSync !== getActiveCloudSyncUrl()) {
+        await saveCustomSyncUrl();
+      }
+      if (nextWh !== getActiveWebhookUrl()) {
+        saveChatWebhookUrl();
+      }
+      if (nextPass) {
+        await updateLeaguePassphrase();
+      }
+      if (nextPin) {
+        await updateCommissionerPin();
+      }
+
+      if (getActiveCloudSyncUrl()) {
+        await pushAdminStateToCloud("CONFIRM_COMMISH_SETTINGS");
+      } else {
+        saveDatabase(false);
+      }
+      closeModal("cloudSyncModal");
+      renderAll();
+      showToast("✓ Confirmed & locked in Commissioner settings!", "success");
     }
 
     function updateSyncStatusUI(text, isLive = false, isWarning = false) {
