@@ -189,35 +189,69 @@
 <body class="min-h-screen flex flex-col font-sans antialiased selection:bg-rose-500 selection:text-white">
 
   <!-- ========================================================= -->
-  <!-- LIGHTWEIGHT LEAGUE PASSPHRASE GATE OVERLAY                -->
+  <!-- LIGHTWEIGHT LEAGUE PASSPHRASE & MY FRANCHISE GATE OVERLAY -->
   <!-- ========================================================= -->
-  <div id="passphraseGateOverlay" class="fixed inset-0 z-[90] bg-[#0b0f19] flex items-center justify-center p-4">
-    <div class="bg-[#111827] border border-rose-500/40 rounded-2xl max-w-md w-full p-6 sm:p-8 shadow-2xl text-center space-y-5">
+  <div id="passphraseGateOverlay" class="fixed inset-0 z-[90] bg-[#0b0f19] flex items-center justify-center p-4 overflow-y-auto">
+    <div class="bg-[#111827] border border-rose-500/40 rounded-2xl max-w-md w-full p-6 sm:p-8 shadow-2xl text-center space-y-5 my-6">
       <div class="w-16 h-16 mx-auto rounded-2xl bg-gradient-to-br from-rose-700 via-garnet-800 to-slate-950 flex items-center justify-center border border-rose-400/50 shadow-xl">
         <i class="fa-solid fa-football text-amber-400 text-2xl"></i>
       </div>
       <div class="space-y-1">
-        <span class="static-badge bg-rose-950 text-rose-300 border border-rose-700/70">Private League Access</span>
+        <span class="static-badge bg-rose-950 text-rose-300 border border-rose-700/70">Private League & Franchise Portal</span>
         <h2 class="text-xl sm:text-2xl font-black tracking-tight text-white">GAMECOCK MAFIA</h2>
-        <p class="text-xs text-slate-400">Enter the league passphrase to view live draft picks, trade receipts, and conditional swaps.</p>
+        <p class="text-xs text-slate-400">Select your franchise and enter the league passphrase to manage your team's picks, War Room trade block, and deals.</p>
       </div>
-      <div class="space-y-3">
-        <input
-          type="password"
-          id="leaguePassphraseInput"
-          maxlength="32"
-          autocomplete="off"
-          placeholder="Enter League Passphrase"
-          onkeydown="if(event.key==='Enter') authenticateLeaguePassphrase()"
-          class="w-full text-center text-lg tracking-widest uppercase bg-[#0b0f19] border border-slate-700 rounded-xl py-3 px-4 text-amber-300 font-mono font-bold focus:border-rose-500 focus:outline-none"
-        >
-        <p id="passphraseErrorMsg" class="hidden text-xs font-bold text-rose-400"></p>
+      <div class="space-y-3 text-left">
+        <div>
+          <label for="gateFranchiseSelect" class="block text-[11px] font-extrabold uppercase tracking-wider text-amber-300 mb-1">
+            1. Select My Franchise (Team Manager)
+          </label>
+          <select
+            id="gateFranchiseSelect"
+            onchange="onGateFranchiseSelectChange()"
+            class="w-full bg-[#0b0f19] border border-slate-700 rounded-xl py-2.5 px-3.5 text-white font-extrabold text-sm focus:border-rose-500 focus:outline-none cursor-pointer"
+          >
+            <!-- Populated by JS -->
+          </select>
+        </div>
+
+        <div id="gateTeamPinWrapper" class="hidden">
+          <label for="gateTeamPinInput" class="block text-[11px] font-extrabold uppercase tracking-wider text-emerald-300 mb-1">
+            <i class="fa-solid fa-lock mr-1"></i>Personal Team PIN Required for Selected Franchise
+          </label>
+          <input
+            type="password"
+            id="gateTeamPinInput"
+            maxlength="16"
+            autocomplete="off"
+            placeholder="Enter Your 4–8 Digit Team PIN"
+            onkeydown="if(event.key==='Enter') authenticateLeaguePassphrase()"
+            class="w-full text-center text-base tracking-widest bg-[#0b0f19] border border-emerald-600/60 rounded-xl py-2.5 px-4 text-emerald-300 font-mono font-bold focus:border-emerald-400 focus:outline-none"
+          >
+        </div>
+
+        <div id="gatePassphraseWrapper">
+          <label for="leaguePassphraseInput" class="block text-[11px] font-extrabold uppercase tracking-wider text-rose-300 mb-1">
+            2. League Passphrase
+          </label>
+          <input
+            type="password"
+            id="leaguePassphraseInput"
+            maxlength="32"
+            autocomplete="off"
+            placeholder="Enter League Passphrase"
+            onkeydown="if(event.key==='Enter') authenticateLeaguePassphrase()"
+            class="w-full text-center text-lg tracking-widest uppercase bg-[#0b0f19] border border-slate-700 rounded-xl py-2.5 px-4 text-amber-300 font-mono font-bold focus:border-rose-500 focus:outline-none"
+          >
+        </div>
+
+        <p id="passphraseErrorMsg" class="hidden text-xs font-bold text-rose-400 text-center"></p>
         <button onclick="authenticateLeaguePassphrase()" class="w-full btn-garnet py-3 text-sm">
           <i class="fa-solid fa-unlock-keyhole"></i>
-          <span>Unlock League Tracker</span>
+          <span id="gateUnlockBtnLabel">Claim My Team & Unlock Tracker</span>
         </button>
       </div>
-      <p class="text-[11px] text-slate-500">Device remembers access once unlocked • Est. 2018</p>
+      <p class="text-[11px] text-slate-500">Device remembers your franchise & access once unlocked • Est. 2018</p>
     </div>
   </div>
 
@@ -244,8 +278,12 @@
             </div>
           </div>
 
-          <!-- Mobile Commissioner Button -->
+          <!-- Mobile Manager & Commissioner Buttons -->
           <div class="flex items-center gap-1.5 lg:hidden">
+            <button onclick="openSwitchFranchiseGate()" id="mobileMyTeamBadgeBtn" class="btn-action px-2.5 py-1.5 text-[11px] text-amber-300" title="Switch or manage your claimed franchise">
+              <i class="fa-solid fa-helmet-safety text-rose-400"></i>
+              <span id="mobileMyTeamBadgeLabel">My Team</span>
+            </button>
             <button onclick="performUndo()" id="mobileUndoBtn" class="hidden btn-action px-2.5 py-1.5 text-xs text-amber-300" title="Undo last change">
               <i class="fa-solid fa-rotate-left"></i>
             </button>
@@ -270,6 +308,12 @@
 
         <!-- Right: Primary Action Buttons -->
         <div class="flex flex-wrap items-center gap-2 self-end lg:self-auto">
+          <button onclick="openSwitchFranchiseGate()" id="desktopMyTeamBadgeBtn" class="hidden lg:inline-flex btn-action border-rose-500/50 px-3 py-2 text-xs text-amber-300" title="Switch active franchise identity on this device">
+            <i class="fa-solid fa-helmet-safety text-rose-400"></i>
+            <span id="desktopMyTeamBadgeLabel">My Team: Syeth</span>
+            <span class="text-[10px] text-slate-400 ml-0.5">⇄</span>
+          </button>
+
           <button onclick="performUndo()" id="desktopUndoBtn" class="hidden btn-action px-3 py-2 text-xs text-amber-300" title="Undo Last Action (Ctrl+Z)">
             <i class="fa-solid fa-rotate-left"></i>
             <span id="desktopUndoLabel">Undo</span>
@@ -277,7 +321,7 @@
 
           <button onclick="openContextualTradeModal()" class="btn-garnet px-3.5 py-2 text-xs sm:text-sm">
             <i class="fa-solid fa-plus"></i>
-            <span>Log Trade</span>
+            <span id="headerLogTradeBtnLabel">Log My Team Trade</span>
           </button>
 
           <button onclick="openPinModal()" id="desktopCommishBtn" class="hidden lg:inline-flex btn-action px-3.5 py-2 text-xs sm:text-sm text-slate-200">
@@ -292,7 +336,7 @@
       <nav class="flex items-center space-x-1 sm:space-x-2 pt-1 overflow-x-auto no-scrollbar border-t border-slate-800/80">
         <button onclick="switchMainTab('ledger')" id="navTab-ledger" class="nav-tab-btn px-4 py-3 text-xs sm:text-sm font-bold border-b-2 transition whitespace-nowrap flex items-center gap-2 cursor-pointer">
           <i class="fa-solid fa-folder-tree"></i>
-          <span>1. Team Pick Ledger & Compare</span>
+          <span>1. My Team Hub & Compare</span>
         </button>
 
         <button onclick="switchMainTab('pools')" id="navTab-pools" class="nav-tab-btn px-4 py-3 text-xs sm:text-sm font-bold border-b-2 transition whitespace-nowrap flex items-center gap-2 cursor-pointer">
@@ -343,8 +387,8 @@
         <!-- Uniform Side-by-Side Dropdown Boxes -->
         <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 w-full xl:w-auto xl:min-w-[600px]">
           <div>
-            <label for="ledgerManagerSelect" class="block text-[11px] font-extrabold uppercase tracking-wider text-rose-400 mb-1">
-              Team 1 (Primary Ledger)
+            <label for="ledgerManagerSelect" id="ledgerManagerSelectLabel" class="block text-[11px] font-extrabold uppercase tracking-wider text-rose-400 mb-1">
+              Team 1 (My Franchise — Locked to Your Team)
             </label>
             <select id="ledgerManagerSelect" onchange="selectManagerInLedger(this.value)" class="w-full bg-[#0b0f19] text-white font-extrabold text-xs sm:text-sm rounded-xl px-3.5 py-2.5 border border-slate-700 focus:outline-none focus:border-rose-400 cursor-pointer">
               <!-- Populated by JS -->
@@ -352,8 +396,8 @@
           </div>
 
           <div id="compareManagerBWrapper">
-            <label for="ledgerCompareManagerSelect" class="block text-[11px] font-extrabold uppercase tracking-wider text-sky-400 mb-1">
-              Compare With (Team 2)
+            <label for="ledgerCompareManagerSelect" id="ledgerCompareManagerSelectLabel" class="block text-[11px] font-extrabold uppercase tracking-wider text-sky-400 mb-1">
+              Compare / Scout Other Team (Team 2)
             </label>
             <select id="ledgerCompareManagerSelect" onchange="selectCompareManagerB(this.value)" class="w-full bg-[#0b0f19] text-white font-extrabold text-xs sm:text-sm rounded-xl px-3.5 py-2.5 border border-slate-700 focus:outline-none focus:border-sky-400 cursor-pointer">
               <!-- Populated by JS (Option 0: Single Team View / None + 9 comparison managers) -->
@@ -383,6 +427,11 @@
 
       <!-- Collapsible 10-Team Draft Capital Overview Gauge -->
       <div id="leagueCapitalDrawer" class="hidden bg-[#111827] border border-amber-500/40 rounded-2xl p-4 sm:p-5 shadow-xl space-y-3">
+        <!-- Populated by JS -->
+      </div>
+
+      <!-- My Team War Room & League Trade Block Panel -->
+      <div id="teamWarRoomContainer" class="no-print">
         <!-- Populated by JS -->
       </div>
 
@@ -501,7 +550,7 @@
             <i class="fa-solid fa-receipt text-amber-400"></i>
             <span id="feedTitleText">Official Unified Trade Receipts</span>
           </h2>
-          <p class="text-xs text-slate-400">All 10 managers can log final trades directly • Conditional items remain Pending Final until Admin resolution</p>
+          <p class="text-xs text-slate-400">Managers can log official trades for their own team directly • Conditional items remain Pending Final until Admin resolution</p>
         </div>
 
         <div class="flex flex-wrap items-center gap-2.5">
@@ -539,7 +588,7 @@
   <footer id="appFooterShell" class="hidden bg-[#111827] border-t border-slate-800/90 py-5 mt-12">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-slate-400">
       <div class="flex flex-wrap items-center gap-2">
-        <span class="font-bold text-slate-200">Gamecock Mafia Draft & Pick Tracker v5.0 Beta</span>
+        <span class="font-bold text-slate-200">Gamecock Mafia Draft & Pick Tracker v5.1</span>
         <span>•</span>
         <span id="syncStatusDot" class="w-2 h-2 rounded-full bg-emerald-400 inline-block"></span>
         <span id="syncStatusText" class="text-slate-300">Ready</span>
@@ -603,7 +652,7 @@
             <h3 id="tradeModalHeading" class="text-lg font-black text-white">Log League Trade</h3>
             <span id="tradeModalModeBadge" class="static-badge bg-rose-950 text-rose-300 border border-rose-700"></span>
           </div>
-          <p class="text-xs text-slate-400 mt-0.5">All 10 managers can log final trades directly. Any multi-pick pools or conditional round swaps are marked <strong class="text-pending-300">Pending Final</strong> until finalized in Admin Mode.</p>
+          <p id="tradeModalSubheadingText" class="text-xs text-slate-400 mt-0.5">Log an official trade involving your franchise. Any multi-pick pools or conditional round swaps are marked <strong class="text-pending-300">Pending Final</strong> until finalized in Admin Mode.</p>
         </div>
         <button onclick="closeModal('tradeModal')" class="btn-action px-2.5 py-1 text-xs text-slate-300">
           <i class="fa-solid fa-xmark"></i> Close
@@ -624,11 +673,11 @@
           </div>
           <div class="grid grid-cols-1 sm:grid-cols-3 gap-3" id="tradeManagersGrid">
             <div>
-              <label class="block text-[11px] font-semibold text-slate-400 mb-1">Manager 1</label>
+              <label id="formTeamALabel" class="block text-[11px] font-semibold text-rose-300 mb-1">Manager 1 (My Franchise)</label>
               <select id="formTeamA" required onchange="refreshQuickPickRows()" class="w-full bg-[#0b0f19] text-white font-bold rounded-xl px-3 py-2.5 border border-slate-700 focus:border-rose-500 focus:outline-none"></select>
             </div>
             <div>
-              <label class="block text-[11px] font-semibold text-slate-400 mb-1">Manager 2</label>
+              <label class="block text-[11px] font-semibold text-sky-300 mb-1">Trade Partner (Manager 2)</label>
               <select id="formTeamB" required onchange="refreshQuickPickRows()" class="w-full bg-[#0b0f19] text-white font-bold rounded-xl px-3 py-2.5 border border-slate-700 focus:border-rose-500 focus:outline-none"></select>
             </div>
             <div id="formTeamCContainer" class="hidden">
@@ -862,7 +911,7 @@
             <i class="fa-solid fa-cloud text-sky-400"></i>
             <span>Commissioner Live Sync, Backup & Security Settings</span>
           </h3>
-          <p class="text-xs text-slate-400">Configure GitHub Pages + Google Sheet 2-way live sync, chat alerts, league passphrase, and Admin PIN.</p>
+          <p class="text-xs text-slate-400">Configure GitHub Pages + Google Sheet 2-way live sync, chat alerts, league passphrase, Admin PIN, and manager PIN resets.</p>
         </div>
         <button onclick="closeModal('cloudSyncModal')" class="btn-action px-2.5 py-1 text-xs text-slate-300">
           <i class="fa-solid fa-xmark"></i> Close
@@ -930,6 +979,17 @@
               <input type="password" id="newCommishPinInput" minlength="4" maxlength="16" autocomplete="new-password" placeholder="New PIN (4–16)" class="flex-1 bg-slate-900 text-white rounded-lg px-2.5 py-2 border border-slate-700 focus:border-amber-500 focus:outline-none font-mono text-xs">
               <button onclick="updateCommissionerPin()" class="btn-action border-amber-500/60 text-amber-300 px-3 py-2 text-xs whitespace-nowrap">Update</button>
             </div>
+          </div>
+        </div>
+
+        <!-- 5. Commissioner Manager Team PIN Reset & Overview -->
+        <div class="bg-[#0b0f19] border border-slate-800 rounded-xl p-4 space-y-2.5">
+          <div class="font-bold text-emerald-300 uppercase"><i class="fa-solid fa-users-gear mr-1"></i>5. Franchise Manager Personal Team PINs (Admin Reset)</div>
+          <p class="text-slate-400 text-[11px]">
+            Managers can optionally set a personal 4–8 digit PIN on their franchise War Room to lock their team identity. If a manager forgets their Team PIN, you can clear it here.
+          </p>
+          <div id="adminTeamPinManagerList" class="grid grid-cols-2 sm:grid-cols-5 gap-2 pt-1">
+            <!-- Populated by JS -->
           </div>
         </div>
       </div>
@@ -1457,6 +1517,8 @@
     const SYNC_URL_STORAGE_KEY = "gamecock_mafia_sync_url";
     const WEBHOOK_URL_STORAGE_KEY = "gamecock_mafia_webhook_url";
     const PASSPHRASE_STORAGE_KEY = "gamecock_mafia_pass_hash";
+    const MY_TEAM_STORAGE_KEY = "gamecock_mafia_my_team";
+    const MY_TEAM_PIN_STORAGE_KEY = "gamecock_mafia_my_team_pin_map";
     const TOTAL_ROUNDS = 20;
     const PASSPHRASE_SALT = "gcm_pass_v5:";
     const PASSPHRASE_VERIFIER_SALT = "gcm_pass_verifier_v5:";
@@ -1464,6 +1526,7 @@
     const PIN_SALT = "gcm_v4_salt:";
     const PIN_VERIFIER_SALT = "gcm_pin_verifier_v5:";
     const DEFAULT_PIN_VERIFIER = "f03f4a5f4e5dc70446e6a5191311eb62fb045b12440f99b4bdb49c5e4048bb59";
+    const TEAM_PIN_SALT = "gcm_team_pin_v5:";
     const URL_CIPHER_SALT = "gcm_url_cipher_v5:";
     // Passphrase-encrypted Google Apps Script /exec endpoint (decrypts in-memory upon unlock; never exposed in plaintext in public repo)
     const DEFAULT_ENCRYPTED_SYNC_URL = "ea6e4579eca7e2d4f5ae7d1858ec182b79ad5a18b3baac29253084d14d45031cf418be69f7373c0b3bbd0dfb97c8be8bc93c854342b2a7b6c1f4ff90e2f03524f8d6d7944110421831469af3cd4efaa5c0845aa92d7b7368038c6fc5cf2c400a134cc1e320d6b065da6e17ea9976d4a7";
@@ -1478,6 +1541,8 @@
       passLockoutUntil: 0,
       lastSyncedAt: 0,
       hasUnpublishedAdminEdits: false,
+      myTeam: "syeth",              // Claimed franchise for this manager in standard mode
+      myTeamPinHash: "",
       activeYear: 2027,
       activeTab: "ledger",          // 'ledger' | 'pools' | 'board' | 'feed'
       selectedManager: "syeth",
@@ -1758,6 +1823,13 @@
       delete copy.chatWebhookUrl;
       delete copy.commishPinHash;
       delete copy.leaguePassphraseHash;
+      if (copy.teamProfiles && typeof copy.teamProfiles === "object") {
+        for (const tid of Object.keys(copy.teamProfiles)) {
+          if (copy.teamProfiles[tid] && typeof copy.teamProfiles[tid] === "object") {
+            delete copy.teamProfiles[tid].teamPinHash;
+          }
+        }
+      }
       if (!copy.encryptedCloudSyncUrl && DEFAULT_ENCRYPTED_SYNC_URL) {
         copy.encryptedCloudSyncUrl = DEFAULT_ENCRYPTED_SYNC_URL;
       }
@@ -1877,11 +1949,54 @@
         }
       }
 
+      const validTeamIdSet = new Set(validTeams.map(t => t.id));
+      const sanitizedProfiles = {};
+      validTeams.forEach(t => {
+        sanitizedProfiles[t.id] = {
+          tradeBlockNote: "",
+          lookingFor: "",
+          pickTags: {},
+          updatedAt: 0
+        };
+      });
+      if (raw.teamProfiles && typeof raw.teamProfiles === "object" && !Array.isArray(raw.teamProfiles)) {
+        for (const [tidRaw, pRaw] of Object.entries(raw.teamProfiles)) {
+          const tid = safeId(tidRaw);
+          if (!validTeamIdSet.has(tid) || !pRaw || typeof pRaw !== "object") continue;
+          const cleanTags = {};
+          if (pRaw.pickTags && typeof pRaw.pickTags === "object" && !Array.isArray(pRaw.pickTags)) {
+            const tagKeys = Object.keys(pRaw.pickTags).slice(0, 80);
+            for (const k of tagKeys) {
+              if (/^\d{4}-\d{1,2}-[A-Za-z0-9_.-]+$/.test(k)) {
+                const v = pRaw.pickTags[k];
+                if (v === "ON_BLOCK" || v === "UNTOUCHABLE") {
+                  cleanTags[k] = v;
+                }
+              }
+            }
+          }
+          const prof = {
+            tradeBlockNote: cleanStr(pRaw.tradeBlockNote, 240).trim(),
+            lookingFor: cleanStr(pRaw.lookingFor, 160).trim(),
+            pickTags: cleanTags,
+            updatedAt: Number(pRaw.updatedAt) > 0 ? Number(pRaw.updatedAt) : 0
+          };
+          if (typeof pRaw.teamPinVerifier === "string" && /^[a-f0-9]{64}$/i.test(pRaw.teamPinVerifier)) {
+            prof.teamPinVerifier = pRaw.teamPinVerifier.toLowerCase();
+          }
+          if (typeof pRaw.teamPinHash === "string" && /^[a-f0-9]{64}$/i.test(pRaw.teamPinHash)) {
+            prof.teamPinHash = pRaw.teamPinHash.toLowerCase();
+          }
+          sanitizedProfiles[tid] = prof;
+        }
+      }
+
       const out = {
-        version: "5.0",
+        version: "5.1",
         updatedAt: Number(raw.updatedAt) > 0 ? Number(raw.updatedAt) : 0,
         baseUpcomingYear: Math.min(2035, Math.max(2026, Number(raw.baseUpcomingYear) || 2027)),
         teams: validTeams,
+        teamProfiles: sanitizedProfiles,
         trades: raw.trades.slice(0, 500).map(sanitizeTrade).filter(Boolean),
         pendingTrades: Array.isArray(raw.pendingTrades)
           ? raw.pendingTrades.slice(0, 100).map(sanitizeTrade).filter(Boolean)
@@ -1967,14 +2082,24 @@
     }
 
     function createDefaultDatabase() {
+      const defaultProfiles = {};
+      DEFAULT_TEAMS.forEach(t => {
+        defaultProfiles[t.id] = {
+          tradeBlockNote: "",
+          lookingFor: "",
+          pickTags: {},
+          updatedAt: 0
+        };
+      });
       return {
-        version: "5.0",
+        version: "5.1",
         updatedAt: 0,
         baseUpcomingYear: 2027,
         leaguePassphraseVerifier: DEFAULT_PASSPHRASE_VERIFIER,
         commishPinVerifier: DEFAULT_PIN_VERIFIER,
         encryptedCloudSyncUrl: DEFAULT_ENCRYPTED_SYNC_URL,
         teams: JSON.parse(JSON.stringify(DEFAULT_TEAMS)),
+        teamProfiles: defaultProfiles,
         trades: JSON.parse(JSON.stringify(SEED_TRADES)),
         pendingTrades: [],
         draftOrders: {
@@ -2078,6 +2203,19 @@
           };
         }
       });
+      if (!leagueDB.teamProfiles || typeof leagueDB.teamProfiles !== "object") {
+        leagueDB.teamProfiles = {};
+      }
+      (leagueDB.teams || DEFAULT_TEAMS).forEach(t => {
+        if (!leagueDB.teamProfiles[t.id]) {
+          leagueDB.teamProfiles[t.id] = {
+            tradeBlockNote: "",
+            lookingFor: "",
+            pickTags: {},
+            updatedAt: 0
+          };
+        }
+      });
     }
 
     function getVisibleDraftYears() {
@@ -2110,19 +2248,31 @@
 
     /**
      * Reads personalized URL query parameters (?team=syeth&compare=corbyn&year=2027&tab=ledger)
-     * so each manager can bookmark or Add to Home Screen directly to their own franchise!
+     * and saved localStorage My Franchise identity so each manager opens directly into their own team!
      */
     function applyUrlDeepLinksOnLoad() {
+      const validTeamIds = new Set((leagueDB?.teams || DEFAULT_TEAMS).map(t => t.id));
+      let savedTeam = "";
+      try {
+        savedTeam = safeId(localStorage.getItem(MY_TEAM_STORAGE_KEY) || "").toLowerCase();
+      } catch (e) {
+        savedTeam = "";
+      }
+      if (savedTeam && validTeamIds.has(savedTeam)) {
+        uiState.myTeam = savedTeam;
+        uiState.selectedManager = savedTeam;
+      }
+
       try {
         if (!window.location.search) return;
         const params = new URLSearchParams(window.location.search);
-        const validTeamIds = new Set((leagueDB?.teams || DEFAULT_TEAMS).map(t => t.id));
         const qTeam = safeId(params.get("team") || "").toLowerCase();
         const qCompare = safeId(params.get("compare") || "").toLowerCase();
         const qYear = Number(params.get("year"));
         const qTab = (params.get("tab") || "").toLowerCase();
 
         if (qTeam && validTeamIds.has(qTeam)) {
+          uiState.myTeam = qTeam;
           uiState.selectedManager = qTeam;
         }
         if (qCompare && validTeamIds.has(qCompare) && qCompare !== uiState.selectedManager) {
@@ -2142,7 +2292,7 @@
 
     function buildPersonalizedQueryString() {
       const params = new URLSearchParams();
-      params.set("team", uiState.selectedManager || "syeth");
+      params.set("team", (uiState.isCommish ? uiState.selectedManager : uiState.myTeam) || "syeth");
       if (uiState.ledgerViewMode === "COMPARE" && uiState.compareManagerB && uiState.compareManagerB !== "NONE") {
         params.set("compare", uiState.compareManagerB);
       }
@@ -2514,8 +2664,14 @@
       if (!uiState.isLeagueUnlocked) return;
 
       ensureRollingWindowYearsExist();
+      // In standard manager mode, Team 1 is always locked to the manager's claimed franchise
+      if (!uiState.isCommish) {
+        uiState.selectedManager = uiState.myTeam || "syeth";
+      }
+
       renderDynamicYearTabs();
       updateUndoButtonUI();
+      updateMyTeamHeaderBadges();
 
       // Keep URL query parameters synced to current team/year/tab for 1-tap bookmarking
       try {
@@ -2582,6 +2738,7 @@
 
       if (uiState.activeTab === "ledger") {
         renderManagerSelectorGrid(state);
+        renderTeamWarRoomSection(state);
         renderLeagueCapitalDrawer(state);
         if (uiState.ledgerViewMode === "COMPARE") {
           renderTwoTeamComparisonLedger(state);
@@ -2594,6 +2751,19 @@
         renderDraftBoardSection(state);
       } else if (uiState.activeTab === "feed") {
         renderTradeFeedSection(state);
+      }
+    }
+
+    function updateMyTeamHeaderBadges() {
+      const myName = getTeamName(uiState.myTeam || "syeth");
+      const hasPin = doesTeamHavePersonalPin(uiState.myTeam);
+      const dLbl = document.getElementById("desktopMyTeamBadgeLabel");
+      const mLbl = document.getElementById("mobileMyTeamBadgeLabel");
+      const tradeBtnLbl = document.getElementById("headerLogTradeBtnLabel");
+      if (dLbl) dLbl.textContent = `My Team: ${myName}${hasPin ? " 🔒" : ""}`;
+      if (mLbl) mLbl.textContent = `${myName}${hasPin ? " 🔒" : ""}`;
+      if (tradeBtnLbl) {
+        tradeBtnLbl.textContent = uiState.isCommish ? "Log Any Trade" : `Log ${myName} Trade`;
       }
     }
 
@@ -2769,6 +2939,17 @@
     function renderManagerSelectorGrid(state) {
       const selectEl = document.getElementById("ledgerManagerSelect");
       const compareSelectEl = document.getElementById("ledgerCompareManagerSelect");
+      const lblA = document.getElementById("ledgerManagerSelectLabel");
+
+      if (!uiState.isCommish) {
+        uiState.selectedManager = uiState.myTeam || "syeth";
+      }
+
+      if (lblA) {
+        lblA.innerHTML = uiState.isCommish
+          ? `<i class="fa-solid fa-user-shield text-emerald-400 mr-1"></i>Team 1 (Admin: Manage Any Franchise)`
+          : `<i class="fa-solid fa-id-badge text-amber-400 mr-1"></i>Team 1 (My Franchise — Locked to ${escapeHtml(getTeamName(uiState.myTeam))})`;
+      }
 
       if (uiState.compareManagerB && uiState.compareManagerB !== "NONE" && uiState.compareManagerB !== uiState.selectedManager) {
         uiState.ledgerViewMode = "COMPARE";
@@ -2787,9 +2968,13 @@
         return `<option value="${safeId(team.id)}" ${isSelected ? "selected" : ""}>${escapeHtml(team.name)} — ${m.effectivePickCount} Picks (+${inCount} / -${outCount}${pendingTag})</option>`;
       };
 
-      // Uniform dropdown options for Team 1 and Compare With (Team 2)
+      // In standard mode, Team 1 dropdown only lists the manager's own franchise and is locked; in Admin mode, all 10 teams are selectable
       if (selectEl) {
-        selectEl.innerHTML = leagueDB.teams.map(team => buildOptionHtml(team, uiState.selectedManager)).join("");
+        const teamsForSelectA = uiState.isCommish
+          ? leagueDB.teams
+          : leagueDB.teams.filter(t => t.id === uiState.myTeam);
+        selectEl.innerHTML = teamsForSelectA.map(team => buildOptionHtml(team, uiState.selectedManager)).join("");
+        selectEl.disabled = !uiState.isCommish;
       }
       if (compareSelectEl) {
         const noneOpt = `<option value="NONE" ${uiState.compareManagerB === "NONE" ? "selected" : ""}>— Single Team View (None) —</option>`;
@@ -2799,6 +2984,224 @@
           .join("");
         compareSelectEl.innerHTML = noneOpt + teamOpts;
       }
+    }
+
+    function getTeamProfile(teamId) {
+      const tid = safeId(teamId);
+      if (!leagueDB.teamProfiles) leagueDB.teamProfiles = {};
+      if (!leagueDB.teamProfiles[tid]) {
+        leagueDB.teamProfiles[tid] = {
+          tradeBlockNote: "",
+          lookingFor: "",
+          pickTags: {},
+          updatedAt: 0
+        };
+      }
+      return leagueDB.teamProfiles[tid];
+    }
+
+    function getPickTradeTag(teamId, year, round, originalOwner) {
+      const prof = leagueDB?.teamProfiles?.[safeId(teamId)];
+      if (!prof || !prof.pickTags) return "";
+      const key = `${Number(year)}-${Number(round)}-${safeId(originalOwner)}`;
+      return prof.pickTags[key] || "";
+    }
+
+    function renderPickTradeTagBadgeHtml(tag) {
+      if (tag === "ON_BLOCK") {
+        return `<span class="static-badge bg-amber-950 text-amber-300 border border-amber-500/80"><i class="fa-solid fa-tag"></i> On Trade Block</span>`;
+      }
+      if (tag === "UNTOUCHABLE") {
+        return `<span class="static-badge bg-indigo-950 text-indigo-300 border border-indigo-500/80"><i class="fa-solid fa-lock"></i> Untouchable</span>`;
+      }
+      return "";
+    }
+
+    async function toggleMyPickTradeTag(teamId, year, round, originalOwner, tagType) {
+      const tid = safeId(teamId);
+      if (!uiState.isCommish && tid !== uiState.myTeam) {
+        showToast(`You can only manage pick availability for your own franchise (${getTeamName(uiState.myTeam)}).`, "error");
+        return;
+      }
+      const prof = getTeamProfile(tid);
+      if (!prof.pickTags) prof.pickTags = {};
+      const key = `${Number(year)}-${Number(round)}-${safeId(originalOwner)}`;
+      const current = prof.pickTags[key] || "";
+      if (current === tagType) {
+        delete prof.pickTags[key];
+      } else {
+        prof.pickTags[key] = tagType;
+      }
+      prof.updatedAt = Date.now();
+      leagueDB.updatedAt = Date.now();
+      saveDatabase(false);
+      renderAll();
+      const label = prof.pickTags[key] === "ON_BLOCK"
+        ? "marked On Trade Block 🏷️"
+        : prof.pickTags[key] === "UNTOUCHABLE"
+        ? "marked Untouchable 🛡️"
+        : "cleared from Trade Block";
+      showToast(`${getTeamName(originalOwner)}'s ${year} Rd ${round} ${label}!`, "success");
+      await pushTeamProfileToCloud(tid);
+    }
+
+    async function saveMyTeamWarRoom() {
+      const managedTeamId = uiState.isCommish ? uiState.selectedManager : uiState.myTeam;
+      if (!uiState.isCommish && managedTeamId !== uiState.myTeam) {
+        showToast("You can only edit your own franchise War Room.", "error");
+        return;
+      }
+      const noteEl = document.getElementById("warRoomBlockNoteInput");
+      const lookEl = document.getElementById("warRoomLookingForInput");
+      const prof = getTeamProfile(managedTeamId);
+      prof.tradeBlockNote = cleanStr(noteEl ? noteEl.value : "", 240).trim();
+      prof.lookingFor = cleanStr(lookEl ? lookEl.value : "", 160).trim();
+      prof.updatedAt = Date.now();
+      leagueDB.updatedAt = Date.now();
+      saveDatabase(false);
+      renderAll();
+      showToast(`Saved ${getTeamName(managedTeamId)}'s Trade Block & Team Needs!`, "success");
+      await pushTeamProfileToCloud(managedTeamId);
+    }
+
+    function renderTeamWarRoomSection(state) {
+      const box = document.getElementById("teamWarRoomContainer");
+      if (!box) return;
+      if (!state) state = evaluateYearState(uiState.selectedYear);
+
+      const managedTeamId = uiState.isCommish ? uiState.selectedManager : uiState.myTeam;
+      const managedName = escapeHtml(getTeamName(managedTeamId));
+      const prof = getTeamProfile(managedTeamId);
+      const hasPin = doesTeamHavePersonalPin(managedTeamId);
+
+      // Build League-Wide Active Trade Block items across all 10 teams
+      const activeBlockEntries = [];
+      leagueDB.teams.forEach(t => {
+        const tp = getTeamProfile(t.id);
+        const onBlockPicks = [];
+        for (const [k, v] of Object.entries(tp.pickTags || {})) {
+          if (v !== "ON_BLOCK") continue;
+          const parts = k.split("-");
+          const yr = Number(parts[0]);
+          const rd = Number(parts[1]);
+          const orig = parts.slice(2).join("-");
+          // Verify team still currently owns this pick in yr
+          const yrState = yr === state.year ? state : evaluateYearState(yr);
+          const pickObj = yrState.picks.find(p => p.round === rd && p.originalOwner === orig && p.currentOwner === t.id);
+          if (pickObj) {
+            onBlockPicks.push({
+              year: yr,
+              round: rd,
+              originalOwner: orig,
+              label: `${yr} Rd ${rd}${orig !== t.id ? ` (${getTeamName(orig)}'s)` : ""}`
+            });
+          }
+        }
+        if (tp.tradeBlockNote || tp.lookingFor || onBlockPicks.length > 0) {
+          activeBlockEntries.push({
+            team: t,
+            tradeBlockNote: tp.tradeBlockNote,
+            lookingFor: tp.lookingFor,
+            onBlockPicks
+          });
+        }
+      });
+
+      const activeBlockHtml = activeBlockEntries.length === 0
+        ? `<div class="bg-[#0b0f19] border border-slate-800/80 rounded-xl p-3.5 text-xs text-slate-400">
+             No franchises have posted Trade Block notes or tagged picks as <strong class="text-amber-300">On Block</strong> yet. Post your team needs on the left or click <strong class="text-amber-300">🏷️ On Block</strong> on any pick below!
+           </div>`
+        : `<div class="space-y-2 max-h-52 overflow-y-auto pr-1">
+             ${activeBlockEntries.map(entry => {
+               const isMe = entry.team.id === uiState.myTeam;
+               return `
+                 <div class="bg-[#0b0f19] border ${isMe ? 'border-amber-500/50' : 'border-slate-800'} rounded-xl p-3 flex flex-col sm:flex-row sm:items-center justify-between gap-2.5">
+                   <div class="space-y-1">
+                     <div class="flex flex-wrap items-center gap-2">
+                       <span class="text-xs font-black text-white">${escapeHtml(entry.team.name)}</span>
+                       ${isMe ? `<span class="static-badge bg-amber-950 text-amber-300 border border-amber-500/60">My Team</span>` : ''}
+                       ${entry.lookingFor ? `<span class="static-badge bg-sky-950 text-sky-300 border border-sky-700/70">Seeking: ${escapeHtml(entry.lookingFor)}</span>` : ''}
+                     </div>
+                     ${entry.tradeBlockNote ? `<p class="text-xs text-slate-200">${escapeHtml(entry.tradeBlockNote)}</p>` : ''}
+                     ${entry.onBlockPicks.length > 0 ? `
+                       <div class="flex flex-wrap items-center gap-1.5 pt-0.5">
+                         <span class="text-[10px] font-bold uppercase text-amber-400">Picks OTB:</span>
+                         ${entry.onBlockPicks.map(pk => `<span class="px-2 py-0.5 rounded bg-amber-950/90 border border-amber-500/60 text-[10px] font-mono font-bold text-amber-200">${escapeHtml(pk.label)}</span>`).join("")}
+                       </div>
+                     ` : ''}
+                   </div>
+                   <div class="flex items-center gap-1.5 self-start sm:self-auto flex-shrink-0">
+                     ${entry.team.id !== uiState.selectedManager ? `
+                       <button onclick="compareWithSelectedManager('${safeId(entry.team.id)}')" class="btn-action px-2.5 py-1 text-[11px] text-sky-300" title="Compare your picks side-by-side with ${escapeHtml(entry.team.name)}">
+                         Compare ⚖
+                       </button>
+                       <button onclick="openTradeModalWithPair('${safeId(uiState.selectedManager)}', '${safeId(entry.team.id)}')" class="btn-garnet px-2.5 py-1 text-[11px]" title="Log a trade with ${escapeHtml(entry.team.name)}">
+                         Trade ⇄
+                       </button>
+                     ` : ''}
+                   </div>
+                 </div>
+               `;
+             }).join("")}
+           </div>`;
+
+      box.innerHTML = `
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-4 bg-[#111827] border border-slate-800 rounded-2xl p-4 shadow-lg">
+          <!-- Left: My Franchise War Room Controls -->
+          <div class="lg:col-span-6 space-y-3 border-b lg:border-b-0 lg:border-r border-slate-800 pb-4 lg:pb-0 lg:pr-4">
+            <div class="flex flex-wrap items-center justify-between gap-2">
+              <div class="flex items-center gap-2">
+                <span class="static-badge bg-amber-950 text-amber-300 border border-amber-500/70">
+                  <i class="fa-solid fa-helmet-safety"></i> ${uiState.isCommish ? `${managedName} War Room (Admin)` : `My Franchise War Room (${managedName})`}
+                </span>
+                ${hasPin ? `<span class="static-badge bg-emerald-950 text-emerald-300 border border-emerald-600/70"><i class="fa-solid fa-lock"></i> PIN Locked</span>` : ''}
+              </div>
+              <button onclick="saveMyTeamWarRoom()" class="btn-garnet px-3 py-1 text-xs">
+                <i class="fa-solid fa-bullhorn"></i>
+                <span>Post to Trade Block</span>
+              </button>
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-12 gap-2.5">
+              <div class="sm:col-span-7">
+                <label for="warRoomBlockNoteInput" class="block text-[10px] font-extrabold uppercase tracking-wider text-slate-400 mb-1">Trade Block Headline / Availability</label>
+                <input id="warRoomBlockNoteInput" type="text" maxlength="240" value="${escapeHtml(prof.tradeBlockNote || "")}" placeholder="e.g., Shopping 2027 2nd & WR depth for an RB1" class="w-full bg-[#0b0f19] text-white text-xs rounded-lg px-3 py-2 border border-slate-700 focus:border-amber-500 focus:outline-none">
+              </div>
+              <div class="sm:col-span-5">
+                <label for="warRoomLookingForInput" class="block text-[10px] font-extrabold uppercase tracking-wider text-slate-400 mb-1">Seeking / Team Needs</label>
+                <input id="warRoomLookingForInput" type="text" maxlength="160" value="${escapeHtml(prof.lookingFor || "")}" placeholder="e.g., RB, Early 2027 Picks" class="w-full bg-[#0b0f19] text-white text-xs rounded-lg px-3 py-2 border border-slate-700 focus:border-amber-500 focus:outline-none">
+              </div>
+            </div>
+
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 pt-1 text-[11px] text-slate-400">
+              <span><i class="fa-solid fa-tags text-amber-400 mr-1"></i>Tip: Click <strong class="text-amber-300">On Block</strong> or <strong class="text-indigo-300">Untouchable</strong> on any of your held picks below.</span>
+              <div class="flex items-center gap-1.5">
+                <input id="warRoomTeamPinInput" type="password" maxlength="16" placeholder="${hasPin ? 'Change Team PIN' : 'Optional Team PIN'}" class="w-32 bg-[#0b0f19] text-white text-[11px] font-mono rounded-lg px-2.5 py-1 border border-slate-700 focus:border-emerald-500 focus:outline-none">
+                <button onclick="saveMyTeamPersonalPin()" class="btn-action px-2.5 py-1 text-[11px] text-emerald-300" title="Lock ${managedName} with a personal 4–8 digit PIN so other managers cannot accidentally claim your team">
+                  <i class="fa-solid fa-key"></i> ${hasPin ? 'Update PIN' : 'Set PIN'}
+                </button>
+                ${hasPin ? `
+                  <button onclick="clearMyTeamPersonalPin()" class="btn-action px-2 py-1 text-[11px] text-rose-300" title="Remove personal Team PIN">
+                    Clear
+                  </button>
+                ` : ''}
+              </div>
+            </div>
+          </div>
+
+          <!-- Right: League-Wide Active Trade Block Ticker -->
+          <div class="lg:col-span-6 space-y-2.5">
+            <div class="flex items-center justify-between">
+              <span class="text-xs font-black uppercase tracking-wider text-amber-300 flex items-center gap-1.5">
+                <i class="fa-solid fa-fire-flame-curved"></i>
+                <span>League-Wide Active Trade Block (${activeBlockEntries.length} Active)</span>
+              </span>
+              <span class="text-[11px] text-slate-400">Visible to all 10 managers</span>
+            </div>
+            ${activeBlockHtml}
+          </div>
+        </div>
+      `;
     }
 
     function renderLeagueCapitalDrawer(state) {
@@ -2822,6 +3225,7 @@
         const inTotal = m.acquiredSettled.length + m.incomingPools.length;
         const outTotal = m.tradedAwayOriginals.length + m.outgoingPools.length;
         const pendingTotal = m.outgoingPools.length + m.incomingPools.length + m.conditionals.length;
+        const isMyTeam = team.id === uiState.myTeam;
 
         // Round 1-3 specific holdings summary
         const r1to3Picks = [];
@@ -2837,10 +3241,11 @@
         }
 
         return `
-          <tr class="border-b border-slate-800/80 hover:bg-slate-800/40 transition text-xs">
+          <tr class="border-b border-slate-800/80 hover:bg-slate-800/40 transition text-xs ${isMyTeam ? 'bg-amber-950/15' : ''}">
             <td class="py-2.5 px-3 font-black text-white">
               <button onclick="selectManagerInLedger('${safeId(team.id)}')" class="hover:text-rose-400 flex items-center gap-1.5 cursor-pointer">
                 <span>${escapeHtml(team.name)}</span>
+                ${isMyTeam ? `<span class="static-badge bg-amber-950 text-amber-300 border border-amber-500/60">My Team</span>` : ''}
               </button>
             </td>
             <td class="py-2.5 px-3 font-mono font-bold text-center ${net > 0 ? 'text-emerald-300' : net < 0 ? 'text-rose-300' : 'text-slate-300'}">
@@ -2916,8 +3321,15 @@
     }
 
     function selectManagerInLedger(teamId) {
-      const prevPrimary = uiState.selectedManager;
       const nextPrimary = safeId(teamId);
+      // In standard mode, Team 1 is locked to the manager's own franchise; clicking another manager compares them!
+      if (!uiState.isCommish && nextPrimary !== uiState.myTeam) {
+        uiState.selectedManager = uiState.myTeam;
+        compareWithSelectedManager(nextPrimary);
+        showToast(`Comparing your franchise (${getTeamName(uiState.myTeam)}) with ${getTeamName(nextPrimary)}!`, "info");
+        return;
+      }
+      const prevPrimary = uiState.selectedManager;
       uiState.selectedManager = nextPrimary;
       uiState.whatIfSwaps = [];
       if (uiState.ledgerViewMode === "COMPARE" && uiState.compareManagerB === nextPrimary) {
@@ -3162,13 +3574,15 @@
         if (myOrig) {
           const slotTxt = state.orderCfg.isLocked && myOrig.overallPickNum ? `${escapeHtml(myOrig.formattedSlot)} (#${myOrig.overallPickNum})` : `Own Rd ${round}`;
           if (myOrig.currentOwner === teamId) {
+            const pickTag = getPickTradeTag(teamId, state.year, round, teamId);
+            const tagChip = pickTag === "ON_BLOCK" ? ` • 🏷️ OTB` : pickTag === "UNTOUCHABLE" ? ` • 🛡️ Untouchable` : "";
             const isSimSent = uiState.whatIfActive && uiState.whatIfSwaps.some(s => s.round === round && s.originalOwner === teamId && s.fromTeam === teamId);
             const clickHandler = (uiState.whatIfActive && partnerId)
               ? `toggleWhatIfPickTransfer(${Number(round)}, '${safeId(teamId)}', '${safeId(teamId)}', '${safeId(partnerId)}')`
               : `openInspectModalForPick(${Number(state.year)}, ${Number(round)}, '${safeId(teamId)}')`;
             badges.push(`
               <div onclick="${clickHandler}" class="${isSimSent ? 'whatif-pick-sim opacity-60 bg-amber-950/30' : 'bg-[#0b0f19] border border-emerald-700/60'} px-2.5 py-1.5 rounded-lg text-xs cursor-pointer flex items-center justify-between">
-                <span class="font-mono font-bold ${isSimSent ? 'line-through text-amber-300' : 'text-emerald-300'}">${slotTxt}</span>
+                <span class="font-mono font-bold ${isSimSent ? 'line-through text-amber-300' : 'text-emerald-300'}">${slotTxt}${tagChip}</span>
                 <span class="text-[10px] ${isSimSent ? 'text-amber-300 font-bold' : 'text-slate-400'}">${isSimSent ? `Sim → ${escapeHtml(getTeamName(partnerId))}` : (uiState.whatIfActive ? 'Click to Swap ⇄' : 'Original Held')}</span>
               </div>
             `);
@@ -3183,13 +3597,15 @@
         }
         myAcq.forEach(ap => {
           const slotTxt = state.orderCfg.isLocked && ap.overallPickNum ? `${escapeHtml(ap.formattedSlot)} (#${ap.overallPickNum})` : `${escapeHtml(getTeamName(ap.originalOwner))}'s Rd ${round}`;
+          const pickTag = getPickTradeTag(teamId, state.year, round, ap.originalOwner);
+          const tagChip = pickTag === "ON_BLOCK" ? ` • 🏷️ OTB` : pickTag === "UNTOUCHABLE" ? ` • 🛡️ Untouchable` : "";
           const isSimSent = uiState.whatIfActive && uiState.whatIfSwaps.some(s => s.round === round && s.originalOwner === ap.originalOwner && s.fromTeam === teamId);
           const clickHandler = (uiState.whatIfActive && partnerId)
             ? `toggleWhatIfPickTransfer(${Number(round)}, '${safeId(ap.originalOwner)}', '${safeId(teamId)}', '${safeId(partnerId)}')`
             : `openInspectModalForPick(${Number(state.year)}, ${Number(round)}, '${safeId(ap.originalOwner)}')`;
           badges.push(`
             <div onclick="${clickHandler}" class="${isSimSent ? 'whatif-pick-sim opacity-60 bg-amber-950/30' : 'bg-sky-950/40 border border-sky-500/70'} px-2.5 py-1.5 rounded-lg text-xs cursor-pointer flex items-center justify-between">
-              <span class="font-mono font-bold ${isSimSent ? 'line-through text-amber-300' : 'text-sky-200'}">+ ${slotTxt}</span>
+              <span class="font-mono font-bold ${isSimSent ? 'line-through text-amber-300' : 'text-sky-200'}">+ ${slotTxt}${tagChip}</span>
               <span class="text-[10px] ${isSimSent ? 'text-amber-300 font-bold' : 'text-sky-300'}">${isSimSent ? `Sim → ${escapeHtml(getTeamName(partnerId))}` : (uiState.whatIfActive ? 'Click to Swap ⇄' : `From ${escapeHtml(getTeamName(ap.originalOwner))}`)}</span>
             </div>
           `);
@@ -3534,22 +3950,40 @@
         `;
       }
 
+      const canManagePick = uiState.isCommish || viewingTeam.id === uiState.myTeam;
+      const pickTag = getPickTradeTag(viewingTeam.id, pick.year, pick.round, pick.originalOwner);
+      const tagBadgeHtml = renderPickTradeTagBadgeHtml(pickTag);
+      const tagButtonsHtml = canManagePick ? `
+        <button onclick="toggleMyPickTradeTag('${safeId(viewingTeam.id)}', ${Number(pick.year)}, ${Number(pick.round)}, '${safeId(pick.originalOwner)}', 'ON_BLOCK')" class="btn-action px-2.5 py-1 text-[11px] ${pickTag === 'ON_BLOCK' ? 'border-amber-500 text-amber-300 bg-amber-950/60' : 'text-slate-300'}" title="Toggle On Trade Block">
+          <i class="fa-solid fa-tag text-amber-400"></i>
+          <span>On Block</span>
+        </button>
+        <button onclick="toggleMyPickTradeTag('${safeId(viewingTeam.id)}', ${Number(pick.year)}, ${Number(pick.round)}, '${safeId(pick.originalOwner)}', 'UNTOUCHABLE')" class="btn-action px-2.5 py-1 text-[11px] ${pickTag === 'UNTOUCHABLE' ? 'border-indigo-500 text-indigo-300 bg-indigo-950/60' : 'text-slate-300'}" title="Toggle Untouchable">
+          <i class="fa-solid fa-lock text-indigo-400"></i>
+          <span>Untouchable</span>
+        </button>
+      ` : "";
+
       if (role === "ORIGINAL_HELD") {
         const hasHistory = pick.receipts.length > 0;
         return `
           <div class="bg-[#111827] border border-slate-800 hover:border-slate-700 rounded-xl px-4 py-3 flex flex-col sm:flex-row sm:items-center justify-between gap-2 transition">
-            <div class="flex flex-wrap items-center gap-3">
+            <div class="flex flex-wrap items-center gap-2.5">
               <span class="font-mono text-sm font-extrabold text-white w-48">${slotBadge}</span>
               <span class="static-badge bg-emerald-950/90 text-emerald-300 border border-emerald-700/70">
                 <i class="fa-solid fa-shield-halved"></i> Original • Held
               </span>
+              ${tagBadgeHtml}
               <span class="text-xs text-slate-400">${escapeHtml(viewingTeam.name)} holds their own original Round ${Number(pick.round)} selection.</span>
             </div>
-            ${hasHistory ? `
-              <button onclick="openInspectModalForPick(${Number(pick.year)}, ${Number(pick.round)}, '${safeId(pick.originalOwner)}')" class="btn-action px-3 py-1 text-xs text-slate-300 self-start sm:self-auto">
-                <span>View History ↗</span>
-              </button>
-            ` : ''}
+            <div class="flex flex-wrap items-center gap-1.5 self-start sm:self-auto flex-shrink-0">
+              ${tagButtonsHtml}
+              ${hasHistory ? `
+                <button onclick="openInspectModalForPick(${Number(pick.year)}, ${Number(pick.round)}, '${safeId(pick.originalOwner)}')" class="btn-action px-3 py-1 text-xs text-slate-300">
+                  <span>View History ↗</span>
+                </button>
+              ` : ''}
+            </div>
           </div>
         `;
       }
@@ -3563,15 +3997,19 @@
                 <span class="static-badge bg-sky-950 text-sky-200 border border-sky-400/90">
                   <i class="fa-solid fa-arrow-right-to-bracket"></i> Acquired from ${origName}
                 </span>
+                ${tagBadgeHtml}
               </div>
               <p class="text-xs text-slate-100">
                 <strong class="text-sky-300">Trade Receipt (${latestTrade ? escapeHtml(latestTrade.id) : ''}):</strong> ${latestTrade ? escapeHtml(latestTrade.headline) : `Acquired from ${origName}`}
               </p>
             </div>
-            <button onclick="openInspectModalForPick(${Number(pick.year)}, ${Number(pick.round)}, '${safeId(pick.originalOwner)}')" class="btn-action px-3 py-1.5 text-xs text-sky-200 self-start md:self-auto flex-shrink-0">
-              <i class="fa-solid fa-receipt text-sky-400"></i>
-              <span>View Receipt ↗</span>
-            </button>
+            <div class="flex flex-wrap items-center gap-1.5 self-start md:self-auto flex-shrink-0">
+              ${tagButtonsHtml}
+              <button onclick="openInspectModalForPick(${Number(pick.year)}, ${Number(pick.round)}, '${safeId(pick.originalOwner)}')" class="btn-action px-3 py-1.5 text-xs text-sky-200">
+                <i class="fa-solid fa-receipt text-sky-400"></i>
+                <span>View Receipt ↗</span>
+              </button>
+            </div>
           </div>
         `;
       }
@@ -4490,21 +4928,41 @@
       const submittedBySel = document.getElementById("formSubmittedBy");
       const boardTeamFilter = document.getElementById("boardFilterTeamSelect");
 
+      const myTeamId = uiState.myTeam || "syeth";
+      const myTeamName = getTeamName(myTeamId);
+
       if (selA && selB && selC) {
-        selA.innerHTML = leagueDB.teams.map((t, i) => `<option value="${safeId(t.id)}" ${i === 0 ? 'selected' : ''}>${escapeHtml(t.name)}</option>`).join("");
-        selB.innerHTML = leagueDB.teams.map((t, i) => `<option value="${safeId(t.id)}" ${i === 1 ? 'selected' : ''}>${escapeHtml(t.name)}</option>`).join("");
-        selC.innerHTML = leagueDB.teams.map((t, i) => `<option value="${safeId(t.id)}" ${i === 2 ? 'selected' : ''}>${escapeHtml(t.name)}</option>`).join("");
+        if (uiState.isCommish) {
+          selA.innerHTML = leagueDB.teams.map((t, i) => `<option value="${safeId(t.id)}" ${i === 0 ? 'selected' : ''}>${escapeHtml(t.name)}</option>`).join("");
+          selB.innerHTML = leagueDB.teams.map((t, i) => `<option value="${safeId(t.id)}" ${i === 1 ? 'selected' : ''}>${escapeHtml(t.name)}</option>`).join("");
+          selC.innerHTML = leagueDB.teams.map((t, i) => `<option value="${safeId(t.id)}" ${i === 2 ? 'selected' : ''}>${escapeHtml(t.name)}</option>`).join("");
+          selA.disabled = false;
+        } else {
+          // Standard Manager Mode: Manager 1 is strictly locked to the manager's own franchise
+          selA.innerHTML = `<option value="${safeId(myTeamId)}" selected>${escapeHtml(myTeamName)} (My Franchise)</option>`;
+          selA.disabled = true;
+          const otherTeams = leagueDB.teams.filter(t => t.id !== myTeamId);
+          selB.innerHTML = otherTeams.map((t, i) => `<option value="${safeId(t.id)}" ${i === 0 ? 'selected' : ''}>${escapeHtml(t.name)}</option>`).join("");
+          selC.innerHTML = otherTeams.map((t, i) => `<option value="${safeId(t.id)}" ${i === 1 ? 'selected' : ''}>${escapeHtml(t.name)}</option>`).join("");
+        }
       }
 
       if (submittedBySel) {
-        submittedBySel.innerHTML =
-          leagueDB.teams.map(t => `<option value="${escapeHtml(t.name)}">${escapeHtml(t.name)}</option>`).join("") +
-          `<option value="Commissioner">Commissioner</option>`;
+        if (uiState.isCommish) {
+          submittedBySel.innerHTML =
+            leagueDB.teams.map(t => `<option value="${escapeHtml(t.name)}">${escapeHtml(t.name)}</option>`).join("") +
+            `<option value="Commissioner" selected>Commissioner</option>`;
+          submittedBySel.disabled = false;
+        } else {
+          submittedBySel.innerHTML = `<option value="${escapeHtml(myTeamName)}" selected>${escapeHtml(myTeamName)} (My Franchise)</option>`;
+          submittedBySel.disabled = true;
+        }
       }
 
       if (boardTeamFilter) {
+        const currentFilter = boardTeamFilter.value || "ALL";
         boardTeamFilter.innerHTML = `<option value="ALL">Highlight: All 10 Managers</option>` +
-          leagueDB.teams.map(t => `<option value="${safeId(t.id)}">Highlight: ${escapeHtml(t.name)}</option>`).join("");
+          leagueDB.teams.map(t => `<option value="${safeId(t.id)}" ${t.id === currentFilter ? 'selected' : ''}>Highlight: ${escapeHtml(t.name)}</option>`).join("");
       }
     }
 
@@ -4525,7 +4983,7 @@
         yrSel.innerHTML = years.map(y => `<option value="${Number(y)}" ${y === uiState.activeYear ? 'selected' : ''}>${Number(y)} Draft</option>`).join("");
       }
       if (favSel) {
-        const tA = document.getElementById("formTeamA")?.value || "syeth";
+        const tA = document.getElementById("formTeamA")?.value || uiState.myTeam || "syeth";
         const tB = document.getElementById("formTeamB")?.value || "corbyn";
         const tC = uiState.isThreeWayForm ? document.getElementById("formTeamC")?.value : null;
         const activeIds = [tA, tB, tC].filter(Boolean);
@@ -4534,15 +4992,23 @@
     }
 
     function openTradeModal() {
+      populateStaticFormControls();
       document.getElementById("editingTradeId").value = "";
-      document.getElementById("tradeModalHeading").textContent = "Log League Trade";
+      document.getElementById("tradeModalHeading").textContent = uiState.isCommish
+        ? "Log League Trade (Admin — Any Teams)"
+        : `Log ${getTeamName(uiState.myTeam)} Trade`;
       document.getElementById("newTradeForm").reset();
       document.getElementById("formCondBox").classList.add("hidden");
       toggleThreeWayTrade(false);
 
+      const selA = document.getElementById("formTeamA");
+      if (selA && !uiState.isCommish) {
+        selA.value = safeId(uiState.myTeam || "syeth");
+      }
+
       const submittedBySel = document.getElementById("formSubmittedBy");
       if (submittedBySel) {
-        submittedBySel.value = uiState.isCommish ? "Commissioner" : getTeamName(uiState.selectedManager || "syeth");
+        submittedBySel.value = uiState.isCommish ? "Commissioner" : getTeamName(uiState.myTeam || "syeth");
       }
 
       const container = document.getElementById("quickPickRowsContainer");
@@ -4559,7 +5025,7 @@
      * (and Team 2 when in 2-Team Compare mode).
      */
     function openContextualTradeModal() {
-      const primary = uiState.selectedManager || leagueDB.teams[0]?.id || "syeth";
+      const primary = (uiState.isCommish ? uiState.selectedManager : uiState.myTeam) || leagueDB.teams[0]?.id || "syeth";
       let secondary = uiState.compareManagerB;
       if (uiState.ledgerViewMode !== "COMPARE" || !secondary || secondary === "NONE" || secondary === primary) {
         secondary = leagueDB.teams.find(t => t.id !== primary)?.id || "corbyn";
@@ -4569,11 +5035,22 @@
 
     function openTradeModalWithPair(teamAId, teamBId) {
       openTradeModal();
-      document.getElementById("formTeamA").value = safeId(teamAId);
-      document.getElementById("formTeamB").value = safeId(teamBId);
+      let cleanA = safeId(teamAId);
+      let cleanB = safeId(teamBId);
+      if (!uiState.isCommish && cleanA !== uiState.myTeam) {
+        if (cleanB === uiState.myTeam) {
+          cleanB = cleanA;
+        }
+        cleanA = uiState.myTeam;
+      }
+      if (cleanB === cleanA) {
+        cleanB = leagueDB.teams.find(t => t.id !== cleanA)?.id || "corbyn";
+      }
+      document.getElementById("formTeamA").value = cleanA;
+      document.getElementById("formTeamB").value = cleanB;
       const submittedBySel = document.getElementById("formSubmittedBy");
       if (submittedBySel) {
-        submittedBySel.value = uiState.isCommish ? "Commissioner" : getTeamName(teamAId);
+        submittedBySel.value = uiState.isCommish ? "Commissioner" : getTeamName(cleanA);
       }
       refreshQuickPickRows();
     }
@@ -4586,6 +5063,7 @@
       const tr = leagueDB.trades.find(t => t.id === tradeId);
       if (!tr) return;
 
+      populateStaticFormControls();
       document.getElementById("editingTradeId").value = tr.id;
       document.getElementById("tradeModalHeading").textContent = `Edit Trade Receipt (${tr.id})`;
       document.getElementById("formTeamA").value = tr.teamA;
@@ -4675,12 +5153,13 @@
         if (roleHint) roleHint.textContent = "Updates all affected draft years, ledgers, and boards immediately (Undo supported).";
         if (submitText) submitText.textContent = isEditing ? "Save Trade Changes" : "Save & Apply to Board";
       } else {
+        const myName = getTeamName(uiState.myTeam || "syeth");
         if (badge) {
-          badge.className = "static-badge bg-emerald-950 text-emerald-300 border border-emerald-600/80";
-          badge.textContent = "Official League Trade";
+          badge.className = "static-badge bg-amber-950 text-amber-300 border border-amber-500/80";
+          badge.textContent = `${myName} Franchise Trade`;
         }
-        if (roleHint) roleHint.textContent = "Settled picks apply immediately! Conditional pools or swaps are marked Pending Final for Admin resolution.";
-        if (submitText) submitText.textContent = "Log Official Trade";
+        if (roleHint) roleHint.textContent = `Logging as ${myName}: Either participating manager can log a trade involving their own team! Settled picks apply immediately; conditions are marked Pending Final for Admin resolution.`;
+        if (submitText) submitText.textContent = `Log ${myName} Trade`;
       }
     }
 
@@ -4815,8 +5294,18 @@
       const summary = cleanStr(document.getElementById("formSummary").value.trim(), 400);
       const dateStr = cleanStr(document.getElementById("formTradeDate").value.trim() || new Date().toLocaleDateString(), 80);
       const notesStr = cleanStr(document.getElementById("formTradeNotes").value.trim(), 800);
-      const submittedBy = cleanStr(document.getElementById("formSubmittedBy")?.value || (uiState.isCommish ? "Commissioner" : getTeamName(teamA)), 60);
+      const submittedBy = cleanStr(document.getElementById("formSubmittedBy")?.value || (uiState.isCommish ? "Commissioner" : getTeamName(uiState.myTeam || teamA)), 60);
       const isCond = document.getElementById("formIsConditional").checked;
+
+      // Team-Management Boundary: In standard mode, a manager can only log trades involving their own franchise!
+      if (!uiState.isCommish) {
+        const myId = safeId(uiState.myTeam || "syeth");
+        const participants = [teamA, teamB, ...(teamC ? [teamC] : [])];
+        if (!participants.includes(myId) || teamA !== myId) {
+          showToast(`You can only log trades involving your own franchise (${getTeamName(myId)}). Unlock Commissioner Mode to log deals between other teams.`, "error");
+          return;
+        }
+      }
 
       if (!summary) {
         showToast("Please enter a trade summary.", "error");
@@ -5781,6 +6270,94 @@
       if (ftr) ftr.classList.toggle("hidden", !unlocked);
     }
 
+    function doesTeamHavePersonalPin(teamId) {
+      const prof = leagueDB?.teamProfiles?.[teamId];
+      if (!prof) return false;
+      return Boolean(
+        (prof.teamPinVerifier && /^[a-f0-9]{64}$/i.test(prof.teamPinVerifier)) ||
+        (prof.teamPinHash && /^[a-f0-9]{64}$/i.test(prof.teamPinHash))
+      );
+    }
+
+    async function verifyTeamPinAgainstDb(teamId, wireTeamPinHash) {
+      if (!wireTeamPinHash || !/^[a-f0-9]{64}$/i.test(wireTeamPinHash)) return false;
+      const prof = leagueDB?.teamProfiles?.[teamId];
+      if (!prof) return true;
+      const normalized = wireTeamPinHash.toLowerCase();
+      if (prof.teamPinVerifier && /^[a-f0-9]{64}$/i.test(prof.teamPinVerifier)) {
+        const candidateVerifier = await sha256Hex(PIN_VERIFIER_SALT + normalized);
+        return candidateVerifier === prof.teamPinVerifier.toLowerCase();
+      }
+      if (prof.teamPinHash && /^[a-f0-9]{64}$/i.test(prof.teamPinHash)) {
+        return normalized === prof.teamPinHash.toLowerCase();
+      }
+      return true;
+    }
+
+    function getSavedTeamPinHash(teamId) {
+      if (!teamId) return "";
+      try {
+        const map = JSON.parse(localStorage.getItem(MY_TEAM_PIN_STORAGE_KEY) || "{}");
+        return typeof map[teamId] === "string" ? map[teamId] : "";
+      } catch (e) {
+        return "";
+      }
+    }
+
+    function saveTeamPinHashLocally(teamId, wirePinHash) {
+      if (!teamId) return;
+      try {
+        const map = JSON.parse(localStorage.getItem(MY_TEAM_PIN_STORAGE_KEY) || "{}");
+        if (wirePinHash) {
+          map[teamId] = wirePinHash;
+        } else {
+          delete map[teamId];
+        }
+        localStorage.setItem(MY_TEAM_PIN_STORAGE_KEY, JSON.stringify(map));
+      } catch (e) {
+        // Ignore storage error
+      }
+    }
+
+    function populateGateFranchiseSelect(selectedId = "") {
+      const sel = document.getElementById("gateFranchiseSelect");
+      if (!sel || !leagueDB || !Array.isArray(leagueDB.teams)) return;
+      const targetId = selectedId || uiState.myTeam || sel.value || "";
+      sel.innerHTML = `<option value="">— Select Your Franchise (10 Teams) —</option>` +
+        leagueDB.teams.map(t => {
+          const hasPin = doesTeamHavePersonalPin(t.id);
+          return `<option value="${escapeHtml(t.id)}" ${t.id === targetId ? "selected" : ""}>${escapeHtml(t.name)}${hasPin ? " 🔒 (PIN Protected)" : ""}</option>`;
+        }).join("");
+      onGateFranchiseSelectChange();
+    }
+
+    function onGateFranchiseSelectChange() {
+      const sel = document.getElementById("gateFranchiseSelect");
+      const pinWrap = document.getElementById("gateTeamPinWrapper");
+      const pinInp = document.getElementById("gateTeamPinInput");
+      if (!sel || !pinWrap) return;
+      const chosenId = sel.value;
+      const needsPin = chosenId && doesTeamHavePersonalPin(chosenId);
+      pinWrap.classList.toggle("hidden", !needsPin);
+      if (!needsPin && pinInp) pinInp.value = "";
+    }
+
+    function openSwitchFranchiseGate() {
+      populateGateFranchiseSelect(uiState.myTeam || "");
+      const passWrap = document.getElementById("gatePassphraseWrapper");
+      const btnLbl = document.getElementById("gateUnlockBtnLabel");
+      const errEl = document.getElementById("passphraseErrorMsg");
+      if (errEl) { errEl.textContent = ""; errEl.classList.add("hidden"); }
+      if (uiState.isLeagueUnlocked && uiState.verifiedPassHash) {
+        if (passWrap) passWrap.classList.add("hidden");
+        if (btnLbl) btnLbl.textContent = "Confirm My Franchise";
+      } else {
+        if (passWrap) passWrap.classList.remove("hidden");
+        if (btnLbl) btnLbl.textContent = "Claim My Team & Enter Tracker";
+      }
+      setAppShellUnlocked(false);
+    }
+
     async function mergePreservedSecurityMetadata(validated) {
       if (!validated) return null;
       if (!validated.encryptedCloudSyncUrl) {
@@ -5795,6 +6372,19 @@
         validated.commishPinVerifier = await sha256Hex(PIN_VERIFIER_SALT + validated.commishPinHash);
       } else if (!validated.commishPinVerifier) {
         validated.commishPinVerifier = (leagueDB && leagueDB.commishPinVerifier) || DEFAULT_PIN_VERIFIER;
+      }
+      if (validated.teamProfiles && typeof validated.teamProfiles === "object") {
+        for (const tid of Object.keys(validated.teamProfiles)) {
+          const prof = validated.teamProfiles[tid];
+          if (prof && prof.teamPinHash && !prof.teamPinVerifier) {
+            prof.teamPinVerifier = await sha256Hex(PIN_VERIFIER_SALT + prof.teamPinHash.toLowerCase());
+          }
+          // Preserve newer local team profile edits (e.g. if cloud backend hasn't updated teamProfiles yet)
+          const localProf = leagueDB?.teamProfiles?.[tid];
+          if (localProf && (Number(localProf.updatedAt) || 0) > (Number(prof?.updatedAt) || 0)) {
+            validated.teamProfiles[tid] = JSON.parse(JSON.stringify(localProf));
+          }
+        }
       }
       delete validated.cloudSyncUrl;
       return validated;
@@ -5835,25 +6425,60 @@
       }
 
       let savedHash = "";
+      let savedTeam = "";
       try {
         savedHash = localStorage.getItem(PASSPHRASE_STORAGE_KEY) || "";
+        savedTeam = localStorage.getItem(MY_TEAM_STORAGE_KEY) || "";
       } catch (e) {
         savedHash = "";
+        savedTeam = "";
       }
 
+      const validTeamIds = new Set((leagueDB?.teams || []).map(t => t.id));
+      if (!validTeamIds.has(savedTeam)) savedTeam = "";
+
+      populateGateFranchiseSelect(savedTeam);
+
       if (savedHash && (await verifyWirePassHashAgainstDb(savedHash))) {
-        uiState.isLeagueUnlocked = true;
         uiState.verifiedPassHash = savedHash.toLowerCase();
         await unlockEncryptedSyncUrl(uiState.verifiedPassHash);
-        setAppShellUnlocked(true);
-        renderAll();
-        startBackgroundSyncTimers();
-        await initCloudSyncOnLoad(false);
-      } else {
-        uiState.isLeagueUnlocked = false;
-        setAppShellUnlocked(false);
-        setTimeout(() => document.getElementById("leaguePassphraseInput")?.focus(), 100);
+
+        let teamPinOk = true;
+        if (savedTeam && doesTeamHavePersonalPin(savedTeam)) {
+          const savedTeamPinHash = getSavedTeamPinHash(savedTeam);
+          teamPinOk = savedTeamPinHash ? (await verifyTeamPinAgainstDb(savedTeam, savedTeamPinHash)) : false;
+          if (teamPinOk) uiState.myTeamPinHash = savedTeamPinHash;
+        }
+
+        if (savedTeam && teamPinOk) {
+          uiState.isLeagueUnlocked = true;
+          uiState.myTeam = savedTeam;
+          uiState.selectedManager = savedTeam;
+          setAppShellUnlocked(true);
+          populateStaticFormControls();
+          renderAll();
+          startBackgroundSyncTimers();
+          await initCloudSyncOnLoad(false);
+          return;
+        }
       }
+
+      uiState.isLeagueUnlocked = false;
+      const passWrap = document.getElementById("gatePassphraseWrapper");
+      const btnLbl = document.getElementById("gateUnlockBtnLabel");
+      if (uiState.verifiedPassHash) {
+        if (passWrap) passWrap.classList.add("hidden");
+        if (btnLbl) btnLbl.textContent = "Claim My Team & Enter Tracker";
+      } else {
+        if (passWrap) passWrap.classList.remove("hidden");
+        if (btnLbl) btnLbl.textContent = "Claim My Team & Enter Tracker";
+      }
+      setAppShellUnlocked(false);
+      setTimeout(() => {
+        const sel = document.getElementById("gateFranchiseSelect");
+        if (sel && !sel.value) sel.focus();
+        else document.getElementById("leaguePassphraseInput")?.focus();
+      }, 100);
     }
 
     async function authenticateLeaguePassphrase() {
@@ -5867,36 +6492,31 @@
         return;
       }
 
-      const inp = document.getElementById("leaguePassphraseInput");
-      const normalized = (inp ? inp.value : "").trim().toUpperCase();
-      if (!normalized) {
-        if (errEl) { errEl.textContent = "Please enter the league passphrase."; errEl.classList.remove("hidden"); }
+      const sel = document.getElementById("gateFranchiseSelect");
+      const chosenTeamId = (sel ? sel.value : "").trim();
+      const validTeamIds = new Set((leagueDB?.teams || []).map(t => t.id));
+      if (!chosenTeamId || !validTeamIds.has(chosenTeamId)) {
+        const msg = "Please select your franchise from the dropdown first.";
+        if (errEl) { errEl.textContent = msg; errEl.classList.remove("hidden"); }
+        showToast(msg, "error");
         return;
       }
 
-      const candidateWireHash = await sha256Hex(PASSPHRASE_SALT + normalized);
-      const isValid = await verifyWirePassHashAgainstDb(candidateWireHash);
+      let candidateWireHash = uiState.verifiedPassHash || "";
+      let isPassValid = candidateWireHash ? (await verifyWirePassHashAgainstDb(candidateWireHash)) : false;
 
-      if (isValid) {
-        uiState.isLeagueUnlocked = true;
-        uiState.verifiedPassHash = candidateWireHash;
-        uiState.failedPassAttempts = 0;
-        uiState.passLockoutUntil = 0;
-        await unlockEncryptedSyncUrl(candidateWireHash);
-        try {
-          localStorage.setItem(PASSPHRASE_STORAGE_KEY, candidateWireHash);
-        } catch (e) {
-          // Ignore storage restrictions
+      if (!isPassValid) {
+        const inp = document.getElementById("leaguePassphraseInput");
+        const normalized = (inp ? inp.value : "").trim().toUpperCase();
+        if (!normalized) {
+          if (errEl) { errEl.textContent = "Please enter the league passphrase."; errEl.classList.remove("hidden"); }
+          return;
         }
-        if (inp) inp.value = "";
-        if (errEl) { errEl.textContent = ""; errEl.classList.add("hidden"); }
-        setAppShellUnlocked(true);
-        populateStaticFormControls();
-        renderAll();
-        startBackgroundSyncTimers();
-        await initCloudSyncOnLoad(false);
-        showToast("Unlocked Gamecock Mafia Draft Tracker!", "success");
-      } else {
+        candidateWireHash = await sha256Hex(PASSPHRASE_SALT + normalized);
+        isPassValid = await verifyWirePassHashAgainstDb(candidateWireHash);
+      }
+
+      if (!isPassValid) {
         uiState.failedPassAttempts = (uiState.failedPassAttempts || 0) + 1;
         if (uiState.failedPassAttempts >= 5) {
           uiState.passLockoutUntil = Date.now() + 30000;
@@ -5909,7 +6529,55 @@
           if (errEl) { errEl.textContent = badMsg; errEl.classList.remove("hidden"); }
           showToast(badMsg, "error");
         }
+        return;
       }
+
+      // Check optional personal Team PIN if enabled for this franchise
+      let verifiedTeamPinHash = "";
+      if (doesTeamHavePersonalPin(chosenTeamId) && !uiState.isCommish) {
+        const teamPinInp = document.getElementById("gateTeamPinInput");
+        const rawTeamPin = (teamPinInp ? teamPinInp.value : "").trim();
+        let candidateTeamPinHash = rawTeamPin
+          ? await sha256Hex(TEAM_PIN_SALT + chosenTeamId + ":" + rawTeamPin)
+          : getSavedTeamPinHash(chosenTeamId);
+        const pinOk = candidateTeamPinHash ? (await verifyTeamPinAgainstDb(chosenTeamId, candidateTeamPinHash)) : false;
+        if (!pinOk) {
+          const pinMsg = `Enter the personal Team PIN for ${getTeamName(chosenTeamId)} (or ask the Commissioner to reset it).`;
+          if (errEl) { errEl.textContent = pinMsg; errEl.classList.remove("hidden"); }
+          showToast(pinMsg, "error");
+          return;
+        }
+        verifiedTeamPinHash = candidateTeamPinHash;
+        saveTeamPinHashLocally(chosenTeamId, verifiedTeamPinHash);
+        if (teamPinInp) teamPinInp.value = "";
+      }
+
+      uiState.isLeagueUnlocked = true;
+      uiState.verifiedPassHash = candidateWireHash;
+      uiState.myTeam = chosenTeamId;
+      uiState.myTeamPinHash = verifiedTeamPinHash;
+      uiState.selectedManager = chosenTeamId;
+      if (uiState.compareManager === chosenTeamId) {
+        uiState.compareManager = "";
+      }
+      uiState.failedPassAttempts = 0;
+      uiState.passLockoutUntil = 0;
+      await unlockEncryptedSyncUrl(candidateWireHash);
+      try {
+        localStorage.setItem(PASSPHRASE_STORAGE_KEY, candidateWireHash);
+        localStorage.setItem(MY_TEAM_STORAGE_KEY, chosenTeamId);
+      } catch (e) {
+        // Ignore storage restrictions
+      }
+      const inp = document.getElementById("leaguePassphraseInput");
+      if (inp) inp.value = "";
+      if (errEl) { errEl.textContent = ""; errEl.classList.add("hidden"); }
+      setAppShellUnlocked(true);
+      populateStaticFormControls();
+      renderAll();
+      startBackgroundSyncTimers();
+      await initCloudSyncOnLoad(false);
+      showToast(`Signed in as ${getTeamName(chosenTeamId)}!`, "success");
     }
 
     function lockLeaguePassphrase() {
@@ -5923,8 +6591,107 @@
       uiState.isLeagueUnlocked = false;
       uiState.verifiedPassHash = "";
       uiState.decryptedSyncUrl = "";
+      const passWrap = document.getElementById("gatePassphraseWrapper");
+      const btnLbl = document.getElementById("gateUnlockBtnLabel");
+      if (passWrap) passWrap.classList.remove("hidden");
+      if (btnLbl) btnLbl.textContent = "Claim My Team & Enter Tracker";
+      populateGateFranchiseSelect(uiState.myTeam || "");
       setAppShellUnlocked(false);
       showToast("Tracker locked on this device.", "info");
+    }
+
+    async function saveMyTeamPersonalPin() {
+      const targetTeamId = uiState.isCommish ? uiState.selectedManager : (uiState.myTeam || uiState.selectedManager);
+      if (!targetTeamId) return;
+      const inp = document.getElementById("warRoomTeamPinInput");
+      const rawPin = (inp ? inp.value : "").trim();
+      if (rawPin.length < 4 || rawPin.length > 8) {
+        showToast("Personal Team PIN must be 4 to 8 characters.", "error");
+        return;
+      }
+      const prevTeamPinHash = uiState.myTeamPinHash || getSavedTeamPinHash(targetTeamId) || "";
+      const wireTeamPinHash = await sha256Hex(TEAM_PIN_SALT + targetTeamId + ":" + rawPin);
+      const verifier = await sha256Hex(PIN_VERIFIER_SALT + wireTeamPinHash);
+
+      const prof = getTeamProfile(targetTeamId);
+      prof.teamPinVerifier = verifier;
+      prof.teamPinHash = wireTeamPinHash;
+      prof.updatedAt = Date.now();
+      leagueDB.updatedAt = Date.now();
+      uiState.myTeamPinHash = wireTeamPinHash;
+      saveTeamPinHashLocally(targetTeamId, wireTeamPinHash);
+      saveDatabase(false);
+      if (inp) inp.value = "";
+      renderTeamWarRoomSection();
+      showToast(`Personal Team PIN enabled for ${getTeamName(targetTeamId)}!`, "success");
+
+      if (getActiveCloudSyncUrl()) {
+        if (uiState.isCommish) {
+          await pushAdminStateToCloud("SET_TEAM_PIN");
+        } else {
+          await pushTeamProfileToCloud(targetTeamId, prevTeamPinHash);
+        }
+      }
+    }
+
+    async function clearMyTeamPersonalPin() {
+      const targetTeamId = uiState.isCommish ? uiState.selectedManager : (uiState.myTeam || uiState.selectedManager);
+      if (!targetTeamId) return;
+      const prevTeamPinHash = uiState.myTeamPinHash || getSavedTeamPinHash(targetTeamId) || "";
+      const prof = getTeamProfile(targetTeamId);
+      prof.teamPinVerifier = "";
+      delete prof.teamPinHash;
+      prof.updatedAt = Date.now();
+      leagueDB.updatedAt = Date.now();
+      uiState.myTeamPinHash = "";
+      saveTeamPinHashLocally(targetTeamId, "");
+      saveDatabase(false);
+      renderTeamWarRoomSection();
+      showToast(`Removed personal Team PIN for ${getTeamName(targetTeamId)}.`, "info");
+
+      if (getActiveCloudSyncUrl()) {
+        if (uiState.isCommish) {
+          await pushAdminStateToCloud("CLEAR_TEAM_PIN");
+        } else {
+          await pushTeamProfileToCloud(targetTeamId, prevTeamPinHash);
+        }
+      }
+    }
+
+    function renderAdminTeamPinResetList() {
+      const container = document.getElementById("adminTeamPinManagerList");
+      if (!container || !leagueDB || !Array.isArray(leagueDB.teams)) return;
+      container.innerHTML = leagueDB.teams.map(t => {
+        const hasPin = doesTeamHavePersonalPin(t.id);
+        return `
+          <div class="flex items-center justify-between gap-2 px-2.5 py-2 rounded-lg bg-slate-900/80 border border-slate-800">
+            <div class="flex items-center gap-2 min-w-0">
+              <span class="w-2 h-2 rounded-full ${hasPin ? "bg-emerald-400" : "bg-slate-600"}"></span>
+              <span class="text-xs font-bold text-white truncate">${escapeHtml(t.name)}</span>
+              <span class="text-[10px] ${hasPin ? "text-emerald-300" : "text-slate-500"}">${hasPin ? "PIN Active" : "No PIN"}</span>
+            </div>
+            ${hasPin ? `
+              <button onclick="adminClearTeamPin('${escapeHtml(t.id)}')" class="px-2 py-1 rounded bg-rose-950/70 hover:bg-rose-900 border border-rose-500/40 text-rose-200 text-[10px] font-bold">
+                Reset PIN
+              </button>
+            ` : `<span class="text-[10px] text-slate-600">Unlocked</span>`}
+          </div>
+        `;
+      }).join("");
+    }
+
+    async function adminClearTeamPin(teamId) {
+      if (!requireCommish()) return;
+      const prof = getTeamProfile(teamId);
+      prof.teamPinVerifier = "";
+      delete prof.teamPinHash;
+      prof.updatedAt = Date.now();
+      leagueDB.updatedAt = Date.now();
+      saveTeamPinHashLocally(teamId, "");
+      saveDatabase(true, `ADMIN_RESET_TEAM_PIN:${teamId}`);
+      renderAdminTeamPinResetList();
+      renderTeamWarRoomSection();
+      showToast(`Reset personal Team PIN for ${getTeamName(teamId)}.`, "info");
     }
 
     async function updateLeaguePassphrase() {
@@ -5973,6 +6740,11 @@
       if (uiState.isCommish) {
         uiState.isCommish = false;
         uiState.commishSessionHash = "";
+        if (uiState.myTeam) {
+          uiState.selectedManager = uiState.myTeam;
+          if (uiState.compareManager === uiState.myTeam) uiState.compareManager = "";
+        }
+        populateStaticFormControls();
         renderAll();
         showToast("Commissioner Mode locked.", "info");
         return;
@@ -6006,6 +6778,7 @@
         uiState.pinLockoutUntil = 0;
         if (inp) inp.value = "";
         closeModal("pinModal");
+        populateStaticFormControls();
         renderAll();
         showToast("Commissioner Mode unlocked!", "success");
         if (uiState.sheetNeedsInitialSeed && getActiveCloudSyncUrl()) {
@@ -6166,6 +6939,7 @@
       if (passInp) passInp.value = "";
       const pinInp = document.getElementById("newCommishPinInput");
       if (pinInp) pinInp.value = "";
+      renderAdminTeamPinResetList();
       openModal("cloudSyncModal");
     }
 
@@ -6307,7 +7081,10 @@
         const localTs = Number(leagueDB?.updatedAt) || 0;
 
         if (remoteTs >= localTs) {
-          const changed = remoteTs > localTs || JSON.stringify(validated.trades) !== JSON.stringify(leagueDB?.trades);
+          const changed =
+            remoteTs > localTs ||
+            JSON.stringify(validated.trades) !== JSON.stringify(leagueDB?.trades) ||
+            JSON.stringify(validated.teamProfiles) !== JSON.stringify(leagueDB?.teamProfiles);
           leagueDB = validated;
           normalizeAndDeduplicateTrades(leagueDB);
           ensureRollingWindowYearsExist();
@@ -6500,6 +7277,62 @@
       } catch (e) {
         console.warn("Member trade cloud sync warning:", e);
         updateSyncStatusUI("Saved Locally (Retry Sync)", false, true);
+        return false;
+      }
+    }
+
+    async function pushTeamProfileToCloud(teamId, prevTeamPinHashOverride = "") {
+      const customUrl = getActiveCloudSyncUrl();
+      if (!customUrl || !teamId) return false;
+
+      if (uiState.isCommish) {
+        return await pushAdminStateToCloud(`TEAM_PROFILE:${teamId}`);
+      }
+
+      updateSyncStatusUI("Syncing War Room...", false, false);
+      try {
+        const prof = getTeamProfile(teamId);
+        const payload = {
+          action: "UPDATE_TEAM_PROFILE",
+          passHash: uiState.verifiedPassHash || leagueDB?.leaguePassphraseHash || "",
+          teamId,
+          teamPinHash: prevTeamPinHashOverride || uiState.myTeamPinHash || getSavedTeamPinHash(teamId) || "",
+          profile: {
+            tradeBlockNote: prof.tradeBlockNote || "",
+            lookingFor: prof.lookingFor || "",
+            pickTags: prof.pickTags || {},
+            teamPinVerifier: prof.teamPinVerifier || "",
+            teamPinHash: prof.teamPinHash || "",
+            updatedAt: prof.updatedAt || Date.now()
+          },
+          fallbackBaseState: sanitizeStateForPublicExport(leagueDB)
+        };
+        const res = await fetch(customUrl, {
+          method: "POST",
+          redirect: "follow",
+          headers: { "Content-Type": "text/plain;charset=utf-8" },
+          body: JSON.stringify(payload)
+        });
+        const resJson = await res.json().catch(() => null);
+        if (res.ok && resJson && resJson.ok && resJson.state) {
+          const validated = validateAndSanitizeDatabase(resJson.state);
+          if (validated) {
+            await mergePreservedSecurityMetadata(validated);
+            leagueDB = validated;
+            saveDatabase(false);
+            uiState.lastSyncedAt = Date.now();
+            renderAll();
+          }
+          updateSyncStatusUI("Live Sheet Synced ✓", true, false);
+          return true;
+        } else {
+          // Even if the user hasn't updated their Apps Script with UPDATE_TEAM_PROFILE yet,
+          // mergePreservedSecurityMetadata keeps local War Room changes intact until next Admin sync!
+          updateSyncStatusUI("War Room Saved ✓", true, false);
+          return false;
+        }
+      } catch (e) {
+        updateSyncStatusUI("War Room Saved Locally", false, false);
         return false;
       }
     }
