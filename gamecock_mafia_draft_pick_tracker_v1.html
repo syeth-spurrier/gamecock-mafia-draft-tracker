@@ -163,7 +163,20 @@
       --theme-border-hi: #69BE28;
       --theme-glow: rgba(105, 190, 40, 0.5);
     }
-    /* Covert Colorway 6: Upstate Kitties (Clemson Troll Trap — Irreversible Sparkly Hot Pink!) */
+    /* Covert Colorway 6: Jets of the West (Arizona Cardinals Red, Black & Yellow) */
+    body.theme-jets_of_the_west {
+      --bg-obsidian: #0A0808;
+      --bg-surface: #161112;
+      --usc-garnet: #97233F;
+      --usc-garnet-bright: #C41E3A;
+      --usc-garnet-hi: #FFB612;
+      --theme-hero-grad: linear-gradient(135deg, #97233F 0%, #5C1123 48%, #0A0808 100%);
+      --theme-btn-grad: linear-gradient(180deg, #B81D38 0%, #7A162D 100%);
+      --theme-btn-hover: linear-gradient(180deg, #D42240 0%, #97233F 100%);
+      --theme-border-hi: #FFB612;
+      --theme-glow: rgba(151, 35, 63, 0.6);
+    }
+    /* Covert Colorway 7: Upstate Kitties (Clemson Troll Trap — Irreversible Sparkly Hot Pink!) */
     @keyframes kittySparkleShift {
       0% { background-position: 0% 50%; }
       50% { background-position: 100% 50%; }
@@ -607,11 +620,12 @@
             <span id="headerNotifCountBadge" class="hidden -top-1.5 -right-1.5 absolute min-w-[17px] h-[17px] px-1 rounded-full bg-amber-400 text-black font-mono font-black text-[10px] inline-flex items-center justify-center notif-action-pulse">0</span>
           </button>
 
-          <!-- Dedicated Top-Header ESPN Sync Button -->
-          <button onclick="openEspnSyncModal()" id="headerEspnSyncBtn" class="btn-action px-2 sm:px-2.5 py-1.5 text-[11px] sm:text-xs text-amber-300 border-amber-500/40 hover:border-amber-400 whitespace-nowrap" title="1-Click ESPN League Sync & Keeper Rules Setup">
-            <i class="fa-solid fa-football text-amber-400"></i>
+          <!-- Dedicated Top-Header ESPN Sync Button (Commissioner Mode Only + Last Sync Badge) -->
+          <button onclick="openEspnSyncModal()" id="headerEspnSyncBtn" class="hidden btn-garnet px-2.5 sm:px-3 py-1.5 text-[11px] sm:text-xs font-extrabold whitespace-nowrap shadow" title="Commissioner 1-Click ESPN League Sync & Keeper Rules Setup">
+            <i class="fa-solid fa-football text-amber-300"></i>
             <span class="hidden sm:inline">ESPN Sync</span>
             <span class="sm:hidden">ESPN</span>
+            <span id="headerEspnLastSyncBadge" class="hidden md:inline-block px-1.5 py-0.2 rounded bg-black/40 border border-amber-400/50 text-[9px] font-mono text-amber-200">Live</span>
           </button>
 
           <!-- Gear / More Tools & Settings Button -->
@@ -681,7 +695,7 @@
 
         <button onclick="switchMainTab('capital')" id="navTab-capital" class="nav-tab-btn px-4 py-2.5 text-xs font-extrabold border-b-2 transition whitespace-nowrap flex items-center gap-2 cursor-pointer">
           <i class="fa-solid fa-trophy"></i>
-          <span>League HQ</span>
+          <span>League Hub</span>
         </button>
 
         <button onclick="switchMainTab('feed')" id="navTab-feed" class="nav-tab-btn px-4 py-2.5 text-xs font-extrabold border-b-2 transition whitespace-nowrap flex items-center gap-2 cursor-pointer">
@@ -736,16 +750,11 @@
       </section>
 
       <!-- ======================================================= -->
-      <!-- TAB 2: TRADE CENTER (ACTIVE BLOCK + TRADE MACHINE)      -->
+      <!-- TAB 2: TRADE CENTER (2-TEAM TRADE MACHINE + BLOCK)      -->
       <!-- ======================================================= -->
       <section id="section-tradecenter" class="hidden space-y-4">
 
-        <!-- League-Wide Active Trade Block Cards -->
-        <div id="leagueTradeBlockContainer" class="space-y-3">
-          <!-- Populated by JS -->
-        </div>
-
-        <!-- Always-Ready 2-Team Trade Machine (Compare & Interactive Tap-to-Swap Sandbox) -->
+        <!-- Always-Ready 2-Team Trade Machine (Placed Above the Fold on Mobile & Desktop) -->
         <div class="app-card p-3 sm:p-5 space-y-3.5">
           <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-3 border-b border-zinc-800 pb-3">
             <div class="min-w-0">
@@ -753,10 +762,14 @@
                 <span class="static-badge bg-[#73000A] text-white border border-[#CC1429]">
                   <i class="fa-solid fa-scale-balanced"></i> Trade Machine
                 </span>
-                <h2 class="text-sm sm:text-lg font-black text-white">2-Team Pick Comparison & Tap-to-Trade</h2>
+                <h2 class="text-sm sm:text-lg font-black text-white">2-Team Roster & Pick Comparison</h2>
+                <button type="button" onclick="openTradeModalWithPair(uiState.selectedManager, uiState.compareManagerB)" class="btn-action px-2 py-0.5 text-[10px] text-amber-300 border-amber-500/40" title="Open 3-Team or Conditional Swap Trade Builder">
+                  <i class="fa-solid fa-sliders"></i>
+                  <span>3-Team / Conditional</span>
+                </button>
               </div>
               <p class="text-[11px] sm:text-xs text-zinc-400 mt-0.5">
-                Pick a trade partner and tap any settled pick below to stage a swap, then tap <strong class="text-white">Propose Trade →</strong>.
+                Pick a trade partner, tap any player or draft pick below to stage a package, and send your trade offer in 1 tap.
               </p>
             </div>
 
@@ -792,6 +805,11 @@
           </div>
         </div>
 
+        <!-- League-Wide Active Trade Block Cards (Collapsible Below Trade Machine) -->
+        <div id="leagueTradeBlockContainer" class="space-y-3">
+          <!-- Populated by JS -->
+        </div>
+
       </section>
 
       <!-- ======================================================= -->
@@ -819,6 +837,12 @@
                 <i class="fa-solid fa-table-cells mr-1"></i>10×20 Grid
               </button>
             </div>
+
+            <!-- 1-Tap My Picks Filter Pill -->
+            <button onclick="toggleBoardMyPicksFilter()" id="boardMyPicksToggleBtn" class="btn-action px-2.5 py-1.5 text-[11px] sm:text-xs text-amber-300" title="Highlight or filter to your franchise's picks">
+              <i class="fa-solid fa-user-check text-amber-400"></i>
+              <span id="boardMyPicksToggleLabel">My Picks</span>
+            </button>
 
             <!-- Team Highlight Filter -->
             <select id="boardFilterTeamSelect" onchange="renderDraftBoardSection()" class="bg-[#09090B] text-[11px] sm:text-xs font-semibold text-zinc-200 rounded-lg px-2 py-1.5 border border-zinc-700 focus:outline-none focus:border-[#CC1429] cursor-pointer max-w-[160px] sm:max-w-none truncate">
@@ -848,19 +872,19 @@
         <!-- Compact Visual Legend -->
         <div class="app-card px-3 py-2 flex flex-wrap items-center justify-between gap-2 text-[11px]">
           <div class="flex flex-wrap items-center gap-2.5 sm:gap-4">
-            <span class="font-bold text-zinc-400 uppercase tracking-wider text-[10px]">Legend:</span>
+            <span class="font-bold text-zinc-400 uppercase tracking-wider text-[10px]">Post-Keeper Draft (Rounds 1–20):</span>
             <span class="flex items-center gap-1 text-zinc-300">
-              <span class="w-2 h-2 rounded bg-zinc-900 border border-zinc-700 inline-block"></span> Own
+              <span class="w-2 h-2 rounded bg-zinc-900 border border-zinc-700 inline-block"></span> Own Pick
             </span>
             <span class="flex items-center gap-1 text-emerald-300">
-              <span class="w-2 h-2 rounded bg-emerald-950 border border-emerald-500 inline-block"></span> Traded
+              <span class="w-2 h-2 rounded bg-emerald-950 border border-emerald-500 inline-block"></span> Traded Pick
             </span>
             <span class="flex items-center gap-1 text-amber-300 font-semibold">
               <span class="w-2 h-2 rounded bg-[#73000A] border border-amber-400 inline-block"></span> Pending Final
             </span>
           </div>
           <span class="no-print text-[10px] sm:text-[11px] text-zinc-400">
-            Tap any pick to inspect chain
+            Clean 20-round post-keeper draft • Tap any pick to inspect or offer trade
           </span>
         </div>
 
@@ -872,7 +896,7 @@
       </section>
 
       <!-- ======================================================= -->
-      <!-- TAB 4: LEAGUE CAPITAL (10-TEAM STANDINGS & RANKINGS)    -->
+      <!-- TAB 4: LEAGUE HUB (PICK CAPITAL, STANDINGS & VAULT)     -->
       <!-- ======================================================= -->
       <section id="section-capital" class="hidden space-y-3.5">
         <div id="leagueCapitalStandingsContainer" class="space-y-3.5 min-w-0 max-w-full">
@@ -901,7 +925,7 @@
             <button onclick="setActivitySubTab('ALL')" id="actSubTab-ALL" class="px-2.5 sm:px-3 py-1.5 rounded-lg text-[11px] sm:text-xs font-extrabold transition cursor-pointer">
               All Trades
             </button>
-            <button onclick="setActivitySubTab('PENDING_FINAL')" id="actSubTab-PENDING_FINAL" class="px-2.5 sm:px-3 py-1.5 rounded-lg text-[11px] sm:text-xs font-extrabold transition flex items-center gap-1 cursor-pointer">
+            <button onclick="setActivitySubTab('PENDING_FINAL')" id="actSubTab-PENDING_FINAL" class="px-2.5 sm:text-xs font-extrabold transition flex items-center gap-1 px-3 py-1.5 rounded-lg text-[11px] cursor-pointer">
               <i class="fa-solid fa-hourglass-half text-amber-400"></i>
               <span>Pending Final</span>
               <span id="actSubTabPendingBadge" class="px-1.5 py-0.2 rounded-full text-[10px] font-mono bg-amber-950 text-amber-300 border border-amber-500/50">0</span>
@@ -951,7 +975,7 @@
       <footer id="appFooterShell" class="hidden border-t border-zinc-900 pt-4 pb-2 mt-6 no-print">
         <div class="flex flex-col sm:flex-row items-center justify-between gap-2 text-[11px] text-zinc-500">
           <div class="flex items-center gap-2">
-            <span class="font-bold text-zinc-400">Gamecock Mafia League HQ & Draft Tracker v7.2</span>
+            <span class="font-bold text-zinc-400">Gamecock Mafia League Hub & Draft Tracker v7.3</span>
             <span>•</span>
             <span>Est. 2016</span>
           </div>
@@ -960,6 +984,8 @@
             <span>•</span>
             <button onclick="openMoreToolsModal()" class="hover:text-zinc-300 transition cursor-pointer">Settings & Colorways ⚙</button>
             <div id="adminFooterControls" class="hidden items-center gap-2">
+              <span>•</span>
+              <button onclick="openEspnSyncModal()" class="text-amber-300 hover:underline cursor-pointer">ESPN League Sync</button>
               <span>•</span>
               <button onclick="openCloudSyncModal()" class="text-emerald-400 hover:underline cursor-pointer">Live Sheet Sync</button>
             </div>
@@ -988,8 +1014,8 @@
       <span class="truncate">Board</span>
     </button>
     <button onclick="switchMainTab('capital')" id="mobTab-capital" class="flex flex-col items-center justify-center py-1 rounded-lg text-[10px] font-bold transition cursor-pointer min-w-0">
-      <i class="fa-solid fa-ranking-star text-sm mb-0.5"></i>
-      <span class="truncate">Capital</span>
+      <i class="fa-solid fa-trophy text-sm mb-0.5"></i>
+      <span class="truncate">League Hub</span>
     </button>
     <button onclick="switchMainTab('feed')" id="mobTab-feed" class="flex flex-col items-center justify-center py-1 rounded-lg text-[10px] font-bold transition relative cursor-pointer min-w-0">
       <i class="fa-solid fa-bolt text-sm mb-0.5"></i>
@@ -1495,12 +1521,8 @@
 
       <!-- Section 2: League Vault & Exports -->
       <div class="space-y-2 pt-1 border-t border-zinc-800">
-        <div class="text-[10px] font-extrabold uppercase tracking-wider text-zinc-400">League Vault, ESPN Sync & Backups</div>
+        <div class="text-[10px] font-extrabold uppercase tracking-wider text-zinc-400">League Vault, Draft Sheet & Backups</div>
         <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
-          <button onclick="cancelMoreToolsModal(); openEspnSyncModal();" class="btn-garnet justify-start px-3 py-2 text-xs sm:col-span-2">
-            <i class="fa-solid fa-football text-amber-300 w-4"></i>
-            <span>1-Click ESPN League Sync & Keeper Rules Setup 🏈</span>
-          </button>
           <button onclick="cancelMoreToolsModal(); openArchiveModal();" class="btn-action justify-start px-3 py-2 text-xs text-amber-300">
             <i class="fa-solid fa-book-bookmark text-amber-400 w-4"></i>
             <span>2018–2025 Archive & Trade Stats ↗</span>
@@ -1527,9 +1549,15 @@
           <span id="moreToolsCommishStatusBadge" class="static-badge bg-zinc-900 text-zinc-400 border border-zinc-700">Locked</span>
         </div>
         <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
-          <button onclick="cancelMoreToolsModal(); openPinModal();" id="moreToolsCommishToggleBtn" class="btn-garnet justify-start px-3 py-2 text-xs">
+          <button onclick="cancelMoreToolsModal(); openPinModal();" id="moreToolsCommishToggleBtn" class="btn-garnet justify-start px-3 py-2 text-xs sm:col-span-2">
             <i class="fa-solid fa-key w-4"></i>
             <span id="moreToolsCommishToggleLabel">Unlock Commissioner Mode</span>
+          </button>
+        </div>
+        <div id="moreToolsAdminActionsGrid" class="hidden grid grid-cols-1 sm:grid-cols-2 gap-2 pt-1">
+          <button onclick="cancelMoreToolsModal(); openEspnSyncModal();" id="moreToolsEspnSyncBtn" class="btn-garnet justify-start px-3 py-2 text-xs sm:col-span-2">
+            <i class="fa-solid fa-football text-amber-300 w-4"></i>
+            <span>1-Click ESPN League Sync & Keeper Rules Setup 🏈</span>
           </button>
           <button onclick="cancelMoreToolsModal(); openLeagueBrandingModal();" class="btn-action justify-start px-3 py-2 text-xs text-amber-300">
             <i class="fa-solid fa-crown text-amber-400 w-4"></i>
@@ -1552,7 +1580,7 @@
             <span>Import JSON Backup</span>
             <input type="file" accept=".json" onchange="cancelMoreToolsModal(); importLeagueBackup(event)" class="hidden">
           </label>
-          <button onclick="cancelMoreToolsModal(); confirmResetToSeed();" class="btn-action justify-start px-3 py-2 text-xs text-rose-300 sm:col-span-2">
+          <button onclick="cancelMoreToolsModal(); confirmResetToSeed();" class="btn-action justify-start px-3 py-2 text-xs text-rose-300">
             <i class="fa-solid fa-rotate-left text-rose-400 w-4"></i>
             <span>Reset to Official Seed</span>
           </button>
@@ -1754,6 +1782,17 @@
             <div id="espnSeasonOwnerOverridesGrid" class="grid grid-cols-1 sm:grid-cols-2 gap-2">
               <!-- Populated by JS -->
             </div>
+          </div>
+
+          <div class="bg-[#121215] border border-emerald-700/50 rounded-lg px-3 py-2.5 text-[11px] text-zinc-300 space-y-1">
+            <div class="flex flex-wrap items-center justify-between gap-1">
+              <strong class="text-emerald-300 uppercase tracking-wider text-[10px]"><i class="fa-solid fa-satellite-dish mr-1"></i>Live Multi-Device Sync & Weekly ESPN Cadence</strong>
+              <span class="static-badge bg-emerald-950/90 text-emerald-300 border border-emerald-600/60 text-[9px]">Real-Time Google Sheets Cloud DB</span>
+            </div>
+            <p class="text-zinc-400 leading-relaxed">
+              • <strong class="text-white">Instant App-to-App Sync (All 10 Devices):</strong> Every trade proposal, partner confirmation, keeper lock, OTB tag, and team profile edit writes atomically to your Google Sheet (<code class="text-emerald-300">LockService</code>) and auto-syncs across every manager's phone &amp; desktop every <strong class="text-white">45 seconds</strong> (plus immediately whenever a tab is focused).<br>
+              • <strong class="text-white">Weekly ESPN Sync (1-Click or Automated Timer):</strong> Because your ESPN league is private, you can run Step 1's 1-Click Extractor once a week (takes ~10 seconds and pushes to all 10 devices immediately), <em>or</em> add your <code class="text-amber-300">ESPN_S2</code> &amp; <code class="text-amber-300">SWID</code> cookies to Google Apps Script Properties and run <code class="text-emerald-300">setupWeeklyEspnSyncTrigger()</code> once for hands-free Tuesday morning auto-syncs.
+            </p>
           </div>
         </div>
 
@@ -2671,22 +2710,26 @@
       ledgerViewMode: "SINGLE",     // 'SINGLE' | 'COMPARE'
       compareManagerB: "NONE",      // 'NONE' | managerId
       whatIfActive: true,           // Always-ready tap-to-swap in Trade Machine
-      whatIfSwaps: [],              // [{ round, originalOwner, fromTeam, toTeam }]
+      whatIfSwaps: [],              // [{ year, round, originalOwner, fromTeam, toTeam }]
       whatIfPlayerSwaps: [],        // [{ playerId, name, pos, nflTeam, fromTeam, toTeam }]
+      whatIfTradeNote: "",          // Optional inline note when sending trade from Trade Machine
       stagedModalPlayers: [],       // Player transfers attached to active trade proposal modal
       tradeMachineShowRosters: true,// Show side-by-side player swap drawer in Trade Machine
+      tradeMachinePosFilter: "ALL", // 'ALL' | 'QB' | 'RB' | 'WR' | 'TE' | 'IDP' | 'OTB' | 'KEEPERS'
+      tradeBlockCollapsed: false,   // Toggleable League Trade Block below Trade Machine
       warRoomDrawerOpen: false,     // Collapsible War Room Edit Drawer on My Team tab
       warRoomDirty: false,          // Tracks unconfirmed edits inside Team Customization drawer
       warRoomSnapshot: null,        // Snapshot for clean Cancel inside Team Customization drawer
       pendingColorTheme: null,      // Staged display colorway waiting for Confirm click
       showCapitalDrawer: false,
       ledgerFilter: "ALL",          // 'ALL' | 'HOLDINGS' | 'TRADED_AWAY'
-      rosterPosFilter: "ALL",       // 'ALL' | 'KEEPERS' | 'OFFENSE' | 'IDP'
+      rosterPosFilter: "ALL",       // 'ALL' | 'KEEPERS' | 'QB' | 'RB' | 'WR' | 'TE' | 'IDP' | 'OTB'
       showUnchangedRounds: true,    // Compact 1-line table shows all 20 rounds by default
       boardDisplayMode: "MATRIX",   // 'MATRIX' | 'CARDS'
       boardTeamFilter: "ALL",
       boardOnlyTraded: false,
-      boardShowKeepers: true,       // Overlay locked keepers in Rounds 1–12 on Draft Board
+      boardMyPicksOnly: false,      // 1-tap filter to highlight/filter My Team's picks on Draft Board
+      boardShowKeepers: false,      // Post-keeper draft board: clean Rounds 1–20 with zero keepers overlaid
       leagueHqSubTab: "CAPITAL",    // 'CAPITAL' | 'STANDINGS' | 'ALL_TIME' | 'RIVALRIES' | 'RECORDS'
       espnStandingsYear: 2026,
       rivalryFocusManager: "syeth",
@@ -4219,6 +4262,7 @@
       { id: "honolulu_gridiron", label: "Honolulu Gridiron", sub: "Blue, Silver & White", dots: ["#0076B6", "#B0B7BC", "#FFFFFF"] },
       { id: "foundry_orange",    label: "Foundry Orange",    sub: "Orange, Brown & White", dots: ["#FF3C00", "#311D00", "#FFFFFF"] },
       { id: "emerald_sound",     label: "Emerald Sound '98", sub: "Royal, Green & Silver", dots: ["#004B8D", "#69BE28", "#9EA2A2"] },
+      { id: "jets_of_the_west",  label: "Jets of the West",  sub: "Cardinal Red, Black & Yellow", dots: ["#97233F", "#0A0808", "#FFB612"] },
       { id: "upstate_kitties",   label: "Upstate Kitties",   sub: "Orange & Regal Purple", dots: ["#F56600", "#522D80", "#FFFFFF"], isTrap: true }
     ];
 
@@ -5562,7 +5606,6 @@
 
     function selectDraftYear(year) {
       uiState.activeYear = Number(year);
-      uiState.whatIfSwaps = [];
       renderAll();
     }
 
@@ -5645,6 +5688,10 @@
               <span>Resolve Pending Final (${unresolvedCount})</span>
             </button>
           ` : ''}
+          <button onclick="openEspnSyncModal()" class="btn-garnet px-3 py-1.5 text-xs text-white" title="Sync ESPN Rosters, Standings, History & Keeper Rules">
+            <i class="fa-solid fa-satellite-dish text-amber-300"></i>
+            <span>ESPN Sync</span>
+          </button>
           <button onclick="openOrderConfigModal()" class="btn-action px-3 py-1.5 text-xs text-sky-300">
             <i class="fa-solid fa-list-ol"></i>
             <span>${state.orderCfg.isLocked ? 'Edit 1–10 Order' : 'Set 1–10 Order'}</span>
@@ -6277,7 +6324,7 @@
                  Post My Team Needs ✎
                </button>
              </div>`
-          : `<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
+          : `<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3 ${uiState.tradeBlockCollapsed ? 'hidden' : ''}">
                ${activeBlockEntries.map(entry => {
                  const isMe = entry.team.id === uiState.myTeam;
                  return `
@@ -6291,10 +6338,7 @@
                          </div>
                          ${entry.team.id !== uiState.selectedManager ? `
                            <div class="flex items-center gap-1 flex-shrink-0">
-                             <button onclick="compareWithSelectedManager('${safeId(entry.team.id)}')" class="btn-action px-2 py-1 text-[10px] text-sky-300" title="Load ${escapeHtml(entry.team.name)} in Trade Machine below">
-                               Compare ⚖
-                             </button>
-                             <button onclick="openTradeModalWithPair('${safeId(uiState.selectedManager)}', '${safeId(entry.team.id)}')" class="btn-garnet px-2 py-1 text-[10px]">
+                             <button onclick="compareWithSelectedManager('${safeId(entry.team.id)}')" class="btn-garnet px-2.5 py-1 text-[10px]" title="Load ${escapeHtml(entry.team.name)} in the 2-Team Trade Machine above">
                                Propose ⇄
                              </button>
                            </div>
@@ -6332,10 +6376,16 @@
                 </span>
                 <h2 class="text-sm sm:text-lg font-black text-white truncate">Active Trade Block (${activeBlockEntries.length})</h2>
               </div>
-              <button onclick="switchMainTab('ledger'); uiState.warRoomDrawerOpen = true; renderAll();" class="btn-action px-2.5 sm:px-3 py-1 text-[11px] sm:text-xs text-amber-300">
-                <i class="fa-solid fa-bullhorn"></i>
-                <span>Update My Block</span>
-              </button>
+              <div class="flex items-center gap-1.5">
+                <button type="button" onclick="toggleTradeBlockCollapsed()" class="btn-action px-2.5 py-1 text-[11px] sm:text-xs text-zinc-300">
+                  <i class="fa-solid ${uiState.tradeBlockCollapsed ? 'fa-chevron-down' : 'fa-chevron-up'}"></i>
+                  <span>${uiState.tradeBlockCollapsed ? 'Show Block' : 'Collapse'}</span>
+                </button>
+                <button onclick="switchMainTab('ledger'); uiState.warRoomDrawerOpen = true; renderAll();" class="btn-action px-2.5 sm:px-3 py-1 text-[11px] sm:text-xs text-amber-300">
+                  <i class="fa-solid fa-bullhorn"></i>
+                  <span>Update My Block</span>
+                </button>
+              </div>
             </div>
             ${cardsHtml}
           </div>
@@ -6766,10 +6816,12 @@
               </button>
             `).join("")}
           </div>
-          <button type="button" onclick="openEspnSyncModal()" class="btn-action px-2.5 sm:px-3 py-1.5 text-[11px] sm:text-xs text-amber-300">
-            <i class="fa-solid fa-satellite-dish"></i>
-            <span>ESPN Sync & Keeper Rules</span>
-          </button>
+          ${uiState.isCommish ? `
+            <button type="button" onclick="openEspnSyncModal()" class="btn-garnet px-2.5 sm:px-3 py-1.5 text-[11px] sm:text-xs text-white">
+              <i class="fa-solid fa-satellite-dish text-amber-300"></i>
+              <span>ESPN Sync & Keeper Rules</span>
+            </button>
+          ` : ''}
         </div>
       `;
     }
@@ -6942,10 +6994,12 @@
                 </div>
                 <p class="text-xs text-zinc-400 mt-0.5">Career totals across all seasons managed by each current franchise owner (9 founding franchises since 2016 + Josh).</p>
               </div>
-              <button type="button" onclick="openEspnSyncModal()" class="btn-action px-3 py-1.5 text-xs text-sky-300">
-                <i class="fa-solid fa-user-clock"></i>
-                <span>Edit Historical Owner Mapping</span>
-              </button>
+              ${uiState.isCommish ? `
+                <button type="button" onclick="openEspnSyncModal()" class="btn-action px-3 py-1.5 text-xs text-sky-300">
+                  <i class="fa-solid fa-user-clock"></i>
+                  <span>Edit Historical Owner Mapping</span>
+                </button>
+              ` : ''}
             </div>
             <div class="overflow-x-auto">
               <table class="w-full text-left border-collapse">
@@ -7196,11 +7250,40 @@
     /* -----------------------------------------------------------
        6B. TWO-TEAM SIDE-BY-SIDE COMPARISON & WHAT-IF SANDBOX (PLAYERS + PICKS)
        ----------------------------------------------------------- */
+    function toggleTradeBlockCollapsed() {
+      uiState.tradeBlockCollapsed = !uiState.tradeBlockCollapsed;
+      renderAll();
+    }
+
+    function setTradeMachinePosFilter(pos) {
+      uiState.tradeMachinePosFilter = String(pos || "ALL").toUpperCase();
+      renderAll();
+    }
+
+    function setRosterPosFilter(pos) {
+      uiState.rosterPosFilter = String(pos || "ALL").toUpperCase();
+      renderAll();
+    }
+
+    function doesPlayerMatchPosFilter(player, filterMode, prof) {
+      const mode = String(filterMode || "ALL").toUpperCase();
+      if (mode === "ALL") return true;
+      const bucket = normalizeKeeperPosBucket(player.pos);
+      const tag = (prof?.playerTags && prof.playerTags[player.id]) || "";
+      const isKeeper = Array.isArray(prof?.keepers) && prof.keepers.includes(player.id);
+      if (mode === "KEEPERS") return isKeeper;
+      if (mode === "OTB") return tag === "ON_BLOCK";
+      if (mode === "IDP") return ["DL", "LB", "DB"].includes(bucket);
+      if (mode === "OFFENSE") return ["QB", "RB", "WR", "TE"].includes(bucket);
+      return bucket === mode;
+    }
+
     function toggleWhatIfSandbox() {
       uiState.whatIfActive = !uiState.whatIfActive;
       if (!uiState.whatIfActive) {
         uiState.whatIfSwaps = [];
         uiState.whatIfPlayerSwaps = [];
+        uiState.whatIfTradeNote = "";
       }
       renderAll();
     }
@@ -7208,19 +7291,21 @@
     function resetWhatIfSandbox() {
       uiState.whatIfSwaps = [];
       uiState.whatIfPlayerSwaps = [];
+      uiState.whatIfTradeNote = "";
       renderAll();
     }
 
-    function toggleWhatIfPickTransfer(round, originalOwner, fromTeam, toTeam) {
+    function toggleWhatIfPickTransfer(round, originalOwner, fromTeam, toTeam, yearOpt) {
+      const yr = Number(yearOpt || uiState.activeYear);
       const r = Number(round);
       const orig = safeId(originalOwner);
       const from = safeId(fromTeam);
       const to = safeId(toTeam);
-      const existingIdx = uiState.whatIfSwaps.findIndex(s => s.round === r && s.originalOwner === orig);
+      const existingIdx = uiState.whatIfSwaps.findIndex(s => Number(s.year || uiState.activeYear) === yr && s.round === r && s.originalOwner === orig);
       if (existingIdx !== -1) {
         uiState.whatIfSwaps.splice(existingIdx, 1);
       } else {
-        uiState.whatIfSwaps.push({ round: r, originalOwner: orig, fromTeam: from, toTeam: to });
+        uiState.whatIfSwaps.push({ year: yr, round: r, originalOwner: orig, fromTeam: from, toTeam: to });
       }
       renderAll();
     }
@@ -7250,6 +7335,120 @@
       renderAll();
     }
 
+    function buildStagedTradeHeadline(tA, tB, swaps, playerSwaps) {
+      const aGets = [
+        ...playerSwaps.filter(p => p.toTeam === tA).map(p => `${p.playerName} (${p.pos})`),
+        ...swaps.filter(s => s.toTeam === tA).map(s => `${Number(s.year || uiState.activeYear)} ${s.round}${getOrdinal(s.round)}`)
+      ];
+      const bGets = [
+        ...playerSwaps.filter(p => p.toTeam === tB).map(p => `${p.playerName} (${p.pos})`),
+        ...swaps.filter(s => s.toTeam === tB).map(s => `${Number(s.year || uiState.activeYear)} ${s.round}${getOrdinal(s.round)}`)
+      ];
+      const parts = [];
+      if (aGets.length > 0) parts.push(`${getOriginalManagerName(tA)} receives ${aGets.join(" & ")}`);
+      if (bGets.length > 0) parts.push(`${getOriginalManagerName(tB)} receives ${bGets.join(" & ")}`);
+      return parts.join("; ") || `${getOriginalManagerName(tA)} ↔ ${getOriginalManagerName(tB)} Trade`;
+    }
+
+    function sendStagedTradeDirectlyFromMachine() {
+      const swaps = [...(uiState.whatIfSwaps || [])];
+      const playerSwaps = [...(uiState.whatIfPlayerSwaps || [])];
+      if (swaps.length === 0 && playerSwaps.length === 0) {
+        showToast("Tap at least one player or draft pick below to build a trade offer first!", "error");
+        return false;
+      }
+
+      const teamA = safeId(uiState.selectedManager || uiState.myTeam || "syeth");
+      const teamB = safeId(uiState.compareManagerB);
+      if (!teamB || teamB === "NONE" || teamB === teamA) {
+        showToast("Select a trade partner above to send this trade offer.", "error");
+        return false;
+      }
+
+      if (!uiState.isCommish) {
+        const myId = safeId(uiState.myTeam || "syeth");
+        if (teamA !== myId && teamB !== myId) {
+          showToast(`You can only propose trades involving your own franchise (${getTeamName(myId)}).`, "error");
+          return false;
+        }
+      }
+
+      const directTransfers = swaps.map(s => ({
+        year: Number(s.year || uiState.activeYear),
+        round: Number(s.round),
+        originalOwner: safeId(s.originalOwner),
+        fromOwner: safeId(s.fromTeam),
+        toOwner: safeId(s.toTeam)
+      }));
+
+      const playerTransfers = playerSwaps.map(ps => ({
+        playerId: ps.playerId,
+        playerName: ps.playerName,
+        pos: ps.pos,
+        nflTeam: ps.nflTeam,
+        fromOwner: safeId(ps.fromTeam),
+        toOwner: safeId(ps.toTeam)
+      }));
+
+      const conflictCheck = validateTradePickOwnership({ directTransfers });
+      if (!conflictCheck.ok) {
+        showToast(conflictCheck.error, "error");
+        return false;
+      }
+
+      const yearsSet = new Set(directTransfers.map(dt => dt.year));
+      const sortedYears = Array.from(yearsSet).sort((a, b) => a - b);
+      const primaryYear = sortedYears[0] || Number(uiState.activeYear);
+      const headline = buildStagedTradeHeadline(teamA, teamB, swaps, playerSwaps);
+      const noteEl = document.getElementById("whatIfTradeNoteInput");
+      const notesStr = cleanStr((noteEl ? noteEl.value : uiState.whatIfTradeNote) || "", 400).trim();
+      const proposerId = uiState.isCommish ? teamA : safeId(uiState.myTeam || teamA);
+      const submittedBy = uiState.isCommish ? "Commissioner" : getTeamName(proposerId);
+      const dateStr = new Date().toLocaleDateString();
+
+      const proposalId = `PROP-${primaryYear}-${String((leagueDB.pendingTrades?.length || 0) + 1).padStart(2, "0")}-${Date.now().toString().slice(-3)}`;
+      const proposalObj = {
+        id: proposalId,
+        year: primaryYear,
+        date: dateStr,
+        teamA,
+        teamB,
+        teamC: null,
+        headline,
+        notes: notesStr,
+        submittedBy,
+        proposedBy: proposerId,
+        approvals: { [proposerId]: true },
+        status: "PENDING",
+        replyNote: "",
+        createdAt: Date.now(),
+        directTransfers,
+        playerTransfers,
+        pools: [],
+        conditionals: []
+      };
+
+      if (!Array.isArray(leagueDB.pendingTrades)) leagueDB.pendingTrades = [];
+      leagueDB.pendingTrades.push(proposalObj);
+      leagueDB.updatedAt = Date.now();
+
+      uiState.whatIfSwaps = [];
+      uiState.whatIfPlayerSwaps = [];
+      uiState.whatIfTradeNote = "";
+      saveDatabase(false);
+
+      if (getActiveCloudSyncUrl()) {
+        pushTradeProposalToCloud(proposalObj);
+      } else {
+        updateSyncStatusUI("Proposal Saved Locally", false, false);
+      }
+
+      const partnerId = teamA === proposerId ? teamB : teamA;
+      renderAll();
+      showToast(`Trade Proposal ${proposalId} sent to ${getTeamName(partnerId)}! Requires their confirmation before marking Official.`, "success");
+      return true;
+    }
+
     function openTradeModalFromWhatIf() {
       const swaps = [...(uiState.whatIfSwaps || [])];
       const playerSwaps = [...(uiState.whatIfPlayerSwaps || [])];
@@ -7272,7 +7471,7 @@
         uiState.quickPickRowCounter = 0;
         swaps.forEach(s => {
           addQuickPickRow({
-            year: uiState.activeYear,
+            year: Number(s.year || uiState.activeYear),
             round: s.round,
             fromOwner: s.fromTeam,
             toOwner: s.toTeam,
@@ -7290,18 +7489,11 @@
       // Auto-build a clean trade summary headline from staged players & picks
       const sumEl = document.getElementById("formSummary");
       if (sumEl && (swaps.length > 0 || playerSwaps.length > 0)) {
-        const aGets = [
-          ...playerSwaps.filter(p => p.toTeam === tA).map(p => `${p.playerName} (${p.pos})`),
-          ...swaps.filter(s => s.toTeam === tA).map(s => `${uiState.activeYear} ${s.round}${getOrdinal(s.round)}`)
-        ];
-        const bGets = [
-          ...playerSwaps.filter(p => p.toTeam === tB).map(p => `${p.playerName} (${p.pos})`),
-          ...swaps.filter(s => s.toTeam === tB).map(s => `${uiState.activeYear} ${s.round}${getOrdinal(s.round)}`)
-        ];
-        const parts = [];
-        if (aGets.length > 0) parts.push(`${getOriginalManagerName(tA)} receives ${aGets.join(" & ")}`);
-        if (bGets.length > 0) parts.push(`${getOriginalManagerName(tB)} receives ${bGets.join(" & ")}`);
-        sumEl.value = parts.join("; ");
+        sumEl.value = buildStagedTradeHeadline(tA, tB, swaps, playerSwaps);
+      }
+      const notesEl = document.getElementById("formTradeNotes");
+      if (notesEl && uiState.whatIfTradeNote) {
+        notesEl.value = uiState.whatIfTradeNote;
       }
       updateModalTradeBalanceBar();
     }
@@ -7310,6 +7502,7 @@
       let totalDelta = 0;
       let earlyDelta = 0;
       uiState.whatIfSwaps.forEach(s => {
+        if (Number(s.year || uiState.activeYear) !== Number(uiState.activeYear)) return;
         if (s.toTeam === teamId) {
           totalDelta += 1;
           if (s.round <= 5) earlyDelta += 1;
@@ -7369,6 +7562,20 @@
       const rosterB = (leagueDB?.espnData?.rosters && leagueDB.espnData.rosters[teamB.id]) || [];
       const profA = getTeamProfile(teamA.id);
       const profB = getTeamProfile(teamB.id);
+      const posFilter = uiState.tradeMachinePosFilter || "ALL";
+      const filteredRosterA = rosterA.filter(p => doesPlayerMatchPosFilter(p, posFilter, profA));
+      const filteredRosterB = rosterB.filter(p => doesPlayerMatchPosFilter(p, posFilter, profB));
+
+      const posFilterOptions = [
+        { id: "ALL", label: "All" },
+        { id: "QB", label: "QB" },
+        { id: "RB", label: "RB" },
+        { id: "WR", label: "WR" },
+        { id: "TE", label: "TE" },
+        { id: "IDP", label: "IDP" },
+        { id: "OTB", label: "🏷️ OTB" },
+        { id: "KEEPERS", label: "🔒 Keepers" }
+      ];
 
       const renderTradeMachinePlayerChip = (p, ownerId, partnerId, prof) => {
         const isStaged = uiState.whatIfPlayerSwaps.some(ps => ps.playerId === p.id);
@@ -7394,25 +7601,59 @@
       const playerTrayHtml = `
         <div class="bg-[#09090B] border border-zinc-800 rounded-xl p-3 space-y-2.5">
           <div class="flex flex-wrap items-center justify-between gap-2 border-b border-zinc-800 pb-2">
-            <span class="text-[11px] font-black uppercase tracking-wider text-sky-300 flex items-center gap-1.5">
-              <i class="fa-solid fa-people-arrows"></i>
-              <span>Include Roster Players in Trade Package (Tap Any Player to Add ⇄)</span>
-            </span>
-            <span class="text-[10px] text-zinc-400">🔒 = Keeper • 🏷️ = On Trade Block</span>
+            <div class="flex flex-wrap items-center gap-1.5">
+              <span class="text-[11px] font-black uppercase tracking-wider text-sky-300 flex items-center gap-1.5 mr-1">
+                <i class="fa-solid fa-people-arrows"></i>
+                <span>1. Tap Roster Players to Include ⇄</span>
+              </span>
+              ${posFilterOptions.map(opt => `
+                <button
+                  type="button"
+                  onclick="setTradeMachinePosFilter('${opt.id}')"
+                  class="px-2 py-0.5 rounded-lg text-[10px] font-extrabold border transition cursor-pointer ${posFilter === opt.id ? 'bg-[#73000A] text-white border-[#CC1429]' : 'bg-[#121215] text-zinc-400 border-zinc-800 hover:text-white'}"
+                >${opt.label}</button>
+              `).join("")}
+            </div>
+            <span class="text-[10px] text-zinc-400">🔒 = Keeper • 🏷️ = On Block</span>
           </div>
           <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
             <div class="space-y-1.5">
-              <div class="text-[10px] font-extrabold uppercase text-[#CC1429]">${escapeHtml(teamA.name)}'s Roster (${rosterA.length})</div>
-              <div class="flex flex-wrap gap-1.5 max-h-36 overflow-y-auto pr-1">
-                ${rosterA.map(p => renderTradeMachinePlayerChip(p, teamA.id, teamB.id, profA)).join("")}
+              <div class="text-[10px] font-extrabold uppercase text-[#CC1429]">${escapeHtml(teamA.name)}'s Roster (${filteredRosterA.length}/${rosterA.length})</div>
+              <div class="flex flex-wrap gap-1.5 max-h-40 overflow-y-auto pr-1">
+                ${filteredRosterA.length > 0 ? filteredRosterA.map(p => renderTradeMachinePlayerChip(p, teamA.id, teamB.id, profA)).join("") : `<span class="text-[11px] text-zinc-500 italic">No players match ${escapeHtml(posFilter)} filter.</span>`}
               </div>
             </div>
             <div class="space-y-1.5">
-              <div class="text-[10px] font-extrabold uppercase text-sky-400">${escapeHtml(teamB.name)}'s Roster (${rosterB.length})</div>
-              <div class="flex flex-wrap gap-1.5 max-h-36 overflow-y-auto pr-1">
-                ${rosterB.map(p => renderTradeMachinePlayerChip(p, teamB.id, teamA.id, profB)).join("")}
+              <div class="text-[10px] font-extrabold uppercase text-sky-400">${escapeHtml(teamB.name)}'s Roster (${filteredRosterB.length}/${rosterB.length})</div>
+              <div class="flex flex-wrap gap-1.5 max-h-40 overflow-y-auto pr-1">
+                ${filteredRosterB.length > 0 ? filteredRosterB.map(p => renderTradeMachinePlayerChip(p, teamB.id, teamA.id, profB)).join("") : `<span class="text-[11px] text-zinc-500 italic">No players match ${escapeHtml(posFilter)} filter.</span>`}
               </div>
             </div>
+          </div>
+        </div>
+      `;
+
+      const visibleYears = getVisibleDraftYears();
+      const pickYearBarHtml = `
+        <div class="bg-[#09090B] border border-zinc-800 rounded-xl px-3 py-2 flex flex-wrap items-center justify-between gap-2">
+          <span class="text-[11px] font-black uppercase tracking-wider text-amber-300 flex items-center gap-1.5">
+            <i class="fa-solid fa-calendar-days"></i>
+            <span>2. Tap ${Number(state.year)} Draft Picks Below to Swap (Rounds 1–20)</span>
+          </span>
+          <div class="flex items-center gap-1 bg-[#121215] p-1 rounded-xl border border-zinc-800">
+            <span class="text-[10px] font-bold uppercase text-zinc-400 px-1.5">Pick Pool Year:</span>
+            ${visibleYears.map(yr => {
+              const stagedInYr = uiState.whatIfSwaps.filter(s => Number(s.year || uiState.activeYear) === Number(yr)).length;
+              return `
+                <button
+                  type="button"
+                  onclick="selectDraftYear(${Number(yr)})"
+                  class="px-2.5 py-1 rounded-lg text-xs font-mono font-extrabold transition cursor-pointer ${Number(yr) === Number(state.year) ? 'bg-[#73000A] text-white border border-[#CC1429] shadow' : 'text-zinc-400 hover:text-white'}"
+                >
+                  ${Number(yr)} Picks${stagedInYr > 0 ? ` (${stagedInYr})` : ''}
+                </button>
+              `;
+            }).join("")}
           </div>
         </div>
       `;
@@ -7449,14 +7690,14 @@
           const fullP = rosterB.find(x => x.id === ps.playerId) || rosterA.find(x => x.id === ps.playerId) || ps;
           return { val: computePlayerTradeValue(fullP) };
         }),
-        ...teamAReceivesSwaps.map(s => ({ val: computeDraftPickTradeValue(state.year, s.round, s.originalOwner, state) }))
+        ...teamAReceivesSwaps.map(s => ({ val: computeDraftPickTradeValue(Number(s.year || state.year), s.round, s.originalOwner, evaluateYearState(Number(s.year || state.year))) }))
       ];
       const bValueItems = [
         ...teamBReceivesPlayers.map(ps => {
           const fullP = rosterA.find(x => x.id === ps.playerId) || rosterB.find(x => x.id === ps.playerId) || ps;
           return { val: computePlayerTradeValue(fullP) };
         }),
-        ...teamBReceivesSwaps.map(s => ({ val: computeDraftPickTradeValue(state.year, s.round, s.originalOwner, state) }))
+        ...teamBReceivesSwaps.map(s => ({ val: computeDraftPickTradeValue(Number(s.year || state.year), s.round, s.originalOwner, evaluateYearState(Number(s.year || state.year))) }))
       ];
       const balanceMeterHtml = buildTradeValueBalanceBarHtml(teamA.id, teamB.id, aValueItems, bValueItems);
 
@@ -7465,16 +7706,19 @@
           <div class="flex flex-wrap items-center justify-between gap-2 border-b border-zinc-800 pb-2.5">
             <div class="flex flex-wrap items-center gap-2 min-w-0">
               <span class="static-badge bg-amber-950 text-amber-300 border border-amber-500">
-                <i class="fa-solid fa-bolt"></i> Proposed Deal Staged (${totalStagedAssets} Asset${totalStagedAssets > 1 ? 's' : ''})
+                <i class="fa-solid fa-bolt"></i> Deal Ready (${totalStagedAssets} Asset${totalStagedAssets > 1 ? 's' : ''})
               </span>
-              <span class="text-[11px] sm:text-xs text-zinc-300">Review simulated package or propose this trade to ${escapeHtml(teamB.name)}.</span>
+              <span class="text-[11px] sm:text-xs text-zinc-300">Send directly to ${escapeHtml(teamB.name)} in 1 tap, or add conditions/3-team options.</span>
             </div>
-            <div class="flex items-center gap-2 w-full sm:w-auto justify-end">
-              <button onclick="resetWhatIfSandbox()" class="btn-action px-3 py-1.5 text-xs text-zinc-300">
+            <div class="flex flex-wrap items-center gap-1.5 w-full sm:w-auto justify-end">
+              <button type="button" onclick="resetWhatIfSandbox()" class="btn-action px-2.5 py-1.5 text-xs text-zinc-300">
                 <i class="fa-solid fa-rotate-left"></i> Reset
               </button>
-              <button id="proposeStagedTradeBtn" onclick="openTradeModalFromWhatIf()" class="btn-garnet px-3.5 sm:px-4 py-1.5 text-xs">
-                <i class="fa-solid fa-paper-plane"></i> Propose Trade (${totalStagedAssets}) →
+              <button type="button" id="proposeStagedTradeBtn" onclick="openTradeModalFromWhatIf()" class="btn-action px-3 py-1.5 text-xs text-amber-300 border-amber-500/60" title="Open full trade modal to add Multi-Pick Pools, Conditional Swaps, or a 3rd team">
+                <i class="fa-solid fa-sliders"></i> Review / Conditions ⚙
+              </button>
+              <button type="button" id="sendStagedTradeDirectBtn" onclick="sendStagedTradeDirectlyFromMachine()" class="btn-garnet px-3.5 sm:px-4 py-1.5 text-xs">
+                <i class="fa-solid fa-paper-plane"></i> Send Trade Offer (${totalStagedAssets}) 🚀
               </button>
             </div>
           </div>
@@ -7491,8 +7735,8 @@
                 `).join("")}
                 ${teamAReceivesSwaps.map(s => `
                   <span class="inline-flex items-center gap-1.5 bg-zinc-900 border border-amber-500/60 text-amber-200 px-2 py-0.5 rounded font-mono text-[11px] font-bold max-w-full">
-                    <span class="truncate">${Number(state.year)} Rd ${Number(s.round)} (${escapeHtml(getTeamName(s.originalOwner))}'s)</span>
-                    <button onclick="toggleWhatIfPickTransfer(${Number(s.round)}, '${safeId(s.originalOwner)}', '${safeId(s.fromTeam)}', '${safeId(s.toTeam)}')" class="text-rose-400 hover:text-white cursor-pointer flex-shrink-0">×</button>
+                    <span class="truncate">${Number(s.year || state.year)} Rd ${Number(s.round)} (${escapeHtml(getTeamName(s.originalOwner))}'s)</span>
+                    <button onclick="toggleWhatIfPickTransfer(${Number(s.round)}, '${safeId(s.originalOwner)}', '${safeId(s.fromTeam)}', '${safeId(s.toTeam)}', ${Number(s.year || state.year)})" class="text-rose-400 hover:text-white cursor-pointer flex-shrink-0">×</button>
                   </span>
                 `).join("")}
                 ${(teamAReceivesPlayers.length === 0 && teamAReceivesSwaps.length === 0) ? '<span class="text-zinc-500 italic">No assets added yet</span>' : ''}
@@ -7509,13 +7753,24 @@
                 `).join("")}
                 ${teamBReceivesSwaps.map(s => `
                   <span class="inline-flex items-center gap-1.5 bg-zinc-900 border border-amber-500/60 text-amber-200 px-2 py-0.5 rounded font-mono text-[11px] font-bold max-w-full">
-                    <span class="truncate">${Number(state.year)} Rd ${Number(s.round)} (${escapeHtml(getTeamName(s.originalOwner))}'s)</span>
-                    <button onclick="toggleWhatIfPickTransfer(${Number(s.round)}, '${safeId(s.originalOwner)}', '${safeId(s.fromTeam)}', '${safeId(s.toTeam)}')" class="text-rose-400 hover:text-white cursor-pointer flex-shrink-0">×</button>
+                    <span class="truncate">${Number(s.year || state.year)} Rd ${Number(s.round)} (${escapeHtml(getTeamName(s.originalOwner))}'s)</span>
+                    <button onclick="toggleWhatIfPickTransfer(${Number(s.round)}, '${safeId(s.originalOwner)}', '${safeId(s.fromTeam)}', '${safeId(s.toTeam)}', ${Number(s.year || state.year)})" class="text-rose-400 hover:text-white cursor-pointer flex-shrink-0">×</button>
                   </span>
                 `).join("")}
                 ${(teamBReceivesPlayers.length === 0 && teamBReceivesSwaps.length === 0) ? '<span class="text-zinc-500 italic">No assets added yet</span>' : ''}
               </div>
             </div>
+          </div>
+          <div class="flex flex-col sm:flex-row items-stretch sm:items-center gap-2 pt-1">
+            <input
+              id="whatIfTradeNoteInput"
+              type="text"
+              maxlength="240"
+              value="${escapeHtml(uiState.whatIfTradeNote || "")}"
+              oninput="uiState.whatIfTradeNote = this.value"
+              placeholder="Optional trade note / message to ${escapeHtml(teamB.name)}..."
+              class="flex-1 bg-[#09090B] text-white text-xs rounded-lg px-3 py-2 border border-zinc-800 focus:border-amber-400 focus:outline-none"
+            >
           </div>
         </div>
       ` : "";
@@ -7539,8 +7794,8 @@
                   </div>
                 </div>
               </div>
-              <button onclick="openTradeModalWithPair('${safeId(teamA.id)}', '${safeId(teamB.id)}')" class="btn-garnet px-2.5 sm:px-3 py-1.5 text-[11px] sm:text-xs whitespace-nowrap flex-shrink-0">
-                <i class="fa-solid fa-paper-plane"></i> Propose Trade
+              <button onclick="openTradeModalFromWhatIf()" class="btn-action px-2.5 sm:px-3 py-1.5 text-[11px] sm:text-xs text-amber-300 whitespace-nowrap flex-shrink-0" title="Open full Trade Modal for 3-Team or Conditional deals">
+                <i class="fa-solid fa-sliders"></i> Conditions / 3-Team
               </button>
             </div>
 
@@ -7566,6 +7821,8 @@
           ${stagingBarHtml}
 
           ${playerTrayHtml}
+
+          ${pickYearBarHtml}
 
           ${sharedTradesInYear.length > 0 ? `
             <div class="bg-[#09090B] border border-zinc-800 rounded-xl p-3 space-y-1.5">
@@ -7611,9 +7868,9 @@
           if (myOrig.currentOwner === teamId) {
             const pickTag = getPickTradeTag(teamId, state.year, round, teamId);
             const tagChip = pickTag === "ON_BLOCK" ? ` 🏷️` : pickTag === "UNTOUCHABLE" ? ` 🛡️` : "";
-            const isSimSent = uiState.whatIfSwaps.some(s => s.round === round && s.originalOwner === teamId && s.fromTeam === teamId);
+            const isSimSent = uiState.whatIfSwaps.some(s => Number(s.year || state.year) === Number(state.year) && s.round === round && s.originalOwner === teamId && s.fromTeam === teamId);
             const clickHandler = partnerId
-              ? `toggleWhatIfPickTransfer(${Number(round)}, '${safeId(teamId)}', '${safeId(teamId)}', '${safeId(partnerId)}')`
+              ? `toggleWhatIfPickTransfer(${Number(round)}, '${safeId(teamId)}', '${safeId(teamId)}', '${safeId(partnerId)}', ${Number(state.year)})`
               : `openInspectModalForPick(${Number(state.year)}, ${Number(round)}, '${safeId(teamId)}')`;
             badges.push(`
               <button type="button" onclick="${clickHandler}" class="${isSimSent ? 'whatif-pick-sim opacity-60 bg-amber-950/30' : 'bg-[#121215] border border-emerald-700/70 hover:border-emerald-400'} px-2 sm:px-2.5 py-1 rounded-lg text-[11px] sm:text-xs cursor-pointer inline-flex items-center gap-1 sm:gap-1.5 transition max-w-full" title="Tap to simulate swapping this pick">
@@ -7634,9 +7891,9 @@
           const slotTxt = state.orderCfg.isLocked && ap.overallPickNum ? `${escapeHtml(ap.formattedSlot)} (#${ap.overallPickNum})` : `+${escapeHtml(getTeamName(ap.originalOwner))} Rd ${round}`;
           const pickTag = getPickTradeTag(teamId, state.year, round, ap.originalOwner);
           const tagChip = pickTag === "ON_BLOCK" ? ` 🏷️` : pickTag === "UNTOUCHABLE" ? ` 🛡️` : "";
-          const isSimSent = uiState.whatIfSwaps.some(s => s.round === round && s.originalOwner === ap.originalOwner && s.fromTeam === teamId);
+          const isSimSent = uiState.whatIfSwaps.some(s => Number(s.year || state.year) === Number(state.year) && s.round === round && s.originalOwner === ap.originalOwner && s.fromTeam === teamId);
           const clickHandler = partnerId
-            ? `toggleWhatIfPickTransfer(${Number(round)}, '${safeId(ap.originalOwner)}', '${safeId(teamId)}', '${safeId(partnerId)}')`
+            ? `toggleWhatIfPickTransfer(${Number(round)}, '${safeId(ap.originalOwner)}', '${safeId(teamId)}', '${safeId(partnerId)}', ${Number(state.year)})`
             : `openInspectModalForPick(${Number(state.year)}, ${Number(round)}, '${safeId(ap.originalOwner)}')`;
           badges.push(`
             <button type="button" onclick="${clickHandler}" class="${isSimSent ? 'whatif-pick-sim opacity-60 bg-amber-950/30' : 'bg-sky-950/50 border border-sky-500/70 hover:border-sky-300'} px-2 sm:px-2.5 py-1 rounded-lg text-[11px] sm:text-xs cursor-pointer inline-flex items-center gap-1 sm:gap-1.5 transition max-w-full" title="Tap to simulate swapping this pick">
@@ -7648,10 +7905,10 @@
       }
 
       if (partnerId) {
-        const incomingSims = uiState.whatIfSwaps.filter(s => s.round === round && s.toTeam === teamId);
+        const incomingSims = uiState.whatIfSwaps.filter(s => Number(s.year || state.year) === Number(state.year) && s.round === round && s.toTeam === teamId);
         incomingSims.forEach(sim => {
           badges.push(`
-            <button type="button" onclick="toggleWhatIfPickTransfer(${Number(round)}, '${safeId(sim.originalOwner)}', '${safeId(sim.fromTeam)}', '${safeId(sim.toTeam)}')" class="whatif-pick-sim bg-amber-950/50 px-2 py-1 rounded-lg text-[11px] cursor-pointer inline-flex items-center gap-1 max-w-full">
+            <button type="button" onclick="toggleWhatIfPickTransfer(${Number(round)}, '${safeId(sim.originalOwner)}', '${safeId(sim.fromTeam)}', '${safeId(sim.toTeam)}', ${Number(sim.year || state.year)})" class="whatif-pick-sim bg-amber-950/50 px-2 py-1 rounded-lg text-[11px] cursor-pointer inline-flex items-center gap-1 max-w-full">
               <span class="font-mono font-bold text-amber-300 truncate">+Sim: ${escapeHtml(getTeamName(sim.originalOwner))} Rd ${round}</span>
               <span class="text-[10px] text-amber-200 flex-shrink-0">×</span>
             </button>
@@ -7894,6 +8151,7 @@
       const caps = getTeamKeeperCountsAndCaps(tid);
       const canManage = uiState.isCommish || tid === uiState.myTeam;
       const lockedByTimer = !uiState.isCommish && isKeeperDeadlineLocked();
+      const posFilter = uiState.rosterPosFilter || "ALL";
 
       const otherBuckets = ["QB", "TE", "DL", "LB", "DB", "K", "D/ST"].filter(b => (caps.posCounts[b] || 0) > 0);
       const otherSummary = otherBuckets.length > 0
@@ -7902,8 +8160,22 @@
 
       const posOrder = { QB: 1, RB: 2, WR: 3, TE: 4, DL: 5, DE: 5, DT: 5, LB: 6, DB: 7, CB: 7, S: 7, K: 8, "D/ST": 9 };
       const sortedRoster = [...roster].sort((a, b) => (posOrder[a.pos] || 99) - (posOrder[b.pos] || 99));
+      const filteredRoster = sortedRoster.filter(p => doesPlayerMatchPosFilter(p, posFilter, prof));
 
-      const playerRowsHtml = sortedRoster.map(p => {
+      const rosterFilterPills = [
+        { id: "ALL", label: `All (${roster.length})` },
+        { id: "KEEPERS", label: `🔒 Keepers (${caps.totalKeepers})` },
+        { id: "QB", label: "QB" },
+        { id: "RB", label: "RB" },
+        { id: "WR", label: "WR" },
+        { id: "TE", label: "TE" },
+        { id: "IDP", label: "IDP" },
+        { id: "OTB", label: "🏷️ OTB" }
+      ];
+
+      const playerRowsHtml = filteredRoster.length === 0
+        ? `<div class="p-6 text-center text-xs text-zinc-500">No players on ${escapeHtml(team.name)}'s roster match the <strong class="text-zinc-300">${escapeHtml(posFilter)}</strong> filter.</div>`
+        : filteredRoster.map(p => {
         const keeperIdx = caps.keeperIds.indexOf(p.id);
         const isKeeper = keeperIdx !== -1;
         const keeperRound = isKeeper ? (keeperIdx + 1) : null;
@@ -7921,11 +8193,11 @@
                   <span class="px-1.5 py-0.5 rounded text-[10px] font-mono font-black border leading-none ${isIdp ? 'bg-purple-950/80 text-purple-300 border-purple-500/50' : bucket === 'RB' ? 'bg-emerald-950/80 text-emerald-300 border-emerald-500/50' : bucket === 'WR' ? 'bg-sky-950/80 text-sky-300 border-sky-500/50' : 'bg-amber-950/80 text-amber-300 border-amber-500/50'}">${escapeHtml(p.pos)}</span>
                   ${renderNflTeamPillHtml(p.nflTeam)}
                   ${p.posRank ? `<span class="px-1.5 py-0.2 rounded bg-zinc-900 border border-zinc-800 text-[10px] font-mono text-emerald-300">${escapeHtml(p.posRank)}</span>` : ''}
-                  ${isKeeper ? `<span class="static-badge bg-[#73000A] text-amber-200 border border-[#CC1429]">🔒 Keeper Rd ${keeperRound}</span>` : ''}
+                  ${isKeeper ? `<span class="static-badge bg-[#73000A] text-amber-200 border border-[#CC1429]">🔒 Keeper #${keeperRound}</span>` : ''}
                   ${pTag === 'ON_BLOCK' ? `<span class="static-badge bg-amber-950 text-amber-300 border border-amber-500/70">🏷️ OTB</span>` : ''}
                   ${pTag === 'UNTOUCHABLE' ? `<span class="static-badge bg-zinc-800 text-zinc-200 border border-zinc-600">🛡️ Untouchable</span>` : ''}
                 </div>
-                <div class="text-[10px] text-zinc-500">Acquired: ${escapeHtml(p.acquiredVia || 'ESPN Roster')}</div>
+                <div class="text-[10px] text-zinc-500">Synced Roster: ${escapeHtml(p.acquiredVia || 'ESPN Roster')}</div>
               </div>
             </div>
 
@@ -7937,7 +8209,7 @@
                   ${lockedByTimer ? 'disabled' : ''}
                   class="px-2.5 py-1 rounded-lg text-xs font-extrabold border transition ${lockedByTimer ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'} ${isKeeper ? 'bg-[#73000A] text-white border-[#CC1429] shadow' : 'bg-[#09090B] text-zinc-300 border-zinc-700 hover:border-amber-400 hover:text-white'}"
                 >
-                  ${isKeeper ? `🔒 Kept (Rd ${keeperRound})` : '+ Keep'}
+                  ${isKeeper ? `🔒 Kept (#${keeperRound})` : '+ Keep'}
                 </button>
                 <button
                   type="button"
@@ -7954,14 +8226,6 @@
                   title="Mark ${escapeHtml(p.name)} Untouchable"
                 >
                   🛡️
-                </button>
-                <button
-                  type="button"
-                  onclick="removePlayerFromRoster('${safeId(tid)}', '${safeId(p.id)}')"
-                  class="px-2 py-1 rounded-lg text-[10px] text-zinc-500 hover:text-rose-400 cursor-pointer"
-                  title="Remove player from roster"
-                >
-                  <i class="fa-solid fa-trash"></i>
                 </button>
               </div>
             ` : ''}
@@ -7982,7 +8246,7 @@
                   <span class="static-badge bg-[#73000A] text-white border border-[#CC1429]">
                     <i class="fa-solid fa-user-lock"></i> ${Number(state.year)} Keeper Lock-In
                   </span>
-                  <h3 class="text-sm sm:text-base font-black text-white">${escapeHtml(team.name)} • ${caps.totalKeepers}/${caps.maxKeepers} Keepers Selected (ESPN Rds 1–${caps.maxKeepers})</h3>
+                  <h3 class="text-sm sm:text-base font-black text-white">${escapeHtml(team.name)} • ${caps.totalKeepers}/${caps.maxKeepers} Keepers Selected</h3>
                 </div>
                 <p class="text-[11px] text-zinc-400 mt-0.5">League Keeper Caps: Max <strong class="text-white">${caps.maxKeepers} Keepers</strong> total • Max <strong class="text-emerald-300">${caps.maxRb} RB</strong> • Max <strong class="text-sky-300">${caps.maxWr} WR</strong> • Max <strong class="text-amber-300">${caps.maxOtherSinglePos} of any other single position</strong> (Offense + IDP).</p>
               </div>
@@ -8019,37 +8283,24 @@
                 <span class="font-bold text-amber-300 text-[11px] truncate ml-1">${escapeHtml(otherSummary)}</span>
               </div>
             </div>
+
+            <!-- 1-Tap Position & Keeper Filter Pills -->
+            <div class="flex flex-wrap items-center gap-1.5 pt-1 border-t border-zinc-800/80">
+              <span class="text-[10px] font-extrabold uppercase tracking-wider text-zinc-400 mr-1">Filter Roster:</span>
+              ${rosterFilterPills.map(fp => `
+                <button
+                  type="button"
+                  onclick="setRosterPosFilter('${fp.id}')"
+                  class="px-2.5 py-1 rounded-lg text-[11px] font-extrabold border transition cursor-pointer ${posFilter === fp.id ? 'bg-[#73000A] text-white border-[#CC1429]' : 'bg-[#121215] text-zinc-400 border-zinc-800 hover:text-white'}"
+                >${fp.label}</button>
+              `).join("")}
+            </div>
           </div>
 
           <!-- Roster List (Offense + IDP) -->
           <div id="teamRosterPlayersList" class="divide-y divide-zinc-800/80 border border-zinc-800 rounded-xl overflow-hidden">
             ${playerRowsHtml}
           </div>
-
-          ${canManage ? `
-            <!-- Quick Add Player Row -->
-            <div class="bg-[#09090B] border border-zinc-800 rounded-xl p-3 flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-2">
-              <span class="text-xs font-bold text-zinc-400"><i class="fa-solid fa-user-plus text-emerald-400 mr-1"></i>Add Free Agent / Rookie to Roster:</span>
-              <div class="flex flex-wrap items-center gap-1.5">
-                <input id="newRosterPlayerNameInput" type="text" maxlength="60" placeholder="Player Name (e.g. Travis Hunter)" class="bg-[#121215] text-white text-xs rounded-lg px-2.5 py-1.5 border border-zinc-700">
-                <select id="newRosterPlayerPosSelect" class="bg-[#121215] text-amber-300 text-xs font-bold rounded-lg px-2 py-1.5 border border-zinc-700">
-                  <option value="QB">QB</option>
-                  <option value="RB">RB</option>
-                  <option value="WR" selected>WR</option>
-                  <option value="TE">TE</option>
-                  <option value="DL">DL (IDP)</option>
-                  <option value="LB">LB (IDP)</option>
-                  <option value="DB">DB (IDP)</option>
-                  <option value="K">K</option>
-                  <option value="D/ST">D/ST</option>
-                </select>
-                <input id="newRosterPlayerNflInput" type="text" maxlength="6" placeholder="NFL (JAX)" class="w-20 bg-[#121215] text-white text-xs font-mono uppercase rounded-lg px-2.5 py-1.5 border border-zinc-700">
-                <button type="button" onclick="addCustomPlayerToRoster('${safeId(tid)}')" class="btn-action px-3 py-1.5 text-xs text-emerald-300">
-                  + Add Player
-                </button>
-              </div>
-            </div>
-          ` : ''}
         </div>
       `;
     }
@@ -8283,10 +8534,12 @@
             </div>
 
             <div class="flex items-center gap-2 no-print">
-              <button onclick="openEspnSyncModal()" class="btn-action px-2.5 py-1 text-[11px] sm:text-xs text-amber-300" title="Sync ESPN Rosters & Keeper Rules">
-                <i class="fa-solid fa-satellite-dish"></i>
-                <span>ESPN Sync</span>
-              </button>
+              ${uiState.isCommish ? `
+                <button onclick="openEspnSyncModal()" class="btn-garnet px-2.5 py-1 text-[11px] sm:text-xs text-white" title="Sync ESPN Rosters & Keeper Rules">
+                  <i class="fa-solid fa-satellite-dish text-amber-300"></i>
+                  <span>ESPN Sync</span>
+                </button>
+              ` : ''}
               <button onclick="copyManagerLedgerForChat()" class="btn-action px-2.5 py-1 text-[11px] sm:text-xs text-emerald-300" title="Copy formatted pick summary for group chat">
                 <i class="fa-solid fa-copy"></i>
                 <span>Copy Picks</span>
@@ -8709,29 +8962,28 @@
       uiState.boardOnlyTraded = !uiState.boardOnlyTraded;
       const lbl = document.getElementById("boardTradedToggleLabel");
       if (lbl) {
-        lbl.textContent = uiState.boardOnlyTraded ? "Traded Rds Only (On)" : "Traded Rds Only";
+        lbl.textContent = uiState.boardOnlyTraded ? "Traded Rds (On)" : "Traded Rds";
+      }
+      renderAll();
+    }
+
+    function toggleBoardMyPicksFilter() {
+      uiState.boardMyPicksOnly = !uiState.boardMyPicksOnly;
+      const teamSelect = document.getElementById("boardFilterTeamSelect");
+      if (teamSelect) {
+        teamSelect.value = uiState.boardMyPicksOnly ? safeId(uiState.myTeam || uiState.selectedManager || "syeth") : "ALL";
       }
       renderAll();
     }
 
     function toggleBoardKeepersOverlay() {
-      uiState.boardShowKeepers = !uiState.boardShowKeepers;
-      const lbl = document.getElementById("boardKeepersToggleLabel");
-      if (lbl) {
-        lbl.textContent = uiState.boardShowKeepers ? "Keepers (Rds 1–12): On" : "Keepers (Rds 1–12): Off";
-      }
+      uiState.boardShowKeepers = false;
       renderAll();
     }
 
     function getTeamKeeperForRound(teamId, roundNum) {
-      const maxK = Number(leagueDB?.espnData?.keeperRules?.maxKeepers ?? 12);
-      if (roundNum < 1 || roundNum > maxK) return null;
-      const prof = getTeamProfile(teamId);
-      const keeperIds = Array.isArray(prof.keepers) ? prof.keepers : [];
-      const pid = keeperIds[roundNum - 1];
-      if (!pid) return null;
-      const roster = (leagueDB?.espnData?.rosters && leagueDB.espnData.rosters[teamId]) || [];
-      return roster.find(p => p.id === pid) || null;
+      // Keepers are tracked in Roster & Keepers; the Draft Board shows the clean 20-round post-keeper draft
+      return null;
     }
 
     function setBoardDisplayMode(mode) {
@@ -8748,14 +9000,10 @@
       const teamSelect = document.getElementById("boardFilterTeamSelect");
       const matrixBtn = document.getElementById("boardModeMatrixBtn");
       const cardsBtn = document.getElementById("boardModeCardsBtn");
-      const keepersLbl = document.getElementById("boardKeepersToggleLabel");
+      const myPicksBtn = document.getElementById("boardMyPicksToggleBtn");
+      const myPicksLbl = document.getElementById("boardMyPicksToggleLabel");
 
       if (!container) return;
-
-      if (keepersLbl) {
-        const maxK = Number(leagueDB?.espnData?.keeperRules?.maxKeepers ?? 12);
-        keepersLbl.textContent = uiState.boardShowKeepers ? `Keepers (Rds 1–${maxK}): On` : `Keepers (Rds 1–${maxK}): Off`;
-      }
 
       const isMatrix = uiState.boardDisplayMode !== "CARDS";
       if (matrixBtn && cardsBtn) {
@@ -8767,8 +9015,19 @@
           : "px-2.5 py-1 rounded-md text-xs font-bold transition text-zinc-400 hover:text-white cursor-pointer";
       }
 
-      const filterTeam = teamSelect ? teamSelect.value : "ALL";
-      heading.textContent = `${state.year} Draft Board (200 Picks)`;
+      const myId = safeId(uiState.myTeam || uiState.selectedManager || "syeth");
+      const filterTeam = teamSelect ? teamSelect.value : (uiState.boardMyPicksOnly ? myId : "ALL");
+      uiState.boardMyPicksOnly = (filterTeam === myId);
+      if (myPicksBtn) {
+        myPicksBtn.className = uiState.boardMyPicksOnly
+          ? "btn-garnet px-2.5 py-1.5 text-xs text-white"
+          : "btn-action px-2.5 py-1.5 text-xs text-emerald-300";
+      }
+      if (myPicksLbl) {
+        myPicksLbl.textContent = uiState.boardMyPicksOnly ? `My Picks (${getTeamName(myId)})` : "My Picks";
+      }
+
+      heading.textContent = `${state.year} Post-Keeper Draft Board (200 Picks)`;
 
       if (state.orderCfg.isLocked) {
         badge.className = "static-badge bg-emerald-950/90 text-emerald-300 border border-emerald-600/70";
@@ -8777,7 +9036,7 @@
       } else {
         badge.className = "static-badge bg-amber-950/90 text-amber-300 border border-amber-600/70";
         badge.innerHTML = `<i class="fa-solid fa-clock"></i> Pre-Draft Original Owner Columns`;
-        subheading.textContent = `Standings not locked yet for ${state.year}. Columns show each manager's slot in every round.`;
+        subheading.textContent = `Standings not locked yet for ${state.year}. Columns show each manager's clean post-keeper draft slot in Rounds 1–20.`;
       }
 
       if (isMatrix) {
@@ -8785,8 +9044,8 @@
           const tName = escapeHtml(getTeamName(tid));
           const isMyTeam = tid === (uiState.myTeam || uiState.selectedManager);
           return `
-            <th class="py-2 px-2 text-center border-b border-r border-zinc-800 min-w-[92px] ${isMyTeam ? 'bg-[#73000A]/30 text-white' : 'bg-[#09090B] text-zinc-300'}">
-              <div class="text-[10px] font-mono text-zinc-500">${state.orderCfg.isLocked ? `Slot #${idx + 1}` : `Col ${idx + 1}`}</div>
+            <th class="py-2 px-2 text-center border-b border-r border-zinc-800 min-w-[92px] sticky top-0 z-20 ${isMyTeam ? 'bg-[#73000A] text-white' : 'bg-[#09090B] text-zinc-300'}">
+              <div class="text-[10px] font-mono ${isMyTeam ? 'text-amber-200' : 'text-zinc-500'}">${state.orderCfg.isLocked ? `Slot #${idx + 1}` : `Col ${idx + 1}`}</div>
               <div class="text-xs font-black truncate">${tName}</div>
             </th>
           `;
@@ -8807,7 +9066,6 @@
 
             const origName = escapeHtml(getTeamName(pick.originalOwner));
             const currName = escapeHtml(getTeamName(pick.currentOwner));
-            const keeperPlayer = uiState.boardShowKeepers ? getTeamKeeperForRound(pick.currentOwner, r) : null;
 
             const dimCell = filterTeam !== "ALL" &&
               pick.originalOwner !== filterTeam &&
@@ -8818,17 +9076,10 @@
             let ownerTxtCls = "text-zinc-300";
             let subBadge = `<span class="text-[9px] text-zinc-500">Own</span>`;
 
-            if (keeperPlayer) {
-              bgCls = "bg-[#73000A]/30 hover:bg-[#73000A]/50 border-[#CC1429]/60";
-              subBadge = `<span class="text-[9px] text-amber-300 font-bold">🔒 ${escapeHtml(keeperPlayer.name)} (${escapeHtml(keeperPlayer.pos)})</span>`;
-            }
-
             if (isTraded) {
               bgCls = "bg-emerald-950/35 hover:bg-emerald-950/55 border-emerald-500/40";
               ownerTxtCls = "text-emerald-200 font-black";
-              subBadge = keeperPlayer
-                ? `<span class="text-[9px] text-emerald-300 font-semibold">fr ${origName} • 🔒 ${escapeHtml(keeperPlayer.name)}</span>`
-                : `<span class="text-[9px] text-emerald-400 font-semibold">fr ${origName}</span>`;
+              subBadge = `<span class="text-[9px] text-emerald-400 font-semibold">fr ${origName}</span>`;
             }
             if (hasPool) {
               bgCls = "bg-amber-950/45 hover:bg-amber-950/65 border-amber-500/60";
@@ -8859,13 +9110,10 @@
             `;
           }).join("");
 
-          const maxK = Number(leagueDB?.espnData?.keeperRules?.maxKeepers ?? 12);
-          const isKeeperRd = r <= maxK;
-
           matrixRowsHtml += `
             <tr>
               <td class="py-2 px-2.5 font-mono font-black text-xs text-white bg-[#121215] border-b border-r border-zinc-800 whitespace-nowrap sticky left-0 z-10">
-                <div>Rd ${r}${isKeeperRd && uiState.boardShowKeepers ? ` <span class="text-[9px] text-amber-400">🔒K</span>` : ''}</div>
+                <div>Rd ${r}</div>
                 ${state.orderCfg.isLocked ? `<div class="text-[9px] font-normal text-zinc-400">${isEven ? '← 10-1' : '→ 1-10'}</div>` : ''}
               </td>
               ${cellsHtml}
@@ -8875,11 +9123,11 @@
 
         container.innerHTML = `
           <div class="app-card overflow-hidden">
-            <div class="overflow-x-auto">
+            <div class="overflow-x-auto max-h-[72vh]">
               <table class="w-full border-collapse text-left">
                 <thead>
                   <tr>
-                    <th class="py-2 px-2.5 text-[10px] font-extrabold uppercase tracking-wider text-zinc-400 bg-[#09090B] border-b border-r border-zinc-800 sticky left-0 z-10 w-16">Round</th>
+                    <th class="py-2 px-2.5 text-[10px] font-extrabold uppercase tracking-wider text-zinc-400 bg-[#09090B] border-b border-r border-zinc-800 sticky top-0 left-0 z-30 w-16">Round</th>
                     ${colHeadersHtml}
                   </tr>
                 </thead>
@@ -8894,7 +9142,6 @@
       }
 
       let html = "";
-      const maxK = Number(leagueDB?.espnData?.keeperRules?.maxKeepers ?? 12);
 
       for (let r = 1; r <= TOTAL_ROUNDS; r++) {
         if (uiState.boardOnlyTraded && !state.activeRoundsSet.has(r)) {
@@ -8913,7 +9160,7 @@
           <div class="app-card p-3.5 sm:p-4 space-y-2.5">
             <div class="flex items-center justify-between border-b border-zinc-800 pb-2">
               <div class="flex items-center gap-2">
-                <span class="text-xs font-black uppercase tracking-wider text-amber-400">Round ${r}${r <= maxK && uiState.boardShowKeepers ? ' • Keeper Round 🔒' : ''}</span>
+                <span class="text-xs font-black uppercase tracking-wider text-amber-400">Round ${r}</span>
                 ${state.orderCfg.isLocked ? `
                   <span class="text-[11px] text-zinc-400 font-mono">
                     ${isEven ? '← Snake Reverse (10 to 1)' : '→ Snake Forward (1 to 10)'}
@@ -8933,7 +9180,6 @@
 
           const origName = escapeHtml(getTeamName(pick.originalOwner));
           const currName = escapeHtml(getTeamName(pick.currentOwner));
-          const keeperPlayer = uiState.boardShowKeepers ? getTeamKeeperForRound(pick.currentOwner, r) : null;
 
           const dimCard = filterTeam !== "ALL" &&
             pick.originalOwner !== filterTeam &&
@@ -8941,20 +9187,12 @@
             pick.poolEncumbrance?.owedTo !== filterTeam;
 
           let cellClasses = "bg-[#09090B] border-zinc-800 hover:border-zinc-500";
-          let statusLine = keeperPlayer
-            ? `<span class="text-[10px] font-bold text-amber-300 truncate">🔒 ${escapeHtml(keeperPlayer.name)} (${escapeHtml(keeperPlayer.pos)})</span>`
-            : `<span class="text-[10px] text-zinc-500">Original</span>`;
+          let statusLine = `<span class="text-[10px] text-zinc-500">Original</span>`;
           let ownerDisplay = currName;
-
-          if (keeperPlayer && !isTraded) {
-            cellClasses = "bg-[#73000A]/25 border-[#CC1429]/60 hover:border-[#CC1429]";
-          }
 
           if (isTraded) {
             cellClasses = "bg-emerald-950/35 border-emerald-500/70 hover:border-emerald-300";
-            statusLine = keeperPlayer
-              ? `<span class="text-[10px] font-bold text-emerald-300 truncate">From ${origName} • 🔒 ${escapeHtml(keeperPlayer.name)}</span>`
-              : `<span class="text-[10px] font-bold text-emerald-300 truncate">From ${origName}</span>`;
+            statusLine = `<span class="text-[10px] font-bold text-emerald-300 truncate">From ${origName}</span>`;
           }
 
           if (hasPool) {
@@ -10027,16 +10265,23 @@
     }
 
     /**
-     * Single unified Trade Modal launcher that automatically pre-selects the active Team 1
-     * (and Team 2 when in 2-Team Compare mode).
+     * Top-right "Propose Trade" launcher: jumps straight to the visual 2-Team Trade Center
+     * where all roster players and multi-year draft picks can be tapped side-by-side.
      */
     function openContextualTradeModal() {
       const primary = (uiState.isCommish ? uiState.selectedManager : uiState.myTeam) || leagueDB.teams[0]?.id || "syeth";
       let secondary = uiState.compareManagerB;
-      if (uiState.ledgerViewMode !== "COMPARE" || !secondary || secondary === "NONE" || secondary === primary) {
+      if (!secondary || secondary === "NONE" || secondary === primary) {
         secondary = leagueDB.teams.find(t => t.id !== primary)?.id || "corbyn";
       }
-      openTradeModalWithPair(primary, secondary);
+      uiState.selectedManager = primary;
+      uiState.compareManagerB = secondary;
+      uiState.ledgerViewMode = "COMPARE";
+      uiState.activeTab = "tradecenter";
+      const mainEl = document.getElementById("appMainShell");
+      if (mainEl) mainEl.scrollTop = 0;
+      renderAll();
+      showToast(`Trade Machine ready: ${getTeamName(primary)} ↔ ${getTeamName(secondary)} — tap any player or pick to build your offer!`, "info");
     }
 
     function openTradeModalWithPair(teamAId, teamBId) {
@@ -11967,6 +12212,17 @@
       showToast("Commissioner PIN updated & synced to Google Sheet!", "success");
     }
 
+    function formatEspnLastSyncedShort() {
+      const ts = Number(leagueDB?.espnData?.lastSyncedAt || 0);
+      if (!ts) return "Ready";
+      try {
+        const d = new Date(ts);
+        return d.toLocaleDateString(undefined, { month: "short", day: "numeric" });
+      } catch (e) {
+        return "Synced";
+      }
+    }
+
     function updateCommishButtonState() {
       const dBtn = document.getElementById("desktopCommishBtn");
       const dIcon = document.getElementById("desktopCommishIcon");
@@ -11974,9 +12230,16 @@
       const mIcon = document.getElementById("mobileCommishIcon");
       const mLbl = document.getElementById("mobileCommishLabel");
       const hdrDot = document.getElementById("headerAdminActiveDot");
+      const hdrEspnBtn = document.getElementById("headerEspnSyncBtn");
+      const hdrEspnBadge = document.getElementById("headerEspnLastSyncBadge");
+      const mtEspnBtn = document.getElementById("moreToolsEspnSyncBtn");
       const mtBadge = document.getElementById("moreToolsCommishStatusBadge");
       const mtBtnLbl = document.getElementById("moreToolsCommishToggleLabel");
       const mtAdminGrid = document.getElementById("moreToolsAdminActionsGrid");
+
+      if (hdrEspnBadge) {
+        hdrEspnBadge.textContent = formatEspnLastSyncedShort();
+      }
 
       if (uiState.isCommish) {
         if (dBtn) dBtn.className = "hidden lg:inline-flex btn-action border-emerald-500 text-emerald-300 px-3.5 py-2 text-xs sm:text-sm";
@@ -11985,6 +12248,8 @@
         if (mIcon) mIcon.className = "fa-solid fa-lock-open text-emerald-400";
         if (mLbl) mLbl.textContent = "Admin On";
         if (hdrDot) hdrDot.classList.remove("hidden");
+        if (hdrEspnBtn) hdrEspnBtn.classList.remove("hidden");
+        if (mtEspnBtn) mtEspnBtn.classList.remove("hidden");
         if (mtBadge) {
           mtBadge.className = "static-badge bg-emerald-950 text-emerald-300 border border-emerald-600";
           mtBadge.textContent = "Unlocked (Admin Active)";
@@ -11998,6 +12263,8 @@
         if (mIcon) mIcon.className = "fa-solid fa-lock text-slate-400";
         if (mLbl) mLbl.textContent = "Admin";
         if (hdrDot) hdrDot.classList.add("hidden");
+        if (hdrEspnBtn) hdrEspnBtn.classList.add("hidden");
+        if (mtEspnBtn) mtEspnBtn.classList.add("hidden");
         if (mtBadge) {
           mtBadge.className = "static-badge bg-zinc-900 text-zinc-400 border border-zinc-700";
           mtBadge.textContent = "Locked";

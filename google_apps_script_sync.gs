@@ -913,3 +913,96 @@ function saveAndMirrorToSheets(sheets, state, actionLabel) {
   }
 }
 
+/**
+ * OPTIONAL AUTOMATED WEEKLY ESPN SYNC (HANDS-FREE SERVER-SIDE CRON)
+ * To enable hands-free Tuesday morning ESPN roster & standings syncs:
+ * 1. In Google Apps Script -> Project Settings -> Script Properties, add:
+ *    - ESPN_LEAGUE_ID : "30215"
+ *    - ESPN_S2        : "<your espn_s2 cookie value from fantasy.espn.com>"
+ *    - ESPN_SWID      : "{<your SWID cookie value>}"
+ * 2. Run `setupWeeklyEspnSyncTrigger()` once in the Apps Script editor.
+ */
+function setupWeeklyEspnSyncTrigger() {
+  var triggers = ScriptApp.getProjectTriggers();
+  for (var i = 0; i < triggers.length; i++) {
+    if (triggers[i].getHandlerFunction() === "autoWeeklyEspnSync") {
+      ScriptApp.deleteTrigger(triggers[i]);
+    }
+  }
+  ScriptApp.newTrigger("autoWeeklyEspnSync")
+    .timeBased()
+    .onWeekDay(ScriptApp.WeekDay.TUESDAY)
+    .atHour(6)
+    .create();
+}
+
+function autoWeeklyEspnSync() {
+  var lock = LockService.getScriptLock();
+  if (!lock.tryLock(20000)) return;
+  try {
+    var props = PropertiesService.getScriptProperties();
+    var leagueId = props.getProperty("ESPN_LEAGUE_ID") || "30215";
+    var espnS2 = props.getProperty("ESPN_S2") || "";
+    var espnSwid = props.getProperty("ESPN_SWID") || "";
+
+    var sheets = getOrCreateSheets();
+    var currentState = readStateObject(sheets.stateSheet);
+    if (!currentState || !currentState.espnData) return;
+
+    var currentYear = new Date().getFullYear();
+    var url = "https://lm-api-reads.fantasy.espn.com/apis/v3/games/ffl/seasons/" +
+      currentYear + "/segments/0/leagues/" + leagueId +
+      "?view=mTeam&view=mRoster&view=mStandings";
+
+    var headers = {};
+    if (espnS2 && espnSwid) {
+      headers["Cookie"] = "espn_s2=" + espnS2 + "; SWID=" + espnSwid;
+    }
+
+    var resp = UrlFetchApp.fetch(url, {
+      method: "get",
+      headers: headers,
+      muteHttpExceptions: true
+    });
+    if (resp.getResponseCode() !== 200) return;
+
+    var data = JSON.parse(resp.getContentText());
+    if (!data || !Array.isArray(data.teams)) return;
+
+    var slotMap = currentState.espnData.teamSlotMap || {};
+    var posMap = { 1: "QB", 2: "RB", 3: "WR", 4: "TE", 5: "K", 9: "DT", 10: "DE", 11: "LB", 12: "CB", 13: "S", 16: "D/ST" };
+
+    data.teams.forEach(function(t) {
+      var slotKey = String(t.id);
+      var mgrId = slotMap[slotKey];
+      if (!mgrId) return;
+      var entries = (t.roster && Array.isArray(t.roster.entries)) ? t.roster.entries : [];
+      if (entries.length > 0) {
+        currentState.espnData.rosters = currentState.espnData.rosters || {};
+        currentState.espnData.rosters[mgrId] = entries.map(function(e) {
+          var p = (e.playerPoolEntry && e.playerPoolEntry.player) || {};
+          var pos = posMap[p.defaultPositionId] || "FLEX";
+          return {
+            id: "espn_" + (p.id || e.playerId),
+            espnId: p.id || e.playerId,
+            name: p.fullName || "Unknown Player",
+            pos: pos,
+            nflTeam: String(p.proTeamId || "FA"),
+            slot: e.lineupSlotId === 20 ? "Bench" : "Starter",
+            pts: 0,
+            acqType: e.acquisitionType || "ROSTER"
+          };
+        });
+      }
+    });
+
+    currentState.espnData.lastSyncedAt = new Date().toISOString();
+    currentState.updatedAt = new Date().toISOString();
+    currentState.serverRevision = (Number(currentState.serverRevision) || 0) + 1;
+    saveFullState(sheets, currentState);
+  } catch (err) {
+    Logger.log("autoWeeklyEspnSync error: " + err);
+  } finally {
+    lock.releaseLock();
+  }
+}
