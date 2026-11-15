@@ -1,5 +1,6 @@
 {
-  "version": "8.1.0",
-  "releasedAt": "2026-11-15T02:20:00Z",
-  "notes": "v8.1 Logic & Assumption Cleanup: Official Toilet Bowl 1.01 & Phallic Feaster 1.05 rules, Champion Rename Decree, Completed-Season Award Gate, Sample Data Banner, Scoring-Calibrated Trade Meter, Keeper & Player Conflict Guards, Opponent Scouting Mode, and Action Center Dropdown"
+  "version": "8.2.0",
+  "releasedAt": "2026-11-15T04:05:00Z",
+  "notes": "v8.2 Final Beta UI/UX Polish: Simplified 4-point League Hub Power Rows + inline Archive Vault, Top-Placed 1-Tap Trade Block Market, Collapsible League Activity Wire (Trades, Draft Date/Order, Feaster Decrees, Hall of Shame, Records & Weekly Syncs), Adaptive Yes/No Trade Fairness Review, Sticky Deal & Keeper Bars, and Unified Dark Surface Palette"
 }
+

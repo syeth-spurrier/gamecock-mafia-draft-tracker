@@ -143,6 +143,27 @@ function safeSheetCell(val) {
   return s;
 }
 
+function appendServerActivityEvent(stateObj, evtType, title, detail, meta) {
+  if (!stateObj || typeof stateObj !== "object") return;
+  if (!Array.isArray(stateObj.activityLog)) stateObj.activityLog = [];
+  var nowMs = Date.now();
+  var entry = {
+    id: "ACT-" + evtType + "-" + nowMs + "-" + Math.floor(Math.random() * 1000),
+    type: String(evtType || "LEAGUE_EVENT").slice(0, 40),
+    title: String(title || "").slice(0, 180),
+    detail: String(detail || "").slice(0, 360),
+    year: Number((meta && meta.year) || stateObj.activeYear || stateObj.baseUpcomingYear || 2026),
+    teamId: meta && meta.teamId ? String(meta.teamId).slice(0, 30) : "",
+    actorTeamId: meta && meta.actorTeamId ? String(meta.actorTeamId).slice(0, 30) : "",
+    timestamp: nowMs,
+    dateStr: new Date(nowMs).toLocaleDateString()
+  };
+  stateObj.activityLog.unshift(entry);
+  if (stateObj.activityLog.length > 100) {
+    stateObj.activityLog = stateObj.activityLog.slice(0, 100);
+  }
+}
+
 /**
  * GET endpoint: Returns canonical live JSON state to authorized league members.
  */
@@ -315,6 +336,22 @@ function doPost(e) {
         };
       }) : [];
 
+      var cleanFairnessVotes = { yes: [], no: [] };
+      if (tr.fairnessVotes && typeof tr.fairnessVotes === "object") {
+        if (Array.isArray(tr.fairnessVotes.yes)) {
+          tr.fairnessVotes.yes.slice(0, 20).forEach(function(v) {
+            var sv = String(v || "").trim().slice(0, 30);
+            if (sv && cleanFairnessVotes.yes.indexOf(sv) === -1) cleanFairnessVotes.yes.push(sv);
+          });
+        }
+        if (Array.isArray(tr.fairnessVotes.no)) {
+          tr.fairnessVotes.no.slice(0, 20).forEach(function(v) {
+            var sv = String(v || "").trim().slice(0, 30);
+            if (sv && cleanFairnessVotes.no.indexOf(sv) === -1 && cleanFairnessVotes.yes.indexOf(sv) === -1) cleanFairnessVotes.no.push(sv);
+          });
+        }
+      }
+
       return {
         id: assignedId,
         year: primaryYear,
@@ -345,7 +382,8 @@ function doPost(e) {
         playerTransfers: cleanPlayers,
         pools: cleanPools,
         conditionals: cleanConds,
-        reactions: (tr.reactions && typeof tr.reactions === "object") ? tr.reactions : {}
+        reactions: (tr.reactions && typeof tr.reactions === "object") ? tr.reactions : {},
+        fairnessVotes: cleanFairnessVotes
       };
     }
 
@@ -611,6 +649,40 @@ function doPost(e) {
     }
 
     // ------------------------------------------------------------------------
+    // ACTION 1F: LEAGUE MEMBER VOTES ON COMPLETED TRADE FAIRNESS (YES / NO)
+    // ------------------------------------------------------------------------
+    if (action === "VOTE_TRADE_FAIRNESS") {
+      var baseStateVote = stored || body.fallbackBaseState;
+      if (!baseStateVote || !Array.isArray(baseStateVote.trades) || !Array.isArray(baseStateVote.teams)) {
+        return jsonResponse({ ok: false, error: "Initialize database first." });
+      }
+      var voteTradeId = String(body.tradeId || "");
+      var voterTeamId = String(body.teamId || "");
+      var voteChoice = String(body.vote || "").toUpperCase(); // YES | NO | CLEAR
+      var validVoter = baseStateVote.teams.some(function(t) { return t.id === voterTeamId; });
+      if (!validVoter || ["YES", "NO", "CLEAR"].indexOf(voteChoice) === -1) {
+        return jsonResponse({ ok: false, error: "Invalid trade fairness vote." });
+      }
+      for (var vti = 0; vti < baseStateVote.trades.length; vti++) {
+        if (String(baseStateVote.trades[vti].id) === voteTradeId) {
+          var vTr = baseStateVote.trades[vti];
+          if (!vTr.fairnessVotes || typeof vTr.fairnessVotes !== "object") {
+            vTr.fairnessVotes = { yes: [], no: [] };
+          }
+          var yesList = Array.isArray(vTr.fairnessVotes.yes) ? vTr.fairnessVotes.yes.filter(function(x) { return String(x) !== voterTeamId; }) : [];
+          var noList = Array.isArray(vTr.fairnessVotes.no) ? vTr.fairnessVotes.no.filter(function(x) { return String(x) !== voterTeamId; }) : [];
+          if (voteChoice === "YES") yesList.push(voterTeamId);
+          else if (voteChoice === "NO") noList.push(voterTeamId);
+          vTr.fairnessVotes = { yes: yesList, no: noList };
+          baseStateVote.updatedAt = Date.now();
+          saveAndMirrorToSheets(sheets, baseStateVote, "TRADE_FAIRNESS_VOTE:" + voteTradeId + ":" + voteChoice);
+          return jsonResponse({ ok: true, state: sanitizeStateForClient(baseStateVote) });
+        }
+      }
+      return jsonResponse({ ok: false, error: "Trade not found." });
+    }
+
+    // ------------------------------------------------------------------------
     // ACTION 1B: FRANCHISE MANAGER UPDATES THEIR OWN TEAM WAR ROOM / KEEPERS / IDENTITY
     // ------------------------------------------------------------------------
     if (action === "UPDATE_TEAM_PROFILE") {
@@ -677,15 +749,17 @@ function doPost(e) {
         if (!Array.isArray(baseStateProf.hallOfShame)) baseStateProf.hallOfShame = [];
         var shameTeamObj = baseStateProf.teams.filter(function(t) { return t.id === teamId; })[0];
         var shameTeamName = shameTeamObj ? shameTeamObj.name : teamId;
+        var shameMsg = shameTeamName + " selected the 'Upstate Kitties' colorway and activated the Sparkly Pink 8==D Curse!";
         baseStateProf.hallOfShame.unshift({
           id: "SHAME-" + Date.now(),
           teamId: teamId,
           teamName: shameTeamName,
-          message: shameTeamName + " selected the 'Upstate Kitties' colorway and activated the Sparkly Pink 8==D Curse!",
+          message: shameMsg,
           timestamp: Date.now(),
           dateStr: new Date().toLocaleDateString()
         });
         baseStateProf.hallOfShame = baseStateProf.hallOfShame.slice(0, 30);
+        appendServerActivityEvent(baseStateProf, "HALL_OF_SHAME", "Hall of Shame Alert", shameMsg, { teamId: teamId });
       }
 
       // Enforce Champion Rename Decree lock on Phallic Feaster's customTeamName
@@ -793,15 +867,17 @@ function doPost(e) {
         if (!Array.isArray(baseStateChamp.hallOfShame)) baseStateChamp.hallOfShame = [];
         var fObj = baseStateChamp.teams.filter(function(t) { return t.id === targetTid; })[0];
         var cObj = baseStateChamp.teams.filter(function(t) { return t.id === actorTid; })[0];
+        var feasterMsg = (cObj ? cObj.name : "The Overall Champion") + " exercised the Champion's Decree and renamed Phallic Feaster " + (fObj ? fObj.name : targetTid) + " to \"" + newFeasterName + "\"!";
         baseStateChamp.hallOfShame.unshift({
           id: "FEASTER-" + Date.now(),
           teamId: targetTid,
           teamName: fObj ? fObj.name : targetTid,
-          message: (cObj ? cObj.name : "The Overall Champion") + " exercised the Champion's Decree and renamed Phallic Feaster " + (fObj ? fObj.name : targetTid) + " to \"" + newFeasterName + "\"!",
+          message: feasterMsg,
           timestamp: Date.now(),
           dateStr: new Date().toLocaleDateString()
         });
         baseStateChamp.hallOfShame = baseStateChamp.hallOfShame.slice(0, 30);
+        appendServerActivityEvent(baseStateChamp, "FEASTER_DECREE", "Phallic Feaster Team Name Decree", feasterMsg, { teamId: targetTid, actorTeamId: actorTid });
       } else {
         targetProf.feasterRenamedByChamp = false;
         targetProf.feasterRenamedBy = "";
@@ -826,6 +902,7 @@ function doPost(e) {
         return jsonResponse({ ok: false, error: "Missing espnData payload." });
       }
       var existingEspn = (baseStateEspn.espnData && typeof baseStateEspn.espnData === "object") ? baseStateEspn.espnData : {};
+      var prevRecords = (existingEspn.records && typeof existingEspn.records === "object") ? existingEspn.records : {};
       baseStateEspn.espnData = {
         leagueId: String(incomingEspn.leagueId || existingEspn.leagueId || "").slice(0, 32),
         leagueName: String(incomingEspn.leagueName || existingEspn.leagueName || "Gamecock Mafia").slice(0, 80),
@@ -868,6 +945,18 @@ function doPost(e) {
           ? incomingEspn.rawTeams.slice(0, 20)
           : (existingEspn.rawTeams || [])
       };
+      var nextRecs = baseStateEspn.espnData.records || {};
+      if (nextRecs.highestWeekScore && Number(nextRecs.highestWeekScore.score || 0) > Number((prevRecords.highestWeekScore && prevRecords.highestWeekScore.score) || 0) && Number((prevRecords.highestWeekScore && prevRecords.highestWeekScore.score) || 0) > 0) {
+        appendServerActivityEvent(baseStateEspn, "RECORD_SET", "New All-Time Single-Week Scoring Record!", (nextRecs.highestWeekScore.managerId || "Manager") + " posted " + nextRecs.highestWeekScore.score + " pts (Wk " + (nextRecs.highestWeekScore.week || "?") + ", " + (nextRecs.highestWeekScore.year || "") + ").", { year: nextRecs.highestWeekScore.year, teamId: nextRecs.highestWeekScore.managerId });
+      }
+      var syncedRosterCount = Object.keys(baseStateEspn.espnData.rosters || {}).length;
+      appendServerActivityEvent(
+        baseStateEspn,
+        "ESPN_SYNC",
+        "ESPN League Sync Completed (" + baseStateEspn.espnData.currentSeason + ")",
+        "Synced " + syncedRosterCount + " rosters, standings, head-to-head rivalries, and record book.",
+        { year: baseStateEspn.espnData.currentSeason }
+      );
       // Auto-void open pending proposals if a staged player was dropped/moved on ESPN
       pruneConflictingPendingProposals(baseStateEspn);
       baseStateEspn.updatedAt = Date.now();
@@ -893,6 +982,7 @@ function doPost(e) {
 
       var syncReason = String(body.reason || "ADMIN_SYNC");
       var isFullReset = syncReason.indexOf("RESET") === 0 || syncReason.indexOf("IMPORT") === 0;
+      var baseSnapshotTs = Number(body.clientSnapshotUpdatedAt || newState.updatedAt || 0);
 
       // Preserve concurrent manager teamProfile saves (e.g., keepers/avatar/PIN) if newer than incoming snapshot
       if (!isFullReset && stored && stored.teamProfiles && typeof stored.teamProfiles === "object") {
@@ -913,7 +1003,6 @@ function doPost(e) {
       // Preserve concurrent pending trade proposals submitted while Commissioner modal was open
       if (!isFullReset && stored && Array.isArray(stored.pendingTrades) && stored.pendingTrades.length > 0) {
         if (!Array.isArray(newState.pendingTrades)) newState.pendingTrades = [];
-        var baseSnapshotTs = Number(body.clientSnapshotUpdatedAt || newState.updatedAt || 0);
         var existingPendingIds = {};
         newState.pendingTrades.forEach(function(pt) { if (pt && pt.id) existingPendingIds[String(pt.id)] = true; });
         stored.pendingTrades.forEach(function(spt) {
@@ -922,6 +1011,37 @@ function doPost(e) {
           }
         });
         pruneConflictingPendingProposals(newState);
+      }
+
+      // Preserve concurrent trade fairness votes / reactions if stored was updated more recently
+      if (!isFullReset && stored && Array.isArray(stored.trades) && Number(stored.updatedAt || 0) > baseSnapshotTs) {
+        var storedTradeById = {};
+        stored.trades.forEach(function(st) { if (st && st.id) storedTradeById[String(st.id)] = st; });
+        newState.trades.forEach(function(nt) {
+          var stMatch = nt && nt.id ? storedTradeById[String(nt.id)] : null;
+          if (stMatch) {
+            if (stMatch.fairnessVotes && (!nt.fairnessVotes || ((nt.fairnessVotes.yes || []).length + (nt.fairnessVotes.no || []).length === 0))) {
+              nt.fairnessVotes = stMatch.fairnessVotes;
+            }
+            if (stMatch.reactions && (!nt.reactions || Object.keys(nt.reactions).length === 0)) {
+              nt.reactions = stMatch.reactions;
+            }
+          }
+        });
+      }
+
+      // Preserve concurrent activityLog entries created after baseSnapshotTs
+      if (!isFullReset && stored && Array.isArray(stored.activityLog) && stored.activityLog.length > 0) {
+        if (!Array.isArray(newState.activityLog)) newState.activityLog = [];
+        var seenActIds = {};
+        newState.activityLog.forEach(function(ae) { if (ae && ae.id) seenActIds[String(ae.id)] = true; });
+        stored.activityLog.forEach(function(sae) {
+          if (sae && sae.id && !seenActIds[String(sae.id)] && Number(sae.timestamp || 0) > baseSnapshotTs) {
+            newState.activityLog.push(sae);
+          }
+        });
+        newState.activityLog.sort(function(a, b) { return Number(b.timestamp || 0) - Number(a.timestamp || 0); });
+        newState.activityLog = newState.activityLog.slice(0, 100);
       }
 
       if (!newState.commishPinHash && stored && stored.commishPinHash) {
@@ -984,7 +1104,7 @@ function saveAndMirrorToSheets(sheets, state, actionLabel) {
   var tradeRows = [[
     "Trade ID", "Primary Year", "Date / Sheet", "Logged By", "Managers Involved",
     "Headline", "Direct Pick Transfers", "Player Transfers", "Pools (Pending Final / Finalized)",
-    "Conditional Swaps", "Notes"
+    "Conditional Swaps", "Fairness Review (Yes/No)", "Notes"
   ]];
 
   (state.trades || []).forEach(function(tr) {
@@ -1003,6 +1123,10 @@ function saveAndMirrorToSheets(sheets, state, actionLabel) {
       var st = c.isResolved ? (c.resolvedRound ? "Swapped Rd " + c.resolvedRound : "Settled") : "PENDING FINAL";
       return c.year + " Rd " + (c.roundsInvolved || []).join("/") + " (" + st + ": " + (c.summary || "") + ")";
     }).join("; ");
+    var fv = (tr.fairnessVotes && typeof tr.fairnessVotes === "object") ? tr.fairnessVotes : { yes: [], no: [] };
+    var yesCnt = Array.isArray(fv.yes) ? fv.yes.length : 0;
+    var noCnt = Array.isArray(fv.no) ? fv.no.length : 0;
+    var fairnessSummary = (yesCnt + noCnt) > 0 ? ("Yes: " + yesCnt + " / No: " + noCnt) : "";
 
     tradeRows.push([
       safeSheetCell(tr.id || ""),
@@ -1015,6 +1139,7 @@ function saveAndMirrorToSheets(sheets, state, actionLabel) {
       safeSheetCell(players),
       safeSheetCell(pools),
       safeSheetCell(conds),
+      safeSheetCell(fairnessSummary),
       safeSheetCell(tr.notes || "")
     ]);
   });
@@ -1344,22 +1469,38 @@ function autoWeeklyEspnSync() {
 
         var checkScorePairs = [{ mgr: hMgr, sc: hScore, opp: aMgr, oppSc: aScore }, { mgr: aMgr, sc: aScore, opp: hMgr, oppSc: hScore }];
         checkScorePairs.forEach(function(sp) {
-          if (!ed.records.highestWeekScore || sp.sc > Number(ed.records.highestWeekScore.score || 0)) {
+          var prevHigh = ed.records.highestWeekScore ? Number(ed.records.highestWeekScore.score || 0) : 0;
+          if (!ed.records.highestWeekScore || sp.sc > prevHigh) {
             ed.records.highestWeekScore = { managerId: sp.mgr, score: Math.round(sp.sc * 100) / 100, year: seasonYr, week: wk, opponentId: sp.opp };
+            if (prevHigh > 0) {
+              appendServerActivityEvent(currentState, "RECORD_SET", "New All-Time Weekly High Score!", sp.mgr + " dropped " + ed.records.highestWeekScore.score + " pts in Week " + wk + " (" + seasonYr + ").", { year: seasonYr, teamId: sp.mgr });
+            }
           }
-          if (sp.sc > 0 && (!ed.records.lowestWeekScore || !ed.records.lowestWeekScore.score || sp.sc < Number(ed.records.lowestWeekScore.score))) {
+          var prevLow = (ed.records.lowestWeekScore && ed.records.lowestWeekScore.score) ? Number(ed.records.lowestWeekScore.score) : 0;
+          if (sp.sc > 0 && (!ed.records.lowestWeekScore || !prevLow || sp.sc < prevLow)) {
             ed.records.lowestWeekScore = { managerId: sp.mgr, score: Math.round(sp.sc * 100) / 100, year: seasonYr, week: wk, opponentId: sp.opp };
+            if (prevLow > 0) {
+              appendServerActivityEvent(currentState, "RECORD_SET", "New All-Time Weekly Low Score Alert", sp.mgr + " scored just " + ed.records.lowestWeekScore.score + " pts in Week " + wk + " (" + seasonYr + ").", { year: seasonYr, teamId: sp.mgr });
+            }
           }
         });
         var margin = Math.round(Math.abs(hScore - aScore) * 100) / 100;
         if (margin > 0) {
           var winMgr = hScore > aScore ? hMgr : aMgr;
           var loseMgr = hScore > aScore ? aMgr : hMgr;
-          if (!ed.records.biggestBlowout || margin > Number(ed.records.biggestBlowout.margin || 0)) {
+          var prevBlowout = ed.records.biggestBlowout ? Number(ed.records.biggestBlowout.margin || 0) : 0;
+          if (!ed.records.biggestBlowout || margin > prevBlowout) {
             ed.records.biggestBlowout = { winnerId: winMgr, loserId: loseMgr, margin: margin, year: seasonYr, week: wk };
+            if (prevBlowout > 0) {
+              appendServerActivityEvent(currentState, "RECORD_SET", "New Biggest Blowout Record!", winMgr + " defeated " + loseMgr + " by " + margin + " pts (Week " + wk + ", " + seasonYr + ").", { year: seasonYr, teamId: winMgr });
+            }
           }
-          if (!ed.records.closestWin || !ed.records.closestWin.margin || margin < Number(ed.records.closestWin.margin)) {
+          var prevClosest = (ed.records.closestWin && ed.records.closestWin.margin) ? Number(ed.records.closestWin.margin) : 0;
+          if (!ed.records.closestWin || !prevClosest || margin < prevClosest) {
             ed.records.closestWin = { winnerId: winMgr, loserId: loseMgr, margin: margin, year: seasonYr, week: wk };
+            if (prevClosest > 0) {
+              appendServerActivityEvent(currentState, "RECORD_SET", "New Closest Nailbiter Record!", winMgr + " edged " + loseMgr + " by " + margin + " pts (Week " + wk + ", " + seasonYr + ").", { year: seasonYr, teamId: winMgr });
+            }
           }
         }
       }
@@ -1484,6 +1625,16 @@ function autoWeeklyEspnSync() {
         return true;
       });
     }
+
+    var topRow = rawTeamRows[0];
+    var topSummary = topRow ? (" • #1 Seed: " + (topRow.teamName || topRow.managerId || "TBD") + " (" + topRow.wins + "-" + topRow.losses + ")") : "";
+    appendServerActivityEvent(
+      currentState,
+      "WEEKLY_SYNC",
+      "Weekly ESPN Auto-Sync (" + seasonYr + (currentSp ? " • Wk " + currentSp : "") + ")",
+      "Updated all 10 rosters, standings, All-Play & H2H records" + topSummary + ".",
+      { year: seasonYr }
+    );
 
     ed.lastSyncedAt = Date.now();
     currentState.updatedAt = Date.now();

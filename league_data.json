@@ -1,5 +1,5 @@
 {
-  "version": "7.0",
+  "version": "8.2",
   "updatedAt": 0,
   "baseUpcomingYear": 2027,
   "leaguePassphraseVerifier": "eafd2c26f6979985a54ab2573dd6b5adf47275fb991ae6cdf1512a8b037cc385",
@@ -13,6 +13,8 @@
     "subtitle": "Off-Season & In-Season Draft Pick Tracker"
   },
   "hallOfShame": [],
+  "activityLog": [],
+  "draftSchedule": {},
   "espnData": {
     "leagueId": "30215",
     "leagueName": "Gamecock Mafia",
@@ -3425,6 +3427,8 @@
   "teamProfiles": {
     "syeth": {
       "customTeamName": "",
+      "feasterRenamedByChamp": false,
+      "feasterRenamedBy": "",
       "avatarType": "MONOGRAM",
       "avatarText": "",
       "avatarEmoji": "",
@@ -3446,11 +3450,14 @@
         "p-syeth-7",
         "p-syeth-8"
       ],
+      "keepersConfirmedAt": 0,
       "playerTags": {},
       "updatedAt": 0
     },
     "corbyn": {
       "customTeamName": "",
+      "feasterRenamedByChamp": false,
+      "feasterRenamedBy": "",
       "avatarType": "MONOGRAM",
       "avatarText": "",
       "avatarEmoji": "",
@@ -3472,11 +3479,14 @@
         "p-corbyn-7",
         "p-corbyn-8"
       ],
+      "keepersConfirmedAt": 0,
       "playerTags": {},
       "updatedAt": 0
     },
     "chris": {
       "customTeamName": "",
+      "feasterRenamedByChamp": false,
+      "feasterRenamedBy": "",
       "avatarType": "MONOGRAM",
       "avatarText": "",
       "avatarEmoji": "",
@@ -3498,11 +3508,14 @@
         "p-chris-7",
         "p-chris-8"
       ],
+      "keepersConfirmedAt": 0,
       "playerTags": {},
       "updatedAt": 0
     },
     "boss": {
       "customTeamName": "",
+      "feasterRenamedByChamp": false,
+      "feasterRenamedBy": "",
       "avatarType": "MONOGRAM",
       "avatarText": "",
       "avatarEmoji": "",
@@ -3524,11 +3537,14 @@
         "p-boss-7",
         "p-boss-8"
       ],
+      "keepersConfirmedAt": 0,
       "playerTags": {},
       "updatedAt": 0
     },
     "geltz": {
       "customTeamName": "",
+      "feasterRenamedByChamp": false,
+      "feasterRenamedBy": "",
       "avatarType": "MONOGRAM",
       "avatarText": "",
       "avatarEmoji": "",
@@ -3550,11 +3566,14 @@
         "p-geltz-7",
         "p-geltz-8"
       ],
+      "keepersConfirmedAt": 0,
       "playerTags": {},
       "updatedAt": 0
     },
     "matt": {
       "customTeamName": "",
+      "feasterRenamedByChamp": false,
+      "feasterRenamedBy": "",
       "avatarType": "MONOGRAM",
       "avatarText": "",
       "avatarEmoji": "",
@@ -3576,11 +3595,14 @@
         "p-matt-7",
         "p-matt-8"
       ],
+      "keepersConfirmedAt": 0,
       "playerTags": {},
       "updatedAt": 0
     },
     "dylan": {
       "customTeamName": "",
+      "feasterRenamedByChamp": false,
+      "feasterRenamedBy": "",
       "avatarType": "MONOGRAM",
       "avatarText": "",
       "avatarEmoji": "",
@@ -3602,11 +3624,14 @@
         "p-dylan-7",
         "p-dylan-8"
       ],
+      "keepersConfirmedAt": 0,
       "playerTags": {},
       "updatedAt": 0
     },
     "leo": {
       "customTeamName": "",
+      "feasterRenamedByChamp": false,
+      "feasterRenamedBy": "",
       "avatarType": "MONOGRAM",
       "avatarText": "",
       "avatarEmoji": "",
@@ -3628,11 +3653,14 @@
         "p-leo-7",
         "p-leo-8"
       ],
+      "keepersConfirmedAt": 0,
       "playerTags": {},
       "updatedAt": 0
     },
     "mary": {
       "customTeamName": "",
+      "feasterRenamedByChamp": false,
+      "feasterRenamedBy": "",
       "avatarType": "MONOGRAM",
       "avatarText": "",
       "avatarEmoji": "",
@@ -3654,11 +3682,14 @@
         "p-mary-7",
         "p-mary-8"
       ],
+      "keepersConfirmedAt": 0,
       "playerTags": {},
       "updatedAt": 0
     },
     "josh": {
       "customTeamName": "",
+      "feasterRenamedByChamp": false,
+      "feasterRenamedBy": "",
       "avatarType": "MONOGRAM",
       "avatarText": "",
       "avatarEmoji": "",
@@ -3680,6 +3711,7 @@
         "p-josh-7",
         "p-josh-8"
       ],
+      "keepersConfirmedAt": 0,
       "playerTags": {},
       "updatedAt": 0
     }
