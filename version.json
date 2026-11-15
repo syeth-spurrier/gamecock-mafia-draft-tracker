@@ -1,5 +1,5 @@
 {
-  "version": "8.3.3",
-  "releasedAt": "2026-11-15T17:12:00Z",
-  "notes": "v8.3.3: Differentiated 7-Colorway System — Full stadium-tinted dark surfaces, card gradients, two-tone team identity trim (--theme-trim), theme-reactive Top Header & Mobile Bottom Nav, and live preview swatches in Settings."
+  "version": "8.4.0",
+  "releasedAt": "2026-11-15T18:15:00Z",
+  "notes": "Differentiated 3-Layer Colorways (Chapel Sky white base + Tar Heel blue fills + navy accents; Honolulu Gridiron blue base + white fills + silver/black accents; Emerald Sound '90s seafoam/royal base + green fills + white accents; Sandstorm Noir black base + garnet fills + white accents), Cloud Colorway & Login Gate Sync, 72h Pre-Draft Keeper Lock (Picks-Only Trading), Strict 12/12 Keeper Readiness, Smart ESPN Player ID Migration, 2-Way Trade Streamlining, Sticky Mobile Scouting Bar, and Offline Service Worker."
 }

@@ -88,186 +88,189 @@
   </script>
   <style>
     :root {
-      --bg-obsidian: #0C0A0C;
-      --bg-obsidian-rgb: 12, 10, 12;
-      --bg-surface: #151216;
-      --bg-surface-rgb: 21, 18, 22;
-      --bg-elevated: #211B22;
-      --bg-elevated-rgb: 33, 27, 34;
-      --border-subtle: rgba(204, 20, 41, 0.16);
+      --bg-obsidian: #050507;
+      --bg-obsidian-rgb: 5, 5, 7;
+      --bg-surface: #0C0C10;
+      --bg-surface-rgb: 12, 12, 16;
+      --bg-elevated: #14141B;
+      --bg-elevated-rgb: 20, 20, 27;
+      --border-subtle: rgba(255, 255, 255, 0.16);
       --usc-garnet: #73000A;
       --usc-garnet-rgb: 115, 0, 10;
       --usc-garnet-bright: #99000F;
       --usc-garnet-hi: #CC1429;
       --usc-garnet-hi-rgb: 204, 20, 41;
-      --theme-trim: #D4AF37;
-      --theme-trim-rgb: 212, 175, 55;
+      --theme-trim: #FFFFFF;
+      --theme-trim-rgb: 255, 255, 255;
       --theme-ambient-bg:
-        radial-gradient(ellipse 92% 42% at 50% -6%, rgba(153, 0, 15, 0.24) 0%, transparent 68%),
-        radial-gradient(circle at 92% 102%, rgba(212, 175, 55, 0.08) 0%, transparent 48%);
-      --theme-card-grad: linear-gradient(165deg, rgba(25, 19, 24, 0.96) 0%, rgba(18, 15, 19, 0.98) 100%);
-      --theme-hero-grad: linear-gradient(135deg, #32070D 0%, #630009 44%, #161217 100%);
-      --theme-btn-grad: linear-gradient(180deg, #99000F 0%, #73000A 100%);
-      --theme-btn-hover: linear-gradient(180deg, #B30012 0%, #87000C 100%);
-      --theme-border-hi: rgba(204, 20, 41, 0.58);
-      --theme-glow: rgba(153, 0, 15, 0.4);
+        radial-gradient(ellipse 92% 42% at 50% -6%, rgba(153, 0, 15, 0.28) 0%, transparent 68%),
+        radial-gradient(circle at 92% 102%, rgba(255, 255, 255, 0.05) 0%, transparent 48%);
+      --theme-card-grad: linear-gradient(165deg, rgba(16, 16, 22, 0.98) 0%, rgba(10, 10, 14, 0.99) 100%);
+      --theme-hero-grad: linear-gradient(135deg, #4A0006 0%, #73000A 52%, #140407 100%);
+      --theme-btn-grad: linear-gradient(180deg, #A30010 0%, #73000A 100%);
+      --theme-btn-hover: linear-gradient(180deg, #CC1429 0%, #8C000C 100%);
+      --theme-border-hi: rgba(255, 255, 255, 0.72);
+      --theme-glow: rgba(153, 0, 15, 0.45);
     }
-    /* Balanced Stadium-Tinted Dark Surfaces + Two-Tone Jersey Trim Across All 6 Normal Colorways */
-    /* Colorway 1: Sandstorm Noir (USC Garnet, Championship Gold Trim & Warm Obsidian) */
+    /* ============================================================================
+       3-LAYER TEAM COLORWAY ENGINE (Base Surface • Primary Fills • Trim Accents)
+       ============================================================================ */
+    /* Colorway 1: Sandstorm Noir (Primary Pitch Black Base + USC Garnet Fills + Crisp White Accents) */
     body.theme-sandstorm_noir {
-      --bg-obsidian: #0C0A0C;
-      --bg-obsidian-rgb: 12, 10, 12;
-      --bg-surface: #151216;
-      --bg-surface-rgb: 21, 18, 22;
-      --bg-elevated: #211B22;
-      --bg-elevated-rgb: 33, 27, 34;
-      --border-subtle: rgba(204, 20, 41, 0.16);
+      --bg-obsidian: #050507;
+      --bg-obsidian-rgb: 5, 5, 7;
+      --bg-surface: #0C0C10;
+      --bg-surface-rgb: 12, 12, 16;
+      --bg-elevated: #14141B;
+      --bg-elevated-rgb: 20, 20, 27;
+      --border-subtle: rgba(255, 255, 255, 0.16);
       --usc-garnet: #73000A;
       --usc-garnet-rgb: 115, 0, 10;
       --usc-garnet-bright: #99000F;
       --usc-garnet-hi: #CC1429;
       --usc-garnet-hi-rgb: 204, 20, 41;
-      --theme-trim: #D4AF37;
-      --theme-trim-rgb: 212, 175, 55;
+      --theme-trim: #FFFFFF;
+      --theme-trim-rgb: 255, 255, 255;
       --theme-ambient-bg:
-        radial-gradient(ellipse 92% 42% at 50% -6%, rgba(153, 0, 15, 0.24) 0%, transparent 68%),
-        radial-gradient(circle at 92% 102%, rgba(212, 175, 55, 0.08) 0%, transparent 48%);
-      --theme-card-grad: linear-gradient(165deg, rgba(25, 19, 24, 0.96) 0%, rgba(18, 15, 19, 0.98) 100%);
-      --theme-hero-grad: linear-gradient(135deg, #32070D 0%, #630009 44%, #161217 100%);
-      --theme-btn-grad: linear-gradient(180deg, #99000F 0%, #73000A 100%);
-      --theme-btn-hover: linear-gradient(180deg, #B30012 0%, #87000C 100%);
-      --theme-border-hi: rgba(204, 20, 41, 0.58);
-      --theme-glow: rgba(153, 0, 15, 0.4);
+        radial-gradient(ellipse 92% 42% at 50% -6%, rgba(153, 0, 15, 0.28) 0%, transparent 68%),
+        radial-gradient(circle at 92% 102%, rgba(255, 255, 255, 0.05) 0%, transparent 48%);
+      --theme-card-grad: linear-gradient(165deg, rgba(16, 16, 22, 0.98) 0%, rgba(10, 10, 14, 0.99) 100%);
+      --theme-hero-grad: linear-gradient(135deg, #4A0006 0%, #73000A 52%, #140407 100%);
+      --theme-btn-grad: linear-gradient(180deg, #A30010 0%, #73000A 100%);
+      --theme-btn-hover: linear-gradient(180deg, #CC1429 0%, #8C000C 100%);
+      --theme-border-hi: rgba(255, 255, 255, 0.72);
+      --theme-glow: rgba(153, 0, 15, 0.45);
     }
-    /* Colorway 2: Chapel Sky (UNC Carolina Sky Blue, Crisp White-Ice Trim & Deep Chapel Navy Slate) */
+    /* Colorway 2: Chapel Sky (Crisp White/Ice Base + Tar Heel Blue Primary Fills + Deep Chapel Navy Accents) */
     body.theme-chapel_sky {
-      --bg-obsidian: #07101E;
-      --bg-obsidian-rgb: 7, 16, 30;
-      --bg-surface: #0E1B31;
-      --bg-surface-rgb: 14, 27, 49;
-      --bg-elevated: #162847;
-      --bg-elevated-rgb: 22, 40, 71;
-      --border-subtle: rgba(75, 156, 211, 0.22);
-      --usc-garnet: #1E4E8C;
-      --usc-garnet-rgb: 30, 78, 140;
-      --usc-garnet-bright: #2B6CB0;
+      --bg-obsidian: #EDF5FC;
+      --bg-obsidian-rgb: 237, 245, 252;
+      --bg-surface: #FFFFFF;
+      --bg-surface-rgb: 255, 255, 255;
+      --bg-elevated: #DFEEF9;
+      --bg-elevated-rgb: 223, 238, 249;
+      --border-subtle: rgba(19, 41, 75, 0.18);
+      --usc-garnet: #2B72B5;
+      --usc-garnet-rgb: 43, 114, 181;
+      --usc-garnet-bright: #3B86CC;
       --usc-garnet-hi: #4B9CD3;
       --usc-garnet-hi-rgb: 75, 156, 211;
-      --theme-trim: #E0F2FE;
-      --theme-trim-rgb: 224, 242, 254;
+      --theme-trim: #13294B;
+      --theme-trim-rgb: 19, 41, 75;
       --theme-ambient-bg:
-        radial-gradient(ellipse 92% 45% at 50% -6%, rgba(75, 156, 211, 0.27) 0%, transparent 70%),
-        radial-gradient(circle at 12% 96%, rgba(19, 41, 75, 0.45) 0%, transparent 55%);
-      --theme-card-grad: linear-gradient(165deg, rgba(17, 32, 58, 0.96) 0%, rgba(12, 23, 42, 0.98) 100%);
-      --theme-hero-grad: linear-gradient(135deg, #0F2342 0%, #235A9E 45%, #0E1B31 100%);
-      --theme-btn-grad: linear-gradient(180deg, #4B9CD3 0%, #1E4E8C 100%);
-      --theme-btn-hover: linear-gradient(180deg, #63B3ED 0%, #2B6CB0 100%);
-      --theme-border-hi: rgba(123, 175, 212, 0.62);
-      --theme-glow: rgba(75, 156, 211, 0.4);
+        radial-gradient(ellipse 92% 45% at 50% -6%, rgba(75, 156, 211, 0.28) 0%, transparent 70%),
+        radial-gradient(circle at 12% 96%, rgba(19, 41, 75, 0.1) 0%, transparent 55%);
+      --theme-card-grad: linear-gradient(180deg, #FFFFFF 0%, #F4F9FD 100%);
+      --theme-hero-grad: linear-gradient(135deg, #13294B 0%, #2B72B5 48%, #4B9CD3 100%);
+      --theme-btn-grad: linear-gradient(180deg, #4B9CD3 0%, #2B72B5 100%);
+      --theme-btn-hover: linear-gradient(180deg, #62B0E8 0%, #327EC4 100%);
+      --theme-border-hi: #13294B;
+      --theme-glow: rgba(75, 156, 211, 0.38);
+      color: #0F2342;
     }
-    /* Colorway 3: Honolulu Gridiron (Detroit Honolulu Blue, Metallic Silver Trim & Ford Field Gunmetal) */
+    /* Colorway 3: Honolulu Gridiron (Primary Honolulu Blue Base + Crisp White Fills + Silver/Black Accents) */
     body.theme-honolulu_gridiron {
-      --bg-obsidian: #07121A;
-      --bg-obsidian-rgb: 7, 18, 26;
-      --bg-surface: #0E1E2B;
-      --bg-surface-rgb: 14, 30, 43;
-      --bg-elevated: #172D3F;
-      --bg-elevated-rgb: 23, 45, 63;
-      --border-subtle: rgba(176, 183, 188, 0.22);
-      --usc-garnet: #005A8B;
-      --usc-garnet-rgb: 0, 90, 139;
-      --usc-garnet-bright: #0076B6;
-      --usc-garnet-hi: #0092DF;
-      --usc-garnet-hi-rgb: 0, 146, 223;
-      --theme-trim: #CBD5E1;
-      --theme-trim-rgb: 203, 213, 225;
+      --bg-obsidian: #005A8B;
+      --bg-obsidian-rgb: 0, 90, 139;
+      --bg-surface: #FFFFFF;
+      --bg-surface-rgb: 255, 255, 255;
+      --bg-elevated: #EFF6FF;
+      --bg-elevated-rgb: 239, 246, 255;
+      --border-subtle: rgba(10, 14, 20, 0.18);
+      --usc-garnet: #0076B6;
+      --usc-garnet-rgb: 0, 118, 182;
+      --usc-garnet-bright: #0088D1;
+      --usc-garnet-hi: #0076B6;
+      --usc-garnet-hi-rgb: 0, 118, 182;
+      --theme-trim: #B0B7BC;
+      --theme-trim-rgb: 176, 183, 188;
       --theme-ambient-bg:
-        radial-gradient(ellipse 92% 45% at 50% -6%, rgba(0, 118, 182, 0.28) 0%, transparent 70%),
-        radial-gradient(circle at 88% 96%, rgba(176, 183, 188, 0.14) 0%, transparent 52%);
-      --theme-card-grad: linear-gradient(165deg, rgba(16, 35, 50, 0.96) 0%, rgba(12, 26, 38, 0.98) 100%);
-      --theme-hero-grad: linear-gradient(135deg, #06283E 0%, #0076B6 44%, #102230 100%);
-      --theme-btn-grad: linear-gradient(180deg, #0082C8 0%, #005582 100%);
-      --theme-btn-hover: linear-gradient(180deg, #0096E6 0%, #00669C 100%);
-      --theme-border-hi: rgba(176, 183, 188, 0.6);
+        radial-gradient(ellipse 95% 50% at 50% -6%, rgba(0, 150, 230, 0.42) 0%, transparent 72%),
+        radial-gradient(circle at 88% 96%, rgba(10, 14, 20, 0.35) 0%, transparent 55%);
+      --theme-card-grad: linear-gradient(180deg, #FFFFFF 0%, #F1F5F9 100%);
+      --theme-hero-grad: linear-gradient(135deg, #0A0E14 0%, #005A8B 42%, #0076B6 100%);
+      --theme-btn-grad: linear-gradient(180deg, #0076B6 0%, #004E7A 100%);
+      --theme-btn-hover: linear-gradient(180deg, #008AD4 0%, #005A8B 100%);
+      --theme-border-hi: #0A0E14;
       --theme-glow: rgba(0, 118, 182, 0.42);
     }
-    /* Colorway 4: Foundry Orange (Cleveland Forge Orange, Warm Copper-Brown Trim & Espresso Slate) */
+    /* Colorway 4: Foundry Orange (Primary Seal Brown Base + Blaze Orange Fills + Crisp White Accents) */
     body.theme-foundry_orange {
-      --bg-obsidian: #120B08;
-      --bg-obsidian-rgb: 18, 11, 8;
-      --bg-surface: #1E130E;
-      --bg-surface-rgb: 30, 19, 14;
-      --bg-elevated: #2C1C15;
-      --bg-elevated-rgb: 44, 28, 21;
-      --border-subtle: rgba(255, 60, 0, 0.2);
-      --usc-garnet: #9A2600;
-      --usc-garnet-rgb: 154, 38, 0;
-      --usc-garnet-bright: #CC3000;
-      --usc-garnet-hi: #FF4800;
-      --usc-garnet-hi-rgb: 255, 72, 0;
-      --theme-trim: #FDBA74;
-      --theme-trim-rgb: 253, 186, 116;
+      --bg-obsidian: #1E1005;
+      --bg-obsidian-rgb: 30, 16, 5;
+      --bg-surface: #2B180A;
+      --bg-surface-rgb: 43, 24, 10;
+      --bg-elevated: #3B2210;
+      --bg-elevated-rgb: 59, 34, 16;
+      --border-subtle: rgba(255, 255, 255, 0.18);
+      --usc-garnet: #C83000;
+      --usc-garnet-rgb: 200, 48, 0;
+      --usc-garnet-bright: #E63900;
+      --usc-garnet-hi: #FF3C00;
+      --usc-garnet-hi-rgb: 255, 60, 0;
+      --theme-trim: #FFFFFF;
+      --theme-trim-rgb: 255, 255, 255;
       --theme-ambient-bg:
-        radial-gradient(ellipse 92% 44% at 50% -6%, rgba(255, 60, 0, 0.24) 0%, transparent 68%),
-        radial-gradient(circle at 14% 96%, rgba(92, 45, 18, 0.32) 0%, transparent 52%);
-      --theme-card-grad: linear-gradient(165deg, rgba(35, 22, 16, 0.96) 0%, rgba(25, 16, 12, 0.98) 100%);
-      --theme-hero-grad: linear-gradient(135deg, #311D00 0%, #B32D00 45%, #1E130E 100%);
-      --theme-btn-grad: linear-gradient(180deg, #E63600 0%, #9A2600 100%);
-      --theme-btn-hover: linear-gradient(180deg, #FF5722 0%, #CC3000 100%);
-      --theme-border-hi: rgba(255, 90, 31, 0.6);
-      --theme-glow: rgba(255, 60, 0, 0.38);
+        radial-gradient(ellipse 92% 44% at 50% -6%, rgba(255, 60, 0, 0.28) 0%, transparent 68%),
+        radial-gradient(circle at 14% 96%, rgba(255, 255, 255, 0.06) 0%, transparent 52%);
+      --theme-card-grad: linear-gradient(165deg, rgba(48, 27, 12, 0.97) 0%, rgba(34, 19, 8, 0.99) 100%);
+      --theme-hero-grad: linear-gradient(135deg, #311D00 0%, #B32D00 50%, #FF3C00 100%);
+      --theme-btn-grad: linear-gradient(180deg, #FF3C00 0%, #B82B00 100%);
+      --theme-btn-hover: linear-gradient(180deg, #FF5722 0%, #D43500 100%);
+      --theme-border-hi: #FFFFFF;
+      --theme-glow: rgba(255, 60, 0, 0.42);
     }
-    /* Colorway 5: Emerald Sound '98 (Throwback Seahawks Pacific Royal, Action Green Trim & Deep Evergreen-Navy) */
+    /* Colorway 5: Emerald Sound '98 (Primary '90s Seafoam/Seahawks Blue Base + Action Green Fills + Crisp White Accents) */
     body.theme-emerald_sound {
-      --bg-obsidian: #06121A;
-      --bg-obsidian-rgb: 6, 18, 26;
-      --bg-surface: #0C1F2D;
-      --bg-surface-rgb: 12, 31, 45;
-      --bg-elevated: #143044;
-      --bg-elevated-rgb: 20, 48, 68;
-      --border-subtle: rgba(105, 190, 40, 0.22);
-      --usc-garnet: #004B8D;
-      --usc-garnet-rgb: 0, 75, 141;
-      --usc-garnet-bright: #196F52;
+      --bg-obsidian: #062B45;
+      --bg-obsidian-rgb: 6, 43, 69;
+      --bg-surface: #0B3D62;
+      --bg-surface-rgb: 11, 61, 98;
+      --bg-elevated: #12517E;
+      --bg-elevated-rgb: 18, 81, 126;
+      --border-subtle: rgba(255, 255, 255, 0.22);
+      --usc-garnet: #1E823C;
+      --usc-garnet-rgb: 30, 130, 60;
+      --usc-garnet-bright: #28A745;
       --usc-garnet-hi: #69BE28;
       --usc-garnet-hi-rgb: 105, 190, 40;
-      --theme-trim: #69BE28;
-      --theme-trim-rgb: 105, 190, 40;
+      --theme-trim: #FFFFFF;
+      --theme-trim-rgb: 255, 255, 255;
       --theme-ambient-bg:
-        radial-gradient(ellipse 92% 45% at 50% -6%, rgba(0, 75, 141, 0.3) 0%, transparent 68%),
-        radial-gradient(circle at 86% 96%, rgba(105, 190, 40, 0.16) 0%, transparent 52%);
-      --theme-card-grad: linear-gradient(165deg, rgba(14, 35, 50, 0.96) 0%, rgba(10, 26, 38, 0.98) 100%);
-      --theme-hero-grad: linear-gradient(135deg, #003E75 0%, #15653B 46%, #0C1F2D 100%);
-      --theme-btn-grad: linear-gradient(180deg, #23864C 0%, #004B8D 100%);
-      --theme-btn-hover: linear-gradient(180deg, #2EA05B 0%, #005FA8 100%);
-      --theme-border-hi: rgba(105, 190, 40, 0.62);
-      --theme-glow: rgba(105, 190, 40, 0.36);
+        radial-gradient(ellipse 92% 45% at 50% -6%, rgba(40, 167, 69, 0.28) 0%, transparent 68%),
+        radial-gradient(circle at 86% 96%, rgba(255, 255, 255, 0.1) 0%, transparent 52%);
+      --theme-card-grad: linear-gradient(165deg, rgba(14, 66, 105, 0.96) 0%, rgba(9, 49, 80, 0.98) 100%);
+      --theme-hero-grad: linear-gradient(135deg, #004B8D 0%, #156956 50%, #28A745 100%);
+      --theme-btn-grad: linear-gradient(180deg, #28A745 0%, #196F32 100%);
+      --theme-btn-hover: linear-gradient(180deg, #34C759 0%, #1E823C 100%);
+      --theme-border-hi: #FFFFFF;
+      --theme-glow: rgba(105, 190, 40, 0.42);
     }
-    /* Colorway 6: Jets of the West (Desert Cardinal Crimson, Sunburst Gold Trim & Warm Onyx) */
+    /* Colorway 6: Jets of the West (Primary Cardinal/Black Base + Cardinal Red Fills + Sunburst Yellow Accents) */
     body.theme-jets_of_the_west {
-      --bg-obsidian: #11090C;
-      --bg-obsidian-rgb: 17, 9, 12;
-      --bg-surface: #1C1015;
-      --bg-surface-rgb: 28, 16, 21;
-      --bg-elevated: #2A1820;
-      --bg-elevated-rgb: 42, 24, 32;
-      --border-subtle: rgba(255, 182, 18, 0.22);
+      --bg-obsidian: #0A0607;
+      --bg-obsidian-rgb: 10, 6, 7;
+      --bg-surface: #1A0B0F;
+      --bg-surface-rgb: 26, 11, 15;
+      --bg-elevated: #2B1219;
+      --bg-elevated-rgb: 43, 18, 25;
+      --border-subtle: rgba(255, 182, 18, 0.25);
       --usc-garnet: #97233F;
       --usc-garnet-rgb: 151, 35, 63;
-      --usc-garnet-bright: #C41E3A;
+      --usc-garnet-bright: #B81D38;
       --usc-garnet-hi: #FFB612;
       --usc-garnet-hi-rgb: 255, 182, 18;
       --theme-trim: #FFB612;
       --theme-trim-rgb: 255, 182, 18;
       --theme-ambient-bg:
-        radial-gradient(ellipse 92% 45% at 50% -6%, rgba(151, 35, 63, 0.3) 0%, transparent 68%),
-        radial-gradient(circle at 88% 96%, rgba(255, 182, 18, 0.14) 0%, transparent 50%);
-      --theme-card-grad: linear-gradient(165deg, rgba(33, 18, 25, 0.96) 0%, rgba(24, 13, 18, 0.98) 100%);
-      --theme-hero-grad: linear-gradient(135deg, #3B0B17 0%, #97233F 44%, #1C1015 100%);
+        radial-gradient(ellipse 92% 45% at 50% -6%, rgba(151, 35, 63, 0.34) 0%, transparent 68%),
+        radial-gradient(circle at 88% 96%, rgba(255, 182, 18, 0.16) 0%, transparent 50%);
+      --theme-card-grad: linear-gradient(165deg, rgba(33, 14, 20, 0.97) 0%, rgba(20, 8, 12, 0.99) 100%);
+      --theme-hero-grad: linear-gradient(135deg, #590D22 0%, #97233F 55%, #0A0808 100%);
       --theme-btn-grad: linear-gradient(180deg, #B81D38 0%, #7A162D 100%);
       --theme-btn-hover: linear-gradient(180deg, #D42240 0%, #97233F 100%);
-      --theme-border-hi: rgba(255, 182, 18, 0.65);
-      --theme-glow: rgba(151, 35, 63, 0.44);
+      --theme-border-hi: #FFB612;
+      --theme-glow: rgba(151, 35, 63, 0.45);
     }
     /* Colorway 7: Upstate Kitties (Enhanced Maximum Clemson Troll Chaos — Sparkly Hot-Pink & Glitter!) */
     @keyframes kittySparkleShift {
@@ -362,13 +365,203 @@
       transition: background-color 0.22s ease;
     }
     header#appHeaderShell {
-      background-color: rgba(var(--bg-obsidian-rgb), 0.92) !important;
-      border-bottom: 1px solid rgba(var(--theme-trim-rgb), 0.24) !important;
-      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.35);
+      background-color: rgba(var(--bg-obsidian-rgb), 0.94) !important;
+      border-bottom: 1.5px solid rgba(var(--theme-trim-rgb), 0.32) !important;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.28);
     }
     nav#mobileBottomNav {
       background-color: rgba(var(--bg-obsidian-rgb), 0.96) !important;
-      border-top: 1px solid rgba(var(--theme-trim-rgb), 0.26) !important;
+      border-top: 1.5px solid rgba(var(--theme-trim-rgb), 0.32) !important;
+    }
+    /* Contrast Typography & Border Engine for White-Base (Chapel Sky) and White-Fill (Honolulu Gridiron) Colorways */
+    body.theme-chapel_sky {
+      color: #0F2342 !important;
+    }
+    body.theme-chapel_sky header#appHeaderShell {
+      background: linear-gradient(180deg, #FFFFFF 0%, #EDF5FC 100%) !important;
+      border-bottom: 2px solid #13294B !important;
+      box-shadow: 0 4px 16px rgba(19, 41, 75, 0.1);
+    }
+    body.theme-chapel_sky nav#mobileBottomNav {
+      background: #FFFFFF !important;
+      border-top: 2px solid #13294B !important;
+      box-shadow: 0 -4px 16px rgba(19, 41, 75, 0.08);
+    }
+    body.theme-chapel_sky .app-card {
+      border: 1.5px solid rgba(19, 41, 75, 0.22);
+      box-shadow: 0 8px 22px rgba(19, 41, 75, 0.09), inset 0 2px 0 #4B9CD3;
+    }
+    body.theme-chapel_sky .btn-action {
+      background: #E1EFFA;
+      color: #13294B !important;
+      border-color: rgba(19, 41, 75, 0.28);
+    }
+    body.theme-chapel_sky .btn-action:hover {
+      background: #4B9CD3;
+      color: #FFFFFF !important;
+      border-color: #13294B;
+    }
+    body.theme-chapel_sky .segmented-bar {
+      background: #DCEBFA;
+      border: 1.5px solid rgba(19, 41, 75, 0.22);
+    }
+    body.theme-chapel_sky .segmented-pill:not(.active) {
+      color: #13294B !important;
+    }
+    body.theme-chapel_sky .text-white:not(.btn-garnet):not(.segmented-pill.active):not(.kitty-curse-badge):not(.bg-\[\#73000A\]):not(.bg-\[\#CC1429\]) {
+      color: #0F2342 !important;
+    }
+    body.theme-chapel_sky .text-slate-100,
+    body.theme-chapel_sky .text-slate-200 {
+      color: #13294B !important;
+    }
+    body.theme-chapel_sky .text-slate-300 {
+      color: #243B53 !important;
+    }
+    body.theme-chapel_sky .text-slate-400,
+    body.theme-chapel_sky .text-slate-500 {
+      color: #334E68 !important;
+    }
+    body.theme-chapel_sky .text-amber-200,
+    body.theme-chapel_sky .text-amber-300,
+    body.theme-chapel_sky .text-amber-400 {
+      color: #92400E !important;
+    }
+    body.theme-chapel_sky .text-emerald-200,
+    body.theme-chapel_sky .text-emerald-300,
+    body.theme-chapel_sky .text-emerald-400 {
+      color: #065F46 !important;
+    }
+    body.theme-chapel_sky .text-sky-200,
+    body.theme-chapel_sky .text-sky-300,
+    body.theme-chapel_sky .text-sky-400 {
+      color: #1E4E8C !important;
+    }
+    body.theme-chapel_sky .text-rose-200,
+    body.theme-chapel_sky .text-rose-300 {
+      color: #9F1239 !important;
+    }
+    body.theme-chapel_sky [class*="bg-emerald-950"],
+    body.theme-chapel_sky [class*="bg-amber-950"],
+    body.theme-chapel_sky [class*="bg-sky-950"],
+    body.theme-chapel_sky [class*="bg-rose-950"] {
+      background-color: #E1EFFA !important;
+    }
+    body.theme-chapel_sky .border-white\/10,
+    body.theme-chapel_sky .border-white\/15,
+    body.theme-chapel_sky .border-white\/20,
+    body.theme-chapel_sky .border-white\/\[0\.07\] {
+      border-color: rgba(19, 41, 75, 0.18) !important;
+    }
+    /* Preserve crisp white text inside Tar Heel Blue / Dark fills in Chapel Sky */
+    body.theme-chapel_sky .garnet-hero-banner,
+    body.theme-chapel_sky .garnet-hero-banner .text-white,
+    body.theme-chapel_sky .garnet-hero-banner h2,
+    body.theme-chapel_sky .garnet-hero-banner strong,
+    body.theme-chapel_sky .btn-garnet,
+    body.theme-chapel_sky .btn-garnet *,
+    body.theme-chapel_sky .segmented-pill.active,
+    body.theme-chapel_sky .segmented-pill.active *,
+    body.theme-chapel_sky .bg-\[\#73000A\],
+    body.theme-chapel_sky .bg-\[\#73000A\] *,
+    body.theme-chapel_sky .bg-\[\#CC1429\],
+    body.theme-chapel_sky .bg-\[\#CC1429\] * {
+      color: #FFFFFF !important;
+    }
+    body.theme-chapel_sky .garnet-hero-banner .text-slate-200,
+    body.theme-chapel_sky .garnet-hero-banner .text-slate-300,
+    body.theme-chapel_sky .garnet-hero-banner .text-slate-400 {
+      color: #E0F2FE !important;
+    }
+    body.theme-chapel_sky .garnet-hero-banner .text-amber-300,
+    body.theme-chapel_sky .garnet-hero-banner .text-amber-400 {
+      color: #FDE68A !important;
+    }
+    body.theme-chapel_sky .garnet-hero-banner .bg-\[\#0B0D12\]\/90,
+    body.theme-chapel_sky .garnet-hero-banner .bg-\[\#0B0D12\]\/75 {
+      background-color: rgba(19, 41, 75, 0.78) !important;
+    }
+    body.theme-chapel_sky .garnet-hero-banner .bg-\[\#0B0D12\]\/90 *,
+    body.theme-chapel_sky .garnet-hero-banner .bg-\[\#0B0D12\]\/75 * {
+      color: #FFFFFF !important;
+    }
+
+    /* Honolulu Gridiron: Primary Honolulu Blue Shell + Crisp White Card Fills + Silver/Black Accents */
+    body.theme-honolulu_gridiron header#appHeaderShell {
+      background: linear-gradient(180deg, #00446B 0%, #005A8B 100%) !important;
+      border-bottom: 2px solid #B0B7BC !important;
+    }
+    body.theme-honolulu_gridiron nav#mobileBottomNav {
+      background: linear-gradient(180deg, #005A8B 0%, #0A0E14 100%) !important;
+      border-top: 2px solid #B0B7BC !important;
+    }
+    body.theme-honolulu_gridiron .app-card {
+      background: linear-gradient(180deg, #FFFFFF 0%, #F1F5F9 100%) !important;
+      border: 1.5px solid #0A0E14 !important;
+      box-shadow: 0 8px 24px rgba(0, 25, 45, 0.35), inset 0 2px 0 #0076B6;
+      color: #0A0E14;
+    }
+    body.theme-honolulu_gridiron .app-card-elevated {
+      background: #EFF6FF !important;
+      border: 1px solid #94A3B8 !important;
+      color: #0A0E14;
+    }
+    body.theme-honolulu_gridiron .btn-action {
+      background: #FFFFFF;
+      color: #0A0E14 !important;
+      border: 1.5px solid #94A3B8;
+    }
+    body.theme-honolulu_gridiron .btn-action:hover {
+      background: #0076B6;
+      color: #FFFFFF !important;
+      border-color: #0A0E14;
+    }
+    body.theme-honolulu_gridiron .app-card .text-white:not(.btn-garnet):not(.segmented-pill.active):not(.bg-\[\#73000A\]):not(.bg-\[\#CC1429\]),
+    body.theme-honolulu_gridiron .bg-\[\#13161F\] .text-white:not(.btn-garnet):not(.segmented-pill.active):not(.bg-\[\#73000A\]):not(.bg-\[\#CC1429\]) {
+      color: #0A0E14 !important;
+    }
+    body.theme-honolulu_gridiron .app-card .text-slate-100,
+    body.theme-honolulu_gridiron .app-card .text-slate-200,
+    body.theme-honolulu_gridiron .bg-\[\#13161F\] .text-slate-100,
+    body.theme-honolulu_gridiron .bg-\[\#13161F\] .text-slate-200 {
+      color: #0F172A !important;
+    }
+    body.theme-honolulu_gridiron .app-card .text-slate-300,
+    body.theme-honolulu_gridiron .bg-\[\#13161F\] .text-slate-300 {
+      color: #1E293B !important;
+    }
+    body.theme-honolulu_gridiron .app-card .text-slate-400,
+    body.theme-honolulu_gridiron .app-card .text-slate-500,
+    body.theme-honolulu_gridiron .bg-\[\#13161F\] .text-slate-400,
+    body.theme-honolulu_gridiron .bg-\[\#13161F\] .text-slate-500 {
+      color: #334155 !important;
+    }
+    body.theme-honolulu_gridiron .app-card .border-white\/10,
+    body.theme-honolulu_gridiron .app-card .border-white\/15,
+    body.theme-honolulu_gridiron .app-card .border-white\/\[0\.07\],
+    body.theme-honolulu_gridiron .bg-\[\#13161F\] .border-white\/10,
+    body.theme-honolulu_gridiron .bg-\[\#13161F\] .border-white\/\[0\.07\] {
+      border-color: rgba(10, 14, 20, 0.16) !important;
+    }
+    /* Keep white text on Honolulu Blue (--bg-obsidian) wells and Hero Banners inside Honolulu Gridiron */
+    body.theme-honolulu_gridiron .garnet-hero-banner,
+    body.theme-honolulu_gridiron .garnet-hero-banner *,
+    body.theme-honolulu_gridiron .bg-\[\#0B0D12\],
+    body.theme-honolulu_gridiron .bg-\[\#0B0D12\] .text-white,
+    body.theme-honolulu_gridiron .bg-\[\#0B0D12\] .text-slate-100,
+    body.theme-honolulu_gridiron .bg-\[\#0B0D12\] .text-slate-200,
+    body.theme-honolulu_gridiron .bg-\[\#0B0D12\] .text-slate-300,
+    body.theme-honolulu_gridiron .btn-garnet,
+    body.theme-honolulu_gridiron .btn-garnet *,
+    body.theme-honolulu_gridiron .segmented-pill.active,
+    body.theme-honolulu_gridiron .segmented-pill.active *,
+    body.theme-honolulu_gridiron .bg-\[\#73000A\],
+    body.theme-honolulu_gridiron .bg-\[\#73000A\] * {
+      color: #FFFFFF !important;
+    }
+    body.theme-honolulu_gridiron .bg-\[\#0B0D12\] .text-slate-400,
+    body.theme-honolulu_gridiron .bg-\[\#0B0D12\] .text-slate-500 {
+      color: #E2E8F0 !important;
     }
     /* Global Theme-Reactive Overrides for Hardcoded Utility Classes */
     .bg-\[\#0B0D12\] { background-color: var(--bg-obsidian) !important; }
@@ -796,7 +989,7 @@
     </div>
     <!-- Non-Disruptive App Version Update Banner (Shown only when version.json reports a newer release) -->
     <div id="pwaUpdateAvailableBanner" class="hidden w-full bg-emerald-950/90 border-b border-emerald-500/40 px-3 py-1.5 flex items-center justify-center gap-3 text-xs text-emerald-100">
-      <span><i class="fa-solid fa-wand-magic-sparkles text-amber-300 mr-1"></i>New Gamecock Mafia Tracker update (<strong id="pwaUpdateVersionText" class="font-mono text-amber-300">v8.3.3</strong>) is ready!</span>
+      <span><i class="fa-solid fa-wand-magic-sparkles text-amber-300 mr-1"></i>New Gamecock Mafia Tracker update (<strong id="pwaUpdateVersionText" class="font-mono text-amber-300">v8.4.0</strong>) is ready!</span>
       <button type="button" onclick="applyRemoteAppUpdateNow()" class="px-2.5 py-0.5 rounded-md bg-emerald-500 hover:bg-emerald-400 text-black font-black text-[11px] cursor-pointer transition">Refresh Now</button>
     </div>
 
@@ -1324,16 +1517,15 @@
       <form id="newTradeForm" onsubmit="handleSaveNewTrade(event)" class="space-y-4 text-xs">
         <input type="hidden" id="editingTradeId" value="">
 
-        <!-- Step 1: Select Managers (2-Way or 3-Way Toggle) -->
+        <!-- Step 1: Select Managers (2-Way Trade) -->
         <div class="space-y-2">
           <div class="flex items-center justify-between">
             <span class="font-bold text-slate-300 uppercase">1. Participating Managers</span>
-            <button type="button" onclick="toggleThreeWayTrade()" id="toggleThreeWayBtn" class="btn-action px-2.5 py-1 text-[11px] text-amber-300">
-              <i class="fa-solid fa-users"></i>
-              <span id="toggleThreeWayLabel">+ Add 3rd Manager (3-Way Trade)</span>
+            <button type="button" onclick="toggleThreeWayTrade()" id="toggleThreeWayBtn" class="hidden">
+              <span id="toggleThreeWayLabel"></span>
             </button>
           </div>
-          <div class="grid grid-cols-1 sm:grid-cols-3 gap-3" id="tradeManagersGrid">
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-3" id="tradeManagersGrid">
             <div>
               <label id="formTeamALabel" class="block text-[11px] font-semibold text-rose-300 mb-1">Proposing Team (My Franchise)</label>
               <select id="formTeamA" required onchange="refreshQuickPickRows(); syncAutoGeneratedModalSummary();" class="w-full bg-[#0B0D12] text-white font-bold rounded-xl px-3 py-2.5 border border-white/10 focus:border-[#CC1429] focus:outline-none"></select>
@@ -1343,8 +1535,7 @@
               <select id="formTeamB" required onchange="refreshQuickPickRows(); syncAutoGeneratedModalSummary();" class="w-full bg-[#0B0D12] text-white font-bold rounded-xl px-3 py-2.5 border border-white/10 focus:border-sky-400 focus:outline-none"></select>
             </div>
             <div id="formTeamCContainer" class="hidden">
-              <label class="block text-[11px] font-semibold text-amber-300 mb-1">Manager 3 (3-Way — Must Confirm)</label>
-              <select id="formTeamC" onchange="refreshQuickPickRows(); syncAutoGeneratedModalSummary();" class="w-full bg-[#0B0D12] text-amber-200 font-bold rounded-xl px-3 py-2.5 border border-amber-500/40 focus:border-amber-400 focus:outline-none"></select>
+              <select id="formTeamC"></select>
             </div>
           </div>
         </div>
@@ -3013,7 +3204,7 @@
       "Depth Picks"
     ];
 
-    const APP_BUILD_VERSION = "8.3.3";
+    const APP_BUILD_VERSION = "8.4.0";
 
     let uiState = {
       isLeagueUnlocked: false,
@@ -3855,6 +4046,7 @@
           avatarBg: "",
           avatarImageDataUrl: "",
           upstateKittyCursed: false,
+          colorTheme: "",
           flairBadge: "",
           tradeBlockNote: "",
           lookingFor: "",
@@ -3898,6 +4090,8 @@
           const cleanChips = Array.isArray(pRaw.needsChips)
             ? pRaw.needsChips.slice(0, 12).map(c => cleanStr(c, 32).trim()).filter(Boolean)
             : [];
+          const validColorIds = ["sandstorm_noir", "chapel_sky", "honolulu_gridiron", "foundry_orange", "emerald_sound", "jets_of_the_west", "upstate_kitties"];
+          const rawColorTheme = cleanStr(pRaw.colorTheme, 32).trim();
           const prof = {
             customTeamName: cleanStr(pRaw.customTeamName, 24).trim(),
             feasterRenamedByChamp: Boolean(pRaw.feasterRenamedByChamp),
@@ -3910,6 +4104,7 @@
               ? cleanStr(pRaw.avatarImageDataUrl, 35000).trim()
               : "",
             upstateKittyCursed: Boolean(pRaw.upstateKittyCursed),
+            colorTheme: validColorIds.includes(rawColorTheme) ? rawColorTheme : "",
             flairBadge: ["CHAMP", "TOILET", "FEASTER", ""].includes(pRaw.flairBadge) ? pRaw.flairBadge : "",
             tradeBlockNote: cleanStr(pRaw.tradeBlockNote, 240).trim(),
             lookingFor: cleanStr(pRaw.lookingFor, 160).trim(),
@@ -4291,9 +4486,47 @@
       return getVisibleDraftYears().filter(y => isDraftYearTradeable(y));
     }
 
+    const PENDING_OFFER_EXPIRY_MS = 7 * 24 * 60 * 60 * 1000;
+
+    function autoExpireStaleTradeProposals() {
+      if (!leagueDB || !Array.isArray(leagueDB.pendingTrades) || leagueDB.pendingTrades.length === 0) return false;
+      const now = Date.now();
+      const beforeLen = leagueDB.pendingTrades.length;
+      leagueDB.pendingTrades = leagueDB.pendingTrades.filter(pt => {
+        const ts = Number(pt?.createdAt || pt?.proposedAt || 0);
+        if (!ts || ts <= 0) return true;
+        return (now - ts) <= PENDING_OFFER_EXPIRY_MS;
+      });
+      return leagueDB.pendingTrades.length !== beforeLen;
+    }
+
+    function clearAllPendingTradeOffers(confirmed = false) {
+      if (!requireCommish()) return;
+      const count = Array.isArray(leagueDB?.pendingTrades) ? leagueDB.pendingTrades.length : 0;
+      if (count === 0) {
+        showToast("No pending trade offers to clear.", "info");
+        return;
+      }
+      if (!confirmed) {
+        openConfirmModal(
+          "Clear All Pending Trade Offers?",
+          `Remove all ${count} open trade proposal${count === 1 ? "" : "s"} from the league queue?`,
+          "Clear All Offers",
+          () => clearAllPendingTradeOffers(true)
+        );
+        return;
+      }
+      pushUndoState(`Clear All ${count} Pending Trade Offers`);
+      leagueDB.pendingTrades = [];
+      leagueDB.updatedAt = Date.now();
+      saveDatabase(true, "CLEAR_ALL_PENDING_PROPOSALS");
+      renderAll();
+      showToast(`Cleared all ${count} pending trade offer${count === 1 ? "" : "s"}!`, "success");
+    }
+
     function pruneOrphanedAssetTagsAndKeepers(yearStateOpt = null) {
       if (!leagueDB || !leagueDB.teamProfiles) return false;
-      let changed = false;
+      let changed = autoExpireStaleTradeProposals();
       const rostersMap = leagueDB?.espnData?.rosters || {};
       const keepersMap = leagueDB?.espnData?.keepers || {};
       const hasAnyRosterData = Object.keys(rostersMap).some(tid => Array.isArray(rostersMap[tid]) && rostersMap[tid].length > 0);
@@ -4304,7 +4537,7 @@
         if (!prof || typeof prof !== "object") continue;
         if (prof.pickTags && typeof prof.pickTags === "object" && picksList) {
           for (const key of Object.keys(prof.pickTags)) {
-            const parts = String(key).split(":");
+            const parts = String(key).split(/[:-]/);
             if (parts.length === 3 && Number(parts[0]) === yr) {
               const rNum = Number(parts[1]);
               const orig = parts[2];
@@ -4827,68 +5060,80 @@
       {
         id: "sandstorm_noir",
         label: "Sandstorm Noir",
-        sub: "Garnet, Gold & Obsidian",
-        dots: ["#73000A", "#CC1429", "#E5B84B"],
-        bgHex: "#0B0D12",
-        surfaceHex: "#151116",
-        trimHex: "#E5B84B",
+        sub: "Black Base, Garnet Fills & White",
+        dots: ["#050507", "#73000A", "#FFFFFF"],
+        bgHex: "#050507",
+        surfaceHex: "#0C0C10",
+        trimHex: "#FFFFFF",
+        textHex: "#FFFFFF",
+        subHex: "#E2E8F0",
         accentHex: "#CC1429",
-        heroGrad: "linear-gradient(135deg, #4A0006 0%, #24080C 60%, #151116 100%)"
+        heroGrad: "linear-gradient(135deg, #050507 0%, #73000A 58%, #CC1429 100%)"
       },
       {
         id: "chapel_sky",
         label: "Chapel Sky",
-        sub: "Carolina Sky, White-Ice & Navy",
-        dots: ["#4B9CD3", "#E0F2FE", "#13294B"],
-        bgHex: "#07101E",
-        surfaceHex: "#0E1C33",
-        trimHex: "#E0F2FE",
+        sub: "White Base, Tar Heel Fills & Navy",
+        dots: ["#FFFFFF", "#4B9CD3", "#13294B"],
+        bgHex: "#EDF5FC",
+        surfaceHex: "#FFFFFF",
+        trimHex: "#13294B",
+        textHex: "#0F2342",
+        subHex: "#1E4E8C",
         accentHex: "#4B9CD3",
-        heroGrad: "linear-gradient(135deg, #13294B 0%, #1E467A 55%, #4B9CD3 100%)"
+        heroGrad: "linear-gradient(135deg, #13294B 0%, #2B72B5 48%, #4B9CD3 100%)"
       },
       {
         id: "honolulu_gridiron",
         label: "Honolulu Gridiron",
-        sub: "Honolulu Blue & Silver",
-        dots: ["#0076B6", "#38BDF8", "#C8D0D8"],
-        bgHex: "#06111C",
-        surfaceHex: "#0C1E30",
-        trimHex: "#C8D0D8",
-        accentHex: "#38BDF8",
-        heroGrad: "linear-gradient(135deg, #00385C 0%, #005A8D 55%, #0076B6 100%)"
+        sub: "Honolulu Base, White Fills & Silver",
+        dots: ["#005A8B", "#FFFFFF", "#B0B7BC"],
+        bgHex: "#005A8B",
+        surfaceHex: "#FFFFFF",
+        trimHex: "#B0B7BC",
+        textHex: "#0A0E14",
+        subHex: "#004E7A",
+        accentHex: "#0076B6",
+        heroGrad: "linear-gradient(135deg, #0A0E14 0%, #005A8B 46%, #0076B6 100%)"
       },
       {
         id: "foundry_orange",
         label: "Foundry Orange",
-        sub: "Blaze Orange, Copper & Brown",
-        dots: ["#FF3C00", "#D97736", "#311D00"],
-        bgHex: "#110A06",
-        surfaceHex: "#1D120B",
-        trimHex: "#D97736",
+        sub: "Seal Brown, Blaze Orange & White",
+        dots: ["#2B180A", "#FF3C00", "#FFFFFF"],
+        bgHex: "#1E1005",
+        surfaceHex: "#2B180A",
+        trimHex: "#FFFFFF",
+        textHex: "#FFFFFF",
+        subHex: "#FDBA74",
         accentHex: "#FF3C00",
-        heroGrad: "linear-gradient(135deg, #311D00 0%, #5C2804 58%, #9A2B00 100%)"
+        heroGrad: "linear-gradient(135deg, #311D00 0%, #B32D00 50%, #FF3C00 100%)"
       },
       {
         id: "emerald_sound",
         label: "Emerald Sound '98",
-        sub: "Pacific Royal & Action Green",
-        dots: ["#004B8D", "#69BE28", "#9EA2A2"],
-        bgHex: "#061118",
-        surfaceHex: "#0B1E2B",
-        trimHex: "#69BE28",
+        sub: "'90s Seafoam Blue, Green & White",
+        dots: ["#004B8D", "#28A745", "#FFFFFF"],
+        bgHex: "#062B45",
+        surfaceHex: "#0B3D62",
+        trimHex: "#FFFFFF",
+        textHex: "#FFFFFF",
+        subHex: "#86EFAC",
         accentHex: "#69BE28",
-        heroGrad: "linear-gradient(135deg, #002B52 0%, #004B8D 60%, #1E6B3A 100%)"
+        heroGrad: "linear-gradient(135deg, #004B8D 0%, #156956 50%, #28A745 100%)"
       },
       {
         id: "jets_of_the_west",
         label: "Jets of the West",
-        sub: "Cardinal Red & Sunburst Gold",
-        dots: ["#97233F", "#FFB612", "#12090C"],
-        bgHex: "#12090C",
-        surfaceHex: "#1E1015",
+        sub: "Cardinal Red, Black & Yellow",
+        dots: ["#97233F", "#0A0607", "#FFB612"],
+        bgHex: "#0A0607",
+        surfaceHex: "#1A0B0F",
         trimHex: "#FFB612",
+        textHex: "#FFFFFF",
+        subHex: "#FFB612",
         accentHex: "#FFB612",
-        heroGrad: "linear-gradient(135deg, #4D0F1E 0%, #7A1A31 58%, #261205 100%)"
+        heroGrad: "linear-gradient(135deg, #590D22 0%, #97233F 55%, #0A0808 100%)"
       },
       {
         id: "upstate_kitties",
@@ -4898,6 +5143,8 @@
         bgHex: "#130B1C",
         surfaceHex: "#1E122B",
         trimHex: "#F56600",
+        textHex: "#FFFFFF",
+        subHex: "#FDBA74",
         accentHex: "#F56600",
         heroGrad: "linear-gradient(135deg, #522D80 0%, #8A3A1B 58%, #F56600 100%)",
         isTrap: true
@@ -4912,6 +5159,11 @@
     function getEffectiveColorTheme() {
       if (isCurrentTeamKittyCursed()) {
         return "upstate_kitties";
+      }
+      const myId = uiState.myTeam || "syeth";
+      const profTheme = leagueDB?.teamProfiles?.[myId]?.colorTheme || "";
+      if (profTheme && COVERT_COLOR_SCHEMES.some(s => s.id === profTheme && s.id !== "upstate_kitties")) {
+        return profTheme;
       }
       try {
         const saved = localStorage.getItem(COLOR_THEME_STORAGE_KEY) || "sandstorm_noir";
@@ -4933,7 +5185,7 @@
           metaTheme.setAttribute("content", "#1F0818");
         } else {
           const scheme = COVERT_COLOR_SCHEMES.find(s => s.id === themeId);
-          metaTheme.setAttribute("content", scheme?.bgHex || "#0B0D12");
+          metaTheme.setAttribute("content", scheme?.bgHex || "#050507");
         }
       }
     }
@@ -5003,6 +5255,7 @@
       if (themeId === "upstate_kitties") {
         const origName = getOriginalManagerName(myId);
         prof.upstateKittyCursed = true;
+        prof.colorTheme = "upstate_kitties";
         prof.updatedAt = Date.now();
         if (!Array.isArray(leagueDB.hallOfShame)) leagueDB.hallOfShame = [];
         const alreadyLogged = leagueDB.hallOfShame.some(x => x.teamId === myId);
@@ -5032,19 +5285,22 @@
       // If Commissioner is testing and switches away from Upstate Kitties on their own team, lift curse for self
       if (uiState.isCommish && prof.upstateKittyCursed) {
         prof.upstateKittyCursed = false;
-        prof.updatedAt = Date.now();
-        saveDatabase(true, `LIFT_KITTY_CURSE:${myId}`);
       }
 
+      prof.colorTheme = themeId;
+      prof.updatedAt = Date.now();
+      leagueDB.updatedAt = Date.now();
       try { localStorage.setItem(COLOR_THEME_STORAGE_KEY, themeId); } catch (e) {}
       uiState.pendingColorTheme = themeId;
+      saveDatabase(false);
       applyColorTheme(themeId);
       renderColorSchemePicker();
       renderAll();
       const chosenObj = COVERT_COLOR_SCHEMES.find(s => s.id === themeId);
       if (chosenObj) {
-        showToast(`✓ Confirmed & locked in "${chosenObj.label}" display colorway!`, "success");
+        showToast(`✓ Confirmed & synced "${chosenObj.label}" colorway to your franchise profile!`, "success");
       }
+      await pushTeamProfileToCloud(myId);
     }
 
     const PWA_INSTALL_TIP_STORAGE_KEY = "gcm_pwa_install_tip_dismissed_v1";
@@ -5336,18 +5592,18 @@
             type="button"
             onclick="stageColorThemeSelection('${sc.id}')"
             style="background: linear-gradient(180deg, ${sc.surfaceHex || '#13161F'} 0%, ${sc.bgHex || '#0B0D12'} 100%); ${cardBorderStyle}"
-            class="rounded-xl border text-left transition overflow-hidden flex flex-col justify-between cursor-pointer hover:brightness-110 ${isLockedOut ? 'opacity-50' : ''}"
+            class="rounded-xl border text-left transition overflow-hidden flex flex-col justify-between cursor-pointer hover:brightness-105 ${isLockedOut ? 'opacity-50' : ''}"
           >
             <div class="w-full h-3.5 relative flex items-center justify-end px-2" style="background: ${sc.heroGrad}; border-bottom: 1.5px solid ${sc.trimHex};">
               <div class="flex items-center gap-1">${dotsHtml}</div>
             </div>
             <div class="p-2.5 flex flex-col gap-1 w-full">
               <div class="flex items-center justify-between gap-1">
-                <span class="text-xs font-extrabold text-white truncate">${escapeHtml(sc.label)}</span>
+                <span class="text-xs font-extrabold truncate" style="color: ${sc.textHex || '#FFFFFF'};">${escapeHtml(sc.label)}</span>
                 ${isStaged ? `<span class="inline-flex items-center gap-1 px-1.5 py-0.5 rounded-full text-[9px] font-black uppercase ${isSaved ? 'bg-emerald-950/90 text-emerald-300 border border-emerald-500/40' : 'bg-amber-950/90 text-amber-300 border border-amber-500/40'}"><i class="fa-solid ${isSaved ? 'fa-check' : 'fa-eye'} text-[8px]"></i>${isSaved ? 'Active' : 'Preview'}</span>` : ''}
               </div>
               <div class="flex items-center justify-between gap-1">
-                <span class="text-[10px] font-semibold truncate" style="color: ${sc.trimHex};">${escapeHtml(sc.sub)}</span>
+                <span class="text-[10px] font-semibold truncate" style="color: ${sc.subHex || sc.trimHex};">${escapeHtml(sc.sub)}</span>
               </div>
             </div>
           </button>
@@ -5741,26 +5997,77 @@
     }
 
     function getKeeperDeadlineInfo() {
-      const iso = cleanStr(leagueDB?.espnData?.keeperRules?.keeperDeadlineIso || "", 40).trim();
-      if (!iso) {
-        return { hasDeadline: false, iso: "", targetMs: 0, diffMs: 0, isLocked: false, countdownLabel: "No Lock Timer Set" };
+      const upcomingYr = Number(leagueDB?.baseUpcomingYear || uiState?.activeYear || 2027);
+      const schedObj = leagueDB?.draftSchedule?.[String(upcomingYr)];
+      const draftIso = cleanStr(
+        (typeof schedObj === "object" ? schedObj?.draftDateIso : schedObj) ||
+        leagueDB?.draftDates?.[String(upcomingYr)] ||
+        "",
+        40
+      ).trim();
+      const manualIso = cleanStr(
+        leagueDB?.espnData?.keeperDeadlineIso ||
+        leagueDB?.espnData?.keeperRules?.keeperDeadlineIso ||
+        "",
+        40
+      ).trim();
+      const draftMs = draftIso ? Date.parse(draftIso) : NaN;
+      const manualMs = manualIso ? Date.parse(manualIso) : NaN;
+
+      // Keepers lock 72 hours prior to the draft (or at manualIso if set), and trading re-opens once the draft is final
+      const hasValidDraft = !isNaN(draftMs) && draftMs > 0;
+      const hasValidManual = !isNaN(manualMs) && manualMs > 0;
+      if (!hasValidDraft && !hasValidManual) {
+        return { hasDeadline: false, iso: "", targetMs: 0, unlockMs: 0, diffMs: 0, isLocked: false, isPostDraft: false, countdownLabel: "Pre-Lock Open" };
       }
-      const targetMs = Date.parse(iso);
-      if (isNaN(targetMs)) {
-        return { hasDeadline: false, iso: "", targetMs: 0, diffMs: 0, isLocked: false, countdownLabel: "No Lock Timer Set" };
+
+      const lockStartMs = hasValidManual ? manualMs : (draftMs - (72 * 3600 * 1000));
+      // Lock window lasts ~72 hours until draft completion (or draftMs + 4h for live draft completion)
+      const unlockMs = hasValidDraft
+        ? Math.max(draftMs + (4 * 3600 * 1000), lockStartMs + (72 * 3600 * 1000))
+        : (lockStartMs + (72 * 3600 * 1000));
+      const nowMs = Date.now();
+      const effectiveIso = hasValidManual ? manualIso : new Date(lockStartMs).toISOString();
+
+      // Once the draft takes place and is final, trading opens back up!
+      if (nowMs >= unlockMs) {
+        return {
+          hasDeadline: true,
+          iso: effectiveIso,
+          targetMs: lockStartMs,
+          unlockMs,
+          diffMs: 0,
+          isLocked: false,
+          isPostDraft: true,
+          countdownLabel: "Post-Draft Trading Open"
+        };
       }
-      const diffMs = targetMs - Date.now();
+
+      const diffMs = lockStartMs - nowMs;
       if (diffMs <= 0) {
-        return { hasDeadline: true, iso, targetMs, diffMs: 0, isLocked: true, countdownLabel: "KEEPERS LOCKED" };
+        const remLockMins = Math.max(1, Math.floor((unlockMs - nowMs) / 60000));
+        const remHrs = Math.floor(remLockMins / 60);
+        const remMins = remLockMins % 60;
+        return {
+          hasDeadline: true,
+          iso: effectiveIso,
+          targetMs: lockStartMs,
+          unlockMs,
+          diffMs: 0,
+          isLocked: true,
+          isPostDraft: false,
+          countdownLabel: `72H PRE-DRAFT LOCK (${remHrs}h ${remMins}m left)`
+        };
       }
+
       const totalMins = Math.floor(diffMs / 60000);
       const days = Math.floor(totalMins / 1440);
       const hours = Math.floor((totalMins % 1440) / 60);
       const mins = totalMins % 60;
       const countdownLabel = days > 0
-        ? `${days}d ${hours}h ${mins}m`
-        : `${hours}h ${mins}m`;
-      return { hasDeadline: true, iso, targetMs, diffMs, isLocked: false, countdownLabel };
+        ? `Lock in ${days}d ${hours}h`
+        : `Lock in ${hours}h ${mins}m`;
+      return { hasDeadline: true, iso: effectiveIso, targetMs: lockStartMs, unlockMs, diffMs, isLocked: false, isPostDraft: false, countdownLabel };
     }
 
     function isKeeperDeadlineLocked() {
@@ -5774,13 +6081,15 @@
       const statuses = teams.map(t => {
         const prof = getTeamProfile(t.id);
         const kCount = Array.isArray(prof.keepers) ? prof.keepers.length : 0;
-        const confirmed = Number(prof.keepersConfirmedAt) > 0 || (maxK > 0 && kCount >= maxK);
+        // Strict 12/12 requirement: only Ready when full 12/12 keepers are selected (< 12 is "In Progress")
+        const isFullCap = maxK > 0 && kCount >= maxK;
         return {
           teamId: t.id,
           name: getTeamName(t.id),
           keepersCount: kCount,
           maxKeepers: maxK,
-          isReady: confirmed
+          isReady: isFullCap,
+          inProgress: !isFullCap && kCount > 0
         };
       });
       const readyCount = statuses.filter(s => s.isReady).length;
@@ -5792,20 +6101,20 @@
       const rd = getLeagueKeeperReadinessSummary();
       const pct = Math.round((rd.readyCount / Math.max(1, rd.totalTeams)) * 100);
       const dlBadge = dl.hasDeadline
-        ? `<span data-keeper-countdown="1" class="static-badge ${dl.isLocked ? 'bg-rose-950 text-rose-200 border border-rose-500' : 'bg-amber-950 text-amber-300 border border-amber-500/80'} font-mono"><i class="fa-solid ${dl.isLocked ? 'fa-lock' : 'fa-clock'} mr-1"></i>${escapeHtml(dl.countdownLabel)}</span>`
+        ? `<span data-keeper-countdown="1" class="static-badge ${dl.isLocked ? 'bg-rose-950 text-rose-200 border border-rose-500' : dl.isPostDraft ? 'bg-emerald-950 text-emerald-300 border border-emerald-500/70' : 'bg-amber-950 text-amber-300 border border-amber-500/80'} font-mono"><i class="fa-solid ${dl.isLocked ? 'fa-lock' : dl.isPostDraft ? 'fa-unlock' : 'fa-clock'} mr-1"></i>${escapeHtml(dl.countdownLabel)}</span>`
         : (uiState.isCommish
-            ? `<button type="button" onclick="openEspnSyncModal()" class="px-2 py-0.5 rounded-md bg-[#13161F] border border-white/10 text-[10px] font-bold text-amber-300 hover:border-amber-400 cursor-pointer"><i class="fa-solid fa-clock mr-1"></i>Set Lock Deadline</button>`
-            : `<span class="text-[10px] font-mono text-slate-500">Pre-Lock Open</span>`);
+            ? `<button type="button" onclick="openEspnSyncModal()" class="px-2 py-0.5 rounded-md bg-[#13161F] border border-white/10 text-[10px] font-bold text-amber-300 hover:border-amber-400 cursor-pointer"><i class="fa-solid fa-clock mr-1"></i>Set 72h Lock Timer</button>`
+            : `<span class="text-[10px] font-mono text-slate-500">12/12 Required • Locks 72h Pre-Draft</span>`);
 
       if (compact) {
         return `
           <div class="bg-[#0B0D12] border border-white/10 rounded-xl px-3 py-2 flex flex-wrap items-center justify-between gap-2 text-xs">
             <div class="flex flex-wrap items-center gap-2">
-              <span class="font-extrabold text-white"><i class="fa-solid fa-shield-halved text-emerald-400 mr-1"></i>Keeper Readiness: <span class="font-mono text-emerald-300">${rd.readyCount}/${rd.totalTeams}</span> Ready</span>
+              <span class="font-extrabold text-white"><i class="fa-solid fa-shield-halved text-emerald-400 mr-1"></i>12/12 Keepers Ready: <span class="font-mono text-emerald-300">${rd.readyCount}/${rd.totalTeams}</span></span>
               ${dlBadge}
             </div>
             <div class="flex flex-wrap items-center gap-1">
-              ${rd.statuses.map(s => `<span title="${escapeHtml(s.name)}: ${s.keepersCount}/${s.maxKeepers} Keepers ${s.isReady ? '(Confirmed)' : '(Pending)'}" class="px-1.5 py-0.5 rounded text-[9px] font-mono font-black border ${s.isReady ? 'bg-emerald-950/80 text-emerald-300 border-emerald-500/70' : 'bg-[#13161F] text-slate-500 border-white/10'}">${escapeHtml(getTeamInitials(s.teamId))}${s.isReady ? '✓' : ''}</span>`).join("")}
+              ${rd.statuses.map(s => `<span title="${escapeHtml(s.name)}: ${s.keepersCount}/${s.maxKeepers} Keepers ${s.isReady ? '(12/12 Ready)' : '(In Progress — 12 Required)'}" class="px-1.5 py-0.5 rounded text-[9px] font-mono font-black border ${s.isReady ? 'bg-emerald-950/80 text-emerald-300 border-emerald-500/70' : s.inProgress ? 'bg-amber-950/60 text-amber-300 border-amber-500/40' : 'bg-[#13161F] text-slate-500 border-white/10'}">${escapeHtml(getTeamInitials(s.teamId))}${s.isReady ? '✓' : ` ${s.keepersCount}`}</span>`).join("")}
             </div>
           </div>
         `;
@@ -5815,19 +6124,19 @@
         <div id="keeperReadinessTrackerCard" class="bg-[#0B0D12] border border-white/10 rounded-xl p-3 sm:p-3.5 space-y-2.5">
           <div class="flex flex-wrap items-center justify-between gap-2">
             <div class="flex flex-wrap items-center gap-2">
-              <span class="text-xs font-black uppercase tracking-wider text-emerald-300"><i class="fa-solid fa-clipboard-check mr-1"></i>League Keeper Readiness: ${rd.readyCount}/${rd.totalTeams} Franchises Ready</span>
+              <span class="text-xs font-black uppercase tracking-wider text-emerald-300"><i class="fa-solid fa-clipboard-check mr-1"></i>League Keeper Readiness (12/12 Required): ${rd.readyCount}/${rd.totalTeams} Franchises Locked</span>
               ${dlBadge}
             </div>
-            ${uiState.isCommish ? `<button type="button" onclick="openEspnSyncModal()" class="text-[11px] font-bold text-amber-300 hover:underline cursor-pointer"><i class="fa-solid fa-gear mr-1"></i>Configure Lock Timer</button>` : ''}
+            ${uiState.isCommish ? `<button type="button" onclick="openEspnSyncModal()" class="text-[11px] font-bold text-amber-300 hover:underline cursor-pointer"><i class="fa-solid fa-gear mr-1"></i>Configure 72h Lock Timer</button>` : ''}
           </div>
           <div class="w-full h-2 rounded-full bg-[#13161F] border border-white/10 overflow-hidden">
             <div class="h-full bg-gradient-to-r from-emerald-600 to-emerald-400 transition-all duration-300" style="width:${pct}%"></div>
           </div>
           <div class="flex flex-wrap items-center gap-1.5">
             ${rd.statuses.map(s => `
-              <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-lg text-[10px] font-bold border ${s.isReady ? 'bg-emerald-950/50 text-emerald-200 border-emerald-500/60' : 'bg-[#13161F] text-slate-400 border-white/10'}" title="${escapeHtml(s.name)} (${s.keepersCount}/${s.maxKeepers})">
+              <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-lg text-[10px] font-bold border ${s.isReady ? 'bg-emerald-950/50 text-emerald-200 border-emerald-500/60' : s.inProgress ? 'bg-amber-950/40 text-amber-200 border-amber-500/40' : 'bg-[#13161F] text-slate-400 border-white/10'}" title="${escapeHtml(s.name)} (${s.keepersCount}/${s.maxKeepers} — ${s.isReady ? '12/12 Ready' : 'In Progress'})">
                 <span>${escapeHtml(getOriginalManagerName(s.teamId))}</span>
-                <span class="font-mono text-[9px] ${s.isReady ? 'text-emerald-400' : 'text-slate-500'}">${s.isReady ? '✓' : `${s.keepersCount}/${s.maxKeepers}`}</span>
+                <span class="font-mono text-[9px] ${s.isReady ? 'text-emerald-400' : s.inProgress ? 'text-amber-300' : 'text-slate-500'}">${s.isReady ? '12/12 ✓' : `${s.keepersCount}/${s.maxKeepers}`}</span>
               </span>
             `).join("")}
           </div>
@@ -7401,6 +7710,7 @@
           avatarBg: "",
           avatarImageDataUrl: "",
           upstateKittyCursed: false,
+          colorTheme: "",
           flairBadge: "NONE",
           tradeBlockNote: "",
           lookingFor: "",
@@ -7929,25 +8239,25 @@
         ` : "";
 
         box.innerHTML = `
-          <div class="app-card overflow-hidden">
-            ${isScoutingOpponent ? `
-              <div class="bg-sky-950/75 border-b border-sky-500/40 px-3.5 py-2 flex flex-wrap items-center justify-between gap-2 text-xs">
-                <span class="text-sky-200 font-bold flex items-center gap-1.5">
-                  <i class="fa-solid fa-binoculars text-sky-400"></i>
-                  <span>Scouting <strong>${inspectedName}</strong> (Read-Only)</span>
-                </span>
-                <div class="flex items-center gap-1.5">
-                  <button type="button" onclick="compareWithSelectedManager('${safeId(inspectedTeamId)}')" class="btn-garnet px-2.5 py-1 text-[11px]">
-                    <i class="fa-solid fa-right-left"></i>
-                    <span>Offer Trade</span>
-                  </button>
-                  <button type="button" onclick="setScoutedTeamOnMyTeam('')" class="btn-action px-2.5 py-1 text-[11px] text-sky-200 border-sky-400/60 bg-[#0B0D12]">
-                    <i class="fa-solid fa-arrow-left"></i>
-                    <span>Back to My Team</span>
-                  </button>
-                </div>
+          ${isScoutingOpponent ? `
+            <div id="scoutingOpponentStickyBar" class="sticky top-[52px] z-30 mb-2.5 rounded-xl bg-sky-950/95 backdrop-blur-md border border-sky-400/60 shadow-xl px-3.5 py-2 flex flex-wrap items-center justify-between gap-2 text-xs">
+              <span class="text-sky-200 font-bold flex items-center gap-1.5">
+                <i class="fa-solid fa-binoculars text-sky-400"></i>
+                <span>Scouting <strong>${inspectedName}</strong> (Read-Only)</span>
+              </span>
+              <div class="flex items-center gap-1.5">
+                <button type="button" onclick="compareWithSelectedManager('${safeId(inspectedTeamId)}')" class="btn-garnet px-2.5 py-1 text-[11px]">
+                  <i class="fa-solid fa-right-left"></i>
+                  <span>Offer Trade</span>
+                </button>
+                <button type="button" onclick="setScoutedTeamOnMyTeam('')" class="btn-action px-2.5 py-1 text-[11px] text-sky-200 border-sky-400/60 bg-[#0B0D12]">
+                  <i class="fa-solid fa-arrow-left"></i>
+                  <span>Back to My Team</span>
+                </button>
               </div>
-            ` : ''}
+            </div>
+          ` : ''}
+          <div class="app-card overflow-hidden">
             <div class="garnet-hero-banner p-3 sm:p-4">
               <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-2.5">
                 <div class="flex items-center gap-3 min-w-0">
@@ -9966,6 +10276,10 @@
     }
 
     function toggleWhatIfPlayerTransfer(playerId, fromTeam, toTeam) {
+      if (isKeeperDeadlineLocked()) {
+        showToast("Keepers are locked in the 72-hour pre-draft window — only Draft Pick trades are allowed until the draft is final!", "error");
+        return;
+      }
       if (!Array.isArray(uiState.whatIfPlayerSwaps)) uiState.whatIfPlayerSwaps = [];
       const pid = String(playerId || "");
       const from = safeId(fromTeam);
@@ -10715,7 +11029,7 @@
               <button type="button" onclick="resetWhatIfSandbox()" class="btn-action px-2.5 py-1.5 text-xs text-slate-300">
                 <i class="fa-solid fa-rotate-left"></i> Reset
               </button>
-              <button type="button" id="proposeStagedTradeBtn" onclick="openTradeModalFromWhatIf()" class="btn-action px-2.5 sm:px-3 py-1.5 text-xs text-amber-300 border-amber-500/60" title="Open full trade modal to add Conditional Picks or a 3rd team">
+              <button type="button" id="proposeStagedTradeBtn" onclick="openTradeModalFromWhatIf()" class="btn-action px-2.5 sm:px-3 py-1.5 text-xs text-amber-300 border-amber-500/60" title="Open full trade modal to add Conditional Picks or Pick Pools">
                 <i class="fa-solid fa-sliders"></i> Review / Conditions
               </button>
               ${uiState.isCommish ? `
@@ -10793,16 +11107,29 @@
         </div>
       ` : "";
 
-      const assetMode = ["ALL", "PLAYERS", "PICKS"].includes(uiState.tradeMachineAssetMode) ? uiState.tradeMachineAssetMode : "ALL";
+      const keeperLockActive = isKeeperDeadlineLocked();
+      if (keeperLockActive && Array.isArray(uiState.whatIfPlayerSwaps) && uiState.whatIfPlayerSwaps.length > 0) {
+        uiState.whatIfPlayerSwaps = [];
+      }
+      const rawAssetMode = ["ALL", "PLAYERS", "PICKS"].includes(uiState.tradeMachineAssetMode) ? uiState.tradeMachineAssetMode : "ALL";
+      const assetMode = keeperLockActive ? "PICKS" : rawAssetMode;
+      const preDraftPickOnlyBannerHtml = keeperLockActive ? `
+        <div class="bg-amber-950/50 border border-amber-500/60 rounded-xl px-3.5 py-2.5 flex flex-wrap items-center justify-between gap-2 text-xs">
+          <span class="text-amber-200 font-bold flex items-center gap-2">
+            <i class="fa-solid fa-lock text-amber-400"></i>
+            <span><strong>72-Hour Pre-Draft Keeper Lock Active:</strong> Player trades are paused until the draft is final — <strong>Draft Pick trades remain open!</strong></span>
+          </span>
+        </div>
+      ` : "";
       const assetModeBarHtml = `
         <div class="bg-[#0B0D12] border border-white/10 rounded-xl px-3 py-2 flex flex-wrap items-center justify-between gap-2">
           <span class="text-[11px] font-extrabold uppercase tracking-wider text-slate-400">Asset View:</span>
           <div class="segmented-bar overflow-x-auto max-w-full" role="tablist" aria-label="Trade Machine Asset Mode">
-            <button type="button" onclick="setTradeMachineAssetMode('ALL')" class="segmented-pill text-xs ${assetMode === 'ALL' ? 'segmented-pill-active' : ''}">
+            <button type="button" ${keeperLockActive ? 'disabled' : `onclick="setTradeMachineAssetMode('ALL')"`} class="segmented-pill text-xs ${assetMode === 'ALL' ? 'segmented-pill-active' : ''} ${keeperLockActive ? 'opacity-40 cursor-not-allowed' : ''}">
               <i class="fa-solid fa-layer-group text-[10px]"></i>
               <span>All Assets</span>
             </button>
-            <button type="button" onclick="setTradeMachineAssetMode('PLAYERS')" class="segmented-pill text-xs ${assetMode === 'PLAYERS' ? 'segmented-pill-active' : ''}">
+            <button type="button" ${keeperLockActive ? 'disabled' : `onclick="setTradeMachineAssetMode('PLAYERS')"`} class="segmented-pill text-xs ${assetMode === 'PLAYERS' ? 'segmented-pill-active' : ''} ${keeperLockActive ? 'opacity-40 cursor-not-allowed' : ''}">
               <i class="fa-solid fa-people-arrows text-[10px]"></i>
               <span>Players Only (${uiState.whatIfPlayerSwaps.length})</span>
             </button>
@@ -10817,6 +11144,7 @@
       workspace.innerHTML = `
         <div class="space-y-3">
           ${counteringBarHtml}
+          ${preDraftPickOnlyBannerHtml}
           <!-- Side-by-Side Franchise Comparison Header Cards -->
           <div class="grid grid-cols-1 md:grid-cols-2 gap-2.5 sm:gap-3">
             <!-- Team 1 Card -->
@@ -11251,27 +11579,32 @@
         return false;
       }
       if (!uiState.isCommish && isKeeperDeadlineLocked()) {
-        showToast("Keepers are LOCKED past the Commissioner's deadline! Contact Commissioner for changes.", "error");
+        showToast("Keepers are LOCKED during the 72-hour pre-draft window! Contact Commissioner for changes.", "error");
         return false;
       }
       const caps = getTeamKeeperCountsAndCaps(tid);
-      if (caps.totalKeepers < caps.maxKeepers && !skipUnderCapPrompt) {
+      const isFullCap = caps.totalKeepers >= caps.maxKeepers;
+      if (!isFullCap && !skipUnderCapPrompt) {
         openConfirmModal(
-          `Confirm Fewer Than ${caps.maxKeepers} Keepers?`,
-          `You have selected ${caps.totalKeepers} of ${caps.maxKeepers} allowed Keepers for ${getTeamName(tid)}. Do you want to confirm and sync ${caps.totalKeepers} Keepers anyway, or go back to select ${caps.maxKeepers - caps.totalKeepers} more?`,
-          `Confirm ${caps.totalKeepers}/${caps.maxKeepers} Keepers`,
+          `Save ${caps.totalKeepers}/${caps.maxKeepers} Keeper Progress?`,
+          `Every franchise is required to reach ${caps.maxKeepers}/${caps.maxKeepers} Keepers before the 72-hour pre-draft lock. Save your ${caps.totalKeepers}/${caps.maxKeepers} selection as "In Progress" for now, or go back to select ${caps.maxKeepers - caps.totalKeepers} more?`,
+          `Save ${caps.totalKeepers}/${caps.maxKeepers} In Progress`,
           () => { confirmTeamKeepersAndRoster(tid, true); }
         );
         return false;
       }
       const prof = getTeamProfile(tid);
-      prof.keepersConfirmedAt = Date.now();
+      prof.keepersConfirmedAt = isFullCap ? Date.now() : 0;
       prof.updatedAt = Date.now();
       leagueDB.updatedAt = Date.now();
       uiState.keepersDirty = false;
       saveDatabase(false);
       renderAll();
-      showToast(`✓ Confirmed & locked in ${caps.totalKeepers}/${caps.maxKeepers} Keepers & Roster Tags for ${getTeamName(tid)}!`, "success");
+      if (isFullCap) {
+        showToast(`✓ Locked in all ${caps.totalKeepers}/${caps.maxKeepers} Keepers & Roster Tags for ${getTeamName(tid)}!`, "success");
+      } else {
+        showToast(`Saved ${caps.totalKeepers}/${caps.maxKeepers} Keepers as In Progress (${caps.maxKeepers - caps.totalKeepers} more required before lock).`, "info");
+      }
       await pushTeamProfileToCloud(tid);
       return true;
     }
@@ -12596,6 +12929,12 @@
     function validateTradePlayerOwnership(tradeObj) {
       const pTransfers = Array.isArray(tradeObj?.playerTransfers) ? tradeObj.playerTransfers : [];
       if (pTransfers.length === 0) return { ok: true };
+      if (isKeeperDeadlineLocked()) {
+        return {
+          ok: false,
+          error: "Keepers are locked in the 72-hour pre-draft window — only Draft Pick trades are allowed until the draft is final!"
+        };
+      }
       const rosters = leagueDB?.espnData?.rosters || {};
       const seenPlayerIds = new Set();
       for (const pt of pTransfers) {
@@ -12752,8 +13091,38 @@
     }
 
     function applyConfirmedPlayerTransfersLocal(tradeObj) {
-      const result = { movedCount: 0, tradedKeepers: [] };
-      if (!tradeObj || !Array.isArray(tradeObj.playerTransfers) || tradeObj.playerTransfers.length === 0) return result;
+      const result = { movedCount: 0, tradedKeepers: [], clearedPickTags: 0 };
+      if (!tradeObj) return result;
+
+      // Auto-clear On The Block / Untouchable pickTags when a draft pick is traded (B8)
+      if (Array.isArray(tradeObj.directTransfers) && tradeObj.directTransfers.length > 0) {
+        tradeObj.directTransfers.forEach(dt => {
+          const yr = Number(dt.year || tradeObj.year || uiState.activeYear);
+          const rd = Number(dt.round);
+          const orig = safeId(dt.originalOwner);
+          const fromId = safeId(dt.fromOwner || orig);
+          const toId = safeId(dt.toOwner);
+          const keyHyphen = `${yr}-${rd}-${orig}`;
+          const keyColon = `${yr}:${rd}:${orig}`;
+          [fromId, toId, orig].filter(Boolean).forEach(tid => {
+            const prof = getTeamProfile(tid);
+            if (prof && prof.pickTags) {
+              if (prof.pickTags[keyHyphen]) {
+                delete prof.pickTags[keyHyphen];
+                prof.updatedAt = Date.now();
+                result.clearedPickTags++;
+              }
+              if (prof.pickTags[keyColon]) {
+                delete prof.pickTags[keyColon];
+                prof.updatedAt = Date.now();
+                result.clearedPickTags++;
+              }
+            }
+          });
+        });
+      }
+
+      if (!Array.isArray(tradeObj.playerTransfers) || tradeObj.playerTransfers.length === 0) return result;
       if (!leagueDB.espnData) leagueDB.espnData = sanitizeEspnDataObject(null);
       if (!leagueDB.espnData.rosters) leagueDB.espnData.rosters = {};
 
@@ -13102,7 +13471,15 @@
                 <i class="fa-solid fa-paper-plane"></i>
                 <span>Open Trade Proposals Awaiting Partner Confirmation (${leagueDB.pendingTrades.length})</span>
               </div>
-              <span class="text-[11px] text-slate-400">Every involved team must confirm before assets transfer</span>
+              <div class="flex flex-wrap items-center gap-2">
+                <span class="text-[11px] text-slate-400">Unanswered offers auto-expire after 7 days</span>
+                ${uiState.isCommish ? `
+                  <button type="button" onclick="clearAllPendingTradeOffers()" class="btn-action px-2.5 py-1 text-[11px] text-rose-300 border-rose-500/50">
+                    <i class="fa-solid fa-broom"></i>
+                    <span>Clear All Pending Offers</span>
+                  </button>
+                ` : ''}
+              </div>
             </div>
             <div class="space-y-2.5">
               ${leagueDB.pendingTrades.map((pt, idx) => {
@@ -15633,6 +16010,16 @@
       const needsPin = chosenId && doesTeamHavePersonalPin(chosenId);
       pinWrap.classList.toggle("hidden", !needsPin);
       if (!needsPin && pinInp) pinInp.value = "";
+      if (chosenId) {
+        const prof = leagueDB?.teamProfiles?.[chosenId];
+        if (prof?.upstateKittyCursed) {
+          applyColorTheme("upstate_kitties");
+        } else if (prof?.colorTheme && COVERT_COLOR_SCHEMES.some(s => s.id === prof.colorTheme)) {
+          applyColorTheme(prof.colorTheme);
+        } else {
+          applyColorTheme();
+        }
+      }
     }
 
     function openSwitchFranchiseGate() {
@@ -17770,7 +18157,9 @@
           ed.currentSeason = Number(parsed.currentSeason);
         }
         if (parsed.leagueScoring && typeof parsed.leagueScoring === "object") {
-          ed.leagueScoring = parsed.leagueScoring;
+          ed.leagueScoring = { ...parsed.leagueScoring, syncedFromEspn: true };
+        } else if (ed.leagueScoring && typeof ed.leagueScoring === "object") {
+          ed.leagueScoring.syncedFromEspn = true;
         }
 
         const activeIds = (leagueDB?.teams || DEFAULT_TEAMS).map(t => t.id);
@@ -17826,11 +18215,15 @@
           return null;
         };
 
+        const normPlayerName = (nm) => String(nm || "").toLowerCase().replace(/[^a-z0-9]/g, "");
+        const normPlayerNamePos = (nm, pos) => `${normPlayerName(nm)}|${String(pos || "").toUpperCase().trim()}`;
+
         if (parsed.rosters && typeof parsed.rosters === "object") {
           for (const [k, pList] of Object.entries(parsed.rosters)) {
             const gcmTeamId = resolveEspnSlotToGcmId(k);
             if (!gcmTeamId || !Array.isArray(pList)) continue;
-            ed.rosters[gcmTeamId] = pList.map((p, idx) => ({
+            const prevRoster = Array.isArray(ed.rosters?.[gcmTeamId]) ? ed.rosters[gcmTeamId] : [];
+            const newRoster = pList.map((p, idx) => ({
               id: cleanStr(p.id || `${gcmTeamId}_p_${idx + 1}`, 48),
               espnId: Number(p.espnId) || extractPlayerEspnNumericId(p) || 0,
               name: cleanStr(p.name || "Unknown Player", 64),
@@ -17843,6 +18236,77 @@
               posRank: cleanStr(p.posRank || "", 12),
               acquiredVia: cleanStr(p.acquiredVia || p.acqType || "ESPN Sync", 24)
             }));
+
+            // Smart Player ID Migration (B5): preserve Keepers, Trade Block tags, and Pending Trade players across ID formats
+            const byNamePos = {};
+            const byNameOnly = {};
+            const validNewIds = new Set();
+            newRoster.forEach(np => {
+              validNewIds.add(String(np.id));
+              byNamePos[normPlayerNamePos(np.name, np.pos)] = String(np.id);
+              byNameOnly[normPlayerName(np.name)] = String(np.id);
+            });
+            const oldIdToNewId = {};
+            prevRoster.forEach(op => {
+              const oldId = String(op.id || "");
+              if (!oldId) return;
+              if (validNewIds.has(oldId)) {
+                oldIdToNewId[oldId] = oldId;
+              } else {
+                const matchId = byNamePos[normPlayerNamePos(op.name, op.pos)] || byNameOnly[normPlayerName(op.name)];
+                if (matchId) oldIdToNewId[oldId] = matchId;
+              }
+            });
+
+            const resolveMigratedPlayerId = (rawPid, optName = "", optPos = "") => {
+              const s = String(rawPid || "");
+              if (validNewIds.has(s)) return s;
+              if (oldIdToNewId[s]) return oldIdToNewId[s];
+              if (optName) {
+                const m = byNamePos[normPlayerNamePos(optName, optPos)] || byNameOnly[normPlayerName(optName)];
+                if (m) return m;
+              }
+              const byKeyName = byNameOnly[normPlayerName(s)];
+              return byKeyName || "";
+            };
+
+            const prof = getTeamProfile(gcmTeamId);
+            if (prof) {
+              if (Array.isArray(prof.keepers) && prof.keepers.length > 0) {
+                const migratedKeepers = [];
+                prof.keepers.forEach(kid => {
+                  const mapped = resolveMigratedPlayerId(kid);
+                  if (mapped && !migratedKeepers.includes(mapped)) migratedKeepers.push(mapped);
+                });
+                prof.keepers = migratedKeepers;
+                if (!ed.keepers || typeof ed.keepers !== "object") ed.keepers = {};
+                ed.keepers[gcmTeamId] = [...migratedKeepers];
+              }
+              if (prof.playerTags && typeof prof.playerTags === "object") {
+                const migratedTags = {};
+                for (const [oldPid, tagVal] of Object.entries(prof.playerTags)) {
+                  const mapped = resolveMigratedPlayerId(oldPid);
+                  if (mapped && (tagVal === "ON_BLOCK" || tagVal === "UNTOUCHABLE")) {
+                    migratedTags[mapped] = tagVal;
+                  }
+                }
+                prof.playerTags = migratedTags;
+              }
+            }
+
+            if (Array.isArray(leagueDB.pendingTrades)) {
+              leagueDB.pendingTrades.forEach(pt => {
+                if (!Array.isArray(pt.playerTransfers)) return;
+                pt.playerTransfers.forEach(tr => {
+                  if (safeId(tr.fromOwner) === gcmTeamId) {
+                    const mapped = resolveMigratedPlayerId(tr.playerId, tr.playerName || tr.name, tr.pos);
+                    if (mapped) tr.playerId = mapped;
+                  }
+                });
+              });
+            }
+
+            ed.rosters[gcmTeamId] = newRoster;
           }
         }
 
@@ -18000,12 +18464,49 @@
           ed.headToHead = h2hTotals;
         }
         if (allWeeklyPerformances.length >= 10) {
+          // Dynamically compute all-time Win & Loss streaks across chronological weekly games (B6)
+          const sortedPerf = [...allWeeklyPerformances].sort((a, b) => (a.year - b.year) || (a.week - b.week));
+          const streakTrack = {};
+          const bestWinStreaks = [];
+          const bestLossStreaks = [];
+          sortedPerf.forEach(gm => {
+            if (gm.score === gm.oppScore) return;
+            const mid = gm.managerId;
+            if (!mid) return;
+            if (!streakTrack[mid]) {
+              streakTrack[mid] = { wCur: 0, wStartYr: gm.year, wStartWk: gm.week, lCur: 0, lStartYr: gm.year, lStartWk: gm.week };
+            }
+            const st = streakTrack[mid];
+            if (gm.score > gm.oppScore) {
+              if (st.lCur >= 4) {
+                bestLossStreaks.push({ teamId: mid, managerId: mid, type: `L${st.lCur}`, length: st.lCur, span: `${st.lStartYr} W${st.lStartWk} – ${gm.year} W${gm.week}` });
+              }
+              st.lCur = 0;
+              if (st.wCur === 0) { st.wStartYr = gm.year; st.wStartWk = gm.week; }
+              st.wCur += 1;
+            } else {
+              if (st.wCur >= 4) {
+                bestWinStreaks.push({ teamId: mid, managerId: mid, type: `W${st.wCur}`, length: st.wCur, span: `${st.wStartYr} W${st.wStartWk} – ${gm.year} W${gm.week}` });
+              }
+              st.wCur = 0;
+              if (st.lCur === 0) { st.lStartYr = gm.year; st.lStartWk = gm.week; }
+              st.lCur += 1;
+            }
+          });
+          Object.entries(streakTrack).forEach(([mid, st]) => {
+            if (st.wCur >= 4) bestWinStreaks.push({ teamId: mid, managerId: mid, type: `W${st.wCur}`, length: st.wCur, span: `${st.wStartYr} W${st.wStartWk}+` });
+            if (st.lCur >= 4) bestLossStreaks.push({ teamId: mid, managerId: mid, type: `L${st.lCur}`, length: st.lCur, span: `${st.lStartYr} W${st.lStartWk}+` });
+          });
+          bestWinStreaks.sort((a, b) => b.length - a.length);
+          bestLossStreaks.sort((a, b) => b.length - a.length);
+          const computedStreaks = [...bestWinStreaks.slice(0, 3), ...bestLossStreaks.slice(0, 2)];
+
           ed.records = {
             highestSingleGame: [...allWeeklyPerformances].sort((a, b) => b.score - a.score).slice(0, 10),
             lowestSingleGame: [...allWeeklyPerformances].filter(x => x.score > 25).sort((a, b) => a.score - b.score).slice(0, 10),
             biggestBlowouts: [...allMatchupDiffs].sort((a, b) => b.margin - a.margin).slice(0, 10),
             closestGames: [...allMatchupDiffs].filter(x => x.margin > 0).sort((a, b) => a.margin - b.margin).slice(0, 10),
-            longestStreaks: ed.records?.longestStreaks || []
+            longestStreaks: computedStreaks.length > 0 ? computedStreaks : (ed.records?.longestStreaks || [])
           };
         }
 
@@ -18219,6 +18720,12 @@
         el.classList.add("opacity-0");
         setTimeout(() => el.remove(), 250);
       }, 3400);
+    }
+
+    if ("serviceWorker" in navigator && (window.location.protocol === "https:" || window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1")) {
+      window.addEventListener("load", () => {
+        navigator.serviceWorker.register("./sw.js").catch(() => {});
+      });
     }
   </script>
 </body>
