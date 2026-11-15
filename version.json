@@ -1,5 +1,5 @@
 {
-  "version": "8.6.0",
-  "releasedAt": "2026-11-15T21:40:00Z",
-  "notes": "v8.6.0: Activity Wire Fairness Ballot & 1-Tap Voting, Grouped Timeline Headers, Archive Postseason Matchups & Historical Keepers, All-Play/Luck/Moves Standings & 3-Tier Action Tile UI Modernization"
+  "version": "8.7.0",
+  "releasedAt": "2026-11-15T23:05:00Z",
+  "notes": "v8.7.0: Sleek Custom Season Pill & Mobile Sync Dot, My Team 1-Line KPI Strip & 1-Tap Scout Avatar Strip, Smart 1–10+Active Picks Default, Inline Conditional Swap in Sticky Deal Bar, 2-Row Draft Board Toolbar, 5-Tab League Hub with Mobile Core/Advanced Table Toggle, and 4-Tab Activity Wire"
 }

@@ -1110,6 +1110,35 @@
       backdrop-filter: blur(14px);
       -webkit-backdrop-filter: blur(14px);
     }
+    /* Sticky Manager Column & Mobile Core/Advanced Table Toggle (A10) */
+    .sticky-mgr-col {
+      position: sticky;
+      left: 0;
+      z-index: 15;
+      background-color: var(--bg-surface);
+      box-shadow: 2px 0 6px rgba(0, 0, 0, 0.18);
+    }
+    .bg-\[\#0B0D12\] .sticky-mgr-col,
+    tr.bg-\[\#0B0D12\] .sticky-mgr-col {
+      background-color: var(--bg-obsidian);
+    }
+    tr.bg-\[\#13161F\] .sticky-mgr-col {
+      background-color: var(--bg-surface);
+    }
+    @media (max-width: 767px) {
+      table:not(.show-mobile-adv) .mobile-adv-col {
+        display: none !important;
+      }
+    }
+    /* Custom Pill Popover & Mobile Dock Active Indicator (A1, A2, A12) */
+    .custom-pill-popover {
+      background-color: var(--bg-surface);
+      border: 1px solid rgba(var(--theme-trim-rgb), 0.35);
+      box-shadow: 0 18px 40px rgba(0, 0, 0, 0.55);
+    }
+    .bottom-nav-active-pill {
+      box-shadow: inset 0 2px 0 0 var(--theme-accent), 0 4px 12px rgba(0, 0, 0, 0.28);
+    }
     /* Pulsing Action-Required Notification Badge */
     @keyframes gcmActionPulse {
       0%, 100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(251, 191, 36, 0.65); }
@@ -1285,7 +1314,7 @@
     </div>
     <!-- Non-Disruptive App Version Update Banner (Shown only when version.json reports a newer release) -->
     <div id="pwaUpdateAvailableBanner" class="hidden w-full bg-emerald-950/90 border-b border-emerald-500/40 px-3 py-1.5 flex items-center justify-center gap-3 text-xs text-emerald-100">
-      <span><i class="fa-solid fa-wand-magic-sparkles text-amber-300 mr-1"></i>New Gamecock Mafia Tracker update (<strong id="pwaUpdateVersionText" class="font-mono text-amber-300">v8.5.0</strong>) is ready!</span>
+      <span><i class="fa-solid fa-wand-magic-sparkles text-amber-300 mr-1"></i>New Gamecock Mafia Tracker update (<strong id="pwaUpdateVersionText" class="font-mono text-amber-300">v8.7.0</strong>) is ready!</span>
       <button type="button" onclick="applyRemoteAppUpdateNow()" class="px-2.5 py-0.5 rounded-md bg-emerald-500 hover:bg-emerald-400 text-black font-black text-[11px] cursor-pointer transition">Refresh Now</button>
     </div>
 
@@ -1319,22 +1348,34 @@
           </div>
         </div>
 
-        <!-- Right: Compact Season Dropdown + Live Sync Pill + Undo (Admin) + Notification Bell + ESPN Sync (Admin) + Settings -->
+        <!-- Right: Sleek Custom Season Pill (A1) + Live Sync Dot + Undo (Admin) + Notification Bell + ESPN Sync (Admin) + Settings -->
         <div class="flex items-center justify-end gap-1.5 sm:gap-2 flex-shrink-0">
-          <!-- Season / Year Pill Dropdown -->
-          <div class="min-w-0">
+          <!-- Custom Tappable Season Pill + Popover Menu (A1 & A12) -->
+          <div id="headerSeasonPillWrap" class="relative min-w-0" data-popover-keep="1">
             <label for="headerYearDropdownSelect" class="sr-only">Select Draft Season</label>
+            <button
+              type="button"
+              id="headerSeasonPillBtn"
+              onclick="toggleHeaderSeasonPopover(event)"
+              class="btn-action px-2.5 py-1.5 text-[11px] sm:text-xs font-extrabold text-white border-white/15"
+              title="Switch Active Draft Season"
+            >
+              <i class="fa-solid fa-calendar-days text-amber-300 text-[10px]"></i>
+              <span id="headerSeasonPillLabel" class="font-mono">2027 ▾</span>
+            </button>
+            <div id="headerSeasonPopoverMenu" class="hidden absolute right-0 top-full mt-1.5 w-52 custom-pill-popover rounded-2xl p-1.5 z-50 space-y-1"></div>
             <select
               id="headerYearDropdownSelect"
               onchange="handleHeaderYearDropdownChange(this.value)"
-              class="max-w-[116px] sm:max-w-[158px] bg-[#13161F] hover:bg-[#1B1F2B] text-white font-bold text-[11px] sm:text-xs rounded-lg px-2 sm:px-2.5 py-1.5 border border-white/10 focus:outline-none focus:border-[#CC1429] cursor-pointer truncate"
+              class="hidden truncate"
+              aria-hidden="true"
             >
               <!-- Populated by renderDynamicYearTabs() -->
             </select>
             <div id="dynamicYearTabsContainer" class="hidden" aria-hidden="true"></div>
           </div>
 
-          <!-- 1-Tap Live Cloud Sync Indicator & Manual Refresh -->
+          <!-- 1-Tap Live Cloud Sync Indicator & Manual Refresh (Compact Dot on Mobile — A1) -->
           <button
             type="button"
             onclick="manualSyncRefresh()"
@@ -1342,9 +1383,9 @@
             class="btn-action px-2 py-1.5 text-[10px] sm:text-[11px] text-emerald-300 border-white/10 hover:border-emerald-400/50"
             title="Live Cloud Sync Status — Tap to pull latest updates now"
           >
-            <span id="headerLiveSyncDot" class="w-1.5 h-1.5 rounded-full bg-emerald-400 inline-block flex-shrink-0"></span>
+            <span id="headerLiveSyncDot" class="w-2 h-2 rounded-full bg-emerald-400 inline-block flex-shrink-0"></span>
             <span id="headerLiveSyncStatusText" class="hidden md:inline font-mono truncate max-w-[96px]">Live</span>
-            <i id="headerLiveSyncSpinner" class="fa-solid fa-rotate text-[10px] text-slate-400"></i>
+            <i id="headerLiveSyncSpinner" class="fa-solid fa-rotate text-[10px] text-slate-400 hidden sm:inline"></i>
           </button>
 
           <!-- Undo Button (Only shown when Commissioner has undo stack) -->
@@ -1483,44 +1524,31 @@
       </section>
 
       <!-- ======================================================= -->
-      <!-- TAB 2: TRADE CENTER (HEADER -> TRADE BLOCK -> MACHINE)  -->
+      <!-- TAB 2: TRADE CENTER (COMPACT MARKET STRIP -> MACHINE)   -->
       <!-- ======================================================= -->
-      <section id="section-tradecenter" class="hidden space-y-4">
+      <section id="section-tradecenter" class="hidden space-y-3.5">
 
-        <!-- 1. Top Trade Center Explanatory Header -->
-        <div class="app-card px-3.5 py-3 sm:px-5 sm:py-3.5 flex flex-col sm:flex-row sm:items-center justify-between gap-2.5">
-          <div class="min-w-0">
-            <div class="flex flex-wrap items-center gap-2">
-              <span class="static-badge bg-[#73000A] text-white border border-[#CC1429]/60">
-                <i class="fa-solid fa-right-left"></i> Trade Center
-              </span>
-              <h2 class="text-sm sm:text-lg font-black text-white">Shop the Block &amp; Build an Offer</h2>
-            </div>
-            <p class="text-[11px] sm:text-xs text-slate-400 mt-0.5">
-              Tap any available player or pick on the League Trade Block below to load it directly into the Trade Machine, or choose any partner to build a custom deal.
-            </p>
-          </div>
-          <button type="button" onclick="openTradeModalWithPair(uiState.selectedManager, uiState.compareManagerB)" class="btn-action px-3 py-1.5 text-[11px] text-amber-300 self-start sm:self-center flex-shrink-0" title="Open Conditional Pick Swap or Pick Pool Builder">
-            <i class="fa-solid fa-code-branch"></i>
-            <span>Conditional / Pick Pool</span>
-          </button>
-        </div>
-
-        <!-- 2. Actionable League Trade Block (Placed Above Everything Except Top Header!) -->
-        <div id="leagueTradeBlockContainer" class="space-y-2.5">
+        <!-- 1. Compact Collapsible League Trade Block Strip (A6) -->
+        <div id="leagueTradeBlockContainer" class="space-y-2">
           <!-- Populated by JS -->
         </div>
 
-        <!-- 3. Always-Ready 2-Team Trade Machine -->
-        <div id="tradeMachineCardContainer" class="app-card p-3.5 sm:p-5 space-y-3.5">
-          <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-2.5 border-b border-white/[0.07] pb-2.5">
-            <div class="flex items-center gap-2 min-w-0">
-              <i class="fa-solid fa-scale-balanced text-amber-400 text-xs"></i>
-              <h3 class="text-xs sm:text-sm font-black uppercase tracking-wider text-white">2-Team Trade Machine</h3>
-              <span class="text-[11px] text-slate-400 hidden sm:inline">• Tap a partner avatar, then tap players or picks to stage</span>
+        <!-- 2. Always-Ready 2-Team Trade Machine Above the Fold (A6 & A7) -->
+        <div id="tradeMachineCardContainer" class="app-card p-3 sm:p-4 space-y-3">
+          <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-2 border-b border-white/[0.07] pb-2">
+            <div class="flex items-center justify-between gap-2 min-w-0 w-full lg:w-auto">
+              <div class="flex items-center gap-2 min-w-0">
+                <i class="fa-solid fa-scale-balanced text-amber-400 text-xs"></i>
+                <h3 class="text-xs sm:text-sm font-black uppercase tracking-wider text-white">2-Team Trade Machine</h3>
+                <span class="text-[11px] text-slate-400 hidden sm:inline">• Tap a partner avatar, then tap players or picks to stage</span>
+              </div>
+              <button type="button" onclick="openTradeModalWithPair(uiState.selectedManager, uiState.compareManagerB)" class="btn-action px-2.5 py-1 text-[10px] sm:text-[11px] text-amber-300 flex-shrink-0 lg:hidden" title="Open Conditional Pick Swap or Pick Pool Builder">
+                <i class="fa-solid fa-code-branch"></i>
+                <span>+ Conditional / Pool</span>
+              </button>
             </div>
 
-            <!-- Commissioner-Only Full Team 1 / Team 2 Override Selectors (Hidden for regular managers so Quick Partner strip is sole control) -->
+            <!-- Commissioner-Only Full Team 1 / Team 2 Override Selectors -->
             <div id="commishPartnerDropdownsWrap" class="hidden grid grid-cols-2 gap-2 w-full lg:w-[420px] max-w-full">
               <div class="min-w-0">
                 <label for="ledgerManagerSelect" id="ledgerManagerSelectLabel" class="block text-[9px] font-bold uppercase tracking-wider text-rose-400 mb-0.5 truncate">
@@ -1547,7 +1575,7 @@
           </div>
 
           <!-- Interactive Side-by-Side Comparison & Tap-to-Trade Workspace -->
-          <div id="tradeMachineWorkspace" class="space-y-3.5 min-w-0 max-w-full">
+          <div id="tradeMachineWorkspace" class="space-y-3 min-w-0 max-w-full">
             <!-- Populated by JS -->
           </div>
         </div>
@@ -1555,30 +1583,29 @@
       </section>
 
       <!-- ======================================================= -->
-      <!-- TAB 3: FULL 200-PICK DRAFT BOARD (CARDS & MATRIX)       -->
+      <!-- TAB 3: FULL 200-PICK DRAFT BOARD (2-ROW STICKY TOOLBAR) -->
       <!-- ======================================================= -->
       <section id="section-board" class="hidden space-y-3">
 
-        <!-- Unified Controls & Inline Legend Card -->
-        <div class="no-print app-card p-3.5 sm:p-4 space-y-2.5">
-          <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-2.5">
-            <div class="space-y-0.5 min-w-0">
-              <div class="flex flex-wrap items-center gap-2">
-                <h2 id="boardHeading" class="text-sm sm:text-lg font-black text-white">2027 Official Draft Board</h2>
-                <span id="boardOrderStatusBadge" class="static-badge"></span>
-                <span id="boardDraftCountdownPill" class="hidden static-badge bg-sky-950/80 text-sky-300 border border-sky-500/40"></span>
-              </div>
-              <p id="boardSubheading" class="text-[11px] sm:text-xs text-slate-400 break-words"></p>
+        <!-- 2-Row Sticky Control Bar & Compact Legend Popover (A8) -->
+        <div class="no-print sticky-subnav-bar app-card p-2.5 sm:p-3.5 space-y-2">
+          <!-- Row 1: Title/Status + Cards/Matrix + Custom Team Pill + Traded + Export + Info Popover -->
+          <div class="flex flex-wrap items-center justify-between gap-2">
+            <div class="flex flex-wrap items-center gap-1.5 min-w-0">
+              <h2 id="boardHeading" class="text-xs sm:text-base font-black text-white truncate">2027 Official Draft Board</h2>
+              <span id="boardOrderStatusBadge" class="static-badge"></span>
+              <span id="boardDraftCountdownPill" class="hidden static-badge bg-sky-950/80 text-sky-300 border border-sky-500/40"></span>
+              <p id="boardSubheading" class="hidden xl:block text-[11px] text-slate-400 truncate max-w-md"></p>
             </div>
 
-            <div class="flex flex-wrap items-center gap-1.5 sm:gap-2">
+            <div class="flex flex-wrap items-center gap-1.5">
               <!-- Board Layout Mode Switcher -->
               <div class="segmented-bar">
-                <button onclick="setBoardDisplayMode('CARDS')" id="boardModeCardsBtn" class="px-2.5 py-1 rounded-md text-[11px] sm:text-xs font-bold transition cursor-pointer">
-                  <i class="fa-solid fa-grip mr-1"></i>Round Cards
+                <button onclick="setBoardDisplayMode('CARDS')" id="boardModeCardsBtn" class="px-2 py-1 rounded-md text-[11px] font-bold transition cursor-pointer">
+                  <i class="fa-solid fa-grip mr-1"></i><span>Cards</span>
                 </button>
-                <button onclick="setBoardDisplayMode('MATRIX')" id="boardModeMatrixBtn" class="px-2.5 py-1 rounded-md text-[11px] sm:text-xs font-bold transition cursor-pointer">
-                  <i class="fa-solid fa-table-cells mr-1"></i>10×20 Grid
+                <button onclick="setBoardDisplayMode('MATRIX')" id="boardModeMatrixBtn" class="px-2 py-1 rounded-md text-[11px] font-bold transition cursor-pointer">
+                  <i class="fa-solid fa-table-cells mr-1"></i><span>10×20</span>
                 </button>
               </div>
 
@@ -1587,57 +1614,77 @@
                 <span id="boardMyPicksToggleLabel">My Picks</span>
               </button>
 
-              <!-- Unified Smart Team / My Picks Filter -->
-              <select id="boardFilterTeamSelect" onchange="handleBoardTeamFilterChange(this.value)" class="bg-[#0B0D12] text-[11px] sm:text-xs font-semibold text-slate-200 rounded-lg px-2.5 py-1.5 border border-white/10 focus:outline-none focus:border-[#CC1429] cursor-pointer max-w-[175px] sm:max-w-none truncate">
-                <option value="ALL">Filter: All 10 Teams</option>
-              </select>
+              <!-- Custom Team / My Picks Filter Pill + Popover (A8 & A12) -->
+              <div id="boardTeamFilterPillWrap" class="relative" data-popover-keep="1">
+                <button
+                  type="button"
+                  id="boardTeamFilterPillBtn"
+                  onclick="toggleBoardTeamFilterPopover(event)"
+                  class="btn-action px-2.5 py-1 text-[11px] font-bold text-slate-100"
+                  title="Filter Draft Board by Franchise"
+                >
+                  <i class="fa-solid fa-filter text-amber-300 text-[10px]"></i>
+                  <span id="boardTeamFilterPillLabel" class="truncate max-w-[115px] sm:max-w-[150px]">All 10 Teams ▾</span>
+                </button>
+                <div id="boardTeamFilterPopoverMenu" class="hidden absolute right-0 top-full mt-1.5 w-52 custom-pill-popover rounded-2xl p-1.5 z-50 max-h-72 overflow-y-auto space-y-0.5"></div>
+                <select id="boardFilterTeamSelect" onchange="handleBoardTeamFilterChange(this.value)" class="hidden" aria-hidden="true">
+                  <option value="ALL">Filter: All 10 Teams</option>
+                </select>
+              </div>
 
               <!-- Traded Only Toggle Button -->
-              <button onclick="toggleBoardTradedFilter()" id="boardTradedToggleBtn" class="btn-action px-2.5 py-1.5 text-[11px] sm:text-xs text-slate-200">
+              <button onclick="toggleBoardTradedFilter()" id="boardTradedToggleBtn" class="btn-action px-2 py-1 text-[11px] text-slate-200">
                 <i class="fa-solid fa-right-left text-sky-400"></i>
-                <span id="boardTradedToggleLabel">Traded Rds</span>
+                <span id="boardTradedToggleLabel">Traded</span>
               </button>
 
-              <!-- Synced Drafted Players Overlay Toggle (Visible when ESPN Draft Results are populated) -->
-              <button onclick="toggleBoardDraftedPlayers()" id="boardDraftedPlayersToggleBtn" class="hidden btn-action px-2.5 py-1.5 text-[11px] sm:text-xs text-emerald-300 border-emerald-500/40" title="Show or hide drafted player names synced from ESPN">
+              <!-- Synced Drafted Players Overlay Toggle -->
+              <button onclick="toggleBoardDraftedPlayers()" id="boardDraftedPlayersToggleBtn" class="hidden btn-action px-2 py-1 text-[11px] text-emerald-300 border-emerald-500/40" title="Show or hide drafted player names synced from ESPN">
                 <i class="fa-solid fa-football text-amber-300"></i>
                 <span id="boardDraftedPlayersToggleLabel">Players</span>
               </button>
 
               <!-- Configure Draft Order & Date Button (Commissioner Only) -->
-              <button onclick="openOrderConfigModal()" id="boardSetOrderBtn" class="hidden btn-action px-2.5 py-1.5 text-[11px] sm:text-xs text-amber-300">
+              <button onclick="openOrderConfigModal()" id="boardSetOrderBtn" class="hidden btn-action px-2 py-1 text-[11px] text-amber-300">
                 <i class="fa-solid fa-list-ol"></i>
-                <span>Order &amp; Date</span>
+                <span class="hidden sm:inline">Order &amp; Date</span>
               </button>
 
               <!-- ESPN / CSV / Print Export Modal Button -->
-              <button onclick="openEspnExportModal()" class="btn-garnet px-2.5 py-1.5 text-[11px] sm:text-xs">
+              <button onclick="openEspnExportModal()" class="btn-garnet px-2.5 py-1 text-[11px]">
                 <i class="fa-solid fa-file-export"></i>
-                <span>Export</span>
+                <span class="hidden sm:inline">Export</span>
               </button>
+
+              <!-- Compact Legend & Sync Hint Info Popover Button (A8) -->
+              <div class="relative" data-popover-keep="1">
+                <button type="button" id="boardLegendInfoBtn" onclick="toggleBoardLegendPopover(event)" class="btn-icon-compact !w-7 !h-7" title="Board Legend & ESPN Sync Info" aria-label="Board Legend & Info">
+                  <i class="fa-solid fa-circle-info text-xs text-slate-300"></i>
+                </button>
+                <div id="boardLegendPopover" class="hidden absolute right-0 top-full mt-1.5 w-72 custom-pill-popover rounded-2xl p-3 z-50 space-y-2 text-[11px]">
+                  <div class="font-extrabold uppercase tracking-wider text-amber-300 text-[10px]">Board Color Key</div>
+                  <div class="flex flex-wrap items-center gap-3">
+                    <span class="flex items-center gap-1.5 text-slate-200">
+                      <span class="w-2 h-2 rounded-full bg-slate-500 inline-block"></span> Own Pick
+                    </span>
+                    <span class="flex items-center gap-1.5 text-emerald-300">
+                      <span class="w-2 h-2 rounded-full bg-emerald-400 inline-block"></span> Traded Pick
+                    </span>
+                    <span class="flex items-center gap-1.5 text-amber-300 font-semibold">
+                      <span class="w-2 h-2 rounded-full bg-amber-400 inline-block"></span> Waiting
+                    </span>
+                  </div>
+                  <div id="boardSyncHintText" class="text-slate-300 pt-1.5 border-t border-white/10 leading-snug">📋 Live Draft Cheat Sheet • Auto-populates drafted players via 1-Click ESPN Sync after draft</div>
+                </div>
+              </div>
             </div>
           </div>
 
-          <!-- Round Tier Quick-Jump Bar (All Rounds | Early Rds 1-5 | Mid Rds 6-10 | Late Rds 11-20) -->
-          <div id="boardRoundRangeBar" class="pt-2 border-t border-white/[0.06] flex items-center gap-1.5 overflow-x-auto no-scrollbar"></div>
-
-          <!-- Horizontal R1–R20 Direct Round Jump Strip (D11 = Option A) -->
-          <div id="boardQuickRoundJumpStrip" class="pt-1 flex items-center gap-1 overflow-x-auto no-scrollbar"></div>
-
-          <!-- Slim Inline Legend Strip -->
-          <div class="pt-2 border-t border-white/[0.06] flex flex-wrap items-center justify-between gap-2 text-[10px] sm:text-[11px]">
-            <div class="flex flex-wrap items-center gap-3">
-              <span class="flex items-center gap-1.5 text-slate-300">
-                <span class="w-2 h-2 rounded-full bg-slate-600 inline-block"></span> Own Pick
-              </span>
-              <span class="flex items-center gap-1.5 text-emerald-300">
-                <span class="w-2 h-2 rounded-full bg-emerald-400 inline-block"></span> Traded Pick
-              </span>
-              <span class="flex items-center gap-1.5 text-amber-300 font-semibold">
-                <span class="w-2 h-2 rounded-full bg-amber-400 inline-block"></span> Waiting on Commish
-              </span>
-            </div>
-            <span id="boardSyncHintText" class="text-slate-400">📋 Live Draft Cheat Sheet • Auto-populates drafted players via 1-Click ESPN Sync after draft</span>
+          <!-- Row 2: Unified Single-Row Horizontal Round Tier + R1..R20 Jump Strip (A8) -->
+          <div class="pt-1.5 border-t border-white/[0.06] flex items-center gap-1.5 overflow-x-auto no-scrollbar">
+            <div id="boardRoundRangeBar" class="flex items-center gap-1 flex-shrink-0"></div>
+            <span class="text-slate-600 text-xs select-none">|</span>
+            <div id="boardQuickRoundJumpStrip" class="flex items-center gap-1 flex-shrink-0"></div>
           </div>
         </div>
 
@@ -1649,7 +1696,7 @@
       </section>
 
       <!-- ======================================================= -->
-      <!-- TAB 4: LEAGUE HUB (OVERVIEW, STANDINGS, VAULT, ARCHIVE) -->
+      <!-- TAB 4: LEAGUE HUB (STANDINGS, CAREER, RIVALRIES, RECORDS, ARCHIVE) -->
       <!-- ======================================================= -->
       <section id="section-capital" class="hidden space-y-3.5">
         <div id="leagueCapitalStandingsContainer" class="space-y-4 min-w-0 max-w-full">
@@ -1660,50 +1707,35 @@
       </section>
 
       <!-- ======================================================= -->
-      <!-- TAB 5: ACTIVITY WIRE (COLLAPSIBLE TRADES & LEAGUE EVENTS) -->
+      <!-- TAB 5: ACTIVITY WIRE (4 NON-SCROLLING TABS + FILTER CHIPS) -->
       <!-- ======================================================= -->
       <section id="section-feed" class="hidden space-y-3">
 
         <!-- Hall of Shame Banner (Shown when filtered or active curse) -->
         <div id="hallOfShameFeedBanner" class="hidden app-card border-pink-500/50 p-3 space-y-1.5"></div>
 
-        <!-- Activity Wire 1-Row Mobile Toolbar, Fairness Ballot Sub-Tab, Scope Pills & Collapsible Search -->
+        <!-- Activity Wire Streamlined 4-Tab Bar + Secondary Filter Chip Row (A11) -->
         <div class="no-print app-card p-2.5 sm:p-3 space-y-2">
-          <div class="flex items-center justify-between gap-2">
-            <div class="segmented-bar no-scrollbar overflow-x-auto flex-1 min-w-0">
-              <button onclick="setActivitySubTab('ALL')" id="actSubTab-ALL" class="segmented-pill active">
+          <!-- Row 1: 4 Primary Non-Scrolling Segmented Tabs (All | Trades | Ballot | Wire) + Expand + Search -->
+          <div class="flex items-center justify-between gap-1.5">
+            <div class="segmented-bar flex-1 min-w-0 grid grid-cols-4">
+              <button onclick="setActivitySubTab('ALL')" id="actSubTab-ALL" class="segmented-pill active justify-center !px-1.5">
                 <span>All</span>
               </button>
-              <button onclick="setActivitySubTab('TRADES')" id="actSubTab-TRADES" class="segmented-pill">
+              <button onclick="setActivitySubTab('TRADES')" id="actSubTab-TRADES" class="segmented-pill justify-center !px-1.5">
                 <span>Trades</span>
               </button>
-              <button onclick="setActivitySubTab('FAIRNESS')" id="actSubTab-FAIRNESS" class="segmented-pill">
-                <i class="fa-solid fa-scale-balanced text-amber-400 text-[10px]"></i>
+              <button onclick="setActivitySubTab('FAIRNESS')" id="actSubTab-FAIRNESS" class="segmented-pill justify-center !px-1.5">
+                <i class="fa-solid fa-scale-balanced text-amber-400 text-[10px] hidden sm:inline"></i>
                 <span>Ballot</span>
-                <span id="actSubTabFairnessBadge" class="hidden px-1.5 py-0.2 rounded-full text-[10px] font-mono bg-amber-950 text-amber-300 border border-amber-500/50">0</span>
+                <span id="actSubTabFairnessBadge" class="hidden px-1 py-0.2 rounded-full text-[9px] font-mono bg-amber-950 text-amber-300 border border-amber-500/50">0</span>
               </button>
-              <button onclick="setActivitySubTab('WIRE')" id="actSubTab-WIRE" class="segmented-pill">
+              <button onclick="setActivitySubTab('WIRE')" id="actSubTab-WIRE" class="segmented-pill justify-center !px-1.5">
                 <span>Wire</span>
-              </button>
-              <button onclick="setActivitySubTab('PENDING_FINAL')" id="actSubTab-PENDING_FINAL" class="segmented-pill">
-                <i class="fa-solid fa-hourglass-half text-amber-400 text-[10px]"></i>
-                <span>Waiting</span>
-                <span id="actSubTabPendingBadge" class="hidden px-1.5 py-0.2 rounded-full text-[10px] font-mono bg-amber-950 text-amber-300 border border-amber-500/50">0</span>
-              </button>
-              <button onclick="setActivitySubTab('MY_TEAM')" id="actSubTab-MY_TEAM" class="segmented-pill">
-                <span>My Deals</span>
               </button>
             </div>
 
-            <div class="flex items-center gap-1.5 flex-shrink-0">
-              <div class="segmented-bar p-0.5 hidden sm:inline-flex" role="group" aria-label="Activity Year Scope">
-                <button type="button" id="feedScopePill-ALL_YEARS" onclick="setActivityScopeFilter('ALL_YEARS')" class="segmented-pill active !px-2 !py-1 !text-[11px]">All Yrs</button>
-                <button type="button" id="feedScopePill-ACTIVE_YEAR" onclick="setActivityScopeFilter('ACTIVE_YEAR')" class="segmented-pill !px-2 !py-1 !text-[11px]">Active Yr</button>
-              </div>
-              <button type="button" id="feedScopeMobileToggleBtn" onclick="toggleActivityScopeFilterMobile()" class="sm:hidden btn-action px-2 py-1.5 text-[11px] text-amber-300 font-bold" title="Toggle All Years vs Active Year">
-                <span id="feedScopeMobileToggleLabel">All Yrs</span>
-              </button>
-
+            <div class="flex items-center gap-1 flex-shrink-0">
               <button type="button" onclick="toggleAllTradeFeedAccordions()" id="feedToggleAllAccordionsBtn" class="btn-action px-2 sm:px-2.5 py-1.5 text-[11px] text-slate-300 flex-shrink-0" title="Expand or collapse all trade cards">
                 <i id="feedToggleAllAccordionsIcon" class="fa-solid fa-angles-down text-slate-400"></i>
                 <span id="feedToggleAllAccordionsLabel" class="hidden md:inline">Expand All</span>
@@ -1711,6 +1743,32 @@
 
               <button type="button" onclick="toggleActivitySearchBar()" id="feedSearchToggleBtn" class="btn-icon-compact" title="Search Activity Wire" aria-label="Search Activity Wire">
                 <i class="fa-solid fa-magnifying-glass text-xs"></i>
+              </button>
+            </div>
+          </div>
+
+          <!-- Row 2: Compact 1-Tap Filter Chips (My Deals • Waiting (N) • All Yrs / Active Yr) -->
+          <div class="pt-1.5 border-t border-white/[0.06] flex flex-wrap items-center justify-between gap-1.5">
+            <div class="flex flex-wrap items-center gap-1.5">
+              <button onclick="setActivitySubTab(uiState.activitySubTab === 'MY_TEAM' ? 'ALL' : 'MY_TEAM')" id="actSubTab-MY_TEAM" class="btn-action px-2.5 py-1 text-[11px] text-slate-200">
+                <i class="fa-solid fa-user-check text-[10px] text-sky-400"></i>
+                <span>My Deals</span>
+              </button>
+              <button onclick="setActivitySubTab(uiState.activitySubTab === 'PENDING_FINAL' ? 'ALL' : 'PENDING_FINAL')" id="actSubTab-PENDING_FINAL" class="btn-action px-2.5 py-1 text-[11px] text-slate-200">
+                <i class="fa-solid fa-hourglass-half text-amber-400 text-[10px]"></i>
+                <span>Waiting</span>
+                <span id="actSubTabPendingBadge" class="hidden px-1.5 py-0.2 rounded-full text-[10px] font-mono bg-amber-950 text-amber-300 border border-amber-500/50">0</span>
+              </button>
+            </div>
+
+            <div class="flex items-center gap-1.5">
+              <div class="segmented-bar p-0.5 hidden sm:inline-flex" role="group" aria-label="Activity Year Scope">
+                <button type="button" id="feedScopePill-ALL_YEARS" onclick="setActivityScopeFilter('ALL_YEARS')" class="segmented-pill active !px-2 !py-0.5 !text-[11px]">All Yrs</button>
+                <button type="button" id="feedScopePill-ACTIVE_YEAR" onclick="setActivityScopeFilter('ACTIVE_YEAR')" class="segmented-pill !px-2 !py-0.5 !text-[11px]">Active Yr</button>
+              </div>
+              <button type="button" id="feedScopeMobileToggleBtn" onclick="toggleActivityScopeFilterMobile()" class="sm:hidden btn-action px-2.5 py-1 text-[11px] text-amber-300 font-bold" title="Toggle All Years vs Active Year">
+                <i class="fa-solid fa-calendar text-[10px]"></i>
+                <span id="feedScopeMobileToggleLabel">All Yrs</span>
               </button>
 
               <select id="feedScopeFilter" onchange="syncActivityScopeFromSelect()" class="hidden bg-[#0B0D12] text-[11px] sm:text-xs font-semibold text-amber-300 rounded-lg px-2.5 py-1.5 border border-white/10">
@@ -1765,7 +1823,7 @@
       <footer id="appFooterShell" class="hidden border-t border-white/[0.06] pt-4 pb-2 mt-6 no-print">
         <div class="flex flex-col sm:flex-row items-center justify-between gap-2 text-[11px] text-slate-400">
           <div class="flex items-center gap-2">
-            <span class="font-bold text-slate-400">Gamecock Mafia League Hub &amp; Draft Tracker v8.6.0</span>
+            <span class="font-bold text-slate-400">Gamecock Mafia League Hub &amp; Draft Tracker v8.7.0</span>
             <span>•</span>
             <span>Est. 2016</span>
           </div>
@@ -3633,7 +3691,7 @@
       "Depth Picks"
     ];
 
-    const APP_BUILD_VERSION = "8.6.0";
+    const APP_BUILD_VERSION = "8.7.0";
 
     let uiState = {
       isLeagueUnlocked: false,
@@ -3647,6 +3705,7 @@
       hasUnpublishedAdminEdits: false,
       myTeam: "syeth",              // Claimed franchise for this manager in standard mode
       scoutedTeamId: "",            // Read-only opponent scouting on My Team ("" = viewing own franchise)
+      scoutStripOpen: false,        // 1-tap 10-team avatar strip on My Team hero banner (A4)
       myTeamPinHash: "",
       activeYear: 2027,
       activeTab: "ledger",          // 'ledger' | 'tradecenter' | 'board' | 'capital' | 'feed' | 'pools'
@@ -3659,13 +3718,18 @@
       whatIfSwaps: [],              // [{ year, round, originalOwner, fromTeam, toTeam }]
       whatIfPlayerSwaps: [],        // [{ playerId, name, pos, nflTeam, fromTeam, toTeam }]
       whatIfTradeNote: "",          // Optional inline note when sending trade from Trade Machine
+      inlineCondSwapOpen: false,    // Inline conditional swap drawer inside sticky Deal Ready bar (A7)
+      inlineCondRoundA: 9,
+      inlineCondRoundB: 10,
+      inlineCondFavored: "A",
       counteringProposalId: "",     // Active proposal ID being countered so submit auto-replaces it
       showTradeValueMeter: true,    // Collapsible Trade Value Guide toggle
       fairnessDetailsOpen: false,   // Tap-to-peek point breakdown inside Trade Value Guide
       dealStagingExpanded: false,   // Expand/collapse asset chips drawer in sticky Deal Ready bar
       stagedModalPlayers: [],       // Player transfers attached to active trade proposal modal
       tradeMachineShowRosters: true,// Show side-by-side player swap drawer in Trade Machine
-      tradeMachineAssetMode: "ALL", // 'ALL' | 'PLAYERS' | 'PICKS' mobile-first asset focus toggle
+      tradeMachineAssetMode: (typeof window !== "undefined" && Number(window.innerWidth) > 0 && window.innerWidth < 768) ? "PLAYERS" : "ALL", // 'ALL' | 'PLAYERS' | 'PICKS' (A7)
+      tradeMachineAssetModeManual: false,
       tradeMobileRosterSide: "BOTH",// 'BOTH' | 'A' | 'B' mobile roster side toggle
       tradeMachineCompactRounds: false, // Filter Trade Machine rounds to Early Rds 1-5 & active swaps
       tradeMachinePosFilter: "ALL", // 'ALL' | 'QB' | 'RB' | 'WR' | 'TE' | 'IDP' | 'OTB' | 'KEEPERS'
@@ -3682,7 +3746,8 @@
       notifDropdownOpen: false,     // Header Action Center dropdown open state
       updateAvailableVersion: "",   // Remote version.json string when a new deploy is available
       showCapitalDrawer: false,
-      ledgerFilter: "ALL",          // 'ALL' | 'EARLY' | 'HOLDINGS' | 'TRADED_AWAY'
+      showMobileTableAdvanced: false, // Mobile Core vs Advanced Stats toggle on wide tables (A10)
+      ledgerFilter: "SMART",        // 'SMART' (Rds 1-10 + Active) | 'ALL' | 'EARLY' | 'HOLDINGS' | 'TRADED_AWAY' (A5)
       rosterPosFilter: "ALL",       // 'ALL' | 'KEEPERS' | 'QB' | 'RB' | 'WR' | 'TE' | 'IDP' | 'OTB'
       rosterPlayerSearch: "",       // Quick player search query inside My Team -> Roster & Keepers
       showUnchangedRounds: true,    // Compact 1-line round rows show all 20 rounds by default
@@ -6389,7 +6454,24 @@
       return { activeBlockEntries, totalOtbPicks, totalOtbPlayers };
     }
 
+    function toggleHeaderSeasonPopover(ev) {
+      if (ev && ev.stopPropagation) ev.stopPropagation();
+      const menu = document.getElementById("headerSeasonPopoverMenu");
+      if (!menu) return;
+      const willOpen = menu.classList.contains("hidden");
+      closeAllCustomPillPopovers();
+      if (willOpen) menu.classList.remove("hidden");
+    }
+
+    function closeAllCustomPillPopovers() {
+      ["headerSeasonPopoverMenu", "boardTeamFilterPopoverMenu", "boardLegendPopover"].forEach(id => {
+        const el = document.getElementById(id);
+        if (el) el.classList.add("hidden");
+      });
+    }
+
     function handleHeaderYearDropdownChange(val) {
+      closeAllCustomPillPopovers();
       if (val === "ARCHIVE_2016_2025" || val === "ARCHIVE_2018_2025") {
         const sel = document.getElementById("headerYearDropdownSelect");
         if (sel) sel.value = String(uiState.activeYear);
@@ -6409,8 +6491,15 @@
     function renderDynamicYearTabs() {
       const container = document.getElementById("dynamicYearTabsContainer");
       const dropdown = document.getElementById("headerYearDropdownSelect");
+      const pillLbl = document.getElementById("headerSeasonPillLabel");
+      const popMenu = document.getElementById("headerSeasonPopoverMenu");
       const base = leagueDB.baseUpcomingYear || 2027;
       const years = getVisibleDraftYears();
+
+      if (pillLbl) {
+        const activeRole = uiState.activeYear < base ? "Done" : uiState.activeYear === base ? "Live" : "+2 Yr";
+        pillLbl.textContent = `${Number(uiState.activeYear)} (${activeRole}) ▾`;
+      }
 
       if (dropdown) {
         const yearOpts = years.map(yr => {
@@ -6426,6 +6515,41 @@
           return `<option value="${Number(yr)}" ${isSelected ? 'selected' : ''}>${Number(yr)} Draft (${roleTag}${pendingTag})</option>`;
         }).join("");
         dropdown.innerHTML = yearOpts;
+      }
+
+      if (popMenu) {
+        const popItems = years.map(yr => {
+          const isSelected = yr === uiState.activeYear;
+          const yrState = evaluateYearState(yr);
+          const pendingCount = yrState.activePools.length + yrState.activeConditionals.length;
+          const roleTag = yr < base ? "Done" : yr === base ? "Live" : "+2 Yr";
+          return `
+            <button
+              type="button"
+              onclick="handleHeaderYearDropdownChange('${Number(yr)}')"
+              class="w-full px-3 py-2 rounded-xl text-left text-xs font-bold flex items-center justify-between gap-2 transition cursor-pointer ${isSelected ? 'bg-[#73000A] text-white' : 'text-slate-200 hover:bg-white/[0.06]'}"
+            >
+              <span class="font-mono font-extrabold">${Number(yr)} Draft</span>
+              <span class="flex items-center gap-1">
+                ${pendingCount > 0 ? `<span class="px-1.5 py-0.2 rounded-full bg-amber-400 text-black font-mono text-[10px] font-black">${pendingCount}!</span>` : ''}
+                <span class="text-[10px] font-mono ${isSelected ? 'text-amber-200' : 'text-slate-400'}">${roleTag}</span>
+              </span>
+            </button>
+          `;
+        }).join("");
+        popMenu.innerHTML = `
+          ${popItems}
+          <div class="pt-1 mt-1 border-t border-white/10">
+            <button
+              type="button"
+              onclick="handleHeaderYearDropdownChange('ARCHIVE_2016_2025')"
+              class="w-full px-3 py-1.5 rounded-xl text-left text-[11px] font-bold text-amber-300 hover:bg-white/[0.06] flex items-center justify-between gap-2 cursor-pointer"
+            >
+              <span><i class="fa-solid fa-box-archive mr-1.5"></i>2016–2025 Vault</span>
+              <i class="fa-solid fa-arrow-right text-[9px]"></i>
+            </button>
+          </div>
+        `;
       }
 
       if (container) {
@@ -7598,8 +7722,14 @@
       }, 30000);
 
       document.addEventListener("click", e => {
-        if (!uiState.openCardMenuId && !uiState.openReactionPickerId) return;
+        // Backdrop tap-to-close on any open modal overlay (A12)
+        if (e.target && e.target.id && e.target.id.endsWith("Modal") && !e.target.classList.contains("hidden") && e.target.id !== "passphraseGateOverlay") {
+          closeModal(e.target.id);
+          return;
+        }
         if (e.target && e.target.closest && e.target.closest("[data-popover-keep='1']")) return;
+        closeAllCustomPillPopovers();
+        if (!uiState.openCardMenuId && !uiState.openReactionPickerId) return;
         uiState.openCardMenuId = "";
         uiState.openReactionPickerId = "";
         renderAll();
@@ -7646,8 +7776,9 @@
             setMyTeamSubView(subOrder[nextIdx]);
           }
         } else if (uiState.activeTab === "capital") {
-          const order = ["CAPITAL", "STANDINGS", "VAULT", "RIVALRY", "RECORDS", "ARCHIVE"];
-          const curIdx = Math.max(0, order.indexOf(uiState.leagueHqSubTab || "CAPITAL"));
+          const order = ["STANDINGS", "VAULT", "RIVALRY", "RECORDS", "ARCHIVE"];
+          const curNorm = (uiState.leagueHqSubTab === "CAPITAL" || !uiState.leagueHqSubTab) ? "STANDINGS" : uiState.leagueHqSubTab;
+          const curIdx = Math.max(0, order.indexOf(curNorm));
           const nextIdx = dx < 0 ? Math.min(order.length - 1, curIdx + 1) : Math.max(0, curIdx - 1);
           if (nextIdx !== curIdx) {
             setLeagueHqSubTab(order[nextIdx]);
@@ -7719,8 +7850,8 @@
         }
         if (mobBtn) {
           mobBtn.className = isCurrent
-            ? "flex flex-col items-center justify-center py-1.5 min-h-[46px] rounded-lg text-[10px] font-extrabold text-white bg-[#73000A]/70 border border-[#CC1429]/70 transition relative cursor-pointer"
-            : "flex flex-col items-center justify-center py-1.5 min-h-[46px] rounded-lg text-[10px] font-bold text-slate-400 hover:text-slate-200 transition relative cursor-pointer";
+            ? "bottom-nav-active-pill flex flex-col items-center justify-center py-1.5 min-h-[46px] rounded-xl text-[10px] font-extrabold text-white bg-[#73000A]/80 border border-[#CC1429]/80 transition relative cursor-pointer"
+            : "flex flex-col items-center justify-center py-1.5 min-h-[46px] rounded-xl text-[10px] font-bold text-slate-400 hover:text-slate-200 transition relative cursor-pointer";
         }
         if (sec) {
           sec.classList.toggle("hidden", !isCurrent);
@@ -7824,6 +7955,8 @@
     }
 
     function switchMainTab(tab) {
+      const targetTab = tab === "pools" ? "feed" : tab;
+      const isReTap = uiState.activeTab === targetTab;
       if (tab === "pools") {
         uiState.activeTab = "feed";
         uiState.activitySubTab = "PENDING_FINAL";
@@ -7831,7 +7964,16 @@
         uiState.activeTab = tab;
       }
       const mainEl = document.getElementById("appMainShell");
-      if (mainEl) mainEl.scrollTop = 0;
+      if (mainEl) {
+        if (isReTap && typeof mainEl.scrollTo === "function") {
+          mainEl.scrollTo({ top: 0, behavior: "smooth" });
+        } else {
+          mainEl.scrollTop = 0;
+        }
+      }
+      if (isReTap && typeof window !== "undefined" && typeof window.scrollTo === "function") {
+        try { window.scrollTo({ top: 0, behavior: "smooth" }); } catch (e) {}
+      }
       renderAll();
     }
 
@@ -8474,6 +8616,11 @@
       renderAll();
     }
 
+    function toggleMyTeamScoutStrip() {
+      uiState.scoutStripOpen = !uiState.scoutStripOpen;
+      renderAll();
+    }
+
     async function saveQuickWarRoomBlockNote() {
       const targetTeamId = uiState.isCommish ? uiState.selectedManager : uiState.myTeam;
       if (!targetTeamId) return;
@@ -8531,7 +8678,7 @@
             : `Rd ${earliestHeldPick.round} (${getTeamName(earliestHeldPick.originalOwner)}'s)`)
         : "None";
 
-      // 1. Mobile-First War Room Command Center (Q1 = A & Q2 = A)
+      // 1. Mobile-First War Room Command Center (A3 & A4: Sleek 2-row identity + 1-line KPI strip + 1-tap Scout Avatar Strip)
       if (box) {
         const compactBlockBits = [
           ...(inspectedProf.tradeBlockNote ? [`<span class="text-xs font-semibold text-white truncate max-w-[260px] sm:max-w-[360px]">"${escapeHtml(inspectedProf.tradeBlockNote)}"</span>`] : []),
@@ -8546,50 +8693,59 @@
         }
 
         const teamSwitcherControlHtml = uiState.isCommish
-          ? `<div class="flex items-center gap-1.5 bg-[#0B0D12]/90 border border-emerald-500/50 rounded-xl px-2.5 py-1.5">
+          ? `<div class="flex items-center gap-1.5 bg-[#0B0D12]/90 border border-emerald-500/50 rounded-xl px-2.5 py-1">
                <i class="fa-solid fa-user-shield text-emerald-400 text-[11px]"></i>
                <select onchange="selectManagerInLedger(this.value)" aria-label="Admin Manage Franchise" class="bg-transparent text-white text-xs font-extrabold focus:outline-none cursor-pointer max-w-[155px] truncate">
                  ${leagueDB.teams.map(t => `<option value="${safeId(t.id)}" class="bg-[#0B0D12]" ${t.id === managedTeamId ? 'selected' : ''}>Admin: ${escapeHtml(getTeamName(t.id))}</option>`).join("")}
                </select>
              </div>`
-          : `<div class="flex items-center gap-1.5 bg-[#0B0D12]/90 border ${isScoutingOpponent ? 'border-sky-400/70' : 'border-white/15'} rounded-xl px-2.5 py-1.5" title="1-tap Opponent Scouting (read-only)">
-               <i class="fa-solid fa-binoculars ${isScoutingOpponent ? 'text-sky-400' : 'text-slate-400'} text-[11px]"></i>
-               <select id="myTeamScoutSelect" onchange="setScoutedTeamOnMyTeam(this.value)" aria-label="Scout Opponent Team" class="bg-transparent text-white text-xs font-bold focus:outline-none cursor-pointer max-w-[155px] truncate">
-                 <option value="" class="bg-[#0B0D12]" ${!isScoutingOpponent ? 'selected' : ''}>My Team: ${escapeHtml(getTeamName(uiState.myTeam))}</option>
-                 ${leagueDB.teams.filter(t => t.id !== uiState.myTeam).map(t => `<option value="${safeId(t.id)}" class="bg-[#0B0D12]" ${t.id === inspectedTeamId ? 'selected' : ''}>Scout: ${escapeHtml(getTeamName(t.id))}</option>`).join("")}
-               </select>
-             </div>`;
+          : `<button type="button" id="myTeamScoutToggleBtn" onclick="toggleMyTeamScoutStrip()" class="btn-action px-2.5 py-1 sm:py-1.5 text-[11px] sm:text-xs ${isScoutingOpponent || uiState.scoutStripOpen ? 'text-sky-300 border-sky-400/70' : 'text-slate-100'} bg-[#0B0D12]/90" title="Toggle 1-Tap Opponent Scouting Strip">
+               <i class="fa-solid fa-binoculars ${isScoutingOpponent ? 'text-sky-400' : 'text-slate-400'}"></i>
+               <span>${isScoutingOpponent ? `Scout: ${escapeHtml(getOriginalManagerName(inspectedTeamId))}` : 'Scout'}</span>
+               <i class="fa-solid ${uiState.scoutStripOpen || isScoutingOpponent ? 'fa-chevron-up' : 'fa-chevron-down'} text-[9px] opacity-75"></i>
+             </button>
+             <select id="myTeamScoutSelect" onchange="setScoutedTeamOnMyTeam(this.value)" aria-label="Scout Opponent Team" class="hidden">
+               <option value="" ${!isScoutingOpponent ? 'selected' : ''}>My Team: ${escapeHtml(getTeamName(uiState.myTeam))}</option>
+               ${leagueDB.teams.filter(t => t.id !== uiState.myTeam).map(t => `<option value="${safeId(t.id)}" ${t.id === inspectedTeamId ? 'selected' : ''}>Scout: ${escapeHtml(getTeamName(t.id))}</option>`).join("")}
+             </select>`;
+
+        const scoutAvatarStripHtml = (!uiState.isCommish && (uiState.scoutStripOpen || isScoutingOpponent)) ? `
+          <div id="myTeamScoutAvatarStrip" class="mt-2 pt-2 border-t border-white/15 flex items-center gap-1.5 overflow-x-auto no-scrollbar pb-0.5">
+            <span class="text-[10px] font-extrabold uppercase tracking-wider text-sky-300 mr-1 whitespace-nowrap flex-shrink-0"><i class="fa-solid fa-binoculars mr-1"></i>Scout:</span>
+            <button type="button" onclick="setScoutedTeamOnMyTeam('')" class="px-2.5 py-1 rounded-xl text-[11px] font-extrabold border transition flex items-center gap-1.5 flex-shrink-0 cursor-pointer ${!isScoutingOpponent ? 'bg-[#73000A] text-white border-[#CC1429] shadow' : 'bg-[#0B0D12]/90 text-slate-300 border-white/10 hover:text-white'}">
+              ${renderTeamAvatarHtml(uiState.myTeam, "w-4 h-4 text-[8px]", "rounded")}
+              <span>My Team</span>
+            </button>
+            ${leagueDB.teams.filter(t => t.id !== uiState.myTeam).map(t => {
+              const active = isScoutingOpponent && t.id === inspectedTeamId;
+              return `
+                <button type="button" onclick="setScoutedTeamOnMyTeam('${safeId(t.id)}')" class="px-2.5 py-1 rounded-xl text-[11px] font-bold border transition flex items-center gap-1.5 flex-shrink-0 cursor-pointer ${active ? 'bg-sky-950 text-sky-200 border-sky-400 shadow' : 'bg-[#0B0D12]/90 text-slate-300 border-white/10 hover:text-white'}">
+                  ${renderTeamAvatarHtml(t.id, "w-4 h-4 text-[8px]", "rounded")}
+                  <span>${escapeHtml(getOriginalManagerName(t.id))}</span>
+                </button>
+              `;
+            }).join("")}
+          </div>
+        ` : "";
 
         const totalOtbForTeam = heroOtbPlayers.length + heroOtbPicks.length;
         const commandStripHtml = `
-          <div id="warRoomCommandStrip" class="mt-2.5 sm:mt-3 grid grid-cols-2 sm:grid-cols-4 gap-1.5 sm:gap-2">
-            <button type="button" onclick="setMyTeamSubView('PICKS')" class="bg-[#0B0D12]/90 hover:bg-[#0B0D12] border border-white/10 hover:border-amber-400/50 rounded-xl p-2 sm:p-2.5 text-left transition cursor-pointer">
-              <div class="text-[10px] font-extrabold uppercase tracking-wider text-slate-400 flex items-center justify-between">
-                <span>${Number(state.year)} Capital</span>
-                <i class="fa-solid fa-layer-group text-[10px] text-amber-400"></i>
-              </div>
-              <div class="text-sm sm:text-base font-black text-white font-mono mt-0.5">${heroRankInfo.totalPicks} Picks <span class="text-[11px] font-bold text-slate-300">(${heroRankInfo.inCount} In / ${heroRankInfo.outCount} Out)</span></div>
+          <div id="warRoomCommandStrip" class="mt-2 pt-2 border-t border-white/10 flex flex-wrap items-center gap-1.5 text-[11px]">
+            <button type="button" onclick="setMyTeamSubView('PICKS')" class="px-2.5 py-1 rounded-lg bg-[#0B0D12]/90 hover:bg-[#0B0D12] border border-white/10 hover:border-amber-400/50 text-white font-mono font-bold inline-flex items-center gap-1.5 transition cursor-pointer">
+              <i class="fa-solid fa-layer-group text-[10px] text-amber-400"></i>
+              <span>${Number(state.year)} Capital: <strong>${heroRankInfo.totalPicks} Picks</strong> <span class="text-slate-300 text-[10px]">(${heroRankInfo.inCount} In / ${heroRankInfo.outCount} Out)</span></span>
             </button>
-            <button type="button" onclick="setMyTeamSubView('ROSTER')" class="bg-[#0B0D12]/90 hover:bg-[#0B0D12] border border-white/10 hover:border-emerald-400/50 rounded-xl p-2 sm:p-2.5 text-left transition cursor-pointer">
-              <div class="text-[10px] font-extrabold uppercase tracking-wider text-slate-400 flex items-center justify-between">
-                <span>Keepers</span>
-                <i class="fa-solid fa-user-lock text-[10px] text-emerald-400"></i>
-              </div>
-              <div class="text-sm sm:text-base font-black text-emerald-300 font-mono mt-0.5">${kStats.totalKeepers}/${kStats.maxKeepers} <span class="text-[11px] font-bold text-slate-300">RB ${kStats.posCounts?.RB || 0}/4 • WR ${kStats.posCounts?.WR || 0}/4</span></div>
+            <button type="button" onclick="setMyTeamSubView('ROSTER')" class="px-2.5 py-1 rounded-lg bg-[#0B0D12]/90 hover:bg-[#0B0D12] border border-white/10 hover:border-emerald-400/50 text-emerald-300 font-mono font-bold inline-flex items-center gap-1.5 transition cursor-pointer">
+              <i class="fa-solid fa-user-lock text-[10px] text-emerald-400"></i>
+              <span>Keepers: <strong>${kStats.totalKeepers}/${kStats.maxKeepers}</strong> <span class="text-slate-300 text-[10px]">(RB ${kStats.posCounts?.RB || 0}/4 • WR ${kStats.posCounts?.WR || 0}/4)</span></span>
             </button>
-            <button type="button" onclick="setMyTeamSubView('OFFERS')" class="bg-[#0B0D12]/90 hover:bg-[#0B0D12] border ${teamOffers.incomingCount > 0 ? 'border-amber-400/70' : 'border-white/10'} hover:border-sky-400/50 rounded-xl p-2 sm:p-2.5 text-left transition cursor-pointer">
-              <div class="text-[10px] font-extrabold uppercase tracking-wider text-slate-400 flex items-center justify-between">
-                <span>Offers & Block</span>
-                ${teamOffers.incomingCount > 0 ? `<span class="px-1.5 py-0.2 rounded-full bg-amber-400 text-black font-mono text-[9px] font-black">${teamOffers.incomingCount} New</span>` : `<i class="fa-solid fa-handshake text-[10px] text-sky-400"></i>`}
-              </div>
-              <div class="text-sm sm:text-base font-black text-white font-mono mt-0.5">${teamOffers.incomingCount} In <span class="text-[11px] font-bold text-amber-300">• ${totalOtbForTeam} OTB</span></div>
+            <button type="button" onclick="setMyTeamSubView('OFFERS')" class="px-2.5 py-1 rounded-lg bg-[#0B0D12]/90 hover:bg-[#0B0D12] border ${teamOffers.incomingCount > 0 ? 'border-amber-400/70 text-amber-200' : 'border-white/10 text-slate-200'} hover:border-sky-400/50 font-mono font-bold inline-flex items-center gap-1.5 transition cursor-pointer">
+              <i class="fa-solid fa-handshake text-[10px] text-sky-400"></i>
+              <span>${teamOffers.incomingCount} In • ${totalOtbForTeam} OTB</span>
             </button>
-            <button type="button" onclick="switchMainTab('board')" class="bg-[#0B0D12]/90 hover:bg-[#0B0D12] border border-white/10 hover:border-amber-400/50 rounded-xl p-2 sm:p-2.5 text-left transition cursor-pointer">
-              <div class="text-[10px] font-extrabold uppercase tracking-wider text-slate-400 flex items-center justify-between">
-                <span>Lead Pick</span>
-                <i class="fa-solid fa-table-cells text-[10px] text-amber-400"></i>
-              </div>
-              <div class="text-xs sm:text-sm font-black text-amber-300 font-mono truncate mt-0.5">${escapeHtml(leadPickDisplay)}</div>
+            <button type="button" onclick="switchMainTab('board')" class="px-2.5 py-1 rounded-lg bg-[#0B0D12]/90 hover:bg-[#0B0D12] border border-white/10 hover:border-amber-400/50 text-amber-300 font-mono font-bold inline-flex items-center gap-1.5 transition cursor-pointer">
+              <i class="fa-solid fa-table-cells text-[10px] text-amber-400"></i>
+              <span>Lead: ${escapeHtml(leadPickDisplay)}</span>
             </button>
           </div>
         `;
@@ -8643,13 +8799,13 @@
             </div>
           ` : ''}
           <div class="app-card overflow-hidden">
-            <div class="garnet-hero-banner p-2.5 sm:p-4">
-              <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-2">
-                <div class="flex items-center gap-2.5 sm:gap-3 min-w-0">
-                  ${renderTeamAvatarHtml(inspectedTeamId, "w-10 h-10 sm:w-12 sm:h-12 text-sm sm:text-lg shadow-lg", "rounded-2xl")}
-                  <div class="min-w-0 flex-1 space-y-0.5">
+            <div class="garnet-hero-banner p-2.5 sm:p-3.5">
+              <div class="flex flex-wrap items-center justify-between gap-2">
+                <div class="flex items-center gap-2.5 min-w-0">
+                  ${renderTeamAvatarHtml(inspectedTeamId, "w-9 h-9 sm:w-11 sm:h-11 text-sm sm:text-base shadow-lg", "rounded-2xl")}
+                  <div class="min-w-0 flex-1">
                     <div class="flex flex-wrap items-center gap-1.5">
-                      <h2 class="text-base sm:text-xl font-black text-white tracking-tight truncate">${inspectedName}</h2>
+                      <h2 class="text-base sm:text-lg font-black text-white tracking-tight truncate">${inspectedName}</h2>
                       ${inspectedHasPin && !isScoutingOpponent ? `<span class="static-badge bg-emerald-950/90 text-emerald-300 border border-emerald-600/50"><i class="fa-solid fa-lock"></i> PIN</span>` : ''}
                     </div>
                     <div class="text-[11px] text-slate-300">Manager: <strong class="text-white">${escapeHtml(getOriginalManagerName(inspectedTeamId))}</strong></div>
@@ -8670,6 +8826,8 @@
                   ` : ''}
                 </div>
               </div>
+
+              ${scoutAvatarStripHtml}
 
               ${commandStripHtml}
 
@@ -8841,7 +8999,7 @@
         `;
       }
 
-      // 2. Actionable 1-Tap Asset Market League Trade Block in Tab 2 (#leagueTradeBlockContainer — A2 = Option A)
+      // 2. Actionable 1-Tap Asset Market League Trade Block in Tab 2 (#leagueTradeBlockContainer — A6 Horizontal Strip on Mobile)
       const tradeBlockBox = document.getElementById("leagueTradeBlockContainer");
       if (tradeBlockBox) {
         const curFilter = uiState.tradeBlockFilter || "ALL";
@@ -8869,14 +9027,14 @@
         });
 
         const filterPillsHtml = activeBlockEntries.length > 0 ? `
-          <div class="segmented-bar flex-wrap">
+          <div class="segmented-bar overflow-x-auto no-scrollbar max-w-full">
             ${[
               { id: "ALL", label: `All Active (${activeBlockEntries.length})`, icon: "fa-bolt" },
               { id: "PLAYERS", label: `Players OTB (${totalOtbPlayers})`, icon: "fa-football" },
               { id: "PICKS", label: `Picks OTB (${totalOtbPicks})`, icon: "fa-ticket" },
               { id: "NEEDS_MATCH", label: "Needs Match", icon: "fa-bullseye" }
             ].map(f => `
-              <button type="button" onclick="setTradeBlockMarketFilter('${f.id}')" class="segmented-pill ${curFilter === f.id ? 'active' : ''}">
+              <button type="button" onclick="setTradeBlockMarketFilter('${f.id}')" class="segmented-pill whitespace-nowrap ${curFilter === f.id ? 'active' : ''}">
                 <i class="fa-solid ${f.icon} text-[10px]"></i>
                 <span>${f.label}</span>
               </button>
@@ -8885,7 +9043,7 @@
         ` : "";
 
         const cardsHtml = activeBlockEntries.length === 0
-          ? `<div class="bg-[#0B0D12] border border-white/10 rounded-xl p-3.5 text-xs text-slate-400 flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+          ? `<div class="bg-[#0B0D12] border border-white/10 rounded-xl p-3 text-xs text-slate-400 flex flex-col sm:flex-row sm:items-center justify-between gap-2">
                <span>No franchises have tagged <strong class="text-amber-300">On Block</strong> players/picks or posted Trade Block needs yet.</span>
                <button onclick="openMoreToolsModal('PROFILE')" class="btn-garnet px-3 py-1.5 text-xs self-start sm:self-auto">
                  <i class="fa-solid fa-pen-to-square"></i>
@@ -8893,16 +9051,16 @@
                </button>
              </div>`
           : filteredBlockEntries.length === 0
-          ? `<div class="bg-[#0B0D12] border border-white/10 rounded-xl p-3.5 text-xs text-slate-400 flex items-center justify-between gap-2 ${uiState.tradeBlockCollapsed ? 'hidden' : ''}">
+          ? `<div class="bg-[#0B0D12] border border-white/10 rounded-xl p-3 text-xs text-slate-400 flex items-center justify-between gap-2 ${uiState.tradeBlockCollapsed ? 'hidden' : ''}">
                <span>No franchises match the <strong class="text-white">${escapeHtml(curFilter)}</strong> Trade Block filter right now.</span>
                <button type="button" onclick="setTradeBlockMarketFilter('ALL')" class="btn-action px-2.5 py-1 text-[11px] text-sky-300">Show All Active</button>
              </div>`
-          : `<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-2.5 ${uiState.tradeBlockCollapsed ? 'hidden' : ''}">
+          : `<div class="flex md:grid md:grid-cols-2 lg:grid-cols-3 gap-2.5 overflow-x-auto no-scrollbar pb-1 ${uiState.tradeBlockCollapsed ? 'hidden' : ''}">
                ${filteredBlockEntries.map(entry => {
                  const isMe = entry.team.id === uiState.myTeam;
                  const canStage = entry.team.id !== (uiState.isCommish ? uiState.selectedManager : uiState.myTeam);
                  return `
-                   <div class="bg-[#0B0D12] border ${isMe ? 'border-[#CC1429]/70' : 'border-white/10'} rounded-xl p-3 flex flex-col justify-between gap-2 hover:border-white/25 transition min-w-0">
+                   <div class="bg-[#0B0D12] border ${isMe ? 'border-[#CC1429]/70' : 'border-white/10'} rounded-xl p-3 flex flex-col justify-between gap-2 hover:border-white/25 transition min-w-[260px] md:min-w-0 flex-shrink-0">
                      <div class="space-y-2 min-w-0">
                        <div class="flex items-center justify-between gap-2">
                          <div class="flex items-center gap-2 min-w-0">
@@ -8947,14 +9105,13 @@
              </div>`;
 
         tradeBlockBox.innerHTML = `
-          <div class="app-card p-3.5 sm:p-4 space-y-2.5">
+          <div class="app-card p-3 sm:p-3.5 space-y-2">
             <div class="flex flex-wrap items-center justify-between gap-2">
               <div class="flex flex-wrap items-center gap-2 min-w-0">
                 <span class="static-badge bg-amber-950 text-amber-300 border border-amber-500/60 flex-shrink-0">
                   <i class="fa-solid fa-store"></i> League Trade Block
                 </span>
-                <h2 class="text-sm sm:text-base font-black text-white truncate">Active Market (${activeBlockEntries.length} ${activeBlockEntries.length === 1 ? 'Team' : 'Teams'})</h2>
-                <span class="hidden sm:inline text-[11px] text-slate-400">Tap any asset chip to stage it directly in the Trade Machine below</span>
+                <h2 class="text-xs sm:text-sm font-black text-white truncate">Active Market (${activeBlockEntries.length} ${activeBlockEntries.length === 1 ? 'Team' : 'Teams'} • ${totalOtbPlayers} Players • ${totalOtbPicks} Picks)</h2>
               </div>
               <div class="flex items-center gap-1.5">
                 <button type="button" onclick="openMoreToolsModal('PROFILE')" class="btn-action px-2.5 py-1 text-[11px] text-amber-300">
@@ -8963,7 +9120,7 @@
                 </button>
                 <button type="button" onclick="toggleTradeBlockCollapsed()" class="btn-action px-2.5 py-1 text-[11px] text-slate-300">
                   <i class="fa-solid ${uiState.tradeBlockCollapsed ? 'fa-chevron-down' : 'fa-chevron-up'}"></i>
-                  <span>${uiState.tradeBlockCollapsed ? 'Expand' : 'Collapse'}</span>
+                  <span>${uiState.tradeBlockCollapsed ? 'Expand Market' : 'Collapse'}</span>
                 </button>
               </div>
             </div>
@@ -9893,39 +10050,46 @@
       return Boolean(computeHeadToHeadMatrix().__hasRealH2H);
     }
 
+    function toggleMobileTableAdvancedStats() {
+      uiState.showMobileTableAdvanced = !uiState.showMobileTableAdvanced;
+      renderAll();
+    }
+
     function buildLeagueHqSubNavHtml() {
-      const cur = uiState.leagueHqSubTab || "CAPITAL";
+      const cur = uiState.leagueHqSubTab || "STANDINGS";
       const tabs = [
-        { id: "CAPITAL", icon: "fa-layer-group", label: "Overview" },
-        { id: "STANDINGS", icon: "fa-football", label: "Season Standings" },
-        { id: "VAULT", icon: "fa-trophy", label: "Career Leaders" },
+        { id: "STANDINGS", icon: "fa-football", label: "Standings" },
+        { id: "VAULT", icon: "fa-trophy", label: "Career" },
         { id: "RIVALRY", icon: "fa-people-arrows", label: "Rivalries" },
-        { id: "RECORDS", icon: "fa-book", label: "Record Book" },
+        { id: "RECORDS", icon: "fa-book", label: "Records" },
         { id: "ARCHIVE", icon: "fa-clock-rotate-left", label: "Archive" }
       ];
+      const activeId = (cur === "CAPITAL" || cur === "STANDINGS") ? "STANDINGS" : cur;
       return `
-        <div class="sticky-subnav-bar app-card p-2.5 sm:p-3 flex flex-wrap items-center justify-between gap-2">
-          <div class="segmented-bar flex-wrap">
+        <div class="sticky-subnav-bar app-card p-2 sm:p-2.5 flex items-center justify-between gap-2">
+          <div class="segmented-bar overflow-x-auto no-scrollbar max-w-full flex-nowrap">
             ${tabs.map(t => `
               <button
                 type="button"
                 id="leagueHqTab-${t.id}"
                 onclick="setLeagueHqSubTab('${t.id}')"
-                class="segmented-pill ${cur === t.id ? 'active' : ''}"
+                class="segmented-pill whitespace-nowrap ${activeId === t.id ? 'active' : ''}"
               >
                 <i class="fa-solid ${t.icon} text-[11px]"></i>
                 <span>${t.label}</span>
               </button>
             `).join("")}
+            <button type="button" id="leagueHqTab-CAPITAL" onclick="setLeagueHqSubTab('STANDINGS')" class="hidden">Back to Overview</button>
           </div>
-          ${cur !== "CAPITAL" ? `
-            <div class="flex items-center gap-1.5">
-              <button type="button" onclick="setLeagueHqSubTab('CAPITAL')" class="btn-action px-2.5 py-1.5 text-xs text-sky-300">
-                <i class="fa-solid fa-arrow-left"></i>
-                <span>Back to Overview</span>
-              </button>
-            </div>
-          ` : ''}
+          <button
+            type="button"
+            onclick="toggleMobileTableAdvancedStats()"
+            class="sm:hidden btn-action px-2 py-1 text-[10px] ${uiState.showMobileTableAdvanced ? 'text-amber-300 border-amber-400/60' : 'text-slate-300'} flex-shrink-0"
+            title="Toggle Advanced Table Columns on Mobile"
+          >
+            <i class="fa-solid fa-table-columns text-[10px]"></i>
+            <span>${uiState.showMobileTableAdvanced ? 'Core' : '+Stats'}</span>
+          </button>
         </div>
       `;
     }
@@ -10024,10 +10188,10 @@
 
         return `
           <tr class="border-b border-white/[0.06] hover:bg-white/[0.03] transition text-xs ${isChamp ? 'bg-amber-950/15' : isTbWin ? 'bg-sky-950/15' : isFeaster ? 'bg-fuchsia-950/15' : ''}">
-            <td class="py-2.5 px-3 font-mono font-black text-center ${isChamp ? 'text-amber-300' : isTbWin ? 'text-sky-300' : isFeaster ? 'text-fuchsia-300' : 'text-slate-400'}">
+            <td class="py-2.5 px-2.5 sm:px-3 font-mono font-black text-center ${isChamp ? 'text-amber-300' : isTbWin ? 'text-sky-300' : isFeaster ? 'text-fuchsia-300' : 'text-slate-400'}">
               ${finishBadge}
             </td>
-            <td class="py-2.5 px-3 font-black text-white">
+            <td class="py-2.5 px-2.5 sm:px-3 font-black text-white sticky-mgr-col">
               <div class="flex items-center gap-2">
                 ${renderTeamAvatarHtml(st.teamId, "w-6 h-6 text-[10px]", "rounded-md")}
                 <div class="min-w-0">
@@ -10035,18 +10199,18 @@
                     <span>${ownerName}</span>
                     ${ownerId !== st.teamId ? `<span class="text-[10px] text-amber-300 font-mono">(${escapeHtml(getOriginalManagerName(st.teamId))} Slot)</span>` : ''}
                   </div>
-                  ${st.teamName ? `<div class="text-[10px] text-slate-400 font-normal truncate">${escapeHtml(st.teamName)}</div>` : ''}
+                  ${st.teamName ? `<div class="text-[10px] text-slate-400 font-normal truncate max-w-[125px] sm:max-w-none">${escapeHtml(st.teamName)}</div>` : ''}
                 </div>
               </div>
             </td>
-            <td class="py-2.5 px-3 font-mono font-bold text-center text-white">${st.wins}-${st.losses}${st.ties ? '-' + st.ties : ''}</td>
-            <td class="py-2.5 px-3 font-mono font-bold text-center text-emerald-300">${pfVal.toFixed(1)} <span class="text-[10px] text-slate-500">(${pfPerGame}/g)</span></td>
-            <td class="py-2.5 px-3 font-mono text-center text-slate-300">${paVal.toFixed(1)}</td>
-            <td class="py-2.5 px-3 font-mono font-bold text-center ${Number(ptDiff) >= 0 ? 'text-emerald-400' : 'text-rose-400'}">${Number(ptDiff) >= 0 ? '+' + ptDiff : ptDiff}</td>
-            <td class="py-2.5 px-3 font-mono text-center text-sky-300">${st.allPlayWins || 0}-${st.allPlayLosses || 0}</td>
-            <td class="py-2.5 px-3 font-mono text-center ${Number(luckDelta) >= 0 ? 'text-emerald-400' : 'text-rose-400'}">${Number(luckDelta) >= 0 ? '+' + luckDelta : luckDelta} W</td>
-            <td class="py-2.5 px-3 font-mono text-center text-slate-300">${escapeHtml(movesLabel)}</td>
-            <td class="py-2.5 px-3 font-mono text-center text-amber-300">#${st.playoffSeed || (idx + 1)}</td>
+            <td class="py-2.5 px-2.5 sm:px-3 font-mono font-bold text-center text-white">${st.wins}-${st.losses}${st.ties ? '-' + st.ties : ''}</td>
+            <td class="py-2.5 px-2.5 sm:px-3 font-mono font-bold text-center text-emerald-300">${pfVal.toFixed(1)} <span class="text-[10px] text-slate-500">(${pfPerGame}/g)</span></td>
+            <td class="py-2.5 px-2.5 sm:px-3 font-mono text-center text-slate-300 mobile-adv-col">${paVal.toFixed(1)}</td>
+            <td class="py-2.5 px-2.5 sm:px-3 font-mono font-bold text-center mobile-adv-col ${Number(ptDiff) >= 0 ? 'text-emerald-400' : 'text-rose-400'}">${Number(ptDiff) >= 0 ? '+' + ptDiff : ptDiff}</td>
+            <td class="py-2.5 px-2.5 sm:px-3 font-mono text-center text-sky-300 mobile-adv-col">${st.allPlayWins || 0}-${st.allPlayLosses || 0}</td>
+            <td class="py-2.5 px-2.5 sm:px-3 font-mono text-center mobile-adv-col ${Number(luckDelta) >= 0 ? 'text-emerald-400' : 'text-rose-400'}">${Number(luckDelta) >= 0 ? '+' + luckDelta : luckDelta} W</td>
+            <td class="py-2.5 px-2.5 sm:px-3 font-mono text-center text-slate-300 mobile-adv-col">${escapeHtml(movesLabel)}</td>
+            <td class="py-2.5 px-2.5 sm:px-3 font-mono text-center text-amber-300 mobile-adv-col">#${st.playoffSeed || (idx + 1)}</td>
           </tr>
         `;
       }).join("");
@@ -10067,11 +10231,19 @@
               <p class="text-xs text-slate-400 mt-0.5">Post-playoff Final Standings determine <strong class="text-amber-300">Champion (#1 • Slot 1.10)</strong> and <strong class="text-fuchsia-300">Phallic Feaster (#10 • Slot 1.05 + renamed by Champ)</strong> • Toilet Bowl Winner earns <strong class="text-sky-300">1.01</strong>. Trading Pick 1.05 never passes on the Feaster penalty.</p>
             </div>
             <div class="flex flex-wrap items-center gap-2">
-              <div class="segmented-bar flex-wrap">
+              <div class="segmented-bar overflow-x-auto no-scrollbar max-w-full flex-nowrap">
                 ${years.map(y => `
                   <button type="button" onclick="setLeagueHqSeasonYear(${y})" class="segmented-pill font-mono ${y === selectedYr ? 'active' : ''}">${y}</button>
                 `).join("")}
               </div>
+              <button
+                type="button"
+                onclick="toggleMobileTableAdvancedStats()"
+                class="sm:hidden btn-action px-2.5 py-1 text-[11px] ${uiState.showMobileTableAdvanced ? 'text-amber-300 border-amber-400/60' : 'text-sky-300'}"
+              >
+                <i class="fa-solid fa-table-columns text-[10px]"></i>
+                <span>${uiState.showMobileTableAdvanced ? 'Core Stats' : 'Advanced Stats'}</span>
+              </button>
               ${uiState.isCommish ? `
                 <button type="button" id="seedDraftOrderFromEspnBtn" onclick="seedDraftOrderFromEspnStandings(${selectedYr})" class="btn-garnet px-3 py-1.5 text-xs" title="Auto-populate ${uiState.activeYear} 1–10 Gamecock Draft Order (1.01 Toilet Bowl Winner, 1.05 Phallic Feaster, 1.10 Champion)">
                   <i class="fa-solid fa-list-ol"></i>
@@ -10087,47 +10259,47 @@
                 <div class="text-[10px] font-extrabold uppercase text-amber-400 truncate">${isCompletedSeason ? 'Champion (#1 • 1.10)' : 'Current #1 Seed'}</div>
                 <div class="text-xs sm:text-sm font-black text-white truncate">${champName}</div>
               </div>
-              <span class="text-lg flex-shrink-0">${isCompletedSeason ? '🏆' : '<i class="fa-solid fa-crown text-amber-300 text-sm"></i>'}</span>
+              <span class="text-lg text-white flex-shrink-0">${isCompletedSeason ? '🏆' : '<i class="fa-solid fa-crown text-amber-300 text-sm"></i>'}</span>
             </div>
             <div class="bg-[#0B0D12] border border-white/10 rounded-xl px-3 py-2 flex items-center justify-between gap-2">
               <div class="min-w-0">
                 <div class="text-[10px] font-extrabold uppercase text-slate-400 truncate">${isCompletedSeason ? 'Runner-Up (#2 • 1.09)' : 'Current #2 Seed'}</div>
                 <div class="text-xs sm:text-sm font-black text-slate-200 truncate">${runnerName}</div>
               </div>
-              <span class="text-lg flex-shrink-0">${isCompletedSeason ? '🥈' : '<i class="fa-solid fa-medal text-slate-300 text-sm"></i>'}</span>
+              <span class="text-lg text-white flex-shrink-0">${isCompletedSeason ? '🥈' : '<i class="fa-solid fa-medal text-slate-300 text-sm"></i>'}</span>
             </div>
             <div class="bg-[#0B0D12] border border-sky-500/35 rounded-xl px-3 py-2 flex items-center justify-between gap-2">
               <div class="min-w-0">
                 <div class="text-[10px] font-extrabold uppercase text-sky-400 truncate">${isCompletedSeason ? 'Toilet Bowl (1.01)' : '1.01 Race'}</div>
                 <div class="text-xs sm:text-sm font-black text-sky-200 truncate">${tbWinnerName}</div>
               </div>
-              <span class="text-lg flex-shrink-0">🧻</span>
+              <span class="text-lg text-white flex-shrink-0">🧻</span>
             </div>
             <div class="bg-[#0B0D12] border border-fuchsia-500/40 rounded-xl px-3 py-2 flex items-center justify-between gap-2">
               <div class="min-w-0">
                 <div class="text-[10px] font-extrabold uppercase text-fuchsia-400 truncate">${isCompletedSeason ? 'Phallic Feaster (#10)' : 'Current #10'}</div>
                 <div class="text-xs sm:text-sm font-black text-fuchsia-200 truncate">${feasterName}</div>
               </div>
-              <span class="text-lg flex-shrink-0">${isCompletedSeason ? '🍆' : '<i class="fa-solid fa-arrow-trend-down text-fuchsia-300 text-sm"></i>'}</span>
+              <span class="text-lg text-white flex-shrink-0">${isCompletedSeason ? '🍆' : '<i class="fa-solid fa-arrow-trend-down text-fuchsia-300 text-sm"></i>'}</span>
             </div>
           </div>
 
           ${champRenamePanelHtml}
 
           <div class="overflow-x-auto rounded-xl border border-white/10">
-            <table class="w-full text-left border-collapse">
+            <table class="w-full text-left border-collapse ${uiState.showMobileTableAdvanced ? 'show-mobile-adv' : ''}">
               <thead>
                 <tr class="border-b border-white/10 text-[10px] font-extrabold uppercase tracking-wider text-slate-400 bg-[#0B0D12]">
-                  <th class="py-2.5 px-3 text-center">Finish</th>
-                  <th class="py-2.5 px-3">Manager / ESPN Team</th>
-                  <th class="py-2.5 px-3 text-center">Record</th>
-                  <th class="py-2.5 px-3 text-center">Points For (PF)</th>
-                  <th class="py-2.5 px-3 text-center">PA</th>
-                  <th class="py-2.5 px-3 text-center">Diff (+/-)</th>
-                  <th class="py-2.5 px-3 text-center">All-Play W-L</th>
-                  <th class="py-2.5 px-3 text-center">Schedule Luck</th>
-                  <th class="py-2.5 px-3 text-center">Moves</th>
-                  <th class="py-2.5 px-3 text-center">Seed</th>
+                  <th class="py-2.5 px-2.5 sm:px-3 text-center">Finish</th>
+                  <th class="py-2.5 px-2.5 sm:px-3 sticky-mgr-col">Manager / ESPN Team</th>
+                  <th class="py-2.5 px-2.5 sm:px-3 text-center">Record</th>
+                  <th class="py-2.5 px-2.5 sm:px-3 text-center">Points For (PF)</th>
+                  <th class="py-2.5 px-2.5 sm:px-3 text-center mobile-adv-col">PA</th>
+                  <th class="py-2.5 px-2.5 sm:px-3 text-center mobile-adv-col">Diff (+/-)</th>
+                  <th class="py-2.5 px-2.5 sm:px-3 text-center mobile-adv-col">All-Play W-L</th>
+                  <th class="py-2.5 px-2.5 sm:px-3 text-center mobile-adv-col">Schedule Luck</th>
+                  <th class="py-2.5 px-2.5 sm:px-3 text-center mobile-adv-col">Moves</th>
+                  <th class="py-2.5 px-2.5 sm:px-3 text-center mobile-adv-col">Seed</th>
                 </tr>
               </thead>
               <tbody>
@@ -10144,8 +10316,8 @@
 
       const buildRow = (m, idx) => `
         <tr class="border-b border-white/[0.06] hover:bg-white/[0.03] transition text-xs">
-          <td class="py-2.5 px-3 font-mono font-black text-center text-slate-400">#${idx + 1}</td>
-          <td class="py-2.5 px-3 font-black text-white">
+          <td class="py-2.5 px-2.5 sm:px-3 font-mono font-black text-center text-slate-400">#${idx + 1}</td>
+          <td class="py-2.5 px-2.5 sm:px-3 font-black text-white sticky-mgr-col">
             <div class="flex items-center gap-2">
               ${!m.isAlumni ? renderTeamAvatarHtml(m.id, "w-6 h-6 text-[10px]", "rounded-md") : `<span class="w-6 h-6 rounded-md bg-[#13161F] border border-white/10 text-[10px] font-mono inline-flex items-center justify-center text-slate-300">AL</span>`}
               <div>
@@ -10154,19 +10326,19 @@
               </div>
             </div>
           </td>
-          <td class="py-2.5 px-3 font-mono text-center text-slate-300">${m.seasonsPlayed}</td>
-          <td class="py-2.5 px-3 font-mono font-bold text-center text-amber-300">
+          <td class="py-2.5 px-2.5 sm:px-3 font-mono text-center text-slate-300 mobile-adv-col">${m.seasonsPlayed}</td>
+          <td class="py-2.5 px-2.5 sm:px-3 font-mono font-bold text-center text-amber-300">
             ${m.championships > 0 ? `🏆 × ${m.championships} <span class="text-[10px] text-slate-400">(${m.champYears.join(', ')})</span>` : '—'}
           </td>
-          <td class="py-2.5 px-3 font-mono text-center text-fuchsia-300">
+          <td class="py-2.5 px-2.5 sm:px-3 font-mono text-center text-fuchsia-300 mobile-adv-col">
             ${m.toiletBowls > 0 ? `🍆 × ${m.toiletBowls} <span class="text-[10px] text-slate-500">(${m.toiletYears.join(', ')})</span>` : '—'}
           </td>
-          <td class="py-2.5 px-3 font-mono font-bold text-center text-white">${m.wins}-${m.losses}${m.ties ? '-' + m.ties : ''}</td>
-          <td class="py-2.5 px-3 font-mono font-extrabold text-center text-emerald-300">${(m.winPct * 100).toFixed(1)}%</td>
-          <td class="py-2.5 px-3 font-mono text-center text-sky-300">${m.pointsFor.toLocaleString()}</td>
-          <td class="py-2.5 px-3 font-mono font-bold text-center ${m.pointDiff >= 0 ? 'text-emerald-400' : 'text-rose-400'}">${m.pointDiff >= 0 ? '+' + m.pointDiff.toFixed(1) : m.pointDiff.toFixed(1)}</td>
-          <td class="py-2.5 px-3 font-mono text-center text-slate-300">${m.allPlayWins}-${m.allPlayLosses} <span class="text-[10px] text-slate-400">(${(m.allPlayPct * 100).toFixed(1)}%)</span></td>
-          <td class="py-2.5 px-3 font-mono text-center ${m.scheduleLuck >= 0 ? 'text-emerald-400' : 'text-rose-400'}">${m.scheduleLuck >= 0 ? '+' + m.scheduleLuck.toFixed(1) : m.scheduleLuck.toFixed(1)} W</td>
+          <td class="py-2.5 px-2.5 sm:px-3 font-mono font-bold text-center text-white">${m.wins}-${m.losses}${m.ties ? '-' + m.ties : ''}</td>
+          <td class="py-2.5 px-2.5 sm:px-3 font-mono font-extrabold text-center text-emerald-300">${(m.winPct * 100).toFixed(1)}%</td>
+          <td class="py-2.5 px-2.5 sm:px-3 font-mono text-center text-sky-300">${m.pointsFor.toLocaleString()}</td>
+          <td class="py-2.5 px-2.5 sm:px-3 font-mono font-bold text-center mobile-adv-col ${m.pointDiff >= 0 ? 'text-emerald-400' : 'text-rose-400'}">${m.pointDiff >= 0 ? '+' + m.pointDiff.toFixed(1) : m.pointDiff.toFixed(1)}</td>
+          <td class="py-2.5 px-2.5 sm:px-3 font-mono text-center text-slate-300 mobile-adv-col">${m.allPlayWins}-${m.allPlayLosses} <span class="text-[10px] text-slate-400">(${(m.allPlayPct * 100).toFixed(1)}%)</span></td>
+          <td class="py-2.5 px-2.5 sm:px-3 font-mono text-center mobile-adv-col ${m.scheduleLuck >= 0 ? 'text-emerald-400' : 'text-rose-400'}">${m.scheduleLuck >= 0 ? '+' + m.scheduleLuck.toFixed(1) : m.scheduleLuck.toFixed(1)} W</td>
         </tr>
       `;
 
@@ -10183,28 +10355,38 @@
                 </div>
                 <p class="text-xs text-slate-400 mt-0.5">Completed-season titles, Phallic Feaster (#10) finishes, career point differential, all-play W-L, and schedule luck across 2016–present.</p>
               </div>
-              ${uiState.isCommish ? `
-                <button type="button" onclick="openEspnSyncModal()" class="btn-action px-3 py-1.5 text-xs text-sky-300">
-                  <i class="fa-solid fa-user-clock"></i>
-                  <span>Edit Historical Owner Mapping</span>
+              <div class="flex items-center gap-1.5">
+                <button
+                  type="button"
+                  onclick="toggleMobileTableAdvancedStats()"
+                  class="sm:hidden btn-action px-2.5 py-1 text-[11px] ${uiState.showMobileTableAdvanced ? 'text-amber-300 border-amber-400/60' : 'text-sky-300'}"
+                >
+                  <i class="fa-solid fa-table-columns text-[10px]"></i>
+                  <span>${uiState.showMobileTableAdvanced ? 'Core Stats' : 'Advanced Stats'}</span>
                 </button>
-              ` : ''}
+                ${uiState.isCommish ? `
+                  <button type="button" onclick="openEspnSyncModal()" class="btn-action px-3 py-1.5 text-xs text-sky-300">
+                    <i class="fa-solid fa-user-clock"></i>
+                    <span>Edit Historical Owner Mapping</span>
+                  </button>
+                ` : ''}
+              </div>
             </div>
             <div class="overflow-x-auto rounded-xl border border-white/10">
-              <table class="w-full text-left border-collapse">
+              <table class="w-full text-left border-collapse ${uiState.showMobileTableAdvanced ? 'show-mobile-adv' : ''}">
                 <thead>
                   <tr class="border-b border-white/10 text-[10px] font-extrabold uppercase tracking-wider text-slate-400 bg-[#0B0D12]">
-                    <th class="py-2.5 px-3 text-center">Rank</th>
-                    <th class="py-2.5 px-3">Manager</th>
-                    <th class="py-2.5 px-3 text-center">Seasons</th>
-                    <th class="py-2.5 px-3 text-center">Titles 🏆</th>
-                    <th class="py-2.5 px-3 text-center">Phallic Feaster 🍆</th>
-                    <th class="py-2.5 px-3 text-center">Career W-L</th>
-                    <th class="py-2.5 px-3 text-center">Win %</th>
-                    <th class="py-2.5 px-3 text-center">Career PF</th>
-                    <th class="py-2.5 px-3 text-center">Diff (+/-)</th>
-                    <th class="py-2.5 px-3 text-center">All-Play W-L</th>
-                    <th class="py-2.5 px-3 text-center">Career Luck</th>
+                    <th class="py-2.5 px-2.5 sm:px-3 text-center">Rank</th>
+                    <th class="py-2.5 px-2.5 sm:px-3 sticky-mgr-col">Manager</th>
+                    <th class="py-2.5 px-2.5 sm:px-3 text-center mobile-adv-col">Seasons</th>
+                    <th class="py-2.5 px-2.5 sm:px-3 text-center">Titles 🏆</th>
+                    <th class="py-2.5 px-2.5 sm:px-3 text-center mobile-adv-col">Phallic Feaster 🍆</th>
+                    <th class="py-2.5 px-2.5 sm:px-3 text-center">Career W-L</th>
+                    <th class="py-2.5 px-2.5 sm:px-3 text-center">Win %</th>
+                    <th class="py-2.5 px-2.5 sm:px-3 text-center">Career PF</th>
+                    <th class="py-2.5 px-2.5 sm:px-3 text-center mobile-adv-col">Diff (+/-)</th>
+                    <th class="py-2.5 px-2.5 sm:px-3 text-center mobile-adv-col">All-Play W-L</th>
+                    <th class="py-2.5 px-2.5 sm:px-3 text-center mobile-adv-col">Career Luck</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -10228,20 +10410,20 @@
               </div>
             </div>
             <div class="overflow-x-auto rounded-xl border border-white/10">
-              <table class="w-full text-left border-collapse">
+              <table class="w-full text-left border-collapse ${uiState.showMobileTableAdvanced ? 'show-mobile-adv' : ''}">
                 <thead>
                   <tr class="border-b border-white/10 text-[10px] font-extrabold uppercase tracking-wider text-slate-400 bg-[#0B0D12]">
-                    <th class="py-2 px-3 text-center">#</th>
-                    <th class="py-2 px-3">Former Manager</th>
-                    <th class="py-2 px-3 text-center">Seasons</th>
-                    <th class="py-2 px-3 text-center">Titles 🏆</th>
-                    <th class="py-2 px-3 text-center">Phallic Feaster 🍆</th>
-                    <th class="py-2 px-3 text-center">Career W-L</th>
-                    <th class="py-2 px-3 text-center">Win %</th>
-                    <th class="py-2 px-3 text-center">Career PF</th>
-                    <th class="py-2 px-3 text-center">Diff (+/-)</th>
-                    <th class="py-2 px-3 text-center">All-Play W-L</th>
-                    <th class="py-2 px-3 text-center">Career Luck</th>
+                    <th class="py-2 px-2.5 sm:px-3 text-center">#</th>
+                    <th class="py-2 px-2.5 sm:px-3 sticky-mgr-col">Former Manager</th>
+                    <th class="py-2 px-2.5 sm:px-3 text-center mobile-adv-col">Seasons</th>
+                    <th class="py-2 px-2.5 sm:px-3 text-center">Titles 🏆</th>
+                    <th class="py-2 px-2.5 sm:px-3 text-center mobile-adv-col">Phallic Feaster 🍆</th>
+                    <th class="py-2 px-2.5 sm:px-3 text-center">Career W-L</th>
+                    <th class="py-2 px-2.5 sm:px-3 text-center">Win %</th>
+                    <th class="py-2 px-2.5 sm:px-3 text-center">Career PF</th>
+                    <th class="py-2 px-2.5 sm:px-3 text-center mobile-adv-col">Diff (+/-)</th>
+                    <th class="py-2 px-2.5 sm:px-3 text-center mobile-adv-col">All-Play W-L</th>
+                    <th class="py-2 px-2.5 sm:px-3 text-center mobile-adv-col">Career Luck</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -10691,13 +10873,11 @@
     function renderLeagueCapitalSection(state) {
       const container = document.getElementById("leagueCapitalStandingsContainer");
       if (!container) return;
-      const curSub = uiState.leagueHqSubTab || "CAPITAL";
+      const curSub = uiState.leagueHqSubTab || "STANDINGS";
       const navHtml = buildLeagueHqSubNavHtml();
       const sampleBannerHtml = curSub === "ARCHIVE" ? "" : buildEspnSampleDataNoticeHtml(curSub);
       let bodyHtml = "";
-      if (curSub === "STANDINGS") {
-        bodyHtml = buildEspnStandingsHtml();
-      } else if (curSub === "VAULT") {
+      if (curSub === "VAULT") {
         bodyHtml = buildAllTimeVaultHtml();
       } else if (curSub === "RIVALRY") {
         bodyHtml = buildRivalryMatrixHtml();
@@ -10706,7 +10886,7 @@
       } else if (curSub === "ARCHIVE") {
         bodyHtml = typeof buildInlineLeagueArchiveHtml === "function" ? buildInlineLeagueArchiveHtml() : "";
       } else {
-        bodyHtml = `${buildLeagueCapitalTableHtml(state, false)}${buildLeagueHubStackedCardsHtml()}`;
+        bodyHtml = `<div class="space-y-4">${buildEspnStandingsHtml()}${buildLeagueCapitalTableHtml(state, false)}${buildLeagueHubStackedCardsHtml()}</div>`;
       }
       container.innerHTML = `<div class="space-y-3.5">${navHtml}${sampleBannerHtml}${bodyHtml}</div>`;
     }
@@ -11287,8 +11467,32 @@
 
     function setTradeMachineAssetMode(mode) {
       uiState.tradeMachineAssetMode = ["ALL", "PLAYERS", "PICKS"].includes(mode) ? mode : "ALL";
+      uiState.tradeMachineAssetModeManual = true;
       const state = evaluateYearState(uiState.activeYear);
       renderTwoTeamComparisonLedger(state);
+    }
+
+    function toggleInlineConditionalDrawer() {
+      uiState.inlineCondSwapOpen = !uiState.inlineCondSwapOpen;
+      uiState.dealStagingExpanded = true;
+      renderTwoTeamComparisonLedger(evaluateYearState(uiState.activeYear));
+    }
+
+    function applyInlineConditionalSwapToDeal() {
+      const noteEl = document.getElementById("inlineCondSwapTextInput");
+      const rdEl = document.getElementById("inlineCondSwapRoundSelect");
+      const condText = cleanStr(noteEl ? noteEl.value : "", 180);
+      const rdVal = cleanStr(rdEl ? rdEl.value : "1/2", 20);
+      if (!condText) {
+        showToast("Enter the conditional swap rule (e.g., Higher of Rd 2 or Rd 3 if player top-12)!", "warning");
+        return;
+      }
+      const prefix = `[Conditional Rd ${rdVal}: ${condText}]`;
+      const curNote = String(uiState.whatIfTradeNote || "").trim();
+      uiState.whatIfTradeNote = curNote ? `${curNote} • ${prefix}` : prefix;
+      uiState.inlineCondSwapOpen = false;
+      renderTwoTeamComparisonLedger(evaluateYearState(uiState.activeYear));
+      showToast(`Added Conditional Rd ${rdVal} Swap to deal note!`, "success");
     }
 
     function renderTwoTeamComparisonLedger(state) {
@@ -11587,8 +11791,11 @@
               <button type="button" onclick="resetWhatIfSandbox()" class="btn-action px-2 sm:px-2.5 py-1 sm:py-1.5 text-[11px] sm:text-xs text-slate-300">
                 <i class="fa-solid fa-rotate-left"></i> <span class="hidden sm:inline">Reset</span>
               </button>
-              <button type="button" id="proposeStagedTradeBtn" onclick="openTradeModalFromWhatIf()" class="btn-action px-2 sm:px-3 py-1 sm:py-1.5 text-[11px] sm:text-xs text-amber-300 border-amber-500/60" title="Open full trade modal to add Conditional Picks or Pick Pools">
-                <i class="fa-solid fa-sliders"></i> <span>Conditions</span>
+              <button type="button" id="toggleInlineCondSwapBtn" onclick="toggleInlineConditionalDrawer()" class="btn-action px-2 sm:px-2.5 py-1 sm:py-1.5 text-[11px] sm:text-xs ${uiState.inlineCondSwapOpen ? 'text-amber-200 border-amber-400 bg-amber-950/60' : 'text-amber-300 border-amber-500/60'}" title="Add inline Conditional Swap without leaving the Trade Machine">
+                <i class="fa-solid fa-repeat"></i> <span>+ Condition</span>
+              </button>
+              <button type="button" id="proposeStagedTradeBtn" onclick="openTradeModalFromWhatIf()" class="btn-action px-2 sm:px-2.5 py-1 sm:py-1.5 text-[11px] sm:text-xs text-slate-300" title="Open full trade modal for Pick Pools or complex rules">
+                <i class="fa-solid fa-sliders"></i> <span class="hidden sm:inline">Advanced</span>
               </button>
               ${uiState.isCommish ? `
                 <button type="button" id="sendStagedTradeDirectBtn" onclick="sendStagedTradeDirectlyFromMachine()" class="btn-action px-2.5 sm:px-3 py-1 sm:py-1.5 text-[11px] sm:text-xs text-sky-300 border-sky-500/60">
@@ -11606,6 +11813,23 @@
           </div>
           <div class="${isDealExpanded ? 'space-y-2.5' : 'hidden'}">
             ${balanceMeterHtml}
+            ${uiState.inlineCondSwapOpen ? `
+              <div id="inlineConditionalSwapDrawer" class="bg-amber-950/35 border border-amber-500/50 rounded-xl p-2.5 flex flex-col sm:flex-row items-stretch sm:items-center gap-2 text-xs">
+                <span class="text-[10px] font-extrabold uppercase tracking-wider text-amber-300 whitespace-nowrap"><i class="fa-solid fa-repeat mr-1"></i>Condition:</span>
+                <select id="inlineCondSwapRoundSelect" class="bg-[#0B0D12] text-amber-200 text-xs font-mono font-bold rounded-lg px-2 py-1.5 border border-amber-500/40 focus:outline-none">
+                  <option value="1/2">Rd 1 / 2 Swap</option>
+                  <option value="2/3">Rd 2 / 3 Swap</option>
+                  <option value="3/4">Rd 3 / 4 Swap</option>
+                  <option value="4/5">Rd 4 / 5 Swap</option>
+                  <option value="Pool">1-of-2 Pick Pool</option>
+                </select>
+                <input id="inlineCondSwapTextInput" type="text" maxlength="160" placeholder="e.g., Escalates to 2nd if player finishes Top-12..." class="flex-1 bg-[#0B0D12] text-white text-xs rounded-lg px-2.5 py-1.5 border border-amber-500/40 focus:border-amber-400 focus:outline-none">
+                <button type="button" onclick="applyInlineConditionalSwapToDeal()" class="btn-garnet px-3 py-1.5 text-xs flex-shrink-0">
+                  <i class="fa-solid fa-plus"></i>
+                  <span>Attach Condition</span>
+                </button>
+              </div>
+            ` : ''}
             <div class="grid grid-cols-1 md:grid-cols-2 gap-2 text-xs">
               <div class="bg-[#0B0D12] border border-white/10 rounded-lg p-2 min-w-0">
                 <div class="text-[10px] font-extrabold uppercase text-[#CC1429] mb-1 truncate">${escapeHtml(teamA.name)} Receives:</div>
@@ -12464,6 +12688,7 @@
 
       let unifiedRoundRowsHtml = "";
       let renderedCount = 0;
+      let smartHiddenLateRoundsCount = 0;
 
       for (let r = 1; r <= TOTAL_ROUNDS; r++) {
         if (uiState.ledgerFilter === "EARLY" && r > 5) {
@@ -12484,8 +12709,6 @@
         if (uiState.ledgerFilter === "TRADED_AWAY" && !isOrigTradedAway && !outgoingPoolInRound) {
           continue;
         }
-
-        renderedCount++;
 
         const slotLabel = (state.orderCfg.isLocked && myOrigPick && myOrigPick.overallPickNum)
           ? `<span class="text-white">${escapeHtml(myOrigPick.formattedSlot)}</span> <span class="text-slate-500 text-[10px]">#${myOrigPick.overallPickNum}</span>`
@@ -12529,7 +12752,7 @@
             tagToggleBtns.push(`
               <button type="button" onclick="toggleMyPickTradeTag('${safeId(team.id)}', ${Number(state.year)}, ${Number(r)}, '${safeId(team.id)}', 'ON_BLOCK')" class="px-2 py-1 rounded-md text-[10px] font-bold border transition cursor-pointer inline-flex items-center gap-1 ${origTag === 'ON_BLOCK' ? 'bg-amber-950 text-amber-300 border-amber-500' : 'bg-[#0B0D12] text-slate-400 border-white/10 hover:text-slate-200'}" title="Toggle Own Rd ${r} On Trade Block">
                 <i class="fa-solid fa-tag text-[9px] ${origTag === 'ON_BLOCK' ? 'text-amber-300' : 'text-slate-500'}"></i>
-                <span>On Block</span>
+                <span class="hidden sm:inline">On Block</span>
               </button>
               <button type="button" onclick="toggleMyPickTradeTag('${safeId(team.id)}', ${Number(state.year)}, ${Number(r)}, '${safeId(team.id)}', 'UNTOUCHABLE')" class="px-2 py-1 rounded-md text-[10px] font-bold border transition cursor-pointer ${origTag === 'UNTOUCHABLE' ? 'bg-[#13161F] text-white border-white/30' : 'bg-[#0B0D12] text-slate-500 border-white/10 hover:text-slate-300'}" title="Toggle Own Rd ${r} Untouchable">
                 <i class="fa-solid fa-shield-halved text-[9px]"></i>
@@ -12569,7 +12792,7 @@
               tagToggleBtns.push(`
                 <button type="button" onclick="toggleMyPickTradeTag('${safeId(team.id)}', ${Number(state.year)}, ${Number(r)}, '${safeId(acqPick.originalOwner)}', 'ON_BLOCK')" class="px-2 py-1 rounded-md text-[10px] font-bold border transition cursor-pointer max-w-[125px] truncate inline-flex items-center gap-1 ${acqTag === 'ON_BLOCK' ? 'bg-amber-950 text-amber-300 border-amber-500' : 'bg-[#0B0D12] text-slate-400 border-white/10 hover:text-slate-200'}" title="Toggle ${origOwnerName}'s Rd ${r} On Trade Block">
                   <i class="fa-solid fa-tag text-[9px] flex-shrink-0"></i>
-                  <span class="truncate">${origOwnerName}</span>
+                  <span class="truncate hidden sm:inline">${origOwnerName}</span>
                 </button>
               `);
             } else if (isScouting && isDraftYearTradeable(state.year)) {
@@ -12621,14 +12844,20 @@
         }
 
         const roundHasNotableActivity = Boolean(myAcquiredPicks.length > 0 || isOrigTradedAway || roundHasTag || outgoingPoolInRound || incomingPoolInRound || condInRound);
+        if (uiState.ledgerFilter === "SMART" && r > 10 && !roundHasNotableActivity) {
+          smartHiddenLateRoundsCount++;
+          continue;
+        }
+
+        renderedCount++;
         const rowHighlight = roundHasNotableActivity
           ? "bg-[#13161F]"
           : "bg-[#0B0D12]/60 opacity-85 hover:opacity-100";
 
         unifiedRoundRowsHtml += `
-          <div class="px-3 sm:px-4 py-2.5 flex flex-col sm:flex-row sm:items-center justify-between gap-2 transition hover:bg-white/[0.03] ${rowHighlight}">
-            <div class="flex flex-wrap sm:flex-nowrap items-center gap-2.5 min-w-0 flex-1">
-              <div class="font-mono font-black text-xs w-20 sm:w-24 flex-shrink-0">
+          <div class="px-3 sm:px-4 py-2 flex items-center justify-between gap-2 transition hover:bg-white/[0.03] ${rowHighlight}">
+            <div class="flex flex-wrap sm:flex-nowrap items-center gap-2 sm:gap-2.5 min-w-0 flex-1">
+              <div class="font-mono font-black text-xs w-14 sm:w-24 flex-shrink-0">
                 ${slotLabel}
               </div>
               <div class="flex flex-wrap items-center gap-1.5 min-w-0">
@@ -12637,7 +12866,7 @@
               </div>
             </div>
             ${tagToggleBtns.length > 0 ? `
-              <div class="flex flex-wrap items-center justify-end gap-1 no-print flex-shrink-0">
+              <div class="flex items-center justify-end gap-1 no-print flex-shrink-0">
                 ${tagToggleBtns.join("")}
               </div>
             ` : ''}
@@ -12645,18 +12874,28 @@
         `;
       }
 
+      if (smartHiddenLateRoundsCount > 0) {
+        unifiedRoundRowsHtml += `
+          <div class="p-2.5 bg-[#0B0D12]/80 text-center">
+            <button type="button" onclick="setLedgerFilter('ALL')" class="w-full py-2 rounded-xl bg-[#13161F] hover:bg-[#1B1F2B] border border-white/10 text-xs font-bold text-slate-200 transition cursor-pointer">
+              <i class="fa-solid fa-chevron-down text-amber-400 mr-1.5"></i>Show All 20 Rounds (${smartHiddenLateRoundsCount} Untouched Late Rounds 11–20 Hidden)
+            </button>
+          </div>
+        `;
+      }
+
       container.innerHTML = `
         <div class="app-card overflow-visible">
           <!-- Sticky 3-Segment Priority Bar (1. My Picks -> 2. Trade Offers -> 3. Roster) + Scannable Filter Pills -->
-          <div class="sticky-subnav-bar p-3 sm:p-4 border-b border-white/10 flex flex-col xl:flex-row xl:items-center justify-between gap-2.5 rounded-t-2xl">
-            <div class="flex flex-wrap items-center gap-2 min-w-0">
+          <div class="sticky-subnav-bar p-2.5 sm:p-3.5 border-b border-white/10 flex flex-col xl:flex-row xl:items-center justify-between gap-2 rounded-t-2xl">
+            <div class="flex flex-wrap items-center justify-between gap-2 min-w-0 w-full">
               <!-- Sleek 3-Segment Priority Pill Bar -->
-              <div class="segmented-bar overflow-x-auto max-w-full" role="tablist" aria-label="My Team Priority Views">
+              <div class="segmented-bar overflow-x-auto no-scrollbar max-w-full flex-nowrap" role="tablist" aria-label="My Team Priority Views">
                 <button
                   type="button"
                   id="myTeamSubTab-PICKS"
                   onclick="setMyTeamSubView('PICKS')"
-                  class="segmented-pill text-xs ${subView === 'PICKS' ? 'active' : ''}"
+                  class="segmented-pill text-xs whitespace-nowrap ${subView === 'PICKS' ? 'active' : ''}"
                 >
                   <i class="fa-solid fa-list-ol text-[11px]"></i>
                   <span>${isScouting ? `${escapeHtml(team.name)} Picks` : 'My Picks'} (${m.effectivePickCount})</span>
@@ -12665,17 +12904,17 @@
                   type="button"
                   id="myTeamSubTab-OFFERS"
                   onclick="setMyTeamSubView('OFFERS')"
-                  class="segmented-pill text-xs ${subView === 'OFFERS' ? 'active' : ''}"
+                  class="segmented-pill text-xs whitespace-nowrap ${subView === 'OFFERS' ? 'active' : ''}"
                 >
                   <i class="fa-solid fa-handshake text-[11px] ${teamOffers.incomingCount > 0 ? 'text-amber-300' : ''}"></i>
-                  <span>Trade Offers (${teamOffers.all.length})</span>
+                  <span>Offers (${teamOffers.all.length})</span>
                   ${teamOffers.incomingCount > 0 ? `<span class="px-1.5 py-0.2 rounded-full bg-amber-400 text-black font-mono text-[10px] font-black animate-pulse">${teamOffers.incomingCount}</span>` : ''}
                 </button>
                 <button
                   type="button"
                   id="myTeamSubTab-ROSTER"
                   onclick="setMyTeamSubView('ROSTER')"
-                  class="segmented-pill text-xs ${subView === 'ROSTER' ? 'active' : ''}"
+                  class="segmented-pill text-xs whitespace-nowrap ${subView === 'ROSTER' ? 'active' : ''}"
                 >
                   <i class="fa-solid fa-users text-[11px]"></i>
                   <span>Roster (${caps.totalKeepers}/${caps.maxKeepers})</span>
@@ -12683,17 +12922,20 @@
               </div>
 
               ${subView === "PICKS" ? `
-                <div class="flex flex-wrap items-center gap-1">
-                  <button onclick="setLedgerFilter('ALL')" class="px-2.5 py-1 rounded-lg text-[11px] sm:text-xs font-bold border transition cursor-pointer ${uiState.ledgerFilter === 'ALL' ? 'bg-[#73000A] text-white border-[#CC1429]' : 'bg-[#0B0D12] text-slate-400 border-white/10 hover:text-white'}">
+                <div class="flex items-center gap-1 overflow-x-auto no-scrollbar max-w-full pb-0.5">
+                  <button onclick="setLedgerFilter('SMART')" class="px-2.5 py-1 rounded-lg text-[11px] font-bold border transition whitespace-nowrap cursor-pointer ${uiState.ledgerFilter === 'SMART' ? 'bg-[#73000A] text-white border-[#CC1429]' : 'bg-[#0B0D12] text-slate-400 border-white/10 hover:text-white'}">
+                    Smart (1–10 + Active)
+                  </button>
+                  <button onclick="setLedgerFilter('ALL')" class="px-2.5 py-1 rounded-lg text-[11px] font-bold border transition whitespace-nowrap cursor-pointer ${uiState.ledgerFilter === 'ALL' ? 'bg-[#73000A] text-white border-[#CC1429]' : 'bg-[#0B0D12] text-slate-400 border-white/10 hover:text-white'}">
                     All Rounds (20)
                   </button>
-                  <button onclick="setLedgerFilter('EARLY')" class="px-2.5 py-1 rounded-lg text-[11px] sm:text-xs font-bold border transition cursor-pointer ${uiState.ledgerFilter === 'EARLY' ? 'bg-[#73000A] text-white border-[#CC1429]' : 'bg-[#0B0D12] text-slate-400 border-white/10 hover:text-white'}">
-                    Early Rds 1–5
+                  <button onclick="setLedgerFilter('EARLY')" class="px-2.5 py-1 rounded-lg text-[11px] font-bold border transition whitespace-nowrap cursor-pointer ${uiState.ledgerFilter === 'EARLY' ? 'bg-[#73000A] text-white border-[#CC1429]' : 'bg-[#0B0D12] text-slate-400 border-white/10 hover:text-white'}">
+                    Rds 1–5
                   </button>
-                  <button onclick="setLedgerFilter('HOLDINGS')" class="px-2.5 py-1 rounded-lg text-[11px] sm:text-xs font-bold border transition cursor-pointer ${uiState.ledgerFilter === 'HOLDINGS' ? 'bg-[#73000A] text-white border-[#CC1429]' : 'bg-[#0B0D12] text-slate-400 border-white/10 hover:text-white'}">
+                  <button onclick="setLedgerFilter('HOLDINGS')" class="px-2.5 py-1 rounded-lg text-[11px] font-bold border transition whitespace-nowrap cursor-pointer ${uiState.ledgerFilter === 'HOLDINGS' ? 'bg-[#73000A] text-white border-[#CC1429]' : 'bg-[#0B0D12] text-slate-400 border-white/10 hover:text-white'}">
                     Held (${m.effectivePickCount})
                   </button>
-                  <button onclick="setLedgerFilter('TRADED_AWAY')" class="px-2.5 py-1 rounded-lg text-[11px] sm:text-xs font-bold border transition cursor-pointer ${uiState.ledgerFilter === 'TRADED_AWAY' ? 'bg-[#73000A] text-white border-[#CC1429]' : 'bg-[#0B0D12] text-slate-400 border-white/10 hover:text-white'}">
+                  <button onclick="setLedgerFilter('TRADED_AWAY')" class="px-2.5 py-1 rounded-lg text-[11px] font-bold border transition whitespace-nowrap cursor-pointer ${uiState.ledgerFilter === 'TRADED_AWAY' ? 'bg-[#73000A] text-white border-[#CC1429]' : 'bg-[#0B0D12] text-slate-400 border-white/10 hover:text-white'}">
                     Out (${m.tradedAwayOriginals.length + m.outgoingPools.length})
                   </button>
                 </div>
@@ -13073,6 +13315,7 @@
     }
 
     function handleBoardTeamFilterChange(val) {
+      closeAllCustomPillPopovers();
       const myId = safeId(uiState.myTeam || uiState.selectedManager || "syeth");
       const raw = String(val || "").trim();
       const resolved = (!raw || raw === "ALL") ? "ALL" : (raw === "MY_PICKS" ? myId : safeId(raw));
@@ -13083,6 +13326,10 @@
         teamSelect.value = resolved;
       }
       renderDraftBoardSection();
+    }
+
+    function setBoardTeamFilter(val) {
+      handleBoardTeamFilterChange(val);
     }
 
     function toggleBoardKeepersOverlay() {
@@ -13190,6 +13437,20 @@
       return true;
     }
 
+    function toggleBoardTeamFilterPopover(ev) {
+      if (ev && typeof ev.stopPropagation === "function") ev.stopPropagation();
+      const menu = document.getElementById("boardTeamFilterPopoverMenu");
+      if (!menu) return;
+      menu.classList.toggle("hidden");
+    }
+
+    function toggleBoardLegendPopover(ev) {
+      if (ev && typeof ev.stopPropagation === "function") ev.stopPropagation();
+      const pop = document.getElementById("boardLegendPopover");
+      if (!pop) return;
+      pop.classList.toggle("hidden");
+    }
+
     function renderDraftBoardSection(passedState) {
       const state = passedState || evaluateYearState(uiState.activeYear);
       const container = document.getElementById("draftBoardGridContainer");
@@ -13199,6 +13460,8 @@
       const countdownPill = document.getElementById("boardDraftCountdownPill");
       const setOrderBtn = document.getElementById("boardSetOrderBtn");
       const teamSelect = document.getElementById("boardFilterTeamSelect");
+      const teamPillLabel = document.getElementById("boardTeamFilterPillLabel");
+      const teamPopoverMenu = document.getElementById("boardTeamFilterPopoverMenu");
       const matrixBtn = document.getElementById("boardModeMatrixBtn");
       const cardsBtn = document.getElementById("boardModeCardsBtn");
       const myPicksBtn = document.getElementById("boardMyPicksToggleBtn");
@@ -13243,26 +13506,32 @@
           : `📋 Live Draft Cheat Sheet • Auto-populates drafted players via 1-Click ESPN Sync after draft`;
       }
 
+      const curRange = uiState.boardRoundRange || "ALL";
+      const rangeOpts = [
+        { id: "ALL", label: "All" },
+        { id: "EARLY_1_5", label: "1–5" },
+        { id: "MID_6_10", label: "6–10" },
+        { id: "LATE_11_20", label: "11–20" }
+      ];
       if (roundRangeBar) {
-        const curRange = uiState.boardRoundRange || "ALL";
-        const rangeOpts = [
-          { id: "ALL", label: "All Rounds (1–20)" },
-          { id: "EARLY_1_5", label: "Early Rds 1–5" },
-          { id: "MID_6_10", label: "Mid Rds 6–10" },
-          { id: "LATE_11_20", label: "Late Rds 11–20" }
-        ];
         roundRangeBar.innerHTML = rangeOpts.map(opt => `
           <button
             type="button"
             id="boardRangeBtn-${opt.id}"
             onclick="setBoardRoundRange('${opt.id}')"
-            class="px-2.5 py-1 rounded-lg text-[11px] font-extrabold border transition whitespace-nowrap cursor-pointer ${curRange === opt.id ? 'bg-[#73000A] text-white border-[#CC1429]' : 'bg-[#0B0D12] text-slate-400 border-white/10 hover:text-white'}"
+            class="px-2 py-0.5 rounded-md text-[10px] font-extrabold border transition whitespace-nowrap cursor-pointer ${curRange === opt.id ? 'bg-[#73000A] text-white border-[#CC1429]' : 'bg-[#0B0D12] text-slate-400 border-white/10 hover:text-white'}"
           >${opt.label}</button>
         `).join("");
       }
 
       if (quickRoundStrip) {
-        let pills = `<span class="text-[10px] font-extrabold uppercase tracking-wider text-slate-400 mr-1 whitespace-nowrap">Jump:</span>`;
+        let pills = rangeOpts.map(opt => `
+          <button
+            type="button"
+            onclick="setBoardRoundRange('${opt.id}')"
+            class="px-2 py-0.5 rounded-md text-[10px] font-extrabold border transition flex-shrink-0 cursor-pointer ${curRange === opt.id ? 'bg-[#73000A] text-white border-[#CC1429] shadow' : 'bg-[#0B0D12] text-slate-300 border-white/15 hover:text-white'}"
+          >${opt.label}</button>
+        `).join("") + `<span class="text-slate-600 text-[10px] px-0.5 flex-shrink-0">|</span>`;
         for (let r = 1; r <= TOTAL_ROUNDS; r++) {
           const hasTrade = state.activeRoundsSet.has(r);
           const isHi = Number(uiState.boardHighlightedRound) === r;
@@ -13292,13 +13561,38 @@
       const myId = safeId(uiState.myTeam || uiState.selectedManager || "syeth");
       const rawFilter = uiState.boardTeamFilter || (teamSelect ? teamSelect.value : "") || (uiState.boardMyPicksOnly ? myId : "ALL");
       let filterTeam = rawFilter === "MY_PICKS" ? myId : (rawFilter || "ALL");
+      const otherTeams = (leagueDB.teams || DEFAULT_TEAMS).filter(t => t.id !== myId);
       if (teamSelect) {
-        const otherTeams = (leagueDB.teams || DEFAULT_TEAMS).filter(t => t.id !== myId);
         teamSelect.innerHTML =
           `<option value="ALL" ${filterTeam === 'ALL' ? 'selected' : ''}>All 10 Teams</option>` +
           `<option value="${myId}" ${filterTeam === myId ? 'selected' : ''}>★ My Picks (${escapeHtml(getTeamName(myId))})</option>` +
           otherTeams.map(t => `<option value="${safeId(t.id)}" ${t.id === filterTeam ? 'selected' : ''}>${escapeHtml(getTeamName(t.id))}</option>`).join("");
         teamSelect.value = filterTeam;
+      }
+      if (teamPillLabel) {
+        teamPillLabel.textContent = filterTeam === "ALL"
+          ? "All Teams"
+          : filterTeam === myId
+          ? `★ ${getTeamName(myId)}`
+          : getTeamName(filterTeam);
+      }
+      if (teamPopoverMenu) {
+        teamPopoverMenu.innerHTML = `
+          <button type="button" onclick="document.getElementById('boardTeamFilterPopoverMenu').classList.add('hidden'); setBoardTeamFilter('ALL');" class="custom-pill-option ${filterTeam === 'ALL' ? 'active' : ''}">
+            <span>All 10 Teams</span>
+            ${filterTeam === 'ALL' ? '<i class="fa-solid fa-check text-[10px]"></i>' : ''}
+          </button>
+          <button type="button" onclick="document.getElementById('boardTeamFilterPopoverMenu').classList.add('hidden'); setBoardTeamFilter('${myId}');" class="custom-pill-option ${filterTeam === myId ? 'active' : ''}">
+            <span>★ My Picks (${escapeHtml(getTeamName(myId))})</span>
+            ${filterTeam === myId ? '<i class="fa-solid fa-check text-[10px]"></i>' : ''}
+          </button>
+          ${otherTeams.map(t => `
+            <button type="button" onclick="document.getElementById('boardTeamFilterPopoverMenu').classList.add('hidden'); setBoardTeamFilter('${safeId(t.id)}');" class="custom-pill-option ${t.id === filterTeam ? 'active' : ''}">
+              <span>${escapeHtml(getTeamName(t.id))}</span>
+              ${t.id === filterTeam ? '<i class="fa-solid fa-check text-[10px]"></i>' : ''}
+            </button>
+          `).join("")}
+        `;
       }
       uiState.boardTeamFilter = filterTeam;
       uiState.boardMyPicksOnly = (filterTeam === myId);
@@ -14165,7 +14459,7 @@
       // Sync scope pills & mobile compact scope button
       const pillAll = document.getElementById("feedScopePill-ALL_YEARS");
       const pillActive = document.getElementById("feedScopePill-ACTIVE_YEAR");
-      const mobScopeLbl = document.getElementById("feedScopeMobileBtnLabel");
+      const mobScopeLbl = document.getElementById("feedScopeMobileToggleLabel") || document.getElementById("feedScopeMobileBtnLabel");
       if (pillAll) pillAll.classList.toggle("active", scopeFilter === "ALL_YEARS");
       if (pillActive) {
         pillActive.classList.toggle("active", scopeFilter === "ACTIVE_YEAR");
@@ -14180,13 +14474,19 @@
       const unvotedIdsSet = new Set(unvotedFairnessDeals.map(t => safeId(t.id)));
 
       const subTab = uiState.activitySubTab || "ALL";
-      const subTabs = ["ALL", "TRADES", "FAIRNESS", "WIRE", "PENDING_FINAL", "MY_TEAM"];
-      subTabs.forEach(tabKey => {
+      const primarySubTabs = ["ALL", "TRADES", "FAIRNESS", "WIRE"];
+      primarySubTabs.forEach(tabKey => {
         const btn = document.getElementById(`actSubTab-${tabKey}`);
         if (!btn) return;
         const active = subTab === tabKey;
         btn.classList.toggle("active", active);
       });
+
+      const myDealsChip = document.getElementById("actSubTab-MY_TEAM");
+      if (myDealsChip) {
+        const active = subTab === "MY_TEAM";
+        myDealsChip.className = `btn-action px-2.5 py-1 text-[11px] sm:text-xs ${active ? 'text-white bg-[#73000A] border-[#CC1429]' : 'text-slate-300'}`;
+      }
 
       const subFairnessBadge = document.getElementById("actSubTabFairnessBadge");
       if (subFairnessBadge) {
@@ -14195,10 +14495,15 @@
       }
 
       const subPendingBadge = document.getElementById("actSubTabPendingBadge");
+      const pendingBtn = document.getElementById("actSubTab-PENDING_FINAL");
       const pendingTotalCount = state.activePools.length + state.activeConditionals.length + (leagueDB.pendingTrades?.length || 0);
       if (subPendingBadge) {
         subPendingBadge.textContent = String(pendingTotalCount);
         subPendingBadge.classList.toggle("hidden", pendingTotalCount === 0);
+      }
+      if (pendingBtn) {
+        const active = subTab === "PENDING_FINAL";
+        pendingBtn.className = `btn-action px-2.5 py-1 text-[11px] sm:text-xs ${active ? 'text-white bg-[#73000A] border-[#CC1429]' : pendingTotalCount > 0 ? 'text-amber-300 border-amber-400/70' : 'text-slate-300'}`;
       }
 
       const toggleAllBtn = document.getElementById("feedToggleAllAccordionsBtn");
@@ -14229,11 +14534,13 @@
 
       if (!container) return;
 
-      const sourceTrades = scopeFilter === "ALL_YEARS" ? [...leagueDB.trades] : [...state.yearTrades];
+      const sourceTrades = (scopeFilter === "ALL_YEARS" || subTab === "FAIRNESS")
+        ? [...leagueDB.trades]
+        : [...state.yearTrades];
 
       // Render Trade Fairness Ballot Nudge Banner / Dedicated Ballot Header (A1 & A2)
       if (fairnessBanner) {
-        const allNeutralTrades = sourceTrades.filter(tr => {
+        const allNeutralTrades = (leagueDB.trades || []).filter(tr => {
           const partSet = new Set([tr.teamA, tr.teamB, tr.teamC].filter(Boolean).map(safeId));
           return !partSet.has(myTeamId);
         });
@@ -16298,7 +16605,7 @@
 
     function openArchiveModal() {
       renderArchiveModalContent();
-      openModal("archiveModal");
+      openLeagueArchiveTab();
     }
 
     function setArchiveMode(mode) {
@@ -16798,19 +17105,29 @@
             </div>
           </div>
           ${showStandingsTable ? `
+            <div class="flex items-center justify-end sm:hidden">
+              <button
+                type="button"
+                onclick="toggleMobileTableAdvancedStats()"
+                class="btn-action px-2.5 py-1 text-[11px] ${uiState.showMobileTableAdvanced ? 'text-amber-300 border-amber-400/60' : 'text-sky-300'}"
+              >
+                <i class="fa-solid fa-table-columns text-[10px]"></i>
+                <span>${uiState.showMobileTableAdvanced ? 'Core Stats' : 'Advanced Stats'}</span>
+              </button>
+            </div>
             <div class="overflow-x-auto rounded-xl border border-white/10">
-              <table class="w-full text-left border-collapse text-xs">
+              <table class="w-full text-left border-collapse text-xs ${uiState.showMobileTableAdvanced ? 'show-mobile-adv' : ''}">
                 <thead>
                   <tr class="bg-[#13161F] text-[10px] font-black uppercase tracking-wider text-slate-400 border-b border-white/10">
                     <th class="py-2 px-2.5">Finish</th>
-                    <th class="py-2 px-2.5">Manager &amp; Historical Team Name</th>
+                    <th class="py-2 px-2.5 sticky-mgr-col">Manager &amp; Historical Team Name</th>
                     <th class="py-2 px-2.5 text-center">Record</th>
                     <th class="py-2 px-2.5 text-right">PF (PPG)</th>
-                    <th class="py-2 px-2.5 text-right">PA</th>
-                    <th class="py-2 px-2.5 text-right">Diff</th>
-                    <th class="py-2 px-2.5 text-center">All-Play</th>
-                    <th class="py-2 px-2.5 text-center">Luck</th>
-                    <th class="py-2 px-2.5 text-center">Moves</th>
+                    <th class="py-2 px-2.5 text-right mobile-adv-col">PA</th>
+                    <th class="py-2 px-2.5 text-right mobile-adv-col">Diff</th>
+                    <th class="py-2 px-2.5 text-center mobile-adv-col">All-Play</th>
+                    <th class="py-2 px-2.5 text-center mobile-adv-col">Luck</th>
+                    <th class="py-2 px-2.5 text-center mobile-adv-col">Moves</th>
                   </tr>
                 </thead>
                 <tbody class="divide-y divide-white/[0.06]">
@@ -16836,17 +17153,17 @@
                     return `
                       <tr class="hover:bg-[#13161F]/70">
                         <td class="py-2 px-2.5 font-mono font-bold text-slate-300">#${Number(r.finalRank ?? r.rank) || (i + 1)}</td>
-                        <td class="py-2 px-2.5">
+                        <td class="py-2 px-2.5 sticky-mgr-col">
                           <div class="font-bold text-white">${escapeHtml(resolveArchiveMgrName(r.managerId || r.teamId))}</div>
-                          ${histTeamName ? `<div class="text-[10px] text-amber-300/90 font-medium">${escapeHtml(histTeamName)}</div>` : ''}
+                          ${histTeamName ? `<div class="text-[10px] text-amber-300/90 font-medium truncate max-w-[130px] sm:max-w-none">${escapeHtml(histTeamName)}</div>` : ''}
                         </td>
                         <td class="py-2 px-2.5 text-center font-mono font-bold text-white">${w}-${l}${t ? `-${t}` : ""}</td>
                         <td class="py-2 px-2.5 text-right font-mono text-emerald-300">${pf.toFixed(1)} <span class="text-[10px] text-slate-500">(${ppg})</span></td>
-                        <td class="py-2 px-2.5 text-right font-mono text-slate-400">${pa.toFixed(1)}</td>
-                        <td class="py-2 px-2.5 text-right font-mono font-bold ${Number(diff) >= 0 ? 'text-emerald-400' : 'text-rose-400'}">${Number(diff) >= 0 ? '+' + diff : diff}</td>
-                        <td class="py-2 px-2.5 text-center font-mono text-sky-300">${apW}-${apL}</td>
-                        <td class="py-2 px-2.5 text-center font-mono ${Number(luck) >= 0 ? 'text-emerald-400' : 'text-rose-400'}">${Number(luck) >= 0 ? '+' + luck : luck} W</td>
-                        <td class="py-2 px-2.5 text-center font-mono text-slate-400">${escapeHtml(movesTxt)}</td>
+                        <td class="py-2 px-2.5 text-right font-mono text-slate-400 mobile-adv-col">${pa.toFixed(1)}</td>
+                        <td class="py-2 px-2.5 text-right font-mono font-bold mobile-adv-col ${Number(diff) >= 0 ? 'text-emerald-400' : 'text-rose-400'}">${Number(diff) >= 0 ? '+' + diff : diff}</td>
+                        <td class="py-2 px-2.5 text-center font-mono text-sky-300 mobile-adv-col">${apW}-${apL}</td>
+                        <td class="py-2 px-2.5 text-center font-mono mobile-adv-col ${Number(luck) >= 0 ? 'text-emerald-400' : 'text-rose-400'}">${Number(luck) >= 0 ? '+' + luck : luck} W</td>
+                        <td class="py-2 px-2.5 text-center font-mono text-slate-400 mobile-adv-col">${escapeHtml(movesTxt)}</td>
                       </tr>
                     `;
                   }).join("")}

@@ -941,6 +941,12 @@ function doPost(e) {
         pastDraftPicks: (incomingEspn.pastDraftPicks && typeof incomingEspn.pastDraftPicks === "object")
           ? incomingEspn.pastDraftPicks
           : (existingEspn.pastDraftPicks || {}),
+        draftResults: (incomingEspn.draftResults && typeof incomingEspn.draftResults === "object")
+          ? incomingEspn.draftResults
+          : (existingEspn.draftResults || {}),
+        syncedMatchupKeys: (incomingEspn.syncedMatchupKeys && typeof incomingEspn.syncedMatchupKeys === "object")
+          ? incomingEspn.syncedMatchupKeys
+          : (existingEspn.syncedMatchupKeys || {}),
         rawTeams: Array.isArray(incomingEspn.rawTeams)
           ? incomingEspn.rawTeams.slice(0, 20)
           : (existingEspn.rawTeams || [])
@@ -1414,6 +1420,7 @@ function autoWeeklyEspnSync() {
 
     var schedule = Array.isArray(data.schedule) ? data.schedule : [];
     var scoresByWeek = {};
+    var syncedSeasonMatchups = [];
     schedule.forEach(function(m) {
       if (!m || !m.home || !m.away) return;
       var wk = Number(m.matchupPeriodId) || 0;
@@ -1426,6 +1433,20 @@ function autoWeeklyEspnSync() {
       var aSlot = String(m.away.teamId);
       var hMgr = slotMap[hSlot] || "";
       var aMgr = slotMap[aSlot] || "";
+      var mTier = String(m.playoffTierType || "NONE").toUpperCase();
+      syncedSeasonMatchups.push({
+        week: wk,
+        homeSlot: Number(m.home.teamId) || 0,
+        homeTeamId: hMgr,
+        homeManagerId: hMgr,
+        homeScore: Math.round(hScore * 10) / 10,
+        awaySlot: Number(m.away.teamId) || 0,
+        awayTeamId: aMgr,
+        awayManagerId: aMgr,
+        awayScore: Math.round(aScore * 10) / 10,
+        tier: mTier,
+        matchupType: mTier
+      });
 
       if (wk <= regWeeks) {
         if (!scoresByWeek[wk]) scoresByWeek[wk] = [];
@@ -1523,6 +1544,11 @@ function autoWeeklyEspnSync() {
       var slotKey = String(t.id);
       var mgrId = slotMap[slotKey] || "";
       var recOverall = (t.record && t.record.overall) || {};
+      var txCounter = t.transactionCounter || {};
+      var acqCnt = Number(txCounter.acquisitions || 0);
+      var dropCnt = Number(txCounter.drops || 0);
+      var trdCnt = Number(txCounter.trades || 0);
+      var irCnt = Number(txCounter.moveToIR || 0);
       var w = Number(recOverall.wins || 0);
       var l = Number(recOverall.losses || 0);
       var ties = Number(recOverall.ties || 0);
@@ -1536,6 +1562,7 @@ function autoWeeklyEspnSync() {
       var tNameFull = ((t.location || "") + " " + (t.nickname || "")).trim() || (t.name || ("Slot " + slotKey));
       return {
         espnTeamId: Number(t.id),
+        teamId: mgrId,
         managerId: mgrId,
         currentManagerId: mgrId,
         teamName: tNameFull,
@@ -1548,11 +1575,17 @@ function autoWeeklyEspnSync() {
         pointsAgainst: pa,
         playoffSeed: seed,
         rank: finalRank || seed || 0,
+        finalRank: finalRank || seed || 0,
         finalStanding: finalRank || seed || 0,
         allPlayWins: ap.w,
         allPlayLosses: ap.l,
         toiletWins: tb.wins,
         toiletPoints: Math.round(tb.pts * 10) / 10,
+        acquisitions: acqCnt,
+        drops: dropCnt,
+        espnTrades: trdCnt,
+        moveToIR: irCnt,
+        hasTransactions: Boolean(acqCnt > 0 || dropCnt > 0 || trdCnt > 0),
         isChampion: false
       };
     });
@@ -1599,15 +1632,19 @@ function autoWeeklyEspnSync() {
 
     if (!ed.seasons || typeof ed.seasons !== "object") ed.seasons = {};
     if (!ed.seasonStandings || typeof ed.seasonStandings !== "object") ed.seasonStandings = {};
+    var prevSeasonObj = ed.seasons[String(seasonYr)] || {};
     ed.seasons[String(seasonYr)] = {
       year: seasonYr,
       seasonCompleted: isOfficiallyCompleted,
       playoffTeamCount: playoffTeamCnt,
-      champion: champId,
-      runnerUp: runnerUpId,
-      toiletBowlWinner: toiletWinnerId,
-      phallicFeaster: feasterId,
-      standings: rawTeamRows
+      champion: champId || prevSeasonObj.champion || "",
+      runnerUp: runnerUpId || prevSeasonObj.runnerUp || "",
+      toiletBowlWinner: toiletWinnerId || prevSeasonObj.toiletBowlWinner || "",
+      phallicFeaster: feasterId || prevSeasonObj.phallicFeaster || "",
+      standings: rawTeamRows,
+      matchups: syncedSeasonMatchups.length > 0 ? syncedSeasonMatchups : (prevSeasonObj.matchups || []),
+      keptPlayers: Array.isArray(prevSeasonObj.keptPlayers) ? prevSeasonObj.keptPlayers : [],
+      draftPicks: Array.isArray(prevSeasonObj.draftPicks) ? prevSeasonObj.draftPicks : undefined
     };
     ed.seasonStandings[String(seasonYr)] = rawTeamRows;
 
