@@ -150,42 +150,42 @@
       --bg-elevated: #DFEEF9;
       --bg-elevated-rgb: 223, 238, 249;
       --border-subtle: rgba(19, 41, 75, 0.18);
-      --usc-garnet: #2B72B5;
-      --usc-garnet-rgb: 43, 114, 181;
-      --usc-garnet-bright: #3B86CC;
-      --usc-garnet-hi: #4B9CD3;
-      --usc-garnet-hi-rgb: 75, 156, 211;
+      --usc-garnet: #2364A6;
+      --usc-garnet-rgb: 35, 100, 166;
+      --usc-garnet-bright: #2B72B5;
+      --usc-garnet-hi: #2B72B5;
+      --usc-garnet-hi-rgb: 43, 114, 181;
       --theme-trim: #13294B;
       --theme-trim-rgb: 19, 41, 75;
       --theme-ambient-bg:
         radial-gradient(ellipse 92% 45% at 50% -6%, rgba(75, 156, 211, 0.28) 0%, transparent 70%),
         radial-gradient(circle at 12% 96%, rgba(19, 41, 75, 0.1) 0%, transparent 55%);
       --theme-card-grad: linear-gradient(180deg, #FFFFFF 0%, #F4F9FD 100%);
-      --theme-hero-grad: linear-gradient(135deg, #13294B 0%, #2B72B5 48%, #4B9CD3 100%);
-      --theme-btn-grad: linear-gradient(180deg, #4B9CD3 0%, #2B72B5 100%);
-      --theme-btn-hover: linear-gradient(180deg, #62B0E8 0%, #327EC4 100%);
+      --theme-hero-grad: linear-gradient(135deg, #13294B 0%, #2364A6 52%, #2B72B5 100%);
+      --theme-btn-grad: linear-gradient(180deg, #2B72B5 0%, #1D568F 100%);
+      --theme-btn-hover: linear-gradient(180deg, #3B86CC 0%, #2364A6 100%);
       --theme-border-hi: #13294B;
       --theme-glow: rgba(75, 156, 211, 0.38);
       color: #0F2342;
     }
     /* Colorway 3: Honolulu Gridiron (Primary Honolulu Blue Base + Crisp White Fills + Silver/Black Accents) */
     body.theme-honolulu_gridiron {
-      --bg-obsidian: #005A8B;
-      --bg-obsidian-rgb: 0, 90, 139;
+      --bg-obsidian: #004E7C;
+      --bg-obsidian-rgb: 0, 78, 124;
       --bg-surface: #FFFFFF;
       --bg-surface-rgb: 255, 255, 255;
       --bg-elevated: #EFF6FF;
       --bg-elevated-rgb: 239, 246, 255;
       --border-subtle: rgba(10, 14, 20, 0.18);
-      --usc-garnet: #0076B6;
-      --usc-garnet-rgb: 0, 118, 182;
-      --usc-garnet-bright: #0088D1;
-      --usc-garnet-hi: #0076B6;
-      --usc-garnet-hi-rgb: 0, 118, 182;
+      --usc-garnet: #00669E;
+      --usc-garnet-rgb: 0, 102, 158;
+      --usc-garnet-bright: #0076B6;
+      --usc-garnet-hi: #00669E;
+      --usc-garnet-hi-rgb: 0, 102, 158;
       --theme-trim: #B0B7BC;
       --theme-trim-rgb: 176, 183, 188;
       --theme-ambient-bg:
-        radial-gradient(ellipse 95% 50% at 50% -6%, rgba(0, 150, 230, 0.42) 0%, transparent 72%),
+        radial-gradient(ellipse 95% 50% at 50% -6%, rgba(0, 118, 182, 0.25) 0%, transparent 72%),
         radial-gradient(circle at 88% 96%, rgba(10, 14, 20, 0.35) 0%, transparent 55%);
       --theme-card-grad: linear-gradient(180deg, #FFFFFF 0%, #F1F5F9 100%);
       --theme-hero-grad: linear-gradient(135deg, #0A0E14 0%, #005A8B 42%, #0076B6 100%);
@@ -313,9 +313,9 @@
       --usc-garnet-hi-rgb: 255, 20, 147;
       --theme-trim: #F9A8D4;
       --theme-trim-rgb: 249, 168, 212;
-      --theme-hero-grad: linear-gradient(135deg, #FF1493 0%, #EC4899 35%, #D946EF 68%, #FF69B4 100%);
-      --theme-btn-grad: linear-gradient(180deg, #FF1493 0%, #BE185D 100%);
-      --theme-btn-hover: linear-gradient(180deg, #FF69B4 0%, #DB2777 100%);
+      --theme-hero-grad: linear-gradient(135deg, #9D174D 0%, #B80D68 42%, #86198F 100%);
+      --theme-btn-grad: linear-gradient(180deg, #BE185D 0%, #831843 100%);
+      --theme-btn-hover: linear-gradient(180deg, #DB2777 0%, #9D174D 100%);
       --theme-border-hi: #F9A8D4;
       --theme-glow: rgba(255, 20, 147, 0.85);
       background-color: #330524;
@@ -373,14 +373,73 @@
       background-color: rgba(var(--bg-obsidian-rgb), 0.96) !important;
       border-top: 1.5px solid rgba(var(--theme-trim-rgb), 0.32) !important;
     }
-    /* Contrast Typography & Border Engine for White-Base (Chapel Sky) and White-Fill (Honolulu Gridiron) Colorways */
+    /* Surface-Inherited Contrast Engine (--ctx-*) for White-Base (Chapel Sky) & White-Fill (Honolulu Gridiron) Colorways */
+    /* Resolves same-element bg+text and arbitrary Light <-> Dark nesting depth via nearest-surface CSS custom property inheritance */
+
+    /* 1. Chapel Sky: Crisp White/Ice Base + Tar Heel Blue Primary Fills + Deep Chapel Navy Accents */
+    body.theme-chapel_sky,
+    body.theme-chapel_sky :where(
+      header#appHeaderShell,
+      nav#mobileBottomNav,
+      .app-card,
+      .app-card-elevated,
+      .segmented-bar,
+      .pending-pool-card,
+      .whatif-pick-sim,
+      .btn-action:not(:hover):not([class*="bg-[#0B0D12]"]):not([class*="bg-black/"]),
+      .bg-\[\#0B0D12\],
+      .bg-\[\#0B0D12\]\/98,
+      .bg-\[\#0B0D12\]\/95,
+      .bg-\[\#0B0D12\]\/70,
+      .bg-\[\#0B0D12\]\/60,
+      .bg-\[\#0B0D12\]\/50,
+      .bg-\[\#0b0f19\],
+      .bg-\[\#121215\],
+      .bg-\[\#13161F\],
+      .bg-\[\#13161F\]\/98,
+      .bg-\[\#13161F\]\/95,
+      .bg-\[\#13161F\]\/80,
+      .bg-\[\#13161F\]\/70,
+      .bg-\[\#1B1F2B\],
+      .bg-\[\#73000A\]\/20,
+      .bg-\[\#73000A\]\/15,
+      [class*="bg-emerald-950"],
+      [class*="bg-amber-950"],
+      .bg-pending-900,
+      [class*="bg-sky-950"],
+      [class*="bg-rose-950"],
+      [class*="bg-fuchsia-950"],
+      [class*="bg-indigo-950"],
+      [class*="bg-purple-950"],
+      [class*="bg-pink-950"]
+    ) {
+      --ctx-text-white: #0F2342;
+      --ctx-text-100: #13294B;
+      --ctx-text-300: #1E3A5F;
+      --ctx-text-400: #334E68;
+      --ctx-text-amber: #92400E;
+      --ctx-text-emerald: #065F46;
+      --ctx-text-sky: #075985;
+      --ctx-text-rose: #9F1239;
+      --ctx-text-fuchsia: #86198F;
+      --ctx-text-indigo: #3730A3;
+      --ctx-text-purple: #6B21A8;
+      --ctx-text-pink: #9D174D;
+      --ctx-text-accent: #1D568F;
+      --ctx-border-subtle: rgba(19, 41, 75, 0.20);
+      --ctx-placeholder: #475569;
+    }
     body.theme-chapel_sky {
       color: #0F2342 !important;
+    }
+    body.theme-chapel_sky option {
+      background-color: #FFFFFF;
+      color: #0F2342;
     }
     body.theme-chapel_sky header#appHeaderShell {
       background: linear-gradient(180deg, #FFFFFF 0%, #EDF5FC 100%) !important;
       border-bottom: 2px solid #13294B !important;
-      box-shadow: 0 4px 16px rgba(19, 41, 75, 0.1);
+      box-shadow: 0 4px 16px rgba(19, 41, 75, 0.10);
     }
     body.theme-chapel_sky nav#mobileBottomNav {
       background: #FFFFFF !important;
@@ -391,102 +450,180 @@
       border: 1.5px solid rgba(19, 41, 75, 0.22);
       box-shadow: 0 8px 22px rgba(19, 41, 75, 0.09), inset 0 2px 0 #4B9CD3;
     }
-    body.theme-chapel_sky .btn-action {
+    body.theme-chapel_sky .btn-action:not([class*="bg-[#0B0D12]"]):not([class*="bg-black/"]) {
       background: #E1EFFA;
       color: #13294B !important;
       border-color: rgba(19, 41, 75, 0.28);
     }
     body.theme-chapel_sky .btn-action:hover {
-      background: #4B9CD3;
+      background: #2364A6 !important;
       color: #FFFFFF !important;
-      border-color: #13294B;
+      border-color: #13294B !important;
     }
     body.theme-chapel_sky .segmented-bar {
       background: #DCEBFA;
       border: 1.5px solid rgba(19, 41, 75, 0.22);
     }
-    body.theme-chapel_sky .segmented-pill:not(.active) {
+    body.theme-chapel_sky .segmented-pill:not(.active):not(.segmented-pill-active) {
       color: #13294B !important;
     }
-    body.theme-chapel_sky .text-white:not(.btn-garnet):not(.segmented-pill.active):not(.kitty-curse-badge):not(.bg-\[\#73000A\]):not(.bg-\[\#CC1429\]) {
-      color: #0F2342 !important;
-    }
-    body.theme-chapel_sky .text-slate-100,
-    body.theme-chapel_sky .text-slate-200 {
-      color: #13294B !important;
-    }
-    body.theme-chapel_sky .text-slate-300 {
-      color: #243B53 !important;
-    }
-    body.theme-chapel_sky .text-slate-400,
-    body.theme-chapel_sky .text-slate-500 {
-      color: #334E68 !important;
-    }
-    body.theme-chapel_sky .text-amber-200,
-    body.theme-chapel_sky .text-amber-300,
-    body.theme-chapel_sky .text-amber-400 {
-      color: #92400E !important;
-    }
-    body.theme-chapel_sky .text-emerald-200,
-    body.theme-chapel_sky .text-emerald-300,
-    body.theme-chapel_sky .text-emerald-400 {
-      color: #065F46 !important;
-    }
-    body.theme-chapel_sky .text-sky-200,
-    body.theme-chapel_sky .text-sky-300,
-    body.theme-chapel_sky .text-sky-400 {
-      color: #1E4E8C !important;
-    }
-    body.theme-chapel_sky .text-rose-200,
-    body.theme-chapel_sky .text-rose-300 {
-      color: #9F1239 !important;
-    }
-    body.theme-chapel_sky [class*="bg-emerald-950"],
-    body.theme-chapel_sky [class*="bg-amber-950"],
-    body.theme-chapel_sky [class*="bg-sky-950"],
-    body.theme-chapel_sky [class*="bg-rose-950"] {
-      background-color: #E1EFFA !important;
-    }
-    body.theme-chapel_sky .border-white\/10,
-    body.theme-chapel_sky .border-white\/15,
-    body.theme-chapel_sky .border-white\/20,
-    body.theme-chapel_sky .border-white\/\[0\.07\] {
-      border-color: rgba(19, 41, 75, 0.18) !important;
-    }
-    /* Preserve crisp white text inside Tar Heel Blue / Dark fills in Chapel Sky */
-    body.theme-chapel_sky .garnet-hero-banner,
-    body.theme-chapel_sky .garnet-hero-banner .text-white,
-    body.theme-chapel_sky .garnet-hero-banner h2,
-    body.theme-chapel_sky .garnet-hero-banner strong,
-    body.theme-chapel_sky .btn-garnet,
-    body.theme-chapel_sky .btn-garnet *,
-    body.theme-chapel_sky .segmented-pill.active,
-    body.theme-chapel_sky .segmented-pill.active *,
-    body.theme-chapel_sky .bg-\[\#73000A\],
-    body.theme-chapel_sky .bg-\[\#73000A\] *,
-    body.theme-chapel_sky .bg-\[\#CC1429\],
-    body.theme-chapel_sky .bg-\[\#CC1429\] * {
-      color: #FFFFFF !important;
-    }
-    body.theme-chapel_sky .garnet-hero-banner .text-slate-200,
-    body.theme-chapel_sky .garnet-hero-banner .text-slate-300,
-    body.theme-chapel_sky .garnet-hero-banner .text-slate-400 {
-      color: #E0F2FE !important;
-    }
-    body.theme-chapel_sky .garnet-hero-banner .text-amber-300,
-    body.theme-chapel_sky .garnet-hero-banner .text-amber-400 {
-      color: #FDE68A !important;
+    /* Chapel Sky Dark / Saturated Tar Heel Blue & Chapel Navy Surfaces */
+    body.theme-chapel_sky :where(
+      .garnet-hero-banner,
+      .garnet-hero-banner .bg-\[\#0B0D12\]\/90,
+      .garnet-hero-banner .bg-\[\#0B0D12\]\/80,
+      .garnet-hero-banner .bg-\[\#0B0D12\]\/75,
+      .btn-garnet,
+      .btn-pending,
+      .btn-action:hover,
+      .segmented-pill.active,
+      .segmented-pill.segmented-pill-active,
+      .bg-\[\#73000A\],
+      .bg-\[\#73000A\]\/80,
+      .bg-\[\#73000A\]\/70,
+      .bg-\[\#73000A\]\/60,
+      .bg-\[\#73000A\]\/40,
+      .bg-\[\#CC1429\],
+      [class*="bg-[#09090B]"],
+      [class*="bg-black/"],
+      .bg-slate-800,
+      .bg-slate-900,
+      .bg-slate-900\/80,
+      .bg-slate-900\/90,
+      .bg-slate-950,
+      .bg-zinc-800,
+      .bg-zinc-900,
+      .bg-emerald-700,
+      .bg-rose-700,
+      .kitty-curse-badge
+    ) {
+      --ctx-text-white: #FFFFFF;
+      --ctx-text-100: #F8FAFC;
+      --ctx-text-300: #E0F2FE;
+      --ctx-text-400: #E0F2FE;
+      --ctx-text-amber: #FEF08A;
+      --ctx-text-emerald: #6EE7B7;
+      --ctx-text-sky: #BAE6FD;
+      --ctx-text-rose: #FECDD3;
+      --ctx-text-fuchsia: #F5D0FE;
+      --ctx-text-indigo: #C7D2FE;
+      --ctx-text-purple: #E9D5FF;
+      --ctx-text-pink: #FBCFE8;
+      --ctx-text-accent: #BAE6FD;
+      --ctx-border-subtle: rgba(255, 255, 255, 0.22);
+      --ctx-placeholder: #CBD5E1;
     }
     body.theme-chapel_sky .garnet-hero-banner .bg-\[\#0B0D12\]\/90,
+    body.theme-chapel_sky .garnet-hero-banner .bg-\[\#0B0D12\]\/80,
     body.theme-chapel_sky .garnet-hero-banner .bg-\[\#0B0D12\]\/75 {
-      background-color: rgba(19, 41, 75, 0.78) !important;
+      background-color: rgba(19, 41, 75, 0.88) !important;
     }
-    body.theme-chapel_sky .garnet-hero-banner .bg-\[\#0B0D12\]\/90 *,
-    body.theme-chapel_sky .garnet-hero-banner .bg-\[\#0B0D12\]\/75 * {
-      color: #FFFFFF !important;
+    body.theme-chapel_sky .bg-\[\#73000A\]\/80,
+    body.theme-chapel_sky .bg-\[\#73000A\]\/70,
+    body.theme-chapel_sky .bg-\[\#73000A\]\/60,
+    body.theme-chapel_sky .bg-\[\#73000A\]\/40 {
+      background-color: #2364A6 !important;
     }
 
-    /* Honolulu Gridiron: Primary Honolulu Blue Shell + Crisp White Card Fills + Silver/Black Accents */
+    /* 2. Honolulu Gridiron: Primary Honolulu Blue Shell + Crisp White Card Fills + Silver/Black Accents */
+    body.theme-honolulu_gridiron,
+    body.theme-honolulu_gridiron :where(
+      header#appHeaderShell,
+      nav#mobileBottomNav,
+      .garnet-hero-banner,
+      .btn-garnet,
+      .btn-pending,
+      .btn-action:hover,
+      .segmented-pill.active,
+      .segmented-pill.segmented-pill-active,
+      .bg-\[\#0B0D12\],
+      .bg-\[\#0B0D12\]\/98,
+      .bg-\[\#0B0D12\]\/95,
+      .bg-\[\#0B0D12\]\/90,
+      .bg-\[\#0B0D12\]\/80,
+      .bg-\[\#0B0D12\]\/75,
+      .bg-\[\#0B0D12\]\/70,
+      .bg-\[\#0b0f19\],
+      .bg-\[\#121215\],
+      .bg-\[\#73000A\],
+      .bg-\[\#73000A\]\/80,
+      .bg-\[\#73000A\]\/70,
+      .bg-\[\#73000A\]\/60,
+      .bg-\[\#73000A\]\/40,
+      .bg-\[\#CC1429\],
+      [class*="bg-[#09090B]"],
+      [class*="bg-black/"],
+      .bg-slate-800,
+      .bg-slate-900,
+      .bg-slate-900\/80,
+      .bg-slate-900\/90,
+      .bg-slate-950,
+      .bg-zinc-800,
+      .bg-zinc-900,
+      .bg-emerald-700,
+      .bg-rose-700,
+      .kitty-curse-badge
+    ) {
+      --ctx-text-white: #FFFFFF;
+      --ctx-text-100: #F8FAFC;
+      --ctx-text-300: #F8FAFC;
+      --ctx-text-400: #F1F5F9;
+      --ctx-text-amber: #FEF9C3;
+      --ctx-text-emerald: #A7F3D0;
+      --ctx-text-sky: #E0F2FE;
+      --ctx-text-rose: #FECDD3;
+      --ctx-text-fuchsia: #F5D0FE;
+      --ctx-text-indigo: #E0E7FF;
+      --ctx-text-purple: #F3E8FF;
+      --ctx-text-pink: #FBCFE8;
+      --ctx-text-accent: #BAE6FD;
+      --ctx-border-subtle: rgba(255, 255, 255, 0.24);
+      --ctx-placeholder: #E2E8F0;
+    }
+    /* Honolulu Gridiron Crisp White & Silver Light Surfaces */
+    body.theme-honolulu_gridiron :where(
+      .app-card,
+      .app-card-elevated,
+      .segmented-bar,
+      .pending-pool-card,
+      .whatif-pick-sim,
+      .btn-action:not(:hover):not([class*="bg-[#0B0D12]"]):not([class*="bg-black/"]),
+      .bg-\[\#0B0D12\]\/60,
+      .bg-\[\#0B0D12\]\/50,
+      .bg-\[\#13161F\],
+      .bg-\[\#13161F\]\/98,
+      .bg-\[\#13161F\]\/95,
+      .bg-\[\#13161F\]\/80,
+      .bg-\[\#13161F\]\/70,
+      .bg-\[\#1B1F2B\],
+      .bg-\[\#73000A\]\/20,
+      .bg-\[\#73000A\]\/15,
+      [class*="bg-emerald-950"],
+      [class*="bg-amber-950"],
+      .bg-pending-900,
+      [class*="bg-sky-950"],
+      [class*="bg-rose-950"],
+      [class*="bg-fuchsia-950"],
+      [class*="bg-indigo-950"],
+      [class*="bg-purple-950"],
+      [class*="bg-pink-950"]
+    ) {
+      --ctx-text-white: #0A0E14;
+      --ctx-text-100: #0F172A;
+      --ctx-text-300: #1E293B;
+      --ctx-text-400: #334155;
+      --ctx-text-amber: #92400E;
+      --ctx-text-emerald: #065F46;
+      --ctx-text-sky: #075985;
+      --ctx-text-rose: #9F1239;
+      --ctx-text-fuchsia: #86198F;
+      --ctx-text-indigo: #3730A3;
+      --ctx-text-purple: #6B21A8;
+      --ctx-text-pink: #9D174D;
+      --ctx-text-accent: #005280;
+      --ctx-border-subtle: rgba(10, 14, 20, 0.18);
+      --ctx-placeholder: #475569;
+    }
     body.theme-honolulu_gridiron header#appHeaderShell {
       background: linear-gradient(180deg, #00446B 0%, #005A8B 100%) !important;
       border-bottom: 2px solid #B0B7BC !important;
@@ -506,68 +643,136 @@
       border: 1px solid #94A3B8 !important;
       color: #0A0E14;
     }
-    body.theme-honolulu_gridiron .btn-action {
+    body.theme-honolulu_gridiron .segmented-bar {
+      background: #E2E8F0;
+      border: 1.5px solid #94A3B8;
+    }
+    body.theme-honolulu_gridiron .segmented-pill:not(.active):not(.segmented-pill-active) {
+      color: #0F172A !important;
+    }
+    body.theme-honolulu_gridiron .btn-action:not([class*="bg-[#0B0D12]"]):not([class*="bg-black/"]) {
       background: #FFFFFF;
       color: #0A0E14 !important;
       border: 1.5px solid #94A3B8;
     }
     body.theme-honolulu_gridiron .btn-action:hover {
-      background: #0076B6;
+      background: #005A8B !important;
       color: #FFFFFF !important;
-      border-color: #0A0E14;
+      border-color: #0A0E14 !important;
     }
-    body.theme-honolulu_gridiron .app-card .text-white:not(.btn-garnet):not(.segmented-pill.active):not(.bg-\[\#73000A\]):not(.bg-\[\#CC1429\]),
-    body.theme-honolulu_gridiron .bg-\[\#13161F\] .text-white:not(.btn-garnet):not(.segmented-pill.active):not(.bg-\[\#73000A\]):not(.bg-\[\#CC1429\]) {
-      color: #0A0E14 !important;
+    body.theme-honolulu_gridiron .bg-\[\#0B0D12\]\/90,
+    body.theme-honolulu_gridiron .bg-\[\#0B0D12\]\/80,
+    body.theme-honolulu_gridiron .bg-\[\#0B0D12\]\/75,
+    body.theme-honolulu_gridiron .bg-\[\#0B0D12\]\/70 {
+      background-color: rgba(0, 78, 122, 0.96) !important;
     }
-    body.theme-honolulu_gridiron .app-card .text-slate-100,
-    body.theme-honolulu_gridiron .app-card .text-slate-200,
-    body.theme-honolulu_gridiron .bg-\[\#13161F\] .text-slate-100,
-    body.theme-honolulu_gridiron .bg-\[\#13161F\] .text-slate-200 {
-      color: #0F172A !important;
+    body.theme-honolulu_gridiron .bg-\[\#0B0D12\]\/60,
+    body.theme-honolulu_gridiron .bg-\[\#0B0D12\]\/50 {
+      background-color: #F8FAFC !important;
     }
-    body.theme-honolulu_gridiron .app-card .text-slate-300,
-    body.theme-honolulu_gridiron .bg-\[\#13161F\] .text-slate-300 {
-      color: #1E293B !important;
+    body.theme-honolulu_gridiron .bg-\[\#73000A\]\/80,
+    body.theme-honolulu_gridiron .bg-\[\#73000A\]\/70,
+    body.theme-honolulu_gridiron .bg-\[\#73000A\]\/60,
+    body.theme-honolulu_gridiron .bg-\[\#73000A\]\/40 {
+      background-color: #00649B !important;
     }
-    body.theme-honolulu_gridiron .app-card .text-slate-400,
-    body.theme-honolulu_gridiron .app-card .text-slate-500,
-    body.theme-honolulu_gridiron .bg-\[\#13161F\] .text-slate-400,
-    body.theme-honolulu_gridiron .bg-\[\#13161F\] .text-slate-500 {
-      color: #334155 !important;
+
+    /* Shared Light-Mode Badge Pastel Fills & Inherited Text / Border / Placeholder Bindings */
+    :is(body.theme-chapel_sky, body.theme-honolulu_gridiron) [class*="bg-emerald-950"] { background-color: #DCFCE7 !important; }
+    :is(body.theme-chapel_sky, body.theme-honolulu_gridiron) :is([class*="bg-amber-950"], .bg-pending-900, .whatif-pick-sim) { background-color: #FEF3C7 !important; }
+    :is(body.theme-chapel_sky, body.theme-honolulu_gridiron) [class*="bg-sky-950"] { background-color: #E0F2FE !important; }
+    :is(body.theme-chapel_sky, body.theme-honolulu_gridiron) [class*="bg-rose-950"] { background-color: #FFE4E6 !important; }
+    :is(body.theme-chapel_sky, body.theme-honolulu_gridiron) [class*="bg-fuchsia-950"] { background-color: #FAE8FF !important; }
+    :is(body.theme-chapel_sky, body.theme-honolulu_gridiron) [class*="bg-indigo-950"] { background-color: #E0E7FF !important; }
+    :is(body.theme-chapel_sky, body.theme-honolulu_gridiron) [class*="bg-purple-950"] { background-color: #F3E8FF !important; }
+    :is(body.theme-chapel_sky, body.theme-honolulu_gridiron) [class*="bg-pink-950"] { background-color: #FCE7F3 !important; }
+    :is(body.theme-chapel_sky, body.theme-honolulu_gridiron) .pending-pool-card {
+      background: linear-gradient(135deg, #FEF3C7 0%, #FFFBEB 100%) !important;
+      border-color: #D97706 !important;
     }
-    body.theme-honolulu_gridiron .app-card .border-white\/10,
-    body.theme-honolulu_gridiron .app-card .border-white\/15,
-    body.theme-honolulu_gridiron .app-card .border-white\/\[0\.07\],
-    body.theme-honolulu_gridiron .bg-\[\#13161F\] .border-white\/10,
-    body.theme-honolulu_gridiron .bg-\[\#13161F\] .border-white\/\[0\.07\] {
-      border-color: rgba(10, 14, 20, 0.16) !important;
+    :is(body.theme-chapel_sky, body.theme-honolulu_gridiron) :is(.text-white, .hover\:text-white:hover) {
+      color: var(--ctx-text-white) !important;
     }
-    /* Keep white text on Honolulu Blue (--bg-obsidian) wells and Hero Banners inside Honolulu Gridiron */
-    body.theme-honolulu_gridiron .garnet-hero-banner,
-    body.theme-honolulu_gridiron .garnet-hero-banner *,
-    body.theme-honolulu_gridiron .bg-\[\#0B0D12\],
-    body.theme-honolulu_gridiron .bg-\[\#0B0D12\] .text-white,
-    body.theme-honolulu_gridiron .bg-\[\#0B0D12\] .text-slate-100,
-    body.theme-honolulu_gridiron .bg-\[\#0B0D12\] .text-slate-200,
-    body.theme-honolulu_gridiron .bg-\[\#0B0D12\] .text-slate-300,
-    body.theme-honolulu_gridiron .btn-garnet,
-    body.theme-honolulu_gridiron .btn-garnet *,
-    body.theme-honolulu_gridiron .segmented-pill.active,
-    body.theme-honolulu_gridiron .segmented-pill.active *,
-    body.theme-honolulu_gridiron .bg-\[\#73000A\],
-    body.theme-honolulu_gridiron .bg-\[\#73000A\] * {
-      color: #FFFFFF !important;
+    :is(body.theme-chapel_sky, body.theme-honolulu_gridiron) :is(.text-slate-100, .text-slate-200, .text-zinc-200, .hover\:text-slate-200:hover) {
+      color: var(--ctx-text-100) !important;
     }
-    body.theme-honolulu_gridiron .bg-\[\#0B0D12\] .text-slate-400,
-    body.theme-honolulu_gridiron .bg-\[\#0B0D12\] .text-slate-500 {
-      color: #E2E8F0 !important;
+    :is(body.theme-chapel_sky, body.theme-honolulu_gridiron) :is(.text-slate-300, .text-zinc-300, .hover\:text-slate-300:hover) {
+      color: var(--ctx-text-300) !important;
     }
+    :is(body.theme-chapel_sky, body.theme-honolulu_gridiron) :is(.text-slate-400, .text-slate-500, .text-slate-600, .text-zinc-400, .text-zinc-500) {
+      color: var(--ctx-text-400) !important;
+    }
+    :is(body.theme-chapel_sky, body.theme-honolulu_gridiron) :is(.text-amber-100, .text-amber-200, .text-amber-300, .text-amber-300\/90, .text-amber-400, .text-pending-100, .text-pending-200, .text-pending-200\/80, .text-pending-300) {
+      color: var(--ctx-text-amber) !important;
+    }
+    :is(body.theme-chapel_sky, body.theme-honolulu_gridiron) :is(.text-emerald-100, .text-emerald-200, .text-emerald-300, .text-emerald-400, .text-emerald-500) {
+      color: var(--ctx-text-emerald) !important;
+    }
+    :is(body.theme-chapel_sky, body.theme-honolulu_gridiron) :is(.text-sky-100, .text-sky-200, .text-sky-300, .text-sky-400, .hover\:text-sky-200:hover) {
+      color: var(--ctx-text-sky) !important;
+    }
+    :is(body.theme-chapel_sky, body.theme-honolulu_gridiron) :is(.text-rose-200, .text-rose-300, .text-rose-400) {
+      color: var(--ctx-text-rose) !important;
+    }
+    :is(body.theme-chapel_sky, body.theme-honolulu_gridiron) :is(.text-fuchsia-200, .text-fuchsia-300, .text-fuchsia-400) {
+      color: var(--ctx-text-fuchsia) !important;
+    }
+    :is(body.theme-chapel_sky, body.theme-honolulu_gridiron) :is(.text-indigo-200, .text-indigo-300) {
+      color: var(--ctx-text-indigo) !important;
+    }
+    :is(body.theme-chapel_sky, body.theme-honolulu_gridiron) :is(.text-purple-100, .text-purple-200, .text-purple-300) {
+      color: var(--ctx-text-purple) !important;
+    }
+    :is(body.theme-chapel_sky, body.theme-honolulu_gridiron) :is(.text-pink-200, .text-pink-400, .hover\:text-pink-300:hover) {
+      color: var(--ctx-text-pink) !important;
+    }
+    :is(body.theme-chapel_sky, body.theme-honolulu_gridiron) :is(.text-\[\#CC1429\], .hover\:text-\[\#CC1429\]:hover) {
+      color: var(--ctx-text-accent) !important;
+    }
+    :is(body.theme-chapel_sky, body.theme-honolulu_gridiron) :is(.border-white\/10, .border-white\/15, .border-white\/20, .border-white\/\[0\.06\], .border-white\/\[0\.07\], .border-white\/\[0\.08\]) {
+      border-color: var(--ctx-border-subtle) !important;
+    }
+    :is(body.theme-chapel_sky, body.theme-honolulu_gridiron) :is(input, textarea)::placeholder {
+      color: var(--ctx-placeholder) !important;
+      opacity: 1;
+    }
+    /* High-Contrast Muted Labels & Bright Accent Badges for Custom Dark Colorways */
+    body.theme-emerald_sound :is(.text-slate-400, .text-zinc-400) {
+      color: #E0F2FE !important;
+    }
+    body.theme-emerald_sound :is(.text-slate-500, .text-slate-600, .text-zinc-500) {
+      color: #BAE6FD !important;
+    }
+    body.theme-emerald_sound :is(.bg-\[\#CC1429\].text-white, .bg-\[\#CC1429\] .text-white) {
+      color: #041E3A !important;
+    }
+    body.theme-jets_of_the_west :is(.bg-\[\#CC1429\].text-white, .bg-\[\#CC1429\] .text-white) {
+      color: #1A080C !important;
+    }
+    body.theme-foundry_orange :is(.text-slate-500, .text-slate-600, .text-zinc-500) {
+      color: #CBD5E1 !important;
+    }
+    body.theme-upstate_kitties :is(.text-slate-300, .text-zinc-300) {
+      color: #FDF2F8 !important;
+    }
+    body.theme-upstate_kitties :is(.text-slate-400, .text-slate-500, .text-slate-600, .text-zinc-400, .text-zinc-500) {
+      color: #FBCFE8 !important;
+    }
+    body.theme-upstate_kitties :is(.text-amber-200, .text-amber-300, .text-amber-400) {
+      color: #FEF08A !important;
+    }
+    /* Isolate Settings Colorway Swatch Previews from Active Theme Overrides */
+    .color-swatch-preview-card {
+      --ctx-border-subtle: rgba(255, 255, 255, 0.35) !important;
+    }
+
     /* Global Theme-Reactive Overrides for Hardcoded Utility Classes */
-    .bg-\[\#0B0D12\] { background-color: var(--bg-obsidian) !important; }
+    .bg-\[\#0B0D12\], .bg-\[\#0b0f19\], .bg-\[\#121215\] { background-color: var(--bg-obsidian) !important; }
     .bg-\[\#0B0D12\]\/98 { background-color: rgba(var(--bg-obsidian-rgb), 0.98) !important; }
     .bg-\[\#0B0D12\]\/95 { background-color: rgba(var(--bg-obsidian-rgb), 0.95) !important; }
     .bg-\[\#0B0D12\]\/90 { background-color: rgba(var(--bg-obsidian-rgb), 0.90) !important; }
+    .bg-\[\#0B0D12\]\/80 { background-color: rgba(var(--bg-obsidian-rgb), 0.80) !important; }
+    .bg-\[\#0B0D12\]\/75 { background-color: rgba(var(--bg-obsidian-rgb), 0.75) !important; }
     .bg-\[\#0B0D12\]\/70 { background-color: rgba(var(--bg-obsidian-rgb), 0.70) !important; }
     .bg-\[\#0B0D12\]\/60 { background-color: rgba(var(--bg-obsidian-rgb), 0.60) !important; }
     .bg-\[\#0B0D12\]\/50 { background-color: rgba(var(--bg-obsidian-rgb), 0.50) !important; }
@@ -665,16 +870,17 @@
       font-weight: 700;
       color: #94A3B8;
       border: 1px solid transparent;
-      transition: all 0.15s ease;
+      transition: border-color 0.15s ease, box-shadow 0.15s ease, transform 0.12s ease;
       cursor: pointer;
       white-space: nowrap;
     }
     .segmented-pill:hover {
       color: #F8FAFC;
     }
-    .segmented-pill.active {
+    .segmented-pill.active,
+    .segmented-pill.segmented-pill-active {
       background: var(--theme-btn-grad);
-      color: #FFFFFF;
+      color: #FFFFFF !important;
       border: 1px solid rgba(var(--theme-trim-rgb), 0.45);
       box-shadow: 0 2px 8px var(--theme-glow);
     }
@@ -689,7 +895,7 @@
       background: var(--bg-elevated);
       color: #E2E8F0;
       box-shadow: 0 1px 2px rgba(0, 0, 0, 0.25);
-      transition: all 0.15s ease;
+      transition: border-color 0.15s ease, box-shadow 0.15s ease, transform 0.12s ease;
       cursor: pointer;
       user-select: none;
     }
@@ -989,7 +1195,7 @@
     </div>
     <!-- Non-Disruptive App Version Update Banner (Shown only when version.json reports a newer release) -->
     <div id="pwaUpdateAvailableBanner" class="hidden w-full bg-emerald-950/90 border-b border-emerald-500/40 px-3 py-1.5 flex items-center justify-center gap-3 text-xs text-emerald-100">
-      <span><i class="fa-solid fa-wand-magic-sparkles text-amber-300 mr-1"></i>New Gamecock Mafia Tracker update (<strong id="pwaUpdateVersionText" class="font-mono text-amber-300">v8.4.1</strong>) is ready!</span>
+      <span><i class="fa-solid fa-wand-magic-sparkles text-amber-300 mr-1"></i>New Gamecock Mafia Tracker update (<strong id="pwaUpdateVersionText" class="font-mono text-amber-300">v8.5.0</strong>) is ready!</span>
       <button type="button" onclick="applyRemoteAppUpdateNow()" class="px-2.5 py-0.5 rounded-md bg-emerald-500 hover:bg-emerald-400 text-black font-black text-[11px] cursor-pointer transition">Refresh Now</button>
     </div>
 
@@ -1204,9 +1410,9 @@
               Tap any available player or pick on the League Trade Block below to load it directly into the Trade Machine, or choose any partner to build a custom deal.
             </p>
           </div>
-          <button type="button" onclick="openTradeModalWithPair(uiState.selectedManager, uiState.compareManagerB)" class="btn-action px-3 py-1.5 text-[11px] text-amber-300 self-start sm:self-center flex-shrink-0" title="Open 3-Team or Conditional Pick Swap Builder">
+          <button type="button" onclick="openTradeModalWithPair(uiState.selectedManager, uiState.compareManagerB)" class="btn-action px-3 py-1.5 text-[11px] text-amber-300 self-start sm:self-center flex-shrink-0" title="Open Conditional Pick Swap or Pick Pool Builder">
             <i class="fa-solid fa-code-branch"></i>
-            <span>3-Team / Conditional</span>
+            <span>Conditional / Pick Pool</span>
           </button>
         </div>
 
@@ -1325,6 +1531,9 @@
           <!-- Round Tier Quick-Jump Bar (All Rounds | Early Rds 1-5 | Mid Rds 6-10 | Late Rds 11-20) -->
           <div id="boardRoundRangeBar" class="pt-2 border-t border-white/[0.06] flex items-center gap-1.5 overflow-x-auto no-scrollbar"></div>
 
+          <!-- Horizontal R1–R20 Direct Round Jump Strip (D11 = Option A) -->
+          <div id="boardQuickRoundJumpStrip" class="pt-1 flex items-center gap-1 overflow-x-auto no-scrollbar"></div>
+
           <!-- Slim Inline Legend Strip -->
           <div class="pt-2 border-t border-white/[0.06] flex flex-wrap items-center justify-between gap-2 text-[10px] sm:text-[11px]">
             <div class="flex flex-wrap items-center gap-3">
@@ -1438,9 +1647,9 @@
       <!-- MINIMAL FOOTER (NO DUPLICATE HEADER CONTROLS)             -->
       <!-- ========================================================= -->
       <footer id="appFooterShell" class="hidden border-t border-white/[0.06] pt-4 pb-2 mt-6 no-print">
-        <div class="flex flex-col sm:flex-row items-center justify-between gap-2 text-[11px] text-slate-500">
+        <div class="flex flex-col sm:flex-row items-center justify-between gap-2 text-[11px] text-slate-400">
           <div class="flex items-center gap-2">
-            <span class="font-bold text-slate-400">Gamecock Mafia League Hub &amp; Draft Tracker v8.3</span>
+            <span class="font-bold text-slate-400">Gamecock Mafia League Hub &amp; Draft Tracker v8.5.0</span>
             <span>•</span>
             <span>Est. 2016</span>
           </div>
@@ -1504,7 +1713,7 @@
     </div>
   </div>
 
-  <!-- 2. UNIFIED 3-TEAM & CONDITIONAL TRADE BUILDER / EDITOR MODAL -->
+  <!-- 2. UNIFIED 2-TEAM CONDITIONAL & PICK POOL BUILDER / EDITOR MODAL -->
   <div id="tradeModal" class="hidden fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4 overflow-y-auto">
     <div class="bg-[#13161F] border border-white/10 rounded-2xl max-w-2xl w-full p-5 sm:p-6 shadow-2xl space-y-4 my-8 max-h-[92vh] overflow-y-auto">
       <div class="flex items-center justify-between border-b border-white/[0.07] pb-3">
@@ -1523,13 +1732,10 @@
       <form id="newTradeForm" onsubmit="handleSaveNewTrade(event)" class="space-y-4 text-xs">
         <input type="hidden" id="editingTradeId" value="">
 
-        <!-- Step 1: Select Managers (2-Way Trade) -->
+        <!-- Step 1: Select Managers (2-Team Trade) -->
         <div class="space-y-2">
           <div class="flex items-center justify-between">
             <span class="font-bold text-slate-300 uppercase">1. Participating Managers</span>
-            <button type="button" onclick="toggleThreeWayTrade()" id="toggleThreeWayBtn" class="hidden">
-              <span id="toggleThreeWayLabel"></span>
-            </button>
           </div>
           <div class="grid grid-cols-1 sm:grid-cols-2 gap-3" id="tradeManagersGrid">
             <div>
@@ -1539,9 +1745,6 @@
             <div>
               <label class="block text-[11px] font-semibold text-sky-300 mb-1">Trade Partner (Must Confirm)</label>
               <select id="formTeamB" required onchange="refreshQuickPickRows(); syncAutoGeneratedModalSummary();" class="w-full bg-[#0B0D12] text-white font-bold rounded-xl px-3 py-2.5 border border-white/10 focus:border-sky-400 focus:outline-none"></select>
-            </div>
-            <div id="formTeamCContainer" class="hidden">
-              <select id="formTeamC"></select>
             </div>
           </div>
         </div>
@@ -3211,7 +3414,7 @@
       "Depth Picks"
     ];
 
-    const APP_BUILD_VERSION = "8.4.1";
+    const APP_BUILD_VERSION = "8.5.0";
 
     let uiState = {
       isLeagueUnlocked: false,
@@ -3244,6 +3447,7 @@
       stagedModalPlayers: [],       // Player transfers attached to active trade proposal modal
       tradeMachineShowRosters: true,// Show side-by-side player swap drawer in Trade Machine
       tradeMachineAssetMode: "ALL", // 'ALL' | 'PLAYERS' | 'PICKS' mobile-first asset focus toggle
+      tradeMobileRosterSide: "BOTH",// 'BOTH' | 'A' | 'B' mobile roster side toggle
       tradeMachineCompactRounds: false, // Filter Trade Machine rounds to Early Rds 1-5 & active swaps
       tradeMachinePosFilter: "ALL", // 'ALL' | 'QB' | 'RB' | 'WR' | 'TE' | 'IDP' | 'OTB' | 'KEEPERS'
       tradePlayerSearch: "",        // Quick player search query inside Trade Machine roster tray
@@ -3251,6 +3455,7 @@
       tradeBlockFilter: "ALL",      // 'ALL' | 'PLAYERS' | 'PICKS' | 'NEEDS_MATCH'
       warRoomDrawerOpen: false,     // Pop-up Team Profile Editor open state
       warRoomQuickBarOpen: false,   // 1-tap inline Needs & Trade Block bar on My Team War Room
+      warRoomTrophyExpanded: false, // Mobile collapsible Trophy & Rival summary bar state
       warRoomDirty: false,          // Tracks unconfirmed edits inside Team Profile Editor
       keepersDirty: false,          // Tracks unconfirmed keeper checkbox edits
       warRoomSnapshot: null,        // Snapshot for clean Cancel inside Team Profile Editor
@@ -3268,10 +3473,12 @@
       boardOnlyTraded: false,
       boardMyPicksOnly: false,      // 1-tap filter to highlight/filter My Team's picks on Draft Board
       boardRoundRange: "ALL",       // 'ALL' | 'EARLY' | 'MID' | 'LATE' round tier filter on Draft Board
+      boardHighlightedRound: 0,     // Active R1-R20 quick-jump round highlight
       boardShowKeepers: false,      // Post-keeper draft board: clean Rounds 1–20 with zero keepers overlaid
       boardShowDraftedPlayers: true,// Show auto-populated ESPN drafted players on post-draft Draft Board
       leagueHqSubTab: "CAPITAL",    // 'CAPITAL' | 'STANDINGS' | 'VAULT' | 'RIVALRY' | 'RECORDS' | 'ARCHIVE'
       expandedHubTeamIds: {},       // Expandable 'Picks & Needs' drawer state per team in League Hub
+      leagueHqSeasonYear: 2026,
       espnStandingsYear: 2026,
       rivalryFocusManager: "syeth",
       activitySubTab: "ALL",        // 'ALL' | 'TRADES' | 'WIRE' | 'PENDING_FINAL' | 'MY_TEAM'
@@ -3286,9 +3493,11 @@
       activeArchiveYear: 2025,
       archiveSeasonView: "BOTH",    // 'BOTH' | 'BOARD_ONLY' | 'TRADES_ONLY'
       archiveOnlyTradedRounds: true,
+      archiveOnlyTradedRoundsManual: false,
+      archiveShowStandings: false,
+      archiveShowStandingsManual: false,
       allTimeSearchQuery: "",
       quickPickRowCounter: 0,
-      isThreeWayForm: false,
       draggedOrderSlotIndex: null,
       tempOrderSlots: []
     };
@@ -4044,7 +4253,6 @@
       const sanitizedEspnData = sanitizeEspnDataObject(raw.espnData, validTeams);
       const sanitizedProfiles = {};
       validTeams.forEach(t => {
-        const defaultRoster = sanitizedEspnData.rosters[t.id] || [];
         sanitizedProfiles[t.id] = {
           customTeamName: "",
           feasterRenamedByChamp: false,
@@ -4061,7 +4269,7 @@
           lookingFor: "",
           needsChips: [],
           pickTags: {},
-          keepers: defaultRoster.slice(0, 8).map(p => p.id),
+          keepers: [],
           keepersConfirmedAt: 0,
           playerTags: {},
           updatedAt: 0
@@ -4092,10 +4300,19 @@
               }
             }
           }
-          const defaultKeepers = (sanitizedEspnData.rosters[tid] || []).slice(0, 8).map(p => p.id);
-          const cleanKeepers = Array.isArray(pRaw.keepers)
+          const legacySeedFirst8 = (sanitizedEspnData.rosters[tid] || []).slice(0, 8).map(p => safeId(p.id));
+          let cleanKeepers = Array.isArray(pRaw.keepers)
             ? Array.from(new Set(pRaw.keepers.slice(0, 20).map(safeId).filter(Boolean)))
-            : defaultKeepers;
+            : [];
+          if (
+            Number(pRaw.keepersConfirmedAt || 0) <= 0 &&
+            Number(pRaw.updatedAt || 0) <= 0 &&
+            legacySeedFirst8.length === 8 &&
+            cleanKeepers.length === 8 &&
+            cleanKeepers.every((kid, idx) => kid === legacySeedFirst8[idx])
+          ) {
+            cleanKeepers = [];
+          }
           const cleanChips = Array.isArray(pRaw.needsChips)
             ? pRaw.needsChips.slice(0, 12).map(c => cleanStr(c, 32).trim()).filter(Boolean)
             : [];
@@ -4193,7 +4410,7 @@
         : [];
 
       const out = {
-        version: "8.2",
+        version: "8.5",
         updatedAt: Number(raw.updatedAt) > 0 ? Number(raw.updatedAt) : 0,
         baseUpcomingYear: Math.min(2035, Math.max(2026, Number(raw.baseUpcomingYear) || 2027)),
         leagueBranding: sanitizedBranding,
@@ -4291,7 +4508,6 @@
       const defaultEspn = JSON.parse(JSON.stringify(DEFAULT_ESPN_DATA));
       const defaultProfiles = {};
       DEFAULT_TEAMS.forEach(t => {
-        const seedRoster = defaultEspn.rosters[t.id] || [];
         defaultProfiles[t.id] = {
           customTeamName: "",
           feasterRenamedByChamp: false,
@@ -4307,14 +4523,14 @@
           lookingFor: "",
           needsChips: [],
           pickTags: {},
-          keepers: seedRoster.slice(0, 8).map(p => p.id),
+          keepers: [],
           keepersConfirmedAt: 0,
           playerTags: {},
           updatedAt: 0
         };
       });
       return {
-        version: "8.2",
+        version: "8.5",
         updatedAt: 0,
         baseUpcomingYear: 2027,
         leaguePassphraseVerifier: DEFAULT_PASSPHRASE_VERIFIER,
@@ -4602,6 +4818,7 @@
           openConfirmModal(
             "Unresolved Trades Before Rollover",
             `Warning: There are still ${parts.join(", ")} open for ${curBase}. We recommend finalizing or declining all pending trades before advancing the season window to ${nextBase} & ${nextBase + 1}. Advance anyway?`,
+            "Advance Season Anyway",
             () => advanceSeasonWindow(delta, true)
           );
           return;
@@ -4687,16 +4904,6 @@
         params.set("tab", uiState.activeTab);
       }
       return `?${params.toString()}`;
-    }
-
-    function copyPersonalizedViewLink() {
-      try {
-        const base = window.location.href.split("?")[0].split("#")[0];
-        const url = `${base}${buildPersonalizedQueryString()}`;
-        copyTextToClipboard(url, `Copied personalized link for ${getTeamName(uiState.scoutedTeamId || uiState.selectedManager)}!`);
-      } catch (e) {
-        showToast("Could not copy view link.", "error");
-      }
     }
 
     function loadDatabase() {
@@ -5184,7 +5391,16 @@
     }
 
     function applyColorTheme(forceThemeId = null) {
-      const themeId = forceThemeId || getEffectiveColorTheme();
+      let themeId = forceThemeId;
+      if (!themeId) {
+        const settingsModal = document.getElementById("moreToolsModal");
+        const isSettingsOpen = Boolean(settingsModal && !settingsModal.classList.contains("hidden"));
+        if (isSettingsOpen && uiState.pendingColorTheme && uiState.pendingColorTheme !== "upstate_kitties" && !isCurrentTeamKittyCursed()) {
+          themeId = uiState.pendingColorTheme;
+        } else {
+          themeId = getEffectiveColorTheme();
+        }
+      }
       uiState.colorTheme = themeId;
       COVERT_COLOR_SCHEMES.forEach(s => document.body.classList.remove(`theme-${s.id}`));
       document.body.classList.add(`theme-${themeId}`);
@@ -5462,7 +5678,7 @@
             type: "DRAFT_ORDER",
             year: yr,
             title: `${yr} Draft Order Official & Locked`,
-            detail: `1.01 Toilet Bowl Winner: ${p101} • 1.05 Phallic Feaster: ${p105} • Snake Rounds 1–20 active.`,
+            detail: `1.01 Toilet Bowl Winner: ${p101} • Slot 1.05 / Phallic Feaster (#10): ${p105} • Snake Rounds 1–20 active.`,
             teamId: ord.slots[0] || "",
             timestamp: yr === (leagueDB.baseUpcomingYear || 2027) ? (Number(leagueDB.updatedAt) || 1768000000000) : 1756000000000,
             dateLabel: `${yr} Pre-Draft`
@@ -5596,12 +5812,15 @@
         const cardBorderStyle = isStaged
           ? (isSaved ? "border-color: #34D399; box-shadow: 0 0 0 1px rgba(52,211,153,0.45), 0 6px 16px rgba(0,0,0,0.4);" : "border-color: #FBBF24; box-shadow: 0 0 0 1px rgba(251,191,36,0.55), 0 6px 16px rgba(0,0,0,0.4);")
           : `border-color: ${sc.trimHex}44;`;
+        const pillStyle = isSaved
+          ? "background:#022C22;color:#6EE7B7;border:1px solid rgba(16,185,129,0.55);"
+          : "background:#451A03;color:#FCD34D;border:1px solid rgba(245,158,11,0.55);";
         return `
           <button
             type="button"
             onclick="stageColorThemeSelection('${sc.id}')"
             style="background: linear-gradient(180deg, ${sc.surfaceHex || '#13161F'} 0%, ${sc.bgHex || '#0B0D12'} 100%); ${cardBorderStyle}"
-            class="rounded-xl border text-left transition overflow-hidden flex flex-col justify-between cursor-pointer hover:brightness-105 ${isLockedOut ? 'opacity-50' : ''}"
+            class="color-swatch-preview-card rounded-xl border text-left transition overflow-hidden flex flex-col justify-between cursor-pointer hover:brightness-105 ${isLockedOut ? 'opacity-50' : ''}"
           >
             <div class="w-full h-3.5 relative flex items-center justify-end px-2" style="background: ${sc.heroGrad}; border-bottom: 1.5px solid ${sc.trimHex};">
               <div class="flex items-center gap-1">${dotsHtml}</div>
@@ -5609,7 +5828,7 @@
             <div class="p-2.5 flex flex-col gap-1 w-full">
               <div class="flex items-center justify-between gap-1">
                 <span class="text-xs font-extrabold truncate" style="color: ${sc.textHex || '#FFFFFF'};">${escapeHtml(sc.label)}</span>
-                ${isStaged ? `<span class="inline-flex items-center gap-1 px-1.5 py-0.5 rounded-full text-[9px] font-black uppercase ${isSaved ? 'bg-emerald-950/90 text-emerald-300 border border-emerald-500/40' : 'bg-amber-950/90 text-amber-300 border border-amber-500/40'}"><i class="fa-solid ${isSaved ? 'fa-check' : 'fa-eye'} text-[8px]"></i>${isSaved ? 'Active' : 'Preview'}</span>` : ''}
+                ${isStaged ? `<span class="inline-flex items-center gap-1 px-1.5 py-0.5 rounded-full text-[9px] font-black uppercase" style="${pillStyle}"><i class="fa-solid ${isSaved ? 'fa-check' : 'fa-eye'} text-[8px]" style="color:inherit;"></i>${isSaved ? 'Active' : 'Preview'}</span>` : ''}
               </div>
               <div class="flex items-center justify-between gap-1">
                 <span class="text-[10px] font-semibold truncate" style="color: ${sc.subHex || sc.trimHex};">${escapeHtml(sc.sub)}</span>
@@ -5960,13 +6179,13 @@
        ----------------------------------------------------------- */
     const NFL_TEAM_COLORS = {
       ARI: ["#97233F", "#FFFFFF"], ATL: ["#A71930", "#FFFFFF"], BAL: ["#241773", "#E9D5FF"], BUF: ["#00338D", "#FFFFFF"],
-      CAR: ["#0085CA", "#FFFFFF"], CHI: ["#0B162A", "#F97316"], CIN: ["#FB4F14", "#FFFFFF"], CLE: ["#311D00", "#FF3C00"],
-      DAL: ["#041E42", "#E2E8F0"], DEN: ["#FB4F14", "#FFFFFF"], DET: ["#0076B6", "#FFFFFF"], GB:  ["#203731", "#FFB612"],
-      HOU: ["#03202F", "#FCA5A5"], IND: ["#002C5F", "#FFFFFF"], JAX: ["#006778", "#FDE68A"], KC:  ["#E31837", "#FFB81C"],
-      LAC: ["#0080C6", "#FFC20E"], LAR: ["#003594", "#FFA300"], LV:  ["#18181B", "#E4E4E7"], MIA: ["#008E97", "#FFFFFF"],
-      MIN: ["#4F2683", "#FFC62F"], NE:  ["#002244", "#F87171"], NO:  ["#18181B", "#D3BC8D"], NYG: ["#0B2265", "#FFFFFF"],
-      NYJ: ["#125740", "#FFFFFF"], PHI: ["#004C54", "#FFFFFF"], PIT: ["#18181B", "#FFB612"], SEA: ["#002244", "#69BE28"],
-      SF:  ["#AA0000", "#B3995D"], TB:  ["#D50A0A", "#FFFFFF"], TEN: ["#0C2340", "#4B92DB"], WAS: ["#5A1414", "#FFB612"]
+      CAR: ["#005E99", "#FFFFFF"], CHI: ["#0B162A", "#FB923C"], CIN: ["#18181B", "#FB923C"], CLE: ["#311D00", "#FB923C"],
+      DAL: ["#041E42", "#E2E8F0"], DEN: ["#002244", "#FB923C"], DET: ["#0076B6", "#FFFFFF"], GB:  ["#203731", "#FDE047"],
+      HOU: ["#03202F", "#FCA5A5"], IND: ["#002C5F", "#FFFFFF"], JAX: ["#006778", "#FEF08A"], KC:  ["#B80D27", "#FEF08A"],
+      LAC: ["#005A9C", "#FDE047"], LAR: ["#003594", "#FDE047"], LV:  ["#18181B", "#E4E4E7"], MIA: ["#00676E", "#FFFFFF"],
+      MIN: ["#4F2683", "#FDE047"], NE:  ["#002244", "#FCA5A5"], NO:  ["#18181B", "#E7D5B0"], NYG: ["#0B2265", "#FFFFFF"],
+      NYJ: ["#125740", "#FFFFFF"], PHI: ["#004C54", "#FFFFFF"], PIT: ["#18181B", "#FDE047"], SEA: ["#002244", "#86EFAC"],
+      SF:  ["#990000", "#FEF08A"], TB:  ["#B00808", "#FFFFFF"], TEN: ["#0C2340", "#7DD3FC"], WAS: ["#5A1414", "#FDE047"]
     };
 
     function extractPlayerEspnNumericId(p) {
@@ -6215,6 +6434,13 @@
      * Requires at least 4 community fairness votes before adaptive nudges take effect.
      */
     const MIN_FAIRNESS_VOTES_FOR_CALIBRATION = 4;
+
+    function isTeamTradeParticipant(tr, teamId) {
+      const tid = safeId(teamId);
+      if (!tr || !tid) return false;
+      return [tr.teamA, tr.teamB, tr.teamC].filter(Boolean).map(safeId).includes(tid);
+    }
+
     function computeAdaptiveFairnessCalibration() {
       const defaults = {
         reviewedTradesCount: 0,
@@ -6227,7 +6453,7 @@
         earlyPickPremium: 1.0,
         fairGapThreshold: 0.12,
         heavyEdgeThreshold: 0.28,
-        summaryLabel: "Baseline Scoring Curve"
+        summaryLabel: `0/${MIN_FAIRNESS_VOTES_FOR_CALIBRATION} neutral votes to calibrate`
       };
       const trades = Array.isArray(leagueDB?.trades) ? leagueDB.trades : [];
       if (!trades.length) return defaults;
@@ -6241,8 +6467,12 @@
 
       trades.forEach(tr => {
         if (!tr || tr.teamC) return;
-        const y = Array.isArray(tr.fairnessVotes?.yes) ? tr.fairnessVotes.yes.length : 0;
-        const n = Array.isArray(tr.fairnessVotes?.no) ? tr.fairnessVotes.no.length : 0;
+        const y = Array.isArray(tr.fairnessVotes?.yes)
+          ? tr.fairnessVotes.yes.filter(v => !isTeamTradeParticipant(tr, v)).length
+          : 0;
+        const n = Array.isArray(tr.fairnessVotes?.no)
+          ? tr.fairnessVotes.no.filter(v => !isTeamTradeParticipant(tr, v)).length
+          : 0;
         const count = y + n;
         if (count === 0) return;
 
@@ -6309,8 +6539,8 @@
 
       const pctFair = Math.round((yesVotes / totalVotes) * 100);
       const summaryLabel = isCalibrated
-        ? `League-Tuned (${totalVotes} votes • ${pctFair}% Fair)`
-        : `Warming Up (${totalVotes}/${MIN_FAIRNESS_VOTES_FOR_CALIBRATION} votes needed)`;
+        ? `League-Tuned (${totalVotes} neutral votes • ${pctFair}% Fair)`
+        : `${totalVotes}/${MIN_FAIRNESS_VOTES_FOR_CALIBRATION} neutral votes to calibrate`;
 
       return {
         reviewedTradesCount,
@@ -6442,6 +6672,10 @@
       if (!tr) return;
 
       const voterTeam = safeId(uiState.isCommish ? (uiState.selectedManager || uiState.myTeam) : uiState.myTeam) || "syeth";
+      if (isTeamTradeParticipant(tr, voterTeam)) {
+        showToast("Trade participants cannot vote on their own deal — fairness calibration uses neutral league votes only.", "info");
+        return;
+      }
       if (!tr.fairnessVotes || typeof tr.fairnessVotes !== "object") {
         tr.fairnessVotes = { yes: [], no: [] };
       }
@@ -6471,7 +6705,7 @@
       if (cleared) {
         showToast("Fairness vote cleared.", "info");
       } else {
-        showToast(`Recorded "${normChoice === "YES" ? "Fair" : "Unfair"}" review (${cal.totalVotes} league vote${cal.totalVotes === 1 ? "" : "s"} calibrating Trade Value Guide).`, "success");
+        showToast(`Recorded "${normChoice === "YES" ? "Fair" : "Unfair"}" review (${cal.totalVotes}/${MIN_FAIRNESS_VOTES_FOR_CALIBRATION} neutral votes calibrating Trade Value Guide).`, "success");
       }
 
       if (typeof pushTradeFairnessVoteToCloud === "function") {
@@ -6515,9 +6749,7 @@
         verdictBadge = `<span class="px-2 py-0.5 rounded-full text-[10px] font-extrabold bg-amber-950 text-amber-300 border border-amber-500/70"><i class="fa-solid fa-scale-unbalanced mr-1"></i>Slight Edge: ${leaderName} (+${diff})</span>`;
       }
 
-      const calBadgeHtml = cal.totalVotes > 0
-        ? `<span class="px-1.5 py-0.5 rounded bg-indigo-950/70 border border-indigo-500/40 text-[9px] font-mono text-indigo-200" title="Pick Weight ${cal.pickVsPlayerFactor}x • Early Rd Weight ${cal.earlyPickPremium}x • Fair Band ±${Math.round(cal.fairGapThreshold * 100)}%"><i class="fa-solid fa-users-gear mr-1"></i>${escapeHtml(cal.summaryLabel)}</span>`
-        : "";
+      const calBadgeHtml = `<span class="px-1.5 py-0.5 rounded bg-indigo-950/70 border border-indigo-500/40 text-[9px] font-mono text-indigo-200" title="Neutral league fairness calibration (Pick Weight ${cal.pickVsPlayerFactor}x • Early Rd Weight ${cal.earlyPickPremium}x • Fair Band ±${Math.round(cal.fairGapThreshold * 100)}%)"><i class="fa-solid fa-users-gear mr-1"></i>${escapeHtml(cal.summaryLabel)}</span>`;
 
       return `
         <div class="trade-value-balance-meter bg-[#0B0D12] border border-white/10 rounded-xl px-3 py-2 space-y-1.5">
@@ -6543,7 +6775,7 @@
           ${uiState.fairnessDetailsOpen ? `
             <div class="pt-1.5 border-t border-white/10 flex flex-wrap items-center justify-between gap-2 text-[10px] text-slate-400">
               <span>Format: <strong class="text-slate-200 font-mono">${escapeHtml(sc.formatLabel)}</strong></span>
-              <span>${cal.totalVotes > 0 ? `League Calibration: Pick×${cal.pickVsPlayerFactor.toFixed(2)} • Rd1-3×${cal.earlyPickPremium.toFixed(2)} (${cal.yesVotes} Yes / ${cal.noVotes} No)` : `Tip: Vote Yes/No on completed trades in Activity to tune league fairness weights.`}</span>
+              <span>${cal.totalVotes > 0 ? `Neutral Calibration: Pick×${cal.pickVsPlayerFactor.toFixed(2)} • Rd1-3×${cal.earlyPickPremium.toFixed(2)} (${cal.yesVotes} Fair / ${cal.noVotes} Unfair)` : `Tip: Neutral managers can vote Fair/Unfair on completed trades in Activity (${MIN_FAIRNESS_VOTES_FOR_CALIBRATION} votes required to tune).`}</span>
             </div>
           ` : ""}
         </div>
@@ -6604,6 +6836,11 @@
       box.innerHTML = buildTradeValueBalanceBarHtml(teamA, teamB, aItems, bItems);
     }
 
+    function toggleWarRoomTrophyStrip() {
+      uiState.warRoomTrophyExpanded = !uiState.warRoomTrophyExpanded;
+      renderAll();
+    }
+
     function buildFranchiseTrophyAndNemesisHtml(teamId) {
       const tid = safeId(teamId);
       const { activeStandings } = computeAllTimeManagerStats();
@@ -6617,56 +6854,88 @@
       let bestVictim = null;
       let archNemesis = null;
 
-      (leagueDB?.teams || DEFAULT_TEAMS).forEach(opp => {
-        if (opp.id === tid) return;
-        const rec = row[opp.id] || { wins: 0, losses: 0 };
-        const games = (rec.wins || 0) + (rec.losses || 0);
-        if (games < 1) return;
-        const pct = rec.wins / games;
-        const diff = rec.wins - rec.losses;
-        if (!bestVictim || pct > bestVictim.pct || (pct === bestVictim.pct && diff > bestVictim.diff)) {
-          bestVictim = { id: opp.id, wins: rec.wins, losses: rec.losses, pct, diff };
+      if (matrix.__hasRealH2H) {
+        (leagueDB?.teams || DEFAULT_TEAMS).forEach(opp => {
+          if (opp.id === tid) return;
+          const rec = row[opp.id] || { wins: 0, losses: 0 };
+          const games = (rec.wins || 0) + (rec.losses || 0);
+          if (games < 1) return;
+          const pct = rec.wins / games;
+          const diff = rec.wins - rec.losses;
+          if ((rec.wins || 0) > (rec.losses || 0) && (!bestVictim || pct > bestVictim.pct || (pct === bestVictim.pct && diff > bestVictim.diff))) {
+            bestVictim = { id: opp.id, wins: rec.wins, losses: rec.losses, pct, diff };
+          }
+          if ((rec.losses || 0) > (rec.wins || 0) && (!archNemesis || pct < archNemesis.pct || (pct === archNemesis.pct && diff < archNemesis.diff))) {
+            archNemesis = { id: opp.id, wins: rec.wins, losses: rec.losses, pct, diff };
+          }
+        });
+        if (archNemesis && bestVictim && archNemesis.id === bestVictim.id) {
+          archNemesis = null;
         }
-        if (!archNemesis || pct < archNemesis.pct || (pct === archNemesis.pct && diff < archNemesis.diff)) {
-          archNemesis = { id: opp.id, wins: rec.wins, losses: rec.losses, pct, diff };
-        }
-      });
-      if (archNemesis && bestVictim && archNemesis.id === bestVictim.id) {
-        archNemesis = null;
       }
 
       const ringsHtml = st.championships > 0
         ? st.champYears.map(yr => `<span class="px-2 py-0.5 rounded-full bg-amber-950/90 border border-amber-400/80 text-amber-200 font-mono text-[10px] font-black shadow-sm">💍 ${yr}</span>`).join("")
         : `<span class="text-[11px] text-zinc-400 italic">Chasing First Ring 🎯 (${st.playoffBerths} Playoff Berths)</span>`;
 
+      const mobileCompactRingSummary = st.championships > 0
+        ? `<span class="text-amber-300 font-black font-mono">💍 ${st.championships}× (${st.champYears.join(", ")})</span>`
+        : `<span class="text-slate-300 font-semibold">${st.playoffBerths}× Playoffs</span>`;
+
       const winPctStr = (st.winPct * 100).toFixed(1) + "%";
+      const rivalWins = Number(officialRivalRec?.wins) || 0;
+      const rivalLosses = Number(officialRivalRec?.losses) || 0;
+      const isMobExpanded = Boolean(uiState.warRoomTrophyExpanded);
+
+      const fullDetailChipsHtml = `
+        <div class="md:col-span-5 flex flex-wrap items-center gap-1.5 min-w-0">
+          <span class="text-[10px] font-extrabold uppercase tracking-wider text-amber-300"><i class="fa-solid fa-trophy mr-1"></i>Trophy Case:</span>
+          ${ringsHtml}
+          <span class="px-1.5 py-0.5 rounded bg-[#09090B]/80 border border-zinc-700/80 font-mono text-[10px] text-zinc-200">${st.wins}-${st.losses} (${winPctStr})</span>
+        </div>
+        <div class="md:col-span-7 flex flex-wrap items-center md:justify-end gap-1.5 min-w-0">
+          ${officialRival ? `
+            <button type="button" onclick="switchMainTab('capital'); setLeagueHqSubTab('RIVALRY');" class="inline-flex items-center gap-1 px-2 py-0.5 rounded-lg bg-amber-950/75 hover:bg-amber-900/75 border border-amber-400/70 text-[11px] text-amber-200 cursor-pointer transition" title="Official League Rivalry">
+              <span>⚔️ Rival: <strong>vs. ${escapeHtml(officialRival.rivalOrigName)}</strong></span>
+              <span class="font-mono text-[10px] text-amber-300">(${rivalWins}–${rivalLosses})</span>
+            </button>
+          ` : ''}
+          ${bestVictim ? `
+            <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-lg bg-emerald-950/60 border border-emerald-600/50 text-[11px] text-emerald-200">
+              <span>🎯 Owns <strong>${escapeHtml(getOriginalManagerName(bestVictim.id))}</strong></span>
+              <span class="font-mono text-[10px] text-emerald-300">(${bestVictim.wins}–${bestVictim.losses})</span>
+            </span>
+          ` : ''}
+          ${archNemesis ? `
+            <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-lg bg-rose-950/60 border border-rose-600/50 text-[11px] text-rose-200">
+              <span>😈 Nemesis: <strong>${escapeHtml(getOriginalManagerName(archNemesis.id))}</strong></span>
+              <span class="font-mono text-[10px] text-rose-300">(${archNemesis.wins}–${archNemesis.losses})</span>
+            </span>
+          ` : ''}
+        </div>
+      `;
 
       return `
-        <div id="warRoomTrophyNemesisStrip" class="mt-2.5 pt-2.5 border-t border-white/10 grid grid-cols-1 md:grid-cols-12 gap-2 items-center text-xs">
-          <div class="md:col-span-5 flex flex-wrap items-center gap-1.5 min-w-0">
-            <span class="text-[10px] font-extrabold uppercase tracking-wider text-amber-300"><i class="fa-solid fa-trophy mr-1"></i>Trophy Case:</span>
-            ${ringsHtml}
-            <span class="px-1.5 py-0.5 rounded bg-[#09090B]/80 border border-zinc-700/80 font-mono text-[10px] text-zinc-200">${st.wins}-${st.losses} (${winPctStr})</span>
-          </div>
-          <div class="md:col-span-7 flex flex-wrap items-center md:justify-end gap-1.5 min-w-0">
-            ${officialRival ? `
-              <button type="button" onclick="switchTab('capital'); setLeagueHqSubTab('RIVALRY');" class="inline-flex items-center gap-1 px-2 py-0.5 rounded-lg bg-amber-950/75 hover:bg-amber-900/75 border border-amber-400/70 text-[11px] text-amber-200 cursor-pointer transition" title="Official League Rivalry">
-                <span>⚔️ Rival: <strong>vs. ${escapeHtml(officialRival.rivalOrigName)}</strong></span>
-                <span class="font-mono text-[10px] text-amber-300">(${Number(officialRivalRec?.wins) || 0}-${Number(officialRivalRec?.losses) || 0})</span>
+        <div id="warRoomTrophyNemesisStrip" class="mt-2 pt-2 border-t border-white/10 text-xs">
+          <!-- Mobile Compact 1-Line Collapsible Summary (D9 = Option A) -->
+          <div class="md:hidden">
+            <div class="flex items-center justify-between gap-2">
+              <button type="button" onclick="toggleWarRoomTrophyStrip()" class="flex items-center gap-1.5 min-w-0 text-left text-[11px] text-slate-200 cursor-pointer truncate">
+                <i class="fa-solid fa-trophy text-[10px] text-amber-400 flex-shrink-0"></i>
+                ${mobileCompactRingSummary}
+                <span class="text-slate-400">•</span>
+                <span class="font-mono text-[10px] text-slate-200">${st.wins}-${st.losses}</span>
+                ${officialRival ? `<span class="text-slate-400">•</span><span class="text-amber-200 truncate">⚔️ ${escapeHtml(officialRival.rivalOrigName)} (${rivalWins}–${rivalLosses})</span>` : ''}
               </button>
-            ` : ''}
-            ${bestVictim ? `
-              <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-lg bg-emerald-950/60 border border-emerald-600/50 text-[11px] text-emerald-200">
-                <span>🎯 Owns <strong>${escapeHtml(getOriginalManagerName(bestVictim.id))}</strong></span>
-                <span class="font-mono text-[10px] text-emerald-300">(${bestVictim.wins}-${bestVictim.losses})</span>
-              </span>
-            ` : ''}
-            ${archNemesis ? `
-              <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-lg bg-rose-950/60 border border-rose-600/50 text-[11px] text-rose-200">
-                <span>😈 Nemesis: <strong>${escapeHtml(getOriginalManagerName(archNemesis.id))}</strong></span>
-                <span class="font-mono text-[10px] text-rose-300">(${archNemesis.wins}-${archNemesis.losses})</span>
-              </span>
-            ` : ''}
+              <button type="button" onclick="toggleWarRoomTrophyStrip()" class="px-1.5 py-0.5 rounded bg-[#0B0D12]/80 border border-white/10 text-[10px] text-slate-300 flex-shrink-0 cursor-pointer" aria-label="Toggle Trophy & Rival Details">
+                <i class="fa-solid ${isMobExpanded ? 'fa-chevron-up' : 'fa-chevron-down'} text-[9px]"></i>
+              </button>
+            </div>
+            ${isMobExpanded ? `<div class="mt-2 pt-2 border-t border-white/10 grid grid-cols-1 gap-2">${fullDetailChipsHtml}</div>` : ''}
+          </div>
+          <!-- Desktop Full Trophy & Rivalry Strip -->
+          <div class="hidden md:grid md:grid-cols-12 gap-2 items-center">
+            ${fullDetailChipsHtml}
           </div>
         </div>
       `;
@@ -6705,193 +6974,6 @@
       uiState.activeTab = "tradecenter";
       renderAll();
       showToast(`Staged ${yr} Rd ${rd} (${getOriginalManagerName(orig)}'s slot) from ${getTeamName(holder)} in Trade Machine!`, "success");
-    }
-
-    async function shareBrandedCardToChat(cardType, refId) {
-      const baseUrl = window.location.origin && window.location.origin !== "null"
-        ? (window.location.origin + window.location.pathname)
-        : "https://syeth-spurrier.github.io/gamecock-mafia-draft-tracker/";
-
-      let badgeText = "GAMECOCK MAFIA • EST. 2016";
-      let titleText = "League Update";
-      let subtitleText = "";
-      let bodyLines = [];
-      let shareUrl = baseUrl;
-      let fileSlug = `gcm-${String(cardType || "card").toLowerCase()}`;
-
-      if (cardType === "TRADE") {
-        const tr = (leagueDB?.trades || []).find(t => t.id === refId);
-        if (!tr) return;
-        const parts = [tr.teamA, tr.teamB, tr.teamC].filter(Boolean).map(id => getTeamName(id)).join(" ↔ ");
-        const yrs = getTradeAffectedYears(tr).join(" & ");
-        badgeText = `OFFICIAL TRADE RECEIPT • ${tr.id}`;
-        titleText = parts;
-        subtitleText = `${yrs} Draft Window • ${tr.date || "Official"}`;
-        bodyLines.push(`Deal: ${tr.headline}`);
-        (tr.playerTransfers || []).slice(0, 5).forEach(pt => {
-          bodyLines.push(`🏈 ${pt.playerName || pt.name} (${pt.pos || "NFL"}) ➔ ${getTeamName(pt.toOwner)}`);
-        });
-        (tr.directTransfers || []).slice(0, 6).forEach(dt => {
-          bodyLines.push(`📋 ${dt.year} Rd ${dt.round} (${getOriginalManagerName(dt.originalOwner)}'s Pick) ➔ ${getTeamName(dt.toOwner)}`);
-        });
-        shareUrl = `${baseUrl}?year=${Number(tr.year || uiState.activeYear)}&tab=feed`;
-        fileSlug = `gcm-trade-${tr.id}`;
-      } else if (cardType === "PROPOSAL") {
-        const pt = (leagueDB?.pendingTrades || []).find(t => t.id === refId);
-        if (!pt) return;
-        const parts = getProposalRequiredTeams(pt).map(id => getTeamName(id)).join(" ↔ ");
-        badgeText = `INCOMING TRADE OFFER • ${pt.id}`;
-        titleText = parts;
-        subtitleText = `Awaiting Partner Confirmation`;
-        bodyLines.push(`Offer: ${pt.headline}`);
-        (pt.playerTransfers || []).slice(0, 4).forEach(p => {
-          bodyLines.push(`🏈 ${p.playerName || p.name} (${p.pos || "NFL"}) ➔ ${getTeamName(p.toOwner)}`);
-        });
-        (pt.directTransfers || []).slice(0, 5).forEach(dt => {
-          bodyLines.push(`📋 ${dt.year} Rd ${dt.round} (${getOriginalManagerName(dt.originalOwner)}'s) ➔ ${getTeamName(dt.toOwner)}`);
-        });
-        shareUrl = `${baseUrl}?year=${Number(pt.year || uiState.activeYear)}&tab=feed`;
-        fileSlug = `gcm-offer-${pt.id}`;
-      } else if (cardType === "KEEPERS") {
-        const tid = safeId(refId || uiState.myTeam || "syeth");
-        const caps = getTeamKeeperCountsAndCaps(tid);
-        const roster = getTeamRoster(tid);
-        const kept = caps.keeperIds.map(id => roster.find(p => p.id === id)).filter(Boolean);
-        badgeText = `${uiState.activeYear} OFFICIAL KEEPER SLATE`;
-        titleText = `${getTeamName(tid)} (${kept.length}/${caps.maxKeepers} Locked)`;
-        subtitleText = `Gamecock Mafia Keeper Lock-In`;
-        kept.slice(0, 8).forEach((p, idx) => {
-          bodyLines.push(`🔒 Rd ${idx + 1}: ${p.name} (${p.pos} • ${p.nflTeam})`);
-        });
-        if (kept.length > 8) {
-          bodyLines.push(`+ ${kept.length - 8} more Keepers: ${kept.slice(8).map(x => x.name).join(", ")}`);
-        }
-        shareUrl = `${baseUrl}?team=${tid}&year=${Number(uiState.activeYear)}&tab=ledger`;
-        fileSlug = `gcm-keepers-${tid}`;
-      } else if (cardType === "TROPHY") {
-        const tid = safeId(refId || uiState.myTeam || "syeth");
-        const { activeStandings } = computeAllTimeManagerStats();
-        const st = activeStandings.find(x => x.id === tid);
-        badgeText = `FRANCHISE RESUME • 2016–PRESENT`;
-        titleText = getTeamName(tid);
-        subtitleText = st ? `${st.championships}x League Champion • ${st.wins}-${st.losses} (${(st.winPct * 100).toFixed(1)}%)` : "Gamecock Mafia Franchise";
-        if (st) {
-          bodyLines.push(`🏆 Championships: ${st.championships > 0 ? st.champYears.join(", ") : "Chasing First Ring"}`);
-          bodyLines.push(`📈 All-Time Record: ${st.wins}-${st.losses} • ${st.playoffBerths} Playoff Berths`);
-          bodyLines.push(`🔥 Career Points For: ${st.pointsFor.toLocaleString()} PF`);
-        }
-        shareUrl = `${baseUrl}?team=${tid}&tab=capital`;
-        fileSlug = `gcm-trophy-${tid}`;
-      }
-
-      const plainCaption = [
-        `🐓 ${badgeText}`,
-        `🤝 ${titleText}`,
-        subtitleText ? `📌 ${subtitleText}` : "",
-        ...bodyLines,
-        `🔗 ${shareUrl}`
-      ].filter(Boolean).join("\n");
-
-      // Render 1080x640 branded PNG card on <canvas> when supported
-      let pngBlob = null;
-      try {
-        if (typeof document !== "undefined") {
-          const canvas = document.createElement("canvas");
-          canvas.width = 1080;
-          canvas.height = 640;
-          const ctx = canvas.getContext && canvas.getContext("2d");
-          if (ctx) {
-            const rootStyles = getComputedStyle(document.documentElement);
-            const accent = (rootStyles.getPropertyValue("--gcm-accent") || "#CC1429").trim() || "#CC1429";
-            const primary = (rootStyles.getPropertyValue("--gcm-primary") || "#73000A").trim() || "#73000A";
-
-            const grad = ctx.createLinearGradient(0, 0, 1080, 640);
-            grad.addColorStop(0, "#09090B");
-            grad.addColorStop(0.55, "#121218");
-            grad.addColorStop(1, primary);
-            ctx.fillStyle = grad;
-            ctx.fillRect(0, 0, 1080, 640);
-
-            ctx.strokeStyle = accent;
-            ctx.lineWidth = 6;
-            ctx.strokeRect(24, 24, 1032, 592);
-
-            ctx.fillStyle = accent;
-            ctx.font = "800 22px system-ui, -apple-system, sans-serif";
-            ctx.fillText(badgeText.toUpperCase(), 64, 86);
-
-            ctx.fillStyle = "#FFFFFF";
-            ctx.font = "900 44px system-ui, -apple-system, sans-serif";
-            ctx.fillText(String(titleText).slice(0, 42), 64, 148);
-
-            if (subtitleText) {
-              ctx.fillStyle = "#FCD34D";
-              ctx.font = "700 24px system-ui, -apple-system, sans-serif";
-              ctx.fillText(String(subtitleText).slice(0, 65), 64, 190);
-            }
-
-            ctx.fillStyle = "rgba(9, 9, 11, 0.78)";
-            ctx.fillRect(56, 220, 968, 320);
-            ctx.strokeStyle = "rgba(255,255,255,0.14)";
-            ctx.lineWidth = 2;
-            ctx.strokeRect(56, 220, 968, 320);
-
-            ctx.fillStyle = "#F4F4F5";
-            ctx.font = "600 24px system-ui, -apple-system, sans-serif";
-            bodyLines.slice(0, 6).forEach((ln, idx) => {
-              const clipped = ln.length > 68 ? ln.slice(0, 65) + "..." : ln;
-              ctx.fillText(clipped, 84, 268 + idx * 46);
-            });
-
-            ctx.fillStyle = "#A1A1AA";
-            ctx.font = "700 18px monospace";
-            ctx.fillText("GAMECOCK MAFIA DRAFT & LEAGUE HQ • EST. 2016", 64, 584);
-
-            pngBlob = await new Promise(resolve => {
-              if (typeof canvas.toBlob === "function") {
-                canvas.toBlob(b => resolve(b), "image/png");
-              } else {
-                resolve(null);
-              }
-            });
-          }
-        }
-      } catch (e) {
-        pngBlob = null;
-      }
-
-      // 1. Native Mobile Web Share API with PNG Image Card
-      try {
-        if (pngBlob && typeof File !== "undefined" && navigator.share && navigator.canShare) {
-          const file = new File([pngBlob], `${fileSlug}.png`, { type: "image/png" });
-          if (navigator.canShare({ files: [file] })) {
-            await navigator.share({ title: titleText, text: plainCaption, files: [file] });
-            showToast("Shared branded graphic card to chat!", "success");
-            return true;
-          }
-        }
-        if (navigator.share) {
-          await navigator.share({ title: titleText, text: plainCaption, url: shareUrl });
-          showToast("Shared receipt to group chat!", "success");
-          return true;
-        }
-      } catch (err) {
-        if (err && err.name === "AbortError") return false;
-      }
-
-      // 2. Desktop / Clipboard Fallback (+ download PNG card if generated)
-      if (pngBlob && typeof URL !== "undefined" && typeof URL.createObjectURL === "function") {
-        try {
-          const dl = document.createElement("a");
-          dl.href = URL.createObjectURL(pngBlob);
-          dl.download = `${fileSlug}.png`;
-          document.body.appendChild(dl);
-          dl.click();
-          dl.remove();
-        } catch (e) {}
-      }
-      copyTextToClipboard(plainCaption, `Copied ${badgeText} & downloaded Share Card graphic!`);
-      return true;
     }
 
     const NOTIF_LAST_READ_STORAGE_KEY = "gcm_notif_last_read_ts_v1";
@@ -7056,7 +7138,7 @@
 
       if (notif.champFeasterActionNeeded && notif.reigning?.feasterId) {
         items.push(`
-          <button type="button" onclick="closeHeaderNotifDropdown(); uiState.espnStandingsYear = ${Number(notif.reigning.seasonYear) || 2026}; switchMainTab('capital'); setLeagueHqSubTab('STANDINGS');" class="w-full text-left p-2.5 rounded-xl bg-fuchsia-950/40 hover:bg-fuchsia-950/65 border border-fuchsia-500/45 transition flex items-center justify-between gap-2 cursor-pointer">
+          <button type="button" onclick="closeHeaderNotifDropdown(); uiState.leagueHqSeasonYear = ${Number(notif.reigning.seasonYear) || 2026}; uiState.espnStandingsYear = ${Number(notif.reigning.seasonYear) || 2026}; switchMainTab('capital'); setLeagueHqSubTab('STANDINGS');" class="w-full text-left p-2.5 rounded-xl bg-fuchsia-950/40 hover:bg-fuchsia-950/65 border border-fuchsia-500/45 transition flex items-center justify-between gap-2 cursor-pointer">
             <div class="min-w-0">
               <div class="text-[11px] font-black text-fuchsia-200">🍆 Champion's Naming Rights</div>
               <div class="text-[10px] text-slate-300 truncate">Rename Phallic Feaster (${escapeHtml(getOriginalManagerName(notif.reigning.feasterId))})</div>
@@ -8186,29 +8268,29 @@
 
         const totalOtbForTeam = heroOtbPlayers.length + heroOtbPicks.length;
         const commandStripHtml = `
-          <div id="warRoomCommandStrip" class="mt-3 grid grid-cols-2 sm:grid-cols-4 gap-2">
-            <button type="button" onclick="setMyTeamSubView('PICKS')" class="bg-[#0B0D12]/90 hover:bg-[#0B0D12] border border-white/10 hover:border-amber-400/50 rounded-xl p-2.5 text-left transition cursor-pointer">
+          <div id="warRoomCommandStrip" class="mt-2.5 sm:mt-3 grid grid-cols-2 sm:grid-cols-4 gap-1.5 sm:gap-2">
+            <button type="button" onclick="setMyTeamSubView('PICKS')" class="bg-[#0B0D12]/90 hover:bg-[#0B0D12] border border-white/10 hover:border-amber-400/50 rounded-xl p-2 sm:p-2.5 text-left transition cursor-pointer">
               <div class="text-[10px] font-extrabold uppercase tracking-wider text-slate-400 flex items-center justify-between">
                 <span>${Number(state.year)} Capital</span>
-                <span class="font-mono text-amber-300">#${heroRankInfo.totalRank}</span>
+                <i class="fa-solid fa-layer-group text-[10px] text-amber-400"></i>
               </div>
               <div class="text-sm sm:text-base font-black text-white font-mono mt-0.5">${heroRankInfo.totalPicks} Picks <span class="text-[11px] font-bold text-slate-300">(${heroRankInfo.inCount} In / ${heroRankInfo.outCount} Out)</span></div>
             </button>
-            <button type="button" onclick="setMyTeamSubView('ROSTER')" class="bg-[#0B0D12]/90 hover:bg-[#0B0D12] border border-white/10 hover:border-emerald-400/50 rounded-xl p-2.5 text-left transition cursor-pointer">
+            <button type="button" onclick="setMyTeamSubView('ROSTER')" class="bg-[#0B0D12]/90 hover:bg-[#0B0D12] border border-white/10 hover:border-emerald-400/50 rounded-xl p-2 sm:p-2.5 text-left transition cursor-pointer">
               <div class="text-[10px] font-extrabold uppercase tracking-wider text-slate-400 flex items-center justify-between">
                 <span>Keepers</span>
                 <i class="fa-solid fa-user-lock text-[10px] text-emerald-400"></i>
               </div>
               <div class="text-sm sm:text-base font-black text-emerald-300 font-mono mt-0.5">${kStats.totalKeepers}/${kStats.maxKeepers} <span class="text-[11px] font-bold text-slate-300">RB ${kStats.posCounts?.RB || 0}/4 • WR ${kStats.posCounts?.WR || 0}/4</span></div>
             </button>
-            <button type="button" onclick="setMyTeamSubView('OFFERS')" class="bg-[#0B0D12]/90 hover:bg-[#0B0D12] border ${teamOffers.incomingCount > 0 ? 'border-amber-400/70' : 'border-white/10'} hover:border-sky-400/50 rounded-xl p-2.5 text-left transition cursor-pointer">
+            <button type="button" onclick="setMyTeamSubView('OFFERS')" class="bg-[#0B0D12]/90 hover:bg-[#0B0D12] border ${teamOffers.incomingCount > 0 ? 'border-amber-400/70' : 'border-white/10'} hover:border-sky-400/50 rounded-xl p-2 sm:p-2.5 text-left transition cursor-pointer">
               <div class="text-[10px] font-extrabold uppercase tracking-wider text-slate-400 flex items-center justify-between">
                 <span>Offers & Block</span>
                 ${teamOffers.incomingCount > 0 ? `<span class="px-1.5 py-0.2 rounded-full bg-amber-400 text-black font-mono text-[9px] font-black">${teamOffers.incomingCount} New</span>` : `<i class="fa-solid fa-handshake text-[10px] text-sky-400"></i>`}
               </div>
               <div class="text-sm sm:text-base font-black text-white font-mono mt-0.5">${teamOffers.incomingCount} In <span class="text-[11px] font-bold text-amber-300">• ${totalOtbForTeam} OTB</span></div>
             </button>
-            <button type="button" onclick="switchTab('board')" class="bg-[#0B0D12]/90 hover:bg-[#0B0D12] border border-white/10 hover:border-amber-400/50 rounded-xl p-2.5 text-left transition cursor-pointer">
+            <button type="button" onclick="switchMainTab('board')" class="bg-[#0B0D12]/90 hover:bg-[#0B0D12] border border-white/10 hover:border-amber-400/50 rounded-xl p-2 sm:p-2.5 text-left transition cursor-pointer">
               <div class="text-[10px] font-extrabold uppercase tracking-wider text-slate-400 flex items-center justify-between">
                 <span>Lead Pick</span>
                 <i class="fa-solid fa-table-cells text-[10px] text-amber-400"></i>
@@ -8219,7 +8301,7 @@
         `;
 
         const quickBarHtml = (!isScoutingOpponent && uiState.warRoomQuickBarOpen) ? `
-          <div id="warRoomQuickNeedsBar" class="mt-2.5 pt-2.5 border-t border-white/15 bg-[#0B0D12]/90 rounded-xl p-3 space-y-2.5">
+          <div id="warRoomQuickNeedsBar" class="mt-2 pt-2 border-t border-white/15 bg-[#0B0D12]/90 rounded-xl p-2.5 sm:p-3 space-y-2">
             <div class="flex flex-wrap items-center justify-between gap-2">
               <span class="text-[10px] font-extrabold uppercase tracking-wider text-amber-300 flex items-center gap-1.5">
                 <i class="fa-solid fa-bolt"></i>
@@ -8249,7 +8331,7 @@
 
         box.innerHTML = `
           ${isScoutingOpponent ? `
-            <div id="scoutingOpponentStickyBar" class="sticky top-[52px] z-30 mb-2.5 rounded-xl bg-sky-950/95 backdrop-blur-md border border-sky-400/60 shadow-xl px-3.5 py-2 flex flex-wrap items-center justify-between gap-2 text-xs">
+            <div id="scoutingOpponentStickyBar" class="sticky top-[52px] z-30 mb-2 rounded-xl bg-sky-950/95 backdrop-blur-md border border-sky-400/60 shadow-xl px-3 py-2 flex flex-wrap items-center justify-between gap-2 text-xs">
               <span class="text-sky-200 font-bold flex items-center gap-1.5">
                 <i class="fa-solid fa-binoculars text-sky-400"></i>
                 <span>Scouting <strong>${inspectedName}</strong> (Read-Only)</span>
@@ -8267,10 +8349,10 @@
             </div>
           ` : ''}
           <div class="app-card overflow-hidden">
-            <div class="garnet-hero-banner p-3 sm:p-4">
-              <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-2.5">
-                <div class="flex items-center gap-3 min-w-0">
-                  ${renderTeamAvatarHtml(inspectedTeamId, "w-11 h-11 sm:w-12 sm:h-12 text-base sm:text-lg shadow-lg", "rounded-2xl")}
+            <div class="garnet-hero-banner p-2.5 sm:p-4">
+              <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-2">
+                <div class="flex items-center gap-2.5 sm:gap-3 min-w-0">
+                  ${renderTeamAvatarHtml(inspectedTeamId, "w-10 h-10 sm:w-12 sm:h-12 text-sm sm:text-lg shadow-lg", "rounded-2xl")}
                   <div class="min-w-0 flex-1 space-y-0.5">
                     <div class="flex flex-wrap items-center gap-1.5">
                       <h2 class="text-base sm:text-xl font-black text-white tracking-tight truncate">${inspectedName}</h2>
@@ -8283,11 +8365,11 @@
                 <div class="flex flex-wrap items-center gap-1.5 flex-shrink-0">
                   ${teamSwitcherControlHtml}
                   ${!isScoutingOpponent ? `
-                    <button type="button" onclick="toggleWarRoomQuickBar()" id="toggleWarRoomQuickBarBtn" class="btn-action px-2.5 py-1.5 text-[11px] sm:text-xs ${uiState.warRoomQuickBarOpen ? 'text-amber-300 border-amber-400/60' : 'text-slate-100'} bg-[#0B0D12]/90" title="1-Tap Quick Needs & Trade Block Bar">
+                    <button type="button" onclick="toggleWarRoomQuickBar()" id="toggleWarRoomQuickBarBtn" class="btn-action px-2 sm:px-2.5 py-1 sm:py-1.5 text-[11px] sm:text-xs ${uiState.warRoomQuickBarOpen ? 'text-amber-300 border-amber-400/60' : 'text-slate-100'} bg-[#0B0D12]/90" title="1-Tap Quick Needs & Trade Block Bar">
                       <i class="fa-solid fa-tag text-amber-400"></i>
                       <span>Needs & Block</span>
                     </button>
-                    <button type="button" onclick="toggleWarRoomDrawer()" id="toggleWarRoomDrawerBtn" class="btn-action px-2.5 py-1.5 text-[11px] sm:text-xs text-slate-100 bg-[#0B0D12]/90">
+                    <button type="button" onclick="toggleWarRoomDrawer()" id="toggleWarRoomDrawerBtn" class="btn-action px-2 sm:px-2.5 py-1 sm:py-1.5 text-[11px] sm:text-xs text-slate-100 bg-[#0B0D12]/90">
                       <i class="fa-solid fa-sliders text-sky-400"></i>
                       <span>Badge & PIN</span>
                     </button>
@@ -8300,7 +8382,7 @@
               ${quickBarHtml}
 
               ${compactBlockBits.length > 0 ? `
-                <div class="mt-2.5 pt-2 border-t border-white/10 flex flex-wrap items-center gap-1.5">
+                <div class="mt-2 pt-1.5 border-t border-white/10 flex flex-wrap items-center gap-1.5">
                   <span class="text-[10px] font-extrabold uppercase tracking-wider text-amber-400"><i class="fa-solid fa-tag mr-1"></i>Block:</span>
                   ${compactBlockBits.join("")}
                 </div>
@@ -8609,7 +8691,6 @@
     }
 
     function buildLeagueCapitalTableHtml(state, includeCloseBtn = false) {
-      const { sortedStandings } = getLeagueCapitalRanks(state);
       const ed = leagueDB?.espnData || DEFAULT_ESPN_DATA;
       const seasonsObj = ed.seasons || {};
       const espnYears = Object.keys(seasonsObj).map(Number).sort((a, b) => b - a);
@@ -8623,16 +8704,33 @@
             losses: Number(st.losses) || 0,
             ties: Number(st.ties) || 0,
             pf: Number(st.pointsFor ?? st.pf) || 0,
-            seed: Number(st.playoffSeed ?? st.seed) || (idx + 1)
+            seed: Number(st.playoffSeed ?? st.seed) || (idx + 1),
+            standingsRank: Number(st.finalRank ?? st.rank) || (idx + 1)
           };
         }
       });
 
+      const baseTeamOrder = new Map((leagueDB?.teams || DEFAULT_TEAMS).map((t, i) => [t.id, i]));
+      const espnSortedTeams = [...(leagueDB?.teams || DEFAULT_TEAMS)].sort((a, b) => {
+        const sa = espnByTeam[a.id];
+        const sb = espnByTeam[b.id];
+        if (sa && sb) {
+          if (sa.standingsRank !== sb.standingsRank) return sa.standingsRank - sb.standingsRank;
+          if (sb.wins !== sa.wins) return sb.wins - sa.wins;
+          if (sb.pf !== sa.pf) return sb.pf - sa.pf;
+        } else if (sa && !sb) {
+          return -1;
+        } else if (!sa && sb) {
+          return 1;
+        }
+        return (baseTeamOrder.get(a.id) ?? 99) - (baseTeamOrder.get(b.id) ?? 99);
+      });
+
       let mobileCardsHtml = "";
-      const rowsHtml = sortedStandings.map((item, idx) => {
-        const team = item;
-        const m = item.metrics;
-        const rank = idx + 1;
+      const rowsHtml = espnSortedTeams.map((team, idx) => {
+        const m = getManagerCapitalMetrics(team.id, state);
+        const espnSt = espnByTeam[team.id] || null;
+        const rank = espnSt?.standingsRank || (idx + 1);
         const net = m.effectivePickCount - TOTAL_ROUNDS;
         const inTotal = m.acquiredSettled.length + m.incomingPools.length;
         const outTotal = m.tradedAwayOriginals.length + m.outgoingPools.length;
@@ -8640,7 +8738,6 @@
         const isMyTeam = team.id === uiState.myTeam;
         const isExpanded = Boolean(uiState.expandedHubTeamIds && uiState.expandedHubTeamIds[team.id]);
         const prof = getTeamProfile(team.id);
-        const espnSt = espnByTeam[team.id] || null;
         const espnRecordStr = espnSt
           ? `${espnSt.wins}-${espnSt.losses}${espnSt.ties ? '-' + espnSt.ties : ''}`
           : "—";
@@ -8688,7 +8785,7 @@
           </div>
         `;
 
-        // Mobile 4-Point Power Row + Expandable Picks & Needs Drawer (A1 = Option A)
+        // Mobile 4-Point Power Row + Expandable Picks & Needs Drawer (A1 = Option A: Actual ESPN Standings)
         mobileCardsHtml += `
           <div class="p-3 ${isMyTeam ? 'bg-[#73000A]/20' : 'bg-[#0B0D12]/50'}">
             <div class="flex items-center justify-between gap-2">
@@ -9377,7 +9474,6 @@
     function computeHeadToHeadMatrix() {
       const teams = leagueDB?.teams || DEFAULT_TEAMS;
       const ed = leagueDB?.espnData || DEFAULT_ESPN_DATA;
-      const seasonsObj = ed.seasons || {};
       const matrix = {};
       teams.forEach(a => {
         matrix[a.id] = {};
@@ -9386,9 +9482,9 @@
         });
       });
 
-      // Use real ESPN head-to-head matchup history when available!
+      // Strictly use real ESPN head-to-head matchup history when synced (no simulated records)
+      let totalRealGames = 0;
       if (ed.headToHead && typeof ed.headToHead === "object" && Object.keys(ed.headToHead).length > 0) {
-        let totalRealGames = 0;
         teams.forEach(a => {
           const row = ed.headToHead[a.id] || {};
           teams.forEach(b => {
@@ -9402,47 +9498,17 @@
             }
           });
         });
-        if (totalRealGames > 0) return matrix;
       }
 
-      Object.keys(seasonsObj).sort().forEach(yrStr => {
-        const s = seasonsObj[yrStr];
-        if (!s || !Array.isArray(s.standings)) return;
-        const rankMap = {};
-        const pfMap = {};
-        s.standings.forEach(st => {
-          rankMap[st.teamId] = st.finalRank || 5;
-          pfMap[st.teamId] = st.pointsFor || 1500;
-        });
-        for (let i = 0; i < teams.length; i++) {
-          for (let j = i + 1; j < teams.length; j++) {
-            const idA = teams[i].id;
-            const idB = teams[j].id;
-            const pfA = pfMap[idA] || 1520;
-            const pfB = pfMap[idB] || 1500;
-            const rA = rankMap[idA] || (i + 1);
-            const rB = rankMap[idB] || (j + 1);
-            if (pfA >= pfB) {
-              matrix[idA][idB].wins += 1;
-              matrix[idB][idA].losses += 1;
-            } else {
-              matrix[idB][idA].wins += 1;
-              matrix[idA][idB].losses += 1;
-            }
-            if ((Number(yrStr) + i + j) % 3 === 0) {
-              if (rA < rB) {
-                matrix[idA][idB].wins += 1;
-                matrix[idB][idA].losses += 1;
-              } else {
-                matrix[idB][idA].wins += 1;
-                matrix[idA][idB].losses += 1;
-              }
-            }
-          }
-        }
+      Object.defineProperty(matrix, "__hasRealH2H", {
+        value: totalRealGames > 0,
+        enumerable: false
       });
-
       return matrix;
+    }
+
+    function hasSyncedHeadToHeadData() {
+      return Boolean(computeHeadToHeadMatrix().__hasRealH2H);
     }
 
     function buildLeagueHqSubNavHtml() {
@@ -9717,7 +9783,7 @@
                   </span>
                   <h2 class="text-base sm:text-lg font-black text-white">Active Managers Career Leaderboard</h2>
                 </div>
-                <p class="text-xs text-slate-400 mt-0.5">Completed-season titles & Phallic Feaster (1.05) finishes across 2016–present (9 founding franchises + Josh).</p>
+                <p class="text-xs text-slate-400 mt-0.5">Completed-season titles & Phallic Feaster (#10) finishes across 2016–present (9 founding franchises + Josh).</p>
               </div>
               ${uiState.isCommish ? `
                 <button type="button" onclick="openEspnSyncModal()" class="btn-action px-3 py-1.5 text-xs text-sky-300">
@@ -9789,6 +9855,7 @@
     function buildRivalryMatrixHtml() {
       const teams = leagueDB?.teams || DEFAULT_TEAMS;
       const matrix = computeHeadToHeadMatrix();
+      const hasRealH2H = Boolean(matrix.__hasRealH2H);
 
       const officialRivalryCardsHtml = OFFICIAL_RIVALRY_PAIRS.map(pair => {
         const recAB = matrix[pair.teamA]?.[pair.teamB] || { wins: 0, losses: 0 };
@@ -9796,7 +9863,9 @@
         const bWins = Number(recAB.losses) || 0;
         const total = aWins + bWins;
         const aPct = total > 0 ? Math.round((aWins / total) * 100) : 50;
-        const leaderText = aWins > bWins
+        const leaderText = total === 0
+          ? (!hasRealH2H ? `Awaiting ESPN Matchup Sync` : `No games logged yet`)
+          : aWins > bWins
           ? `${escapeHtml(getOriginalManagerName(pair.teamA))} leads ${aWins}-${bWins}`
           : bWins > aWins
           ? `${escapeHtml(getOriginalManagerName(pair.teamB))} leads ${bWins}-${aWins}`
@@ -9866,8 +9935,23 @@
         `;
       }).join("");
 
+      const unsyncedBannerHtml = !hasRealH2H ? `
+        <div id="rivalryUnsyncedNoticeBanner" class="bg-sky-950/40 border border-sky-500/45 rounded-xl px-3.5 py-2.5 flex flex-wrap items-center justify-between gap-2 text-xs">
+          <span class="text-sky-200 flex items-center gap-2">
+            <i class="fa-solid fa-satellite-dish text-sky-400"></i>
+            <span><strong>Awaiting ESPN Matchup Sync:</strong> Head-to-head series show <span class="font-mono font-bold">0–0</span> until weekly ESPN matchup boxscores are synced (zero simulated records).</span>
+          </span>
+          ${uiState.isCommish ? `
+            <button type="button" onclick="openEspnSyncModal()" class="btn-action px-2.5 py-1 text-[11px] text-sky-300 border-sky-400/50">
+              <span>Open ESPN Sync</span>
+            </button>
+          ` : ''}
+        </div>
+      ` : "";
+
       return `
         <div class="space-y-4">
+          ${unsyncedBannerHtml}
           <div class="app-card overflow-hidden p-4 sm:p-5 space-y-3">
             <div class="border-b border-white/10 pb-3">
               <div class="flex flex-wrap items-center gap-2">
@@ -9891,7 +9975,7 @@
                 </span>
                 <h2 class="text-base sm:text-lg font-black text-white">All-Time 10×10 Head-to-Head Grid (2016–Present)</h2>
               </div>
-              <p class="text-xs text-slate-400 mt-0.5">Read across any row to see that manager's all-time W-L record against every opponent column (<span class="text-amber-300 font-bold">⚔️ = Official Rival</span>).</p>
+              <p class="text-xs text-slate-400 mt-0.5">Read across any row to see that manager's synced W-L record against every opponent column (<span class="text-amber-300 font-bold">⚔️ = Official Rival</span>).</p>
             </div>
             <div class="overflow-x-auto rounded-xl border border-white/10">
               <table class="w-full border-collapse text-left">
@@ -9970,6 +10054,7 @@
       const focusTeamId = uiState.myTeam || uiState.selectedManager || "syeth";
       const focusName = escapeHtml(getTeamName(focusTeamId));
       const matrix = computeHeadToHeadMatrix();
+      const hasRealH2H = Boolean(matrix.__hasRealH2H);
       const myRow = matrix[focusTeamId] || {};
       const officialRival = getOfficialRivalForTeam(focusTeamId);
       const officialRivalRec = officialRival ? (myRow[officialRival.rivalId] || { wins: 0, losses: 0 }) : null;
@@ -10098,7 +10183,7 @@
                       <div class="text-[10px] font-extrabold uppercase text-amber-300">⚔️ Official League Rival</div>
                       <div class="font-bold text-white truncate mt-0.5">vs. ${escapeHtml(officialRival.rivalName)} (${escapeHtml(officialRival.rivalOrigName)})</div>
                     </div>
-                    <span class="font-mono font-black text-sm text-amber-300">${Number(officialRivalRec?.wins) || 0}-${Number(officialRivalRec?.losses) || 0}</span>
+                    <span class="font-mono font-black text-xs text-amber-300 flex-shrink-0">${hasRealH2H ? `${Number(officialRivalRec?.wins) || 0}-${Number(officialRivalRec?.losses) || 0}` : '0–0 (Sync)'}</span>
                   </div>
                 ` : ''}
                 ${topOwned ? `
@@ -10117,6 +10202,11 @@
                       <div class="font-bold text-white truncate mt-0.5">vs. ${escapeHtml(topNemesis.oppName)}</div>
                     </div>
                     <span class="font-mono font-black text-sm text-rose-300">${topNemesis.wins}-${topNemesis.losses}</span>
+                  </div>
+                ` : ''}
+                ${!hasRealH2H ? `
+                  <div class="bg-[#0B0D12] border border-white/10 rounded-xl p-2.5 text-[11px] text-slate-400">
+                    All-time weekly H2H matchup totals (<span class="font-mono text-slate-300">0–0</span>) populate automatically once ESPN matchup history is synced.
                   </div>
                 ` : ''}
                 <p class="text-[11px] text-slate-400 pt-0.5">Tap <strong class="text-slate-200">View All</strong> for all 5 Official Rivalries & the 10×10 H2H grid.</p>
@@ -10682,41 +10772,9 @@
       renderAll();
     }
 
-    function buildUnifiedShareMenuHtml(menuId, cardType, itemId, copyHandlerExpr, copyTitle = "Copy Summary for Chat", label = "Share") {
-      const isOpen = uiState.openCardMenuId === menuId;
-      return `
-        <div class="relative inline-block" data-popover-keep="1">
-          <button
-            type="button"
-            onclick="toggleCardActionMenu('${safeId(menuId)}', event)"
-            class="btn-action px-2.5 py-1.5 text-xs text-amber-300"
-            title="Share Card or Copy Summary"
-          >
-            <i class="fa-solid fa-share-nodes"></i>
-            <span>${escapeHtml(label)}</span>
-          </button>
-          <div class="${isOpen ? 'absolute right-0 top-full mt-1.5 z-40 w-44 rounded-xl bg-[#13161F] border border-white/15 shadow-2xl p-1 space-y-0.5' : 'hidden'}">
-            <button
-              type="button"
-              onclick="uiState.openCardMenuId=''; shareBrandedCardToChat('${safeId(cardType)}', '${safeId(itemId)}');"
-              class="w-full px-2.5 py-1.5 rounded-lg text-left text-xs font-bold text-amber-200 hover:bg-white/[0.06] flex items-center gap-2 cursor-pointer"
-              title="Share Graphic Card"
-            >
-              <i class="fa-solid fa-image text-amber-400 w-3.5 text-center"></i>
-              <span>Share Graphic Card</span>
-            </button>
-            <button
-              type="button"
-              onclick="uiState.openCardMenuId=''; ${copyHandlerExpr};"
-              class="w-full px-2.5 py-1.5 rounded-lg text-left text-xs font-bold text-slate-200 hover:bg-white/[0.06] flex items-center gap-2 cursor-pointer"
-              title="${escapeHtml(copyTitle)}"
-            >
-              <i class="fa-solid fa-copy text-emerald-400 w-3.5 text-center"></i>
-              <span>Copy Text</span>
-            </button>
-          </div>
-        </div>
-      `;
+    function setTradeMobileRosterSide(side) {
+      uiState.tradeMobileRosterSide = ["BOTH", "TEAM_A", "TEAM_B"].includes(side) ? side : "BOTH";
+      renderTwoTeamComparisonLedger(evaluateYearState(uiState.activeYear));
     }
 
     function buildCommishMoreMenuHtml(menuId, tradeId) {
@@ -10850,6 +10908,7 @@
         `;
       };
 
+      const mobileRosterSide = ["BOTH", "TEAM_A", "TEAM_B"].includes(uiState.tradeMobileRosterSide) ? uiState.tradeMobileRosterSide : "BOTH";
       const playerTrayHtml = `
         <div class="bg-[#0B0D12] border border-white/10 rounded-xl p-3 space-y-2.5">
           <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-2 border-b border-white/10 pb-2">
@@ -10887,14 +10946,20 @@
               </span>
             </div>
           </div>
+          <!-- Mobile Roster Team Toggle (Both | My Team | Partner) -->
+          <div id="tradeMobileRosterSideBar" class="flex md:hidden items-center justify-between gap-1 bg-[#13161F] p-1 rounded-xl border border-white/10">
+            <button type="button" onclick="setTradeMobileRosterSide('BOTH')" class="flex-1 py-1 px-2 rounded-lg text-[10px] font-extrabold transition cursor-pointer truncate ${mobileRosterSide === 'BOTH' ? 'bg-[#73000A] text-white shadow' : 'text-slate-400'}">Both</button>
+            <button type="button" onclick="setTradeMobileRosterSide('TEAM_A')" class="flex-1 py-1 px-2 rounded-lg text-[10px] font-extrabold transition cursor-pointer truncate ${mobileRosterSide === 'TEAM_A' ? 'bg-[#73000A] text-white shadow' : 'text-slate-400'}">${escapeHtml(teamA.name)} (${filteredRosterA.length})</button>
+            <button type="button" onclick="setTradeMobileRosterSide('TEAM_B')" class="flex-1 py-1 px-2 rounded-lg text-[10px] font-extrabold transition cursor-pointer truncate ${mobileRosterSide === 'TEAM_B' ? 'bg-[#73000A] text-white shadow' : 'text-slate-400'}">${escapeHtml(teamB.name)} (${filteredRosterB.length})</button>
+          </div>
           <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
-            <div class="space-y-1.5">
+            <div class="${mobileRosterSide === 'TEAM_B' ? 'hidden md:block' : ''} space-y-1.5">
               <div class="text-[10px] font-extrabold uppercase text-[#CC1429]">${escapeHtml(teamA.name)} (${filteredRosterA.length}/${rosterA.length})</div>
               <div class="flex flex-wrap gap-1.5 max-h-40 overflow-y-auto pr-1">
                 ${filteredRosterA.length > 0 ? filteredRosterA.map(p => renderTradeMachinePlayerChip(p, teamA.id, teamB.id, profA)).join("") : `<span class="text-[11px] text-slate-500 italic">No matching players.</span>`}
               </div>
             </div>
-            <div class="space-y-1.5">
+            <div class="${mobileRosterSide === 'TEAM_A' ? 'hidden md:block' : ''} space-y-1.5">
               <div class="text-[10px] font-extrabold uppercase text-sky-400">${escapeHtml(teamB.name)} (${filteredRosterB.length}/${rosterB.length})</div>
               <div class="flex flex-wrap gap-1.5 max-h-40 overflow-y-auto pr-1">
                 ${filteredRosterB.length > 0 ? filteredRosterB.map(p => renderTradeMachinePlayerChip(p, teamB.id, teamA.id, profB)).join("") : `<span class="text-[11px] text-slate-500 italic">No matching players.</span>`}
@@ -10992,7 +11057,7 @@
       const teamBReceivesPlayers = uiState.whatIfPlayerSwaps.filter(p => p.toTeam === teamB.id);
       const totalStagedAssets = uiState.whatIfSwaps.length + uiState.whatIfPlayerSwaps.length;
       const stagedKeeperWarnings = getTradeTradedKeeperWarnings({ playerTransfers: uiState.whatIfPlayerSwaps });
-      const isDealExpanded = uiState.dealStagingExpanded !== false;
+      const isDealExpanded = Boolean(uiState.dealStagingExpanded);
 
       const aValueItems = [
         ...teamAReceivesPlayers.map(ps => {
@@ -11009,6 +11074,18 @@
         ...teamBReceivesSwaps.map(s => ({ val: computeDraftPickTradeValue(Number(s.year || state.year), s.round, s.originalOwner, evaluateYearState(Number(s.year || state.year))) }))
       ];
       const balanceMeterHtml = buildTradeValueBalanceBarHtml(teamA.id, teamB.id, aValueItems, bValueItems);
+      const valSumA = aValueItems.reduce((s, x) => s + (Number(x.val) || 0), 0);
+      const valSumB = bValueItems.reduce((s, x) => s + (Number(x.val) || 0), 0);
+      const inlineCal = computeAdaptiveFairnessCalibration();
+      const inlineGap = (valSumA > 0 || valSumB > 0) ? (Math.abs(valSumA - valSumB) / Math.max(valSumA, valSumB, 1)) : 0;
+      const inlineLeader = escapeHtml(valSumA >= valSumB ? teamA.name : teamB.name);
+      const inlineFairnessPillHtml = (valSumA > 0 || valSumB > 0) && uiState.showTradeValueMeter
+        ? (inlineGap > inlineCal.heavyEdgeThreshold
+            ? `<span class="px-1.5 py-0.5 rounded-full text-[10px] font-bold bg-rose-950 text-rose-200 border border-rose-500/60 truncate max-w-[125px]">Favors ${inlineLeader}</span>`
+            : inlineGap > inlineCal.fairGapThreshold
+            ? `<span class="px-1.5 py-0.5 rounded-full text-[10px] font-bold bg-amber-950 text-amber-300 border border-amber-500/60 truncate max-w-[125px]">Edge: ${inlineLeader}</span>`
+            : `<span class="px-1.5 py-0.5 rounded-full text-[10px] font-bold bg-emerald-950 text-emerald-300 border border-emerald-500/60">Fair</span>`)
+        : "";
 
       const counteringBarHtml = uiState.counteringProposalId ? `
         <div class="bg-sky-950/60 border border-sky-400/60 rounded-xl px-3.5 py-2 flex flex-wrap items-center justify-between gap-2 text-xs">
@@ -11023,34 +11100,35 @@
       ` : "";
 
       const stagingBarHtml = totalStagedAssets > 0 ? `
-        <div id="dealReadyStagingBar" class="sticky bottom-2 z-30 bg-[#13161F]/95 backdrop-blur-md border-2 border-amber-500/80 rounded-2xl p-3 sm:p-3.5 space-y-2.5 shadow-2xl">
-          <div class="flex flex-wrap items-center justify-between gap-2 ${isDealExpanded ? 'border-b border-white/10 pb-2' : ''}">
-            <div class="flex flex-wrap items-center gap-2 min-w-0">
-              <button type="button" onclick="toggleDealStagingExpanded()" class="static-badge bg-amber-950 text-amber-300 border border-amber-500 cursor-pointer hover:bg-amber-900/70" title="Expand or collapse staged trade details">
+        <div id="dealReadyStagingBar" class="sticky bottom-2 z-30 bg-[#13161F]/95 backdrop-blur-md border-2 border-amber-500/80 rounded-2xl p-2.5 sm:p-3.5 space-y-2 shadow-2xl">
+          <div class="flex flex-wrap items-center justify-between gap-1.5 sm:gap-2 ${isDealExpanded ? 'border-b border-white/10 pb-2' : ''}">
+            <div class="flex flex-wrap items-center gap-1.5 min-w-0">
+              <button type="button" onclick="toggleDealStagingExpanded()" class="static-badge bg-amber-950 text-amber-300 border border-amber-500 cursor-pointer hover:bg-amber-900/70" style="pointer-events:auto;" title="Expand or collapse staged trade details">
                 <i class="fa-solid fa-bolt"></i>
-                <span>Deal Ready (${totalStagedAssets})</span>
+                <span>Deal (${totalStagedAssets})</span>
                 <i class="fa-solid ${isDealExpanded ? 'fa-chevron-down' : 'fa-chevron-up'} text-[9px] ml-0.5"></i>
               </button>
+              ${!isDealExpanded ? inlineFairnessPillHtml : ''}
               ${stagedKeeperWarnings.length > 0 ? `<span class="static-badge bg-amber-950/90 text-amber-200 border border-amber-400/70" title="Trading away designated Keeper(s): ${escapeHtml(stagedKeeperWarnings.map(k => k.playerName).join(', '))}"><i class="fa-solid fa-lock text-[9px]"></i> Keeper (${stagedKeeperWarnings.length})</span>` : ''}
               <span class="text-[11px] text-slate-300 hidden md:inline">${escapeHtml(teamA.name)} (${teamAReceivesPlayers.length + teamAReceivesSwaps.length}) ↔ ${escapeHtml(teamB.name)} (${teamBReceivesPlayers.length + teamBReceivesSwaps.length})</span>
             </div>
-            <div class="flex flex-wrap items-center gap-1.5 w-full sm:w-auto justify-end">
-              <button type="button" onclick="resetWhatIfSandbox()" class="btn-action px-2.5 py-1.5 text-xs text-slate-300">
-                <i class="fa-solid fa-rotate-left"></i> Reset
+            <div class="flex flex-wrap items-center gap-1 sm:gap-1.5 justify-end">
+              <button type="button" onclick="resetWhatIfSandbox()" class="btn-action px-2 sm:px-2.5 py-1 sm:py-1.5 text-[11px] sm:text-xs text-slate-300">
+                <i class="fa-solid fa-rotate-left"></i> <span class="hidden sm:inline">Reset</span>
               </button>
-              <button type="button" id="proposeStagedTradeBtn" onclick="openTradeModalFromWhatIf()" class="btn-action px-2.5 sm:px-3 py-1.5 text-xs text-amber-300 border-amber-500/60" title="Open full trade modal to add Conditional Picks or Pick Pools">
-                <i class="fa-solid fa-sliders"></i> Review / Conditions
+              <button type="button" id="proposeStagedTradeBtn" onclick="openTradeModalFromWhatIf()" class="btn-action px-2 sm:px-3 py-1 sm:py-1.5 text-[11px] sm:text-xs text-amber-300 border-amber-500/60" title="Open full trade modal to add Conditional Picks or Pick Pools">
+                <i class="fa-solid fa-sliders"></i> <span>Conditions</span>
               </button>
               ${uiState.isCommish ? `
-                <button type="button" id="sendStagedTradeDirectBtn" onclick="sendStagedTradeDirectlyFromMachine()" class="btn-action px-3 py-1.5 text-xs text-sky-300 border-sky-500/60">
-                  <i class="fa-solid fa-paper-plane"></i> Send Proposal
+                <button type="button" id="sendStagedTradeDirectBtn" onclick="sendStagedTradeDirectlyFromMachine()" class="btn-action px-2.5 sm:px-3 py-1 sm:py-1.5 text-[11px] sm:text-xs text-sky-300 border-sky-500/60">
+                  <i class="fa-solid fa-paper-plane"></i> Proposal
                 </button>
-                <button type="button" id="logStagedTradeOfficialBtn" onclick="logStagedTradeOfficialFromMachine()" class="btn-garnet bg-emerald-700 hover:bg-emerald-600 border-emerald-400 px-3.5 py-1.5 text-xs">
-                  <i class="fa-solid fa-gavel"></i> Log Official Now
+                <button type="button" id="logStagedTradeOfficialBtn" onclick="logStagedTradeOfficialFromMachine()" class="btn-garnet bg-emerald-700 hover:bg-emerald-600 border-emerald-400 px-3 sm:px-3.5 py-1 sm:py-1.5 text-[11px] sm:text-xs">
+                  <i class="fa-solid fa-gavel"></i> Log Now
                 </button>
               ` : `
-                <button type="button" id="sendStagedTradeDirectBtn" onclick="sendStagedTradeDirectlyFromMachine()" class="btn-garnet px-3.5 sm:px-4 py-1.5 text-xs">
-                  <i class="fa-solid fa-paper-plane"></i> ${uiState.counteringProposalId ? 'Send Counter-Offer' : `Send Offer (${totalStagedAssets})`}
+                <button type="button" id="sendStagedTradeDirectBtn" onclick="sendStagedTradeDirectlyFromMachine()" class="btn-garnet px-3 sm:px-4 py-1 sm:py-1.5 text-[11px] sm:text-xs">
+                  <i class="fa-solid fa-paper-plane"></i> ${uiState.counteringProposalId ? 'Counter' : `Send (${totalStagedAssets})`}
                 </button>
               `}
             </div>
@@ -11134,15 +11212,15 @@
         <div class="bg-[#0B0D12] border border-white/10 rounded-xl px-3 py-2 flex flex-wrap items-center justify-between gap-2">
           <span class="text-[11px] font-extrabold uppercase tracking-wider text-slate-400">Asset View:</span>
           <div class="segmented-bar overflow-x-auto max-w-full" role="tablist" aria-label="Trade Machine Asset Mode">
-            <button type="button" ${keeperLockActive ? 'disabled' : `onclick="setTradeMachineAssetMode('ALL')"`} class="segmented-pill text-xs ${assetMode === 'ALL' ? 'segmented-pill-active' : ''} ${keeperLockActive ? 'opacity-40 cursor-not-allowed' : ''}">
+            <button type="button" ${keeperLockActive ? 'disabled' : `onclick="setTradeMachineAssetMode('ALL')"`} class="segmented-pill text-xs ${assetMode === 'ALL' ? 'active' : ''} ${keeperLockActive ? 'opacity-40 cursor-not-allowed' : ''}">
               <i class="fa-solid fa-layer-group text-[10px]"></i>
               <span>All Assets</span>
             </button>
-            <button type="button" ${keeperLockActive ? 'disabled' : `onclick="setTradeMachineAssetMode('PLAYERS')"`} class="segmented-pill text-xs ${assetMode === 'PLAYERS' ? 'segmented-pill-active' : ''} ${keeperLockActive ? 'opacity-40 cursor-not-allowed' : ''}">
+            <button type="button" ${keeperLockActive ? 'disabled' : `onclick="setTradeMachineAssetMode('PLAYERS')"`} class="segmented-pill text-xs ${assetMode === 'PLAYERS' ? 'active' : ''} ${keeperLockActive ? 'opacity-40 cursor-not-allowed' : ''}">
               <i class="fa-solid fa-people-arrows text-[10px]"></i>
               <span>Players Only (${uiState.whatIfPlayerSwaps.length})</span>
             </button>
-            <button type="button" onclick="setTradeMachineAssetMode('PICKS')" class="segmented-pill text-xs ${assetMode === 'PICKS' ? 'segmented-pill-active' : ''}">
+            <button type="button" onclick="setTradeMachineAssetMode('PICKS')" class="segmented-pill text-xs ${assetMode === 'PICKS' ? 'active' : ''}">
               <i class="fa-solid fa-list-ol text-[10px]"></i>
               <span>Picks Only (${uiState.whatIfSwaps.length})</span>
             </button>
@@ -12107,7 +12185,7 @@
                   type="button"
                   id="myTeamSubTab-PICKS"
                   onclick="setMyTeamSubView('PICKS')"
-                  class="segmented-pill text-xs ${subView === 'PICKS' ? 'segmented-pill-active' : ''}"
+                  class="segmented-pill text-xs ${subView === 'PICKS' ? 'active' : ''}"
                 >
                   <i class="fa-solid fa-list-ol text-[11px]"></i>
                   <span>${isScouting ? `${escapeHtml(team.name)} Picks` : 'My Picks'} (${m.effectivePickCount})</span>
@@ -12116,7 +12194,7 @@
                   type="button"
                   id="myTeamSubTab-OFFERS"
                   onclick="setMyTeamSubView('OFFERS')"
-                  class="segmented-pill text-xs ${subView === 'OFFERS' ? 'segmented-pill-active' : ''}"
+                  class="segmented-pill text-xs ${subView === 'OFFERS' ? 'active' : ''}"
                 >
                   <i class="fa-solid fa-handshake text-[11px] ${teamOffers.incomingCount > 0 ? 'text-amber-300' : ''}"></i>
                   <span>Trade Offers (${teamOffers.all.length})</span>
@@ -12126,7 +12204,7 @@
                   type="button"
                   id="myTeamSubTab-ROSTER"
                   onclick="setMyTeamSubView('ROSTER')"
-                  class="segmented-pill text-xs ${subView === 'ROSTER' ? 'segmented-pill-active' : ''}"
+                  class="segmented-pill text-xs ${subView === 'ROSTER' ? 'active' : ''}"
                 >
                   <i class="fa-solid fa-users text-[11px]"></i>
                   <span>Roster (${caps.totalKeepers}/${caps.maxKeepers})</span>
@@ -12174,49 +12252,6 @@
           </div>
         </div>
       `;
-    }
-
-    function copyManagerLedgerForChat() {
-      const state = evaluateYearState(uiState.activeYear);
-      const team = getTeamObj(getInspectedTeamOnMyTeam());
-      const m = getManagerCapitalMetrics(team.id, state);
-
-      const lines = [];
-      lines.push(`GAMECOCK MAFIA — ${team.name.toUpperCase()}'S ${state.year} DRAFT PICKS`);
-      lines.push(`Net Picks: ${m.effectivePickCount}/20 (Rds 1–5: ${m.earlyCapitalCount} Picks | +${m.acquiredSettled.length + m.incomingPools.length} In / -${m.tradedAwayOriginals.length + m.outgoingPools.length} Out)`);
-      lines.push(`--------------------------------------------------`);
-
-      for (let r = 1; r <= 10; r++) {
-        const myOrig = state.picks.find(p => p.round === r && p.originalOwner === team.id);
-        const myAcq = state.picks.filter(p => p.round === r && p.originalOwner !== team.id && p.currentOwner === team.id);
-        const outPool = state.activePools.find(pool => pool.round === r && pool.poolHolder === team.id);
-        const inPool = state.activePools.find(pool => pool.round === r && pool.owedTo === team.id);
-        const cond = state.activeConditionals.find(c => (c.roundsInvolved || []).includes(r) && (c.teamA === team.id || c.teamB === team.id));
-
-        const parts = [];
-        if (outPool) {
-          const cands = outPool.candidateOriginalOwners.map(id => `${getTeamName(id)}'s ${r}${getOrdinal(r)}`).join("/");
-          parts.push(`Waiting on Commish (${cands}) — 1 owed to ${getTeamName(outPool.owedTo)}`);
-        } else {
-          if (myOrig && myOrig.currentOwner === team.id) {
-            parts.push(state.orderCfg.isLocked && myOrig.overallPickNum ? `Own ${myOrig.formattedSlot} (#${myOrig.overallPickNum})` : `Own ${r}${getOrdinal(r)}`);
-          } else if (myOrig && myOrig.currentOwner !== team.id) {
-            parts.push(`Traded Own ${r}${getOrdinal(r)} → ${getTeamName(myOrig.currentOwner)}`);
-          }
-          myAcq.forEach(ap => {
-            parts.push(state.orderCfg.isLocked && ap.overallPickNum ? `+${getTeamName(ap.originalOwner)}'s ${ap.formattedSlot} (#${ap.overallPickNum})` : `+${getTeamName(ap.originalOwner)}'s ${r}${getOrdinal(r)}`);
-          });
-        }
-        if (inPool) {
-          parts.push(`+1 Conditional Pick from ${getTeamName(inPool.poolHolder)}'s Rd ${r}`);
-        }
-        if (cond) {
-          parts.push(`Conditional Swap (${getTeamName(cond.teamA)} ↔ ${getTeamName(cond.teamB)})`);
-        }
-        lines.push(`• Rd ${r}: ${parts.join(" | ")}`);
-      }
-
-      copyTextToClipboard(lines.join("\n"), `Copied ${team.name}'s ${state.year} pick summary for group chat!`);
     }
 
     /* -----------------------------------------------------------
@@ -12593,7 +12628,7 @@
       if (!pick) return null;
       const yrStr = String(pick.year || uiState.activeYear || 2027);
       const ed = leagueDB?.espnData;
-      const yrEntry = ed?.draftResults?.[yrStr] || ed?.pastDraftPicks?.[yrStr];
+      const yrEntry = ed?.draftResults?.[yrStr] || ed?.pastDraftPicks?.[yrStr] || ed?.seasons?.[yrStr]?.draftPicks || ed?.seasons?.[yrStr]?.draftResults;
       if (!yrEntry || typeof yrEntry !== "object") return null;
 
       const r = Number(pick.round) || 1;
@@ -12604,7 +12639,7 @@
       const fallbackOverall = snakeSlot > 0 ? ((r - 1) * 10 + snakeSlot) : 0;
 
       const slotKey = pick.formattedSlot || fallbackFormatted;
-      const overallNum = Number(pick.overallPickNum) || fallbackOverall;
+      const overallNum = Number(pick.overallPickNum || pick.overallNum) || fallbackOverall;
 
       let hit = null;
       const rawArr = Array.isArray(yrEntry) ? yrEntry : (Array.isArray(yrEntry.picks) ? yrEntry.picks : null);
@@ -12650,7 +12685,29 @@
     function setBoardRoundRange(rangeKey) {
       const valid = ["ALL", "EARLY_1_5", "MID_6_10", "LATE_11_20"];
       uiState.boardRoundRange = valid.includes(rangeKey) ? rangeKey : "ALL";
+      uiState.boardHighlightedRound = 0;
       renderDraftBoardSection();
+    }
+
+    function scrollToDraftBoardRound(roundNum) {
+      const r = Math.min(TOTAL_ROUNDS, Math.max(1, Number(roundNum) || 1));
+      if (!doesRoundMatchBoardRange(r)) {
+        uiState.boardRoundRange = "ALL";
+      }
+      if (uiState.boardOnlyTraded) {
+        const st = evaluateYearState(uiState.activeYear);
+        if (!st.activeRoundsSet.has(r)) {
+          uiState.boardOnlyTraded = false;
+        }
+      }
+      uiState.boardHighlightedRound = r;
+      renderDraftBoardSection();
+      setTimeout(() => {
+        const el = document.getElementById(`boardRoundCard-${r}`) || document.getElementById(`boardMatrixRow-${r}`);
+        if (el && typeof el.scrollIntoView === "function") {
+          el.scrollIntoView({ behavior: "smooth", block: "start" });
+        }
+      }, 20);
     }
 
     function doesRoundMatchBoardRange(roundNum) {
@@ -12676,6 +12733,7 @@
       const myPicksBtn = document.getElementById("boardMyPicksToggleBtn");
       const myPicksLbl = document.getElementById("boardMyPicksToggleLabel");
       const roundRangeBar = document.getElementById("boardRoundRangeBar");
+      const quickRoundStrip = document.getElementById("boardQuickRoundJumpStrip");
       const draftedToggleBtn = document.getElementById("boardDraftedPlayersToggleBtn");
       const draftedToggleLbl = document.getElementById("boardDraftedPlayersToggleLabel");
       const syncHintEl = document.getElementById("boardSyncHintText");
@@ -12730,6 +12788,24 @@
             class="px-2.5 py-1 rounded-lg text-[11px] font-extrabold border transition whitespace-nowrap cursor-pointer ${curRange === opt.id ? 'bg-[#73000A] text-white border-[#CC1429]' : 'bg-[#0B0D12] text-slate-400 border-white/10 hover:text-white'}"
           >${opt.label}</button>
         `).join("");
+      }
+
+      if (quickRoundStrip) {
+        let pills = `<span class="text-[10px] font-extrabold uppercase tracking-wider text-slate-400 mr-1 whitespace-nowrap">Jump:</span>`;
+        for (let r = 1; r <= TOTAL_ROUNDS; r++) {
+          const hasTrade = state.activeRoundsSet.has(r);
+          const isHi = Number(uiState.boardHighlightedRound) === r;
+          pills += `
+            <button
+              type="button"
+              id="boardJumpRdBtn-${r}"
+              onclick="scrollToDraftBoardRound(${r})"
+              class="px-2 py-0.5 rounded-md font-mono text-[10px] font-extrabold border transition flex-shrink-0 cursor-pointer ${isHi ? 'bg-[#73000A] text-white border-[#CC1429] shadow' : hasTrade ? 'bg-emerald-950/50 text-emerald-300 border-emerald-500/40 hover:border-emerald-400' : 'bg-[#0B0D12] text-slate-400 border-white/10 hover:text-white'}"
+              title="Jump to Round ${r}${hasTrade ? ' (Contains traded picks)' : ''}"
+            >R${r}</button>
+          `;
+        }
+        quickRoundStrip.innerHTML = pills;
       }
 
       const isMatrix = uiState.boardDisplayMode !== "CARDS";
@@ -12869,7 +12945,7 @@
           }).join("");
 
           matrixRowsHtml += `
-            <tr>
+            <tr id="boardMatrixRow-${r}" class="${Number(uiState.boardHighlightedRound) === r ? 'ring-1 ring-inset ring-amber-400/70' : ''}">
               <td class="py-2 px-2.5 font-mono font-black text-xs text-white bg-[#13161F] border-b border-r border-white/10 whitespace-nowrap sticky left-0 z-10">
                 <div>Rd ${r}</div>
                 ${state.orderCfg.isLocked ? `<div class="text-[9px] font-normal text-slate-400">${isEven ? '← 10-1' : '→ 1-10'}</div>` : ''}
@@ -12918,7 +12994,7 @@
         roundPicks.sort((a, b) => orderArr.indexOf(a.originalOwner) - orderArr.indexOf(b.originalOwner));
 
         html += `
-          <div class="app-card p-3 sm:p-4 space-y-2.5">
+          <div id="boardRoundCard-${r}" class="app-card p-3 sm:p-4 space-y-2.5 scroll-mt-16 ${Number(uiState.boardHighlightedRound) === r ? 'ring-2 ring-amber-400/70' : ''}">
             <div class="flex items-center justify-between border-b border-white/[0.07] pb-2">
               <div class="flex items-center gap-2">
                 <span class="text-xs font-black uppercase tracking-wider text-amber-400">Round ${r}</span>
@@ -13414,25 +13490,6 @@
       showToast(`Countering ${pt.id} — adjust picks/players across years; sending your counter automatically replaces the old offer!`, "info");
     }
 
-    function copyProposalPingForChat(propId) {
-      const pt = (leagueDB.pendingTrades || []).find(p => p.id === safeId(propId));
-      if (!pt) return;
-      const teamsStr = getProposalRequiredTeams(pt).map(id => getTeamName(id)).join(" ↔ ");
-      const waitingOn = getProposalRequiredTeams(pt)
-        .filter(id => !(pt.approvals || {})[id])
-        .map(id => getTeamName(id))
-        .join(" & ");
-      const shareUrl = window.location.origin + window.location.pathname + `?year=${Number(pt.year || uiState.activeYear)}&tab=feed`;
-      const lines = [
-        `📨 GAMECOCK MAFIA TRADE PROPOSAL (${pt.id})`,
-        `🤝 Teams: ${teamsStr}`,
-        `📝 Offer: ${pt.headline}`,
-        `⏳ Awaiting Confirmation From: ${waitingOn || "Partner"}`,
-        `🔗 Open Tracker to Confirm or Counter: ${shareUrl}`
-      ];
-      copyTextToClipboard(lines.join("\n"), `Copied Trade Offer Ping (${pt.id}) for group chat!`);
-    }
-
     async function toggleTradeReaction(tradeId, emoji) {
       if (!TRADE_REACTION_EMOJIS.includes(emoji)) return;
       const tr = (leagueDB.trades || []).find(t => t.id === safeId(tradeId));
@@ -13858,15 +13915,17 @@
           </div>
         `;
 
-        // Adaptive Trade Fairness Review (Yes / No)
-        const fvYesList = Array.isArray(tr.fairnessVotes?.yes) ? tr.fairnessVotes.yes : [];
-        const fvNoList = Array.isArray(tr.fairnessVotes?.no) ? tr.fairnessVotes.no : [];
+        // Adaptive Trade Fairness Review (Neutral League Votes Only)
+        const partSet = new Set([tr.teamA, tr.teamB, tr.teamC].filter(Boolean).map(safeId));
+        const fvYesList = (Array.isArray(tr.fairnessVotes?.yes) ? tr.fairnessVotes.yes : []).filter(tid => !partSet.has(safeId(tid)));
+        const fvNoList = (Array.isArray(tr.fairnessVotes?.no) ? tr.fairnessVotes.no : []).filter(tid => !partSet.has(safeId(tid)));
         const yesVotes = fvYesList.length;
         const noVotes = fvNoList.length;
         const totalFairVotes = yesVotes + noVotes;
-        const myFairVote = myTeamId ? (fvYesList.includes(myTeamId) ? "YES" : fvNoList.includes(myTeamId) ? "NO" : "") : "";
+        const isMyDeal = Boolean(myTeamId && partSet.has(safeId(myTeamId)));
+        const myFairVote = (!isMyDeal && myTeamId) ? (fvYesList.includes(myTeamId) ? "YES" : fvNoList.includes(myTeamId) ? "NO" : "") : "";
         const fairSummaryChip = totalFairVotes > 0
-          ? `<span class="px-1.5 py-0.5 rounded text-[10px] font-mono border ${yesVotes >= noVotes ? 'bg-emerald-950/60 text-emerald-300 border-emerald-500/40' : 'bg-rose-950/60 text-rose-300 border-rose-500/40'}" title="Community Trade Fairness Review">${Math.round((yesVotes / totalFairVotes) * 100)}% Fair (${totalFairVotes})</span>`
+          ? `<span class="px-1.5 py-0.5 rounded text-[10px] font-mono border ${yesVotes >= noVotes ? 'bg-emerald-950/60 text-emerald-300 border-emerald-500/40' : 'bg-rose-950/60 text-rose-300 border-rose-500/40'}" title="Neutral League Trade Fairness Review">${Math.round((yesVotes / totalFairVotes) * 100)}% Fair (${totalFairVotes})</span>`
           : "";
 
         const headerReactionChip = activeReactionPills
@@ -13913,18 +13972,22 @@
                 <div class="flex flex-wrap items-center gap-2 flex-shrink-0">
                   <div class="inline-flex items-center gap-1 bg-[#13161F] border border-white/10 rounded-full px-2.5 py-0.5 text-[11px]">
                     <span class="text-slate-400 font-semibold mr-0.5"><i class="fa-solid fa-scale-balanced text-amber-400 mr-1"></i>Fair?</span>
-                    <button
-                      type="button"
-                      onclick="voteTradeFairness('${safeId(tr.id)}', 'YES')"
-                      class="px-1.5 py-0.5 rounded-full font-bold transition cursor-pointer ${myFairVote === 'YES' ? 'bg-emerald-700 text-white' : 'text-emerald-300 hover:bg-emerald-950/60'}"
-                      title="Vote Yes — Fair Deal (calibrates League Fairness Guide)"
-                    >Yes${yesVotes > 0 ? ` (${yesVotes})` : ''}</button>
-                    <button
-                      type="button"
-                      onclick="voteTradeFairness('${safeId(tr.id)}', 'NO')"
-                      class="px-1.5 py-0.5 rounded-full font-bold transition cursor-pointer ${myFairVote === 'NO' ? 'bg-rose-700 text-white' : 'text-rose-300 hover:bg-rose-950/60'}"
-                      title="Vote No — Lopsided Deal (calibrates League Fairness Guide)"
-                    >No${noVotes > 0 ? ` (${noVotes})` : ''}</button>
+                    ${isMyDeal ? `
+                      <span class="px-1.5 py-0.5 rounded-full font-bold text-slate-400" title="Trade participants cannot vote on their own deal">Your Deal${totalFairVotes > 0 ? ` (${yesVotes}Y/${noVotes}N)` : ''}</span>
+                    ` : `
+                      <button
+                        type="button"
+                        onclick="voteTradeFairness('${safeId(tr.id)}', 'YES')"
+                        class="px-1.5 py-0.5 rounded-full font-bold transition cursor-pointer ${myFairVote === 'YES' ? 'bg-emerald-700 text-white' : 'text-emerald-300 hover:bg-emerald-950/60'}"
+                        title="Vote Yes — Fair Deal (calibrates League Fairness Guide)"
+                      >Yes${yesVotes > 0 ? ` (${yesVotes})` : ''}</button>
+                      <button
+                        type="button"
+                        onclick="voteTradeFairness('${safeId(tr.id)}', 'NO')"
+                        class="px-1.5 py-0.5 rounded-full font-bold transition cursor-pointer ${myFairVote === 'NO' ? 'bg-rose-700 text-white' : 'text-rose-300 hover:bg-rose-950/60'}"
+                        title="Vote No — Lopsided Deal (calibrates League Fairness Guide)"
+                      >No${noVotes > 0 ? ` (${noVotes})` : ''}</button>
+                    `}
                   </div>
                   <div class="flex flex-wrap items-center gap-1">
                     ${activeReactionPills}
@@ -13938,35 +14001,6 @@
       });
 
       container.innerHTML = html;
-    }
-
-    function copyTradeReceiptForChat(tradeId) {
-      const tr = leagueDB.trades.find(t => t.id === tradeId);
-      if (!tr) return;
-
-      const participantsStr = [tr.teamA, tr.teamB, tr.teamC].filter(Boolean).map(id => getTeamName(id)).join(" ↔ ");
-      const yrs = getTradeAffectedYears(tr).join(" & ");
-      const lines = [
-        `🚨 GAMECOCK MAFIA OFFICIAL TRADE RECEIPT (${tr.id}) 🚨`,
-        `🤝 Managers: ${participantsStr} (${yrs} Draft Sheet)`,
-        `📝 Deal: ${tr.headline}`
-      ];
-      if (tr.submittedBy) lines.push(`👤 Logged By: ${tr.submittedBy}`);
-      if (tr.notes) lines.push(`📌 Note: ${tr.notes}`);
-      (tr.playerTransfers || []).forEach(pt => {
-        lines.push(`• 🏈 ${pt.playerName} (${pt.pos || 'NFL'}) ➔ ${getTeamName(pt.toOwner)}`);
-      });
-      (tr.directTransfers || []).forEach(dt => {
-        lines.push(`• ${dt.year} Rd ${dt.round} (${getTeamName(dt.originalOwner)}'s Pick) ➔ ${getTeamName(dt.toOwner)}`);
-      });
-      (tr.pools || []).forEach(p => {
-        lines.push(`• ⏳ ${p.year} Rd ${p.round} Pending Final Pool: ${p.ruleLabel}`);
-      });
-      (tr.conditionals || []).forEach(c => {
-        lines.push(`• 🔄 ${c.year} Pending Final Swap: ${c.summary}`);
-      });
-
-      copyTextToClipboard(lines.join("\n"), `Copied Trade ${tr.id} receipt for group chat!`);
     }
 
     function confirmDeleteTradeById(tradeId) {
@@ -14211,23 +14245,21 @@
     }
 
     /* -----------------------------------------------------------
-       11. UNIFIED TRADE PROPOSER & IN-PLACE EDITOR (2-WAY & 3-WAY)
+       11. UNIFIED TRADE PROPOSER & IN-PLACE EDITOR (2-TEAM)
        ----------------------------------------------------------- */
     function populateStaticFormControls() {
       const selA = document.getElementById("formTeamA");
       const selB = document.getElementById("formTeamB");
-      const selC = document.getElementById("formTeamC");
       const submittedBySel = document.getElementById("formSubmittedBy");
       const boardTeamFilter = document.getElementById("boardFilterTeamSelect");
 
       const myTeamId = uiState.myTeam || "syeth";
       const myTeamName = getTeamName(myTeamId);
 
-      if (selA && selB && selC) {
+      if (selA && selB) {
         if (uiState.isCommish) {
           selA.innerHTML = leagueDB.teams.map((t, i) => `<option value="${safeId(t.id)}" ${i === 0 ? 'selected' : ''}>${escapeHtml(getTeamName(t.id))}</option>`).join("");
           selB.innerHTML = leagueDB.teams.map((t, i) => `<option value="${safeId(t.id)}" ${i === 1 ? 'selected' : ''}>${escapeHtml(getTeamName(t.id))}</option>`).join("");
-          selC.innerHTML = leagueDB.teams.map((t, i) => `<option value="${safeId(t.id)}" ${i === 2 ? 'selected' : ''}>${escapeHtml(getTeamName(t.id))}</option>`).join("");
           selA.disabled = false;
         } else {
           // Standard Manager Mode: Manager 1 is strictly locked to the manager's own franchise
@@ -14235,7 +14267,6 @@
           selA.disabled = true;
           const otherTeams = leagueDB.teams.filter(t => t.id !== myTeamId);
           selB.innerHTML = otherTeams.map((t, i) => `<option value="${safeId(t.id)}" ${i === 0 ? 'selected' : ''}>${escapeHtml(getTeamName(t.id))}</option>`).join("");
-          selC.innerHTML = otherTeams.map((t, i) => `<option value="${safeId(t.id)}" ${i === 1 ? 'selected' : ''}>${escapeHtml(getTeamName(t.id))}</option>`).join("");
         }
       }
 
@@ -14276,7 +14307,9 @@
       const previewEl = document.getElementById("formAutoSummaryPreviewText");
       const teamA = safeId(document.getElementById("formTeamA")?.value || uiState.myTeam || "syeth");
       const teamB = safeId(document.getElementById("formTeamB")?.value || "corbyn");
-      const teamC = uiState.isThreeWayForm ? safeId(document.getElementById("formTeamC")?.value || "") : "";
+      const editingIdForSum = document.getElementById("editingTradeId")?.value?.trim() || "";
+      const editingTrForSum = editingIdForSum ? (leagueDB?.trades || []).find(t => t.id === editingIdForSum) : null;
+      const teamC = editingTrForSum?.teamC ? safeId(editingTrForSum.teamC) : "";
 
       const byReceiver = {};
       const pushClause = (toId, label) => {
@@ -14353,15 +14386,6 @@
       return autoHeadline;
     }
 
-    function toggleThreeWayTrade(forceState = null) {
-      uiState.isThreeWayForm = forceState !== null ? forceState : !uiState.isThreeWayForm;
-      const boxC = document.getElementById("formTeamCContainer");
-      const lbl = document.getElementById("toggleThreeWayLabel");
-      if (boxC) boxC.classList.toggle("hidden", !uiState.isThreeWayForm);
-      if (lbl) lbl.textContent = uiState.isThreeWayForm ? "− Remove 3rd Manager (2-Way Trade)" : "+ Add 3rd Manager (3-Way Trade)";
-      refreshQuickPickRows();
-    }
-
     function populateConditionDropdowns() {
       const yrSel = document.getElementById("formCondYear");
       const favSel = document.getElementById("formCondFavoredTeam");
@@ -14373,7 +14397,8 @@
       if (favSel) {
         const tA = document.getElementById("formTeamA")?.value || uiState.myTeam || "syeth";
         const tB = document.getElementById("formTeamB")?.value || "corbyn";
-        const tC = uiState.isThreeWayForm ? document.getElementById("formTeamC")?.value : null;
+        const editingTr = editingId ? (leagueDB?.trades || []).find(t => t.id === editingId) : null;
+        const tC = editingTr?.teamC ? safeId(editingTr.teamC) : null;
         const activeIds = [tA, tB, tC].filter(Boolean);
         favSel.innerHTML = activeIds.map(id => `<option value="${safeId(id)}">${escapeHtml(getTeamName(id))}</option>`).join("");
       }
@@ -14394,7 +14419,6 @@
       uiState.lastAutoModalSummary = "";
       toggleTradeModalCustomSummaryDrawer(false);
       document.getElementById("formCondBox").classList.add("hidden");
-      toggleThreeWayTrade(false);
       uiState.stagedModalPlayers = [];
 
       const selA = document.getElementById("formTeamA");
@@ -14473,13 +14497,6 @@
       document.getElementById("tradeModalHeading").textContent = `Edit Trade Receipt (${tr.id})`;
       document.getElementById("formTeamA").value = tr.teamA;
       document.getElementById("formTeamB").value = tr.teamB;
-
-      if (tr.teamC) {
-        toggleThreeWayTrade(true);
-        document.getElementById("formTeamC").value = tr.teamC;
-      } else {
-        toggleThreeWayTrade(false);
-      }
 
       const formSumEl = document.getElementById("formSummary");
       if (formSumEl) {
@@ -14589,7 +14606,7 @@
           badge.textContent = `${myName} Trade Proposal`;
         }
         if (roleHint) {
-          roleHint.textContent = `Proposing as ${myName}: Requires confirmation from the other involved team(s) before picks transfer and the trade is marked Official!`;
+          roleHint.textContent = `Proposing as ${myName}: Requires confirmation from the other involved team before picks transfer and the trade is marked Official!`;
         }
         if (submitText) submitText.textContent = `Propose Trade`;
       }
@@ -14661,9 +14678,11 @@
 
       const yr = parseInt(yrEl.value, 10);
       const roundVal = rEl.value;
+      const editingId = document.getElementById("editingTradeId")?.value;
+      const editingTr = editingId ? (leagueDB?.trades || []).find(t => t.id === editingId) : null;
       const teamA = document.getElementById("formTeamA").value;
       const teamB = document.getElementById("formTeamB").value;
-      const teamC = uiState.isThreeWayForm ? document.getElementById("formTeamC").value : null;
+      const teamC = editingTr?.teamC ? safeId(editingTr.teamC) : null;
       const activeTeams = [teamA, teamB, teamC].filter(Boolean);
 
       if (roundVal === "NONE") {
@@ -14673,7 +14692,6 @@
       }
 
       const r = parseInt(roundVal, 10);
-      const editingId = document.getElementById("editingTradeId")?.value;
       const state = evaluateYearState(yr);
 
       let html = "";
@@ -14726,9 +14744,10 @@
       // Security: Never allow editing an existing trade unless Commissioner Mode is unlocked!
       if (editingId && !requireCommish()) return;
 
+      const editingTr = editingId ? (leagueDB?.trades || []).find(t => t.id === editingId) : null;
       const teamA = safeId(document.getElementById("formTeamA").value);
       const teamB = safeId(document.getElementById("formTeamB").value);
-      const teamC = uiState.isThreeWayForm ? safeId(document.getElementById("formTeamC").value) : null;
+      const teamC = editingTr?.teamC ? safeId(editingTr.teamC) : null;
       const rawSummaryInput = document.getElementById("formSummary")?.value?.trim() || "";
       const summary = cleanStr(rawSummaryInput || syncAutoGeneratedModalSummary(false), 400);
       const dateStr = cleanStr(document.getElementById("formTradeDate").value.trim() || new Date().toLocaleDateString(), 80);
@@ -15153,7 +15172,7 @@
       }
       uiState.tempOrderSlots = [...computed.slots];
       renderOrderBuilderSlots();
-      showToast(`Seeded ${yr} slots from ${sourceSeason} Toilet Bowl (1.01), Phallic Feaster (1.05) & Playoff finish!`, "success");
+      showToast(`Seeded ${yr} slots from ${sourceSeason} Toilet Bowl (1.01), Phallic Feaster (#10) & Playoff finish!`, "success");
     }
 
     function getGamecockOrderSlotRoleBadge(slotIdx) {
@@ -15589,6 +15608,7 @@
     function selectArchiveSeasonYear(yr) {
       uiState.activeArchiveYear = yr;
       uiState.archiveMode = "SEASONS";
+      uiState.archiveShowStandingsManual = false;
       refreshArchiveViews();
     }
 
@@ -15787,79 +15807,168 @@
         `;
       }
 
-      // MODE 2: FULL 20-ROUND HISTORICAL DRAFT BOARD & SEASON TRADES (2016–2025)
-      const selectedYr = uiState.activeArchiveYear;
-      const data = HISTORICAL_ARCHIVE[selectedYr];
+      // MODE 2: UNIFIED 2016–2025 SEASON TIME CAPSULE (PODIUM + FINAL STANDINGS + PICK TRADES + 20-ROUND DRAFT BOARD WITH ESPN PICKS)
+      const selectedYr = Number(uiState.activeArchiveYear) || 2025;
+      const data = HISTORICAL_ARCHIVE[selectedYr] || null;
+      const ed = leagueDB?.espnData || DEFAULT_ESPN_DATA;
+      const sObj = ed.seasons?.[String(selectedYr)] || null;
+      const rawStandings = (Array.isArray(sObj?.standings) && sObj.standings.length > 0)
+        ? sObj.standings
+        : (Array.isArray(ed.seasonStandings?.[String(selectedYr)]) ? ed.seasonStandings[String(selectedYr)] : []);
+      const rows = [...rawStandings].sort((a, b) => (Number(a.finalRank ?? a.rank) || 99) - (Number(b.finalRank ?? b.rank) || 99));
+      const unsyncedBanner = typeof buildEspnSampleDataNoticeHtml === "function" ? buildEspnSampleDataNoticeHtml() : "";
+      const outcomes = typeof getSeasonFinalStandingsOutcomes === "function" ? getSeasonFinalStandingsOutcomes(selectedYr) : {};
+      const orderInfo = typeof computeGamecockDraftOrderFromSeason === "function" ? computeGamecockDraftOrderFromSeason(selectedYr) : {};
+      const yrOverrides = (ed.seasonOwnerOverrides && ed.seasonOwnerOverrides[String(selectedYr)]) || {};
+      const eraNames = data?.teamNamesOverride || (selectedYr <= 2018 ? { josh: "Scott (Josh Franchise)" } : selectedYr <= 2021 ? { josh: "Alek (Josh Franchise)" } : {});
+      const resolveArchiveMgrName = (rawId) => {
+        if (!rawId) return "TBD";
+        const mappedId = yrOverrides[rawId] || rawId;
+        if (eraNames && eraNames[mappedId]) return eraNames[mappedId];
+        if (typeof getHistoricalManagerDisplayName === "function") return getHistoricalManagerDisplayName(mappedId);
+        return getTeamName(mappedId, eraNames);
+      };
+
+      const champId = outcomes.champId || orderInfo.champId || sObj?.champion || rows[0]?.teamId || "";
+      const runnerUpId = outcomes.runnerUpId || orderInfo.runnerUpId || sObj?.runnerUp || rows[1]?.teamId || "";
+      const tbWinnerId = outcomes.tbWinnerId || orderInfo.tbWinnerId || sObj?.toiletBowlWinner || rows[5]?.teamId || "";
+      const feasterId = outcomes.feasterId || orderInfo.feasterId || sObj?.phallicFeaster || sObj?.sacko || rows[rows.length - 1]?.teamId || "";
+
+      const showStandingsTable = uiState.archiveShowStandingsManual
+        ? Boolean(uiState.archiveShowStandings)
+        : (selectedYr <= 2017);
+
+      const podiumAndStandingsHtml = rows.length > 0 ? `
+        <div class="bg-[#0B0D12] border border-white/10 rounded-xl p-3.5 sm:p-4 space-y-3">
+          <div class="flex flex-wrap items-center justify-between gap-2">
+            <div class="flex flex-wrap items-center gap-2">
+              <span class="static-badge bg-amber-950 text-amber-300 border border-amber-500/50">
+                <i class="fa-solid fa-trophy"></i> ${selectedYr} Season Podium
+              </span>
+              <span class="text-xs font-bold text-slate-300">Post-Playoff Final Outcomes</span>
+            </div>
+            <button type="button" onclick="toggleArchiveSeasonStandings()" class="btn-action px-2.5 py-1 text-xs text-sky-300">
+              <i class="fa-solid ${showStandingsTable ? 'fa-chevron-up' : 'fa-chevron-down'} text-[10px]"></i>
+              <span>${showStandingsTable ? 'Hide Final Standings (1–10)' : 'Show Final Standings (1–10)'}</span>
+            </button>
+          </div>
+          <div class="grid grid-cols-2 lg:grid-cols-4 gap-2.5">
+            <div class="bg-amber-950/25 border border-amber-500/40 rounded-xl p-2.5 sm:p-3">
+              <div class="text-[10px] font-bold uppercase text-amber-300">🏆 Champion (#1)</div>
+              <div class="text-xs sm:text-sm font-black text-white mt-0.5 truncate">${escapeHtml(resolveArchiveMgrName(champId))}</div>
+            </div>
+            <div class="bg-[#13161F] border border-white/10 rounded-xl p-2.5 sm:p-3">
+              <div class="text-[10px] font-bold uppercase text-slate-400">🥈 Runner-Up (#2)</div>
+              <div class="text-xs sm:text-sm font-black text-slate-100 mt-0.5 truncate">${escapeHtml(resolveArchiveMgrName(runnerUpId))}</div>
+            </div>
+            <div class="bg-sky-950/25 border border-sky-500/40 rounded-xl p-2.5 sm:p-3">
+              <div class="text-[10px] font-bold uppercase text-sky-300">🧻 Toilet Bowl (1.01)</div>
+              <div class="text-xs sm:text-sm font-black text-sky-100 mt-0.5 truncate">${escapeHtml(resolveArchiveMgrName(tbWinnerId))}</div>
+            </div>
+            <div class="bg-purple-950/25 border border-purple-500/40 rounded-xl p-2.5 sm:p-3">
+              <div class="text-[10px] font-bold uppercase text-purple-300">🍆 Phallic Feaster (#10)</div>
+              <div class="text-xs sm:text-sm font-black text-purple-100 mt-0.5 truncate">${escapeHtml(resolveArchiveMgrName(feasterId))}</div>
+            </div>
+          </div>
+          ${showStandingsTable ? `
+            <div class="overflow-x-auto rounded-xl border border-white/10">
+              <table class="w-full text-left border-collapse text-xs">
+                <thead>
+                  <tr class="bg-[#13161F] text-[10px] font-black uppercase tracking-wider text-slate-400 border-b border-white/10">
+                    <th class="py-2 px-3">Finish</th>
+                    <th class="py-2 px-3">Manager</th>
+                    <th class="py-2 px-3">ESPN Team Name</th>
+                    <th class="py-2 px-3 text-center">Record</th>
+                    <th class="py-2 px-3 text-right">PF</th>
+                    <th class="py-2 px-3 text-right">PA</th>
+                  </tr>
+                </thead>
+                <tbody class="divide-y divide-white/[0.06]">
+                  ${rows.map((r, i) => `
+                    <tr class="hover:bg-[#13161F]/70">
+                      <td class="py-2 px-3 font-mono font-bold text-slate-300">#${Number(r.finalRank ?? r.rank) || (i + 1)}</td>
+                      <td class="py-2 px-3 font-bold text-white">${escapeHtml(resolveArchiveMgrName(r.managerId || r.teamId))}</td>
+                      <td class="py-2 px-3 text-slate-400">${escapeHtml(r.espnTeamName || r.teamName || "")}</td>
+                      <td class="py-2 px-3 text-center font-mono text-amber-200">${r.wins}-${r.losses}${r.ties ? `-${r.ties}` : ""}</td>
+                      <td class="py-2 px-3 text-right font-mono text-emerald-300">${Number(r.pointsFor ?? r.pf ?? 0).toFixed(1)}</td>
+                      <td class="py-2 px-3 text-right font-mono text-slate-400">${Number(r.pointsAgainst ?? r.pa ?? 0).toFixed(1)}</td>
+                    </tr>
+                  `).join("")}
+                </tbody>
+              </table>
+            </div>
+          ` : ''}
+        </div>
+      ` : "";
+
+      const syncedYrDraftRaw = ed.draftResults?.[String(selectedYr)] || ed.pastDraftPicks?.[String(selectedYr)] || sObj?.draftPicks || null;
+      const hasSyncedDraftForYr = Array.isArray(syncedYrDraftRaw)
+        ? syncedYrDraftRaw.length > 0
+        : Boolean(syncedYrDraftRaw && typeof syncedYrDraftRaw === "object" && Object.keys(syncedYrDraftRaw).length > 0);
+
       if (!data) {
-        const ed = leagueDB?.espnData || {};
-        const sObj = ed.seasons?.[String(selectedYr)] || (ed.seasonStandings?.[String(selectedYr)] ? { standings: ed.seasonStandings[String(selectedYr)] } : null);
-        const rows = Array.isArray(sObj?.standings) ? [...sObj.standings].sort((a, b) => (a.rank || 99) - (b.rank || 99)) : [];
-        const unsyncedBanner = typeof buildEspnSampleDataNoticeHtml === "function" ? buildEspnSampleDataNoticeHtml() : "";
-        const champId = sObj?.champion || rows[0]?.teamId || "";
-        const runnerUpId = sObj?.runnerUp || rows[1]?.teamId || "";
-        const tbWinnerId = sObj?.toiletBowlWinner || rows[5]?.teamId || "";
-        const feasterId = sObj?.phallicFeaster || sObj?.sacko || rows[rows.length - 1]?.teamId || "";
-        const eraNames = { josh: "Scott (Josh Franchise)" };
+        let foundingBoardHtml = "";
+        if (hasSyncedDraftForYr) {
+          const foundingSlots = (rows.length === 10 ? rows.map(r => r.teamId) : (leagueDB?.teams || DEFAULT_TEAMS).map(t => t.id));
+          const foundingStateStub = { orderCfg: { isLocked: true, slots: foundingSlots } };
+          for (let r = 1; r <= TOTAL_ROUNDS; r++) {
+            const isEven = (r % 2 === 0);
+            const rSlots = isEven ? [...foundingSlots].reverse() : [...foundingSlots];
+            foundingBoardHtml += `
+              <div class="bg-[#0B0D12] border border-white/10 rounded-xl p-3 space-y-2">
+                <div class="flex items-center justify-between border-b border-white/[0.07] pb-1.5 text-xs">
+                  <span class="font-black text-amber-400 uppercase">Round ${r} ${isEven ? '(Snake Reverse 10→1)' : '(Snake Forward 1→10)'}</span>
+                  <span class="font-mono text-[11px] text-slate-500">Picks ${(r - 1) * 10 + 1}–${r * 10}</span>
+                </div>
+                <div class="grid grid-cols-2 sm:grid-cols-5 lg:grid-cols-10 gap-2">
+                  ${rSlots.map((slotTeamId, idx) => {
+                    const overallNum = (r - 1) * 10 + (idx + 1);
+                    const formattedSlot = `${r}.${String(idx + 1).padStart(2, "0")}`;
+                    const dp = getDraftedPlayerForPick({ year: selectedYr, round: r, originalOwner: slotTeamId, currentOwner: slotTeamId, overallPickNum: overallNum, formattedSlot }, foundingStateStub);
+                    const mgrDisplay = escapeHtml(resolveArchiveMgrName(dp?.teamId || slotTeamId));
+                    return `
+                      <div class="p-2 rounded-lg border border-white/[0.08] bg-[#13161F] text-left flex flex-col justify-between min-h-[68px]">
+                        <div class="flex items-center justify-between text-[10px] font-mono text-slate-400">
+                          <span>${formattedSlot} #${overallNum}</span>
+                        </div>
+                        <div class="mt-1 min-w-0">
+                          <div class="text-xs font-black text-white truncate">${mgrDisplay}</div>
+                          ${dp ? `
+                            <div class="mt-1 pt-1 border-t border-white/10 flex items-center justify-between gap-1">
+                              <span class="text-[10px] font-extrabold text-amber-200 truncate" title="${escapeHtml(dp.name)}">🏈 ${escapeHtml(dp.name)}</span>
+                              <span class="text-[8px] font-mono font-bold px-1 rounded bg-black/40 text-slate-300 flex-shrink-0">${escapeHtml(dp.pos)}</span>
+                            </div>
+                          ` : ''}
+                        </div>
+                      </div>
+                    `;
+                  }).join("")}
+                </div>
+              </div>
+            `;
+          }
+        }
 
         return `
           ${unsyncedBanner}
-          <div class="bg-[#0B0D12] border border-white/10 rounded-xl p-4 space-y-2">
-            <div class="flex flex-wrap items-center justify-between gap-2">
-              <div>
-                <div class="text-base font-black text-white">${selectedYr} Gamecock Mafia Founding Era Season</div>
-                <div class="text-xs text-amber-300 font-mono">Pre-Spreadsheet Era • Official 20-round off-season pick-trade spreadsheets began in 2018</div>
-              </div>
-              <span class="static-badge bg-amber-950/70 text-amber-200 border border-amber-500/40">Est. 2016 Vault</span>
+          <div class="bg-[#0B0D12] border border-white/10 rounded-xl p-4 flex flex-wrap items-center justify-between gap-2">
+            <div>
+              <div class="text-base font-black text-white">${selectedYr} Gamecock Mafia Founding Era Time Capsule</div>
+              <div class="text-xs text-amber-300 font-mono">Pre-Spreadsheet Era • Official 20-round off-season pick-trade spreadsheets began in 2018</div>
             </div>
-            ${rows.length > 0 ? `
-              <div class="grid grid-cols-2 lg:grid-cols-4 gap-2.5 pt-2">
-                <div class="bg-amber-950/25 border border-amber-500/40 rounded-xl p-3">
-                  <div class="text-[10px] font-bold uppercase text-amber-300">🏆 ${selectedYr} Champion</div>
-                  <div class="text-sm font-black text-white mt-0.5">${escapeHtml(getTeamName(champId, eraNames))}</div>
-                </div>
-                <div class="bg-[#13161F] border border-white/10 rounded-xl p-3">
-                  <div class="text-[10px] font-bold uppercase text-slate-400">🥈 Runner-Up</div>
-                  <div class="text-sm font-black text-slate-100 mt-0.5">${escapeHtml(getTeamName(runnerUpId, eraNames))}</div>
-                </div>
-                <div class="bg-sky-950/25 border border-sky-500/40 rounded-xl p-3">
-                  <div class="text-[10px] font-bold uppercase text-sky-300">🧻 Toilet Bowl Winner (1.01)</div>
-                  <div class="text-sm font-black text-sky-100 mt-0.5">${escapeHtml(getTeamName(tbWinnerId, eraNames))}</div>
-                </div>
-                <div class="bg-purple-950/25 border border-purple-500/40 rounded-xl p-3">
-                  <div class="text-[10px] font-bold uppercase text-purple-300">🍆 Phallic Feaster (1.05)</div>
-                  <div class="text-sm font-black text-purple-100 mt-0.5">${escapeHtml(getTeamName(feasterId, eraNames))}</div>
-                </div>
-              </div>
-              <div class="overflow-x-auto rounded-xl border border-white/10 mt-3">
-                <table class="w-full text-left border-collapse text-xs">
-                  <thead>
-                    <tr class="bg-[#13161F] text-[10px] font-black uppercase tracking-wider text-slate-400 border-b border-white/10">
-                      <th class="py-2.5 px-3">Finish</th>
-                      <th class="py-2.5 px-3">Manager</th>
-                      <th class="py-2.5 px-3">ESPN Team Name</th>
-                      <th class="py-2.5 px-3 text-center">Record</th>
-                      <th class="py-2.5 px-3 text-right">PF</th>
-                      <th class="py-2.5 px-3 text-right">PA</th>
-                    </tr>
-                  </thead>
-                  <tbody class="divide-y divide-white/[0.06]">
-                    ${rows.map((r, i) => `
-                      <tr class="hover:bg-[#13161F]/70">
-                        <td class="py-2 px-3 font-mono font-bold text-slate-300">#${r.rank || (i + 1)}</td>
-                        <td class="py-2 px-3 font-bold text-white">${escapeHtml(getTeamName(r.teamId, eraNames))}</td>
-                        <td class="py-2 px-3 text-slate-400">${escapeHtml(r.espnTeamName || r.teamName || "")}</td>
-                        <td class="py-2 px-3 text-center font-mono text-amber-200">${r.wins}-${r.losses}${r.ties ? `-${r.ties}` : ""}</td>
-                        <td class="py-2 px-3 text-right font-mono text-emerald-300">${Number(r.pointsFor || 0).toFixed(1)}</td>
-                        <td class="py-2 px-3 text-right font-mono text-slate-400">${Number(r.pointsAgainst || 0).toFixed(1)}</td>
-                      </tr>
-                    `).join("")}
-                  </tbody>
-                </table>
-              </div>
-            ` : `
-              <div class="text-xs text-slate-400 py-4">Run the Commissioner ESPN Sync to import full ${selectedYr} standings.</div>
-            `}
+            <span class="static-badge bg-amber-950/70 text-amber-200 border border-amber-500/40">Est. 2016 Vault</span>
           </div>
+          ${podiumAndStandingsHtml || `<div class="bg-[#0B0D12] border border-white/10 rounded-xl p-4 text-xs text-slate-400">Run the Commissioner 1-Click ESPN Sync to import full ${selectedYr} standings & draft selections.</div>`}
+          ${foundingBoardHtml ? `
+            <div class="space-y-2.5">
+              <div class="text-xs font-bold uppercase tracking-wider text-amber-300">${selectedYr} Synced ESPN 20-Round Draft Board</div>
+              ${foundingBoardHtml}
+            </div>
+          ` : `
+            <div class="bg-[#0B0D12] border border-white/10 rounded-xl p-3.5 text-xs text-slate-400 flex items-center justify-between gap-2">
+              <span><i class="fa-solid fa-wand-magic-sparkles text-amber-400 mr-1.5"></i>Run the 1-Click ESPN Console Sync to overlay all ${selectedYr} drafted players onto this Founding Era capsule.</span>
+            </div>
+          `}
         `;
       }
 
@@ -15882,6 +15991,7 @@
             originalOwner: origTeamId,
             currentOwner: origTeamId,
             overallNum,
+            overallPickNum: overallNum,
             formattedSlot,
             tradeNote: null,
             isConditional: false
@@ -15899,9 +16009,11 @@
         }
       });
 
+      const histStateStub = { orderCfg: { isLocked: Boolean(data.isLocked), slots: data.slots } };
       let histBoardHtml = "";
       for (let r = 1; r <= TOTAL_ROUNDS; r++) {
-        if (uiState.archiveOnlyTradedRounds && !activeHistRounds.has(r)) continue;
+        if (uiState.archiveOnlyTradedRounds && !hasSyncedDraftForYr && !activeHistRounds.has(r)) continue;
+        if (uiState.archiveOnlyTradedRounds && hasSyncedDraftForYr && uiState.archiveOnlyTradedRoundsManual && !activeHistRounds.has(r)) continue;
         const rPicks = histPicks.filter(p => p.round === r);
         const isEven = (r % 2 === 0);
 
@@ -15916,6 +16028,7 @@
                 const origName = escapeHtml(getTeamName(p.originalOwner, data.teamNamesOverride));
                 const currName = escapeHtml(getTeamName(p.currentOwner, data.teamNamesOverride));
                 const isTraded = p.originalOwner !== p.currentOwner;
+                const draftedPlayer = hasSyncedDraftForYr ? getDraftedPlayerForPick(p, histStateStub) : null;
                 const cardCls = p.isConditional
                   ? "pending-pool-card"
                   : isTraded
@@ -15928,9 +16041,15 @@
                       <span>${p.overallNum ? `${p.formattedSlot} #${p.overallNum}` : `R${r}`}</span>
                       ${isTraded ? `<i class="fa-solid fa-right-left text-[9px] text-sky-400"></i>` : ''}
                     </div>
-                    <div class="mt-1">
+                    <div class="mt-1 min-w-0">
                       <div class="text-xs font-black text-white truncate">${currName}</div>
                       ${isTraded ? `<div class="text-[10px] text-sky-300 font-bold truncate">via ${origName}</div>` : ""}
+                      ${draftedPlayer ? `
+                        <div class="mt-1 pt-1 border-t border-white/10 flex items-center justify-between gap-1">
+                          <span class="text-[10px] font-extrabold text-amber-200 truncate" title="${escapeHtml(draftedPlayer.name)} (${escapeHtml(draftedPlayer.pos)} • ${escapeHtml(draftedPlayer.nflTeam)})">🏈 ${escapeHtml(draftedPlayer.name)}</span>
+                          <span class="text-[8px] font-mono font-bold px-1 rounded bg-black/40 text-slate-300 flex-shrink-0">${escapeHtml(draftedPlayer.pos)}</span>
+                        </div>
+                      ` : ""}
                     </div>
                   </div>
                 `;
@@ -15940,17 +16059,26 @@
         `;
       }
 
+      const showOnlyTradedActive = hasSyncedDraftForYr
+        ? Boolean(uiState.archiveOnlyTradedRounds && uiState.archiveOnlyTradedRoundsManual)
+        : Boolean(uiState.archiveOnlyTradedRounds);
+
       return `
         <div class="bg-[#0B0D12] border border-white/10 rounded-xl p-4 flex flex-col md:flex-row md:items-center justify-between gap-3">
           <div class="space-y-1">
-            <div class="text-base font-black text-white">${escapeHtml(data.title)}</div>
+            <div class="flex flex-wrap items-center gap-2">
+              <div class="text-base font-black text-white">${escapeHtml(data.title)}</div>
+              ${hasSyncedDraftForYr ? `<span class="static-badge bg-emerald-950 text-emerald-300 border border-emerald-500/50"><i class="fa-solid fa-football text-[9px]"></i> ESPN Picks Overlaid</span>` : ''}
+            </div>
             <div class="text-xs text-amber-300 font-mono">${escapeHtml(data.orderNote)}</div>
           </div>
-          <button onclick="toggleArchiveOnlyTradedRounds()" class="btn-action px-3 py-1.5 text-xs text-sky-300 self-start md:self-auto whitespace-nowrap">
+          <button onclick="uiState.archiveOnlyTradedRoundsManual = true; toggleArchiveOnlyTradedRounds()" class="btn-action px-3 py-1.5 text-xs text-sky-300 self-start md:self-auto whitespace-nowrap">
             <i class="fa-solid fa-table-cells"></i>
-            <span>${uiState.archiveOnlyTradedRounds ? 'Show All 20 Rounds (1–20)' : 'Show Active / Traded Rounds Only'}</span>
+            <span>${showOnlyTradedActive ? 'Show All 20 Rounds (1–20)' : 'Show Active / Traded Rounds Only'}</span>
           </button>
         </div>
+
+        ${podiumAndStandingsHtml}
 
         <div class="space-y-2">
           <div class="text-xs font-bold uppercase tracking-wider text-slate-400">${selectedYr} Recorded Off-Season Pick Trades & Conditions (${data.trades.length})</div>
@@ -15968,10 +16096,19 @@
         </div>
 
         <div class="space-y-2.5">
-          <div class="text-xs font-bold uppercase tracking-wider text-amber-300">${selectedYr} Reconstructed 20-Round Snake Draft Board</div>
+          <div class="text-xs font-bold uppercase tracking-wider text-amber-300">${selectedYr} Reconstructed 20-Round Snake Draft Board${hasSyncedDraftForYr ? ' + Synced ESPN Selections' : ''}</div>
           ${histBoardHtml}
         </div>
       `;
+    }
+
+    function toggleArchiveSeasonStandings() {
+      const selectedYr = Number(uiState.activeArchiveYear) || 2025;
+      const current = uiState.archiveShowStandingsManual ? Boolean(uiState.archiveShowStandings) : (selectedYr <= 2017);
+      uiState.archiveShowStandingsManual = true;
+      uiState.archiveShowStandings = !current;
+      refreshArchiveViews();
+      renderAll();
     }
 
     function buildInlineLeagueArchiveHtml() {
@@ -16492,7 +16629,7 @@
                 <button onclick="adminSetTeamFlair('${escapeHtml(t.id)}', '${flair === 'TOILET' ? 'NONE' : 'TOILET'}')" class="px-1.5 py-0.5 rounded text-[10px] font-bold border cursor-pointer ${flair === 'TOILET' ? 'bg-amber-950 text-amber-200 border-amber-500' : 'bg-slate-950 text-slate-400 border-slate-800 hover:text-white'}" title="Toggle 1.01 Toilet Bowl Winner Badge">
                   🧻 1.01 Toilet
                 </button>
-                <button onclick="adminSetTeamFlair('${escapeHtml(t.id)}', '${flair === 'FEASTER' ? 'NONE' : 'FEASTER'}')" class="px-1.5 py-0.5 rounded text-[10px] font-bold border cursor-pointer ${flair === 'FEASTER' ? 'bg-purple-950 text-purple-200 border-purple-500' : 'bg-slate-950 text-slate-400 border-slate-800 hover:text-white'}" title="Toggle 1.05 Phallic Feaster Badge">
+                <button onclick="adminSetTeamFlair('${escapeHtml(t.id)}', '${flair === 'FEASTER' ? 'NONE' : 'FEASTER'}')" class="px-1.5 py-0.5 rounded text-[10px] font-bold border cursor-pointer ${flair === 'FEASTER' ? 'bg-purple-950 text-purple-200 border-purple-500' : 'bg-slate-950 text-slate-400 border-slate-800 hover:text-white'}" title="Toggle #10 Phallic Feaster Badge">
                   🍆 Feaster
                 </button>
               </div>
@@ -18143,7 +18280,7 @@
           html += `
             <div class="bg-[#121215] border border-zinc-800 rounded-lg p-2 space-y-1.5">
               <div class="flex items-center justify-between gap-2">
-                <span class="text-[11px] font-mono font-bold text-amber-300">🏆 ${yr} Champ (1.10):</span>
+                <span class="text-[11px] font-mono font-bold text-amber-300">🏆 ${yr} Champ (#1):</span>
                 <select id="espnChampOverride_${yr}" class="bg-[#09090B] text-white text-[11px] font-bold rounded px-2 py-1 border border-zinc-700">
                   ${allManagers.map(m => `<option value="${safeId(m.id)}" ${m.id === currentChamp ? 'selected' : ''}>${escapeHtml(m.name)}</option>`).join("")}
                 </select>
@@ -18155,7 +18292,7 @@
                 </select>
               </div>
               <div class="flex items-center justify-between gap-2 pt-1 border-t border-zinc-800/70">
-                <span class="text-[10px] font-mono text-rose-300">🍆 ${yr} Phallic Feaster (1.05):</span>
+                <span class="text-[10px] font-mono text-rose-300">🍆 ${yr} Phallic Feaster (#10):</span>
                 <select id="espnFeasterOverride_${yr}" class="bg-[#09090B] text-rose-200 text-[10px] font-bold rounded px-2 py-0.5 border border-zinc-700">
                   ${allManagers.map(m => `<option value="${safeId(m.id)}" ${m.id === currentFeaster ? 'selected' : ''}>${escapeHtml(m.name)}</option>`).join("")}
                 </select>
@@ -18169,7 +18306,7 @@
             </div>
           `;
         });
-        overGrid.innerHTML = html || `<div class="text-[11px] text-zinc-500 col-span-2">Import your ESPN history JSON above to inspect & verify every season's Champion, Toilet Bowl Winner (1.01) & Phallic Feaster (1.05).</div>`;
+        overGrid.innerHTML = html || `<div class="text-[11px] text-zinc-500 col-span-2">Import your ESPN history JSON above to inspect & verify every season's Champion (#1), Toilet Bowl Winner (1.01) & Phallic Feaster (#10).</div>`;
       }
     }
 
@@ -18863,18 +19000,6 @@
         });
       } catch (e) {
         // Non-blocking chat alert
-      }
-    }
-
-    function copyShareableSnapshotLink() {
-      try {
-        const jsonStr = JSON.stringify(sanitizeStateForPublicExport(leagueDB));
-        const encoded = utf8ToBase64(jsonStr);
-        const baseUrl = window.location.href.split("#")[0];
-        const shareUrl = `${baseUrl}#snapshot=${encodeURIComponent(encoded)}`;
-        copyTextToClipboard(shareUrl, "Copied UTF-8 safe shareable snapshot URL to clipboard!");
-      } catch (e) {
-        showToast("Could not generate snapshot link.", "error");
       }
     }
 

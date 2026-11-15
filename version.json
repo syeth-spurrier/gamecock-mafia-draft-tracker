@@ -1,5 +1,5 @@
 {
-  "version": "8.4.1",
-  "releasedAt": "2026-11-15T18:33:00Z",
-  "notes": "v8.4.1: ESPN Post-Draft Auto-Populate onto 200-Pick Draft Board (Matrix + Round Cards + Pick Inspect Modal) & Live Draft Cheat Sheet"
+  "version": "8.5.0",
+  "releasedAt": "2026-11-15T19:30:00Z",
+  "notes": "v8.5.0: Colorway Contrast Engine Overhaul, True Season Standings Order, 0/12 Unconfirmed Keepers, 2016–2025 Unified Archive Time Capsule, Neutral Fairness Voting & Mobile War Room/Trade Center Ergonomics"
 }
