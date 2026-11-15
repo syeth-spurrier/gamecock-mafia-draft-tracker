@@ -383,6 +383,9 @@
       nav#mobileBottomNav,
       .app-card,
       .app-card-elevated,
+      .action-tile-card,
+      .wire-milestone-card,
+      .btn-icon-compact,
       .segmented-bar,
       .pending-pool-card,
       .whatif-pick-sim,
@@ -449,6 +452,13 @@
     body.theme-chapel_sky .app-card {
       border: 1.5px solid rgba(19, 41, 75, 0.22);
       box-shadow: 0 8px 22px rgba(19, 41, 75, 0.09), inset 0 2px 0 #4B9CD3;
+    }
+    body.theme-chapel_sky .action-tile-card,
+    body.theme-chapel_sky .wire-milestone-card,
+    body.theme-chapel_sky .btn-icon-compact {
+      background: #F0F7FE !important;
+      border-color: rgba(19, 41, 75, 0.24) !important;
+      color: #0F2342 !important;
     }
     body.theme-chapel_sky .btn-action:not([class*="bg-[#0B0D12]"]):not([class*="bg-black/"]) {
       background: #E1EFFA;
@@ -584,6 +594,9 @@
     body.theme-honolulu_gridiron :where(
       .app-card,
       .app-card-elevated,
+      .action-tile-card,
+      .wire-milestone-card,
+      .btn-icon-compact,
       .segmented-bar,
       .pending-pool-card,
       .whatif-pick-sim,
@@ -638,10 +651,13 @@
       box-shadow: 0 8px 24px rgba(0, 25, 45, 0.35), inset 0 2px 0 #0076B6;
       color: #0A0E14;
     }
-    body.theme-honolulu_gridiron .app-card-elevated {
-      background: #EFF6FF !important;
+    body.theme-honolulu_gridiron .app-card-elevated,
+    body.theme-honolulu_gridiron .action-tile-card,
+    body.theme-honolulu_gridiron .wire-milestone-card,
+    body.theme-honolulu_gridiron .btn-icon-compact {
+      background: #F8FAFC !important;
       border: 1px solid #94A3B8 !important;
-      color: #0A0E14;
+      color: #0A0E14 !important;
     }
     body.theme-honolulu_gridiron .segmented-bar {
       background: #E2E8F0;
@@ -855,34 +871,40 @@
       align-items: center;
       gap: 0.25rem;
       padding: 0.25rem;
-      border-radius: 0.75rem;
+      border-radius: 0.78rem;
       background: var(--bg-obsidian);
-      border: 1px solid rgba(var(--theme-trim-rgb), 0.16);
+      border: 1px solid rgba(var(--theme-trim-rgb), 0.18);
+      box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.22);
+      max-width: 100%;
     }
     .segmented-pill {
       display: inline-flex;
       align-items: center;
       justify-content: center;
-      gap: 0.38rem;
-      padding: 0.42rem 0.85rem;
-      border-radius: 0.55rem;
-      font-size: 0.75rem;
+      gap: 0.35rem;
+      padding: 0.4rem 0.78rem;
+      border-radius: 0.58rem;
+      font-size: 0.74rem;
       font-weight: 700;
       color: #94A3B8;
       border: 1px solid transparent;
-      transition: border-color 0.15s ease, box-shadow 0.15s ease, transform 0.12s ease;
+      transition: border-color 0.15s ease, box-shadow 0.15s ease, transform 0.1s ease;
       cursor: pointer;
       white-space: nowrap;
+      user-select: none;
     }
     .segmented-pill:hover {
       color: #F8FAFC;
+    }
+    .segmented-pill:active {
+      transform: scale(0.97);
     }
     .segmented-pill.active,
     .segmented-pill.segmented-pill-active {
       background: var(--theme-btn-grad);
       color: #FFFFFF !important;
-      border: 1px solid rgba(var(--theme-trim-rgb), 0.45);
-      box-shadow: 0 2px 8px var(--theme-glow);
+      border: 1px solid rgba(var(--theme-trim-rgb), 0.48);
+      box-shadow: 0 2px 8px var(--theme-glow), inset 0 1px 0 rgba(255, 255, 255, 0.22);
     }
     .btn-action {
       display: inline-flex;
@@ -890,22 +912,22 @@
       justify-content: center;
       gap: 0.4rem;
       font-weight: 600;
-      border-radius: 0.625rem;
-      border: 1px solid rgba(var(--theme-trim-rgb), 0.16);
+      border-radius: 0.65rem;
+      border: 1px solid rgba(var(--theme-trim-rgb), 0.18);
       background: var(--bg-elevated);
       color: #E2E8F0;
-      box-shadow: 0 1px 2px rgba(0, 0, 0, 0.25);
-      transition: border-color 0.15s ease, box-shadow 0.15s ease, transform 0.12s ease;
+      box-shadow: 0 1px 2px rgba(0, 0, 0, 0.24), inset 0 1px 0 rgba(255, 255, 255, 0.05);
+      transition: border-color 0.15s ease, box-shadow 0.15s ease, transform 0.1s ease;
       cursor: pointer;
       user-select: none;
     }
     .btn-action:hover {
-      border-color: rgba(var(--theme-trim-rgb), 0.42);
+      border-color: rgba(var(--theme-trim-rgb), 0.44);
       background: rgba(var(--usc-garnet-rgb), 0.22);
       color: #FFFFFF;
     }
     .btn-action:active {
-      transform: translateY(0px);
+      transform: scale(0.98);
     }
     .btn-garnet {
       display: inline-flex;
@@ -913,12 +935,12 @@
       justify-content: center;
       gap: 0.45rem;
       font-weight: 700;
-      border-radius: 0.625rem;
+      border-radius: 0.65rem;
       border: 1px solid var(--theme-border-hi);
       background: var(--theme-btn-grad);
       color: #ffffff;
-      box-shadow: 0 2px 10px var(--theme-glow), inset 0 1px 0 rgba(var(--theme-trim-rgb), 0.28);
-      transition: all 0.15s ease;
+      box-shadow: 0 2px 10px var(--theme-glow), inset 0 1px 0 rgba(255, 255, 255, 0.25);
+      transition: border-color 0.15s ease, box-shadow 0.15s ease, transform 0.1s ease;
       cursor: pointer;
       user-select: none;
     }
@@ -926,7 +948,75 @@
       background: var(--theme-btn-hover);
       border-color: var(--theme-trim);
       transform: translateY(-1px);
-      box-shadow: 0 4px 14px var(--theme-glow), inset 0 1px 0 rgba(var(--theme-trim-rgb), 0.38);
+      box-shadow: 0 4px 14px var(--theme-glow), inset 0 1px 0 rgba(255, 255, 255, 0.35);
+    }
+    .btn-garnet:active {
+      transform: scale(0.98);
+    }
+    .btn-icon-compact {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 2rem;
+      height: 2rem;
+      border-radius: 0.6rem;
+      border: 1px solid rgba(var(--theme-trim-rgb), 0.18);
+      background: var(--bg-obsidian);
+      color: var(--ctx-text-300);
+      transition: border-color 0.15s ease, transform 0.1s ease;
+      cursor: pointer;
+      flex-shrink: 0;
+    }
+    .btn-icon-compact:hover {
+      border-color: rgba(var(--theme-trim-rgb), 0.45);
+      color: var(--ctx-text-white);
+    }
+    .btn-icon-compact:active {
+      transform: scale(0.95);
+    }
+    .action-tile-card {
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      gap: 0.45rem;
+      padding: 0.7rem 0.8rem;
+      border-radius: 0.85rem;
+      border: 1px solid var(--ctx-border-subtle);
+      background: var(--bg-obsidian);
+      text-align: left;
+      transition: border-color 0.15s ease, transform 0.1s ease, box-shadow 0.15s ease;
+      cursor: pointer;
+      user-select: none;
+    }
+    .action-tile-card:hover {
+      border-color: rgba(var(--theme-trim-rgb), 0.42);
+      box-shadow: 0 4px 14px rgba(0, 0, 0, 0.22);
+    }
+    .action-tile-card:active {
+      transform: scale(0.985);
+    }
+    .timeline-group-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 0.5rem;
+      padding: 0.35rem 0.75rem;
+      border-radius: 0.65rem;
+      background: var(--bg-obsidian);
+      border: 1px solid var(--ctx-border-subtle);
+      font-size: 0.68rem;
+      font-weight: 800;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: var(--ctx-text-300);
+    }
+    .wire-milestone-card {
+      border-left: 3px solid var(--usc-garnet-hi);
+      background: var(--bg-obsidian);
+      border-top: 1px solid var(--ctx-border-subtle);
+      border-right: 1px solid var(--ctx-border-subtle);
+      border-bottom: 1px solid var(--ctx-border-subtle);
+      border-radius: 0.85rem;
     }
     .btn-pending {
       display: inline-flex;
@@ -1280,7 +1370,7 @@
           <div id="headerNotifBellWrap" class="relative">
             <button onclick="handleHeaderNotifBellClick(event)" id="headerNotifBellBtn" class="btn-action w-8 h-8 sm:w-9 sm:h-9 p-0 text-xs text-slate-200 relative" title="Pending Trade Offers, Scout Status & League Alerts">
               <i id="headerNotifBellIcon" class="fa-solid fa-bell text-slate-300"></i>
-              <span id="headerNotifCountBadge" class="hidden -top-1 -right-1 absolute min-w-[17px] h-[17px] px-1 rounded-full bg-amber-400 text-black font-mono font-black text-[10px] inline-flex items-center justify-center notif-action-pulse">0</span>
+              <span id="headerNotifCountBadge" style="background-color:#FBBF24;color:#09090B;" class="hidden -top-1 -right-1 absolute min-w-[17px] h-[17px] px-1 rounded-full bg-amber-400 text-black font-mono font-black text-[10px] inline-flex items-center justify-center notif-action-pulse">0</span>
             </button>
             <div id="headerNotifDropdownMenu" class="hidden fixed sm:absolute inset-x-3 sm:inset-x-auto sm:right-0 top-14 sm:top-11 sm:w-96 bg-[#13161F] border border-white/15 rounded-2xl p-3 shadow-2xl z-50"></div>
           </div>
@@ -1577,52 +1667,78 @@
         <!-- Hall of Shame Banner (Shown when filtered or active curse) -->
         <div id="hallOfShameFeedBanner" class="hidden app-card border-pink-500/50 p-3 space-y-1.5"></div>
 
-        <!-- Activity Wire Header, Sub-Navigation Pills, Expand/Collapse & Search -->
-        <div class="no-print app-card p-3 sm:p-3.5 flex flex-col lg:flex-row lg:items-center justify-between gap-2.5">
-          <div class="segmented-bar flex-wrap">
-            <button onclick="setActivitySubTab('ALL')" id="actSubTab-ALL" class="px-2.5 sm:px-3 py-1.5 rounded-lg text-[11px] sm:text-xs font-bold transition cursor-pointer">
-              All Activity
-            </button>
-            <button onclick="setActivitySubTab('TRADES')" id="actSubTab-TRADES" class="px-2.5 sm:px-3 py-1.5 rounded-lg text-[11px] sm:text-xs font-bold transition cursor-pointer">
-              Trades
-            </button>
-            <button onclick="setActivitySubTab('WIRE')" id="actSubTab-WIRE" class="px-2.5 sm:px-3 py-1.5 rounded-lg text-[11px] sm:text-xs font-bold transition cursor-pointer">
-              League Wire
-            </button>
-            <button onclick="setActivitySubTab('PENDING_FINAL')" id="actSubTab-PENDING_FINAL" class="px-2.5 sm:px-3 py-1.5 rounded-lg text-[11px] sm:text-xs font-bold transition flex items-center gap-1.5 cursor-pointer">
-              <i class="fa-solid fa-hourglass-half text-amber-400"></i>
-              <span>Waiting</span>
-              <span id="actSubTabPendingBadge" class="hidden px-1.5 py-0.2 rounded-full text-[10px] font-mono bg-amber-950 text-amber-300 border border-amber-500/50">0</span>
-            </button>
-            <button onclick="setActivitySubTab('MY_TEAM')" id="actSubTab-MY_TEAM" class="px-2.5 sm:px-3 py-1.5 rounded-lg text-[11px] sm:text-xs font-bold transition cursor-pointer">
-              My Deals
-            </button>
-          </div>
-
-          <div class="flex flex-wrap sm:flex-nowrap items-center gap-2 w-full lg:w-auto">
-            <button type="button" onclick="toggleAllTradeFeedAccordions()" id="feedToggleAllAccordionsBtn" class="btn-action px-2.5 py-1.5 text-[11px] text-slate-300 flex-shrink-0" title="Expand or collapse all trade cards">
-              <i id="feedToggleAllAccordionsIcon" class="fa-solid fa-angles-down text-slate-400"></i>
-              <span id="feedToggleAllAccordionsLabel">Expand All</span>
-            </button>
-
-            <div class="relative flex-1 sm:flex-initial min-w-[140px]">
-              <i class="fa-solid fa-magnifying-glass absolute left-2.5 top-2.5 text-slate-500 text-xs"></i>
-              <input type="text" id="feedSearchInput" oninput="renderTradeFeedSection()" placeholder="Search wire, player, pick..." class="bg-[#0B0D12] text-xs text-slate-200 pl-8 pr-2.5 py-1.5 rounded-lg border border-white/10 focus:outline-none focus:border-[#CC1429] w-full sm:w-48">
+        <!-- Activity Wire 1-Row Mobile Toolbar, Fairness Ballot Sub-Tab, Scope Pills & Collapsible Search -->
+        <div class="no-print app-card p-2.5 sm:p-3 space-y-2">
+          <div class="flex items-center justify-between gap-2">
+            <div class="segmented-bar no-scrollbar overflow-x-auto flex-1 min-w-0">
+              <button onclick="setActivitySubTab('ALL')" id="actSubTab-ALL" class="segmented-pill active">
+                <span>All</span>
+              </button>
+              <button onclick="setActivitySubTab('TRADES')" id="actSubTab-TRADES" class="segmented-pill">
+                <span>Trades</span>
+              </button>
+              <button onclick="setActivitySubTab('FAIRNESS')" id="actSubTab-FAIRNESS" class="segmented-pill">
+                <i class="fa-solid fa-scale-balanced text-amber-400 text-[10px]"></i>
+                <span>Ballot</span>
+                <span id="actSubTabFairnessBadge" class="hidden px-1.5 py-0.2 rounded-full text-[10px] font-mono bg-amber-950 text-amber-300 border border-amber-500/50">0</span>
+              </button>
+              <button onclick="setActivitySubTab('WIRE')" id="actSubTab-WIRE" class="segmented-pill">
+                <span>Wire</span>
+              </button>
+              <button onclick="setActivitySubTab('PENDING_FINAL')" id="actSubTab-PENDING_FINAL" class="segmented-pill">
+                <i class="fa-solid fa-hourglass-half text-amber-400 text-[10px]"></i>
+                <span>Waiting</span>
+                <span id="actSubTabPendingBadge" class="hidden px-1.5 py-0.2 rounded-full text-[10px] font-mono bg-amber-950 text-amber-300 border border-amber-500/50">0</span>
+              </button>
+              <button onclick="setActivitySubTab('MY_TEAM')" id="actSubTab-MY_TEAM" class="segmented-pill">
+                <span>My Deals</span>
+              </button>
             </div>
 
-            <select id="feedScopeFilter" onchange="renderTradeFeedSection()" class="bg-[#0B0D12] text-[11px] sm:text-xs font-semibold text-amber-300 rounded-lg px-2.5 py-1.5 border border-white/10 cursor-pointer flex-shrink-0">
-              <option value="ALL_YEARS">All Yrs</option>
-              <option value="ACTIVE_YEAR">Active Yr</option>
-            </select>
+            <div class="flex items-center gap-1.5 flex-shrink-0">
+              <div class="segmented-bar p-0.5 hidden sm:inline-flex" role="group" aria-label="Activity Year Scope">
+                <button type="button" id="feedScopePill-ALL_YEARS" onclick="setActivityScopeFilter('ALL_YEARS')" class="segmented-pill active !px-2 !py-1 !text-[11px]">All Yrs</button>
+                <button type="button" id="feedScopePill-ACTIVE_YEAR" onclick="setActivityScopeFilter('ACTIVE_YEAR')" class="segmented-pill !px-2 !py-1 !text-[11px]">Active Yr</button>
+              </div>
+              <button type="button" id="feedScopeMobileToggleBtn" onclick="toggleActivityScopeFilterMobile()" class="sm:hidden btn-action px-2 py-1.5 text-[11px] text-amber-300 font-bold" title="Toggle All Years vs Active Year">
+                <span id="feedScopeMobileToggleLabel">All Yrs</span>
+              </button>
 
-            <select id="feedTypeFilter" onchange="renderTradeFeedSection()" class="hidden bg-[#0B0D12] text-xs font-semibold text-slate-200 rounded-lg px-2.5 py-1.5 border border-white/10">
-              <option value="ALL">All Transactions</option>
-              <option value="POOL_COND">Conditional / Waiting on Commish</option>
-              <option value="MULTI_YEAR">Multi-Year Deals Only</option>
-              <option value="SETTLED">Settled Trades Only</option>
-            </select>
+              <button type="button" onclick="toggleAllTradeFeedAccordions()" id="feedToggleAllAccordionsBtn" class="btn-action px-2 sm:px-2.5 py-1.5 text-[11px] text-slate-300 flex-shrink-0" title="Expand or collapse all trade cards">
+                <i id="feedToggleAllAccordionsIcon" class="fa-solid fa-angles-down text-slate-400"></i>
+                <span id="feedToggleAllAccordionsLabel" class="hidden md:inline">Expand All</span>
+              </button>
+
+              <button type="button" onclick="toggleActivitySearchBar()" id="feedSearchToggleBtn" class="btn-icon-compact" title="Search Activity Wire" aria-label="Search Activity Wire">
+                <i class="fa-solid fa-magnifying-glass text-xs"></i>
+              </button>
+
+              <select id="feedScopeFilter" onchange="syncActivityScopeFromSelect()" class="hidden bg-[#0B0D12] text-[11px] sm:text-xs font-semibold text-amber-300 rounded-lg px-2.5 py-1.5 border border-white/10">
+                <option value="ALL_YEARS">All Yrs</option>
+                <option value="ACTIVE_YEAR">Active Yr</option>
+              </select>
+
+              <select id="feedTypeFilter" onchange="renderTradeFeedSection()" class="hidden bg-[#0B0D12] text-xs font-semibold text-slate-200 rounded-lg px-2.5 py-1.5 border border-white/10">
+                <option value="ALL">All Transactions</option>
+                <option value="POOL_COND">Conditional / Waiting on Commish</option>
+                <option value="MULTI_YEAR">Multi-Year Deals Only</option>
+                <option value="SETTLED">Settled Trades Only</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- Collapsible Search Input Row -->
+          <div id="feedSearchCollapsibleRow" class="hidden pt-1.5 border-t border-white/10 flex items-center gap-2">
+            <div class="relative flex-1">
+              <i class="fa-solid fa-magnifying-glass absolute left-2.5 top-2 text-slate-500 text-xs"></i>
+              <input type="text" id="feedSearchInput" oninput="renderTradeFeedSection()" placeholder="Search wire, player, pick, or manager..." class="bg-[#0B0D12] text-xs text-slate-200 pl-8 pr-7 py-1.5 rounded-lg border border-white/10 focus:outline-none focus:border-[#CC1429] w-full">
+              <button type="button" onclick="clearActivitySearchInput()" class="absolute right-2 top-1.5 text-slate-400 hover:text-white text-xs cursor-pointer" title="Clear search">×</button>
+            </div>
           </div>
         </div>
+
+        <!-- Trade Fairness Ballot Banner / Calibration Status (A1 & A2) -->
+        <div id="fairnessBallotNudgeBanner" class="hidden"></div>
 
         <!-- Active Trade Proposals Queue (Shown only under 'Waiting' sub-tab so default Activity isn't duplicated) -->
         <div id="pendingQueueContainer" class="hidden bg-[#13161F] border border-amber-500/40 rounded-2xl p-3 sm:p-4 space-y-3">
@@ -1649,7 +1765,7 @@
       <footer id="appFooterShell" class="hidden border-t border-white/[0.06] pt-4 pb-2 mt-6 no-print">
         <div class="flex flex-col sm:flex-row items-center justify-between gap-2 text-[11px] text-slate-400">
           <div class="flex items-center gap-2">
-            <span class="font-bold text-slate-400">Gamecock Mafia League Hub &amp; Draft Tracker v8.5.0</span>
+            <span class="font-bold text-slate-400">Gamecock Mafia League Hub &amp; Draft Tracker v8.6.0</span>
             <span>•</span>
             <span>Est. 2016</span>
           </div>
@@ -2223,70 +2339,173 @@
           </div>
         </div>
 
-        <!-- Section 2: App Install, Draft Exports & Device Lock -->
+        <!-- Section 2: App Install, Draft Exports & Device Lock (Action Tile Grid) -->
         <div class="space-y-2 pt-1 border-t border-white/[0.07]">
-          <div class="text-[10px] font-bold uppercase tracking-wider text-slate-400">App Install &amp; Draft Exports</div>
-          <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
-            <button onclick="cancelMoreToolsModal(); openEspnExportModal();" class="btn-action justify-start px-3 py-2 text-xs text-slate-100">
-              <i class="fa-solid fa-file-export text-rose-400 w-4"></i>
-              <span>ESPN / CSV / Print Draft Sheet</span>
+          <div class="flex items-center justify-between">
+            <span class="text-[10px] font-bold uppercase tracking-wider text-slate-400">App Install &amp; Draft Exports</span>
+            <span class="static-badge bg-white/[0.04] text-slate-300 border border-white/10">Quick Actions</span>
+          </div>
+          <div class="grid grid-cols-2 gap-2">
+            <button onclick="cancelMoreToolsModal(); openEspnExportModal();" class="action-tile-card">
+              <div class="flex items-center justify-between w-full">
+                <span class="w-7 h-7 rounded-lg bg-rose-500/15 border border-rose-500/30 flex items-center justify-center text-rose-400 text-xs">
+                  <i class="fa-solid fa-file-export"></i>
+                </span>
+                <span class="static-badge bg-rose-950/60 text-rose-300 border border-rose-500/30">CSV / Print</span>
+              </div>
+              <div>
+                <div class="text-xs font-bold text-slate-100 leading-tight">Draft Sheet Export</div>
+                <div class="text-[10px] text-slate-400 leading-tight mt-0.5">ESPN cheat sheet &amp; printable board</div>
+              </div>
             </button>
-            <button onclick="showPwaInstallGuideToast()" class="btn-action justify-start px-3 py-2 text-xs text-sky-200">
-              <i class="fa-solid fa-mobile-screen-button text-sky-400 w-4"></i>
-              <span>Install as Home Screen App</span>
+
+            <button onclick="showPwaInstallGuideToast()" class="action-tile-card">
+              <div class="flex items-center justify-between w-full">
+                <span class="w-7 h-7 rounded-lg bg-sky-500/15 border border-sky-500/30 flex items-center justify-center text-sky-400 text-xs">
+                  <i class="fa-solid fa-mobile-screen-button"></i>
+                </span>
+                <span class="static-badge bg-sky-950/60 text-sky-300 border border-sky-500/30">iOS / Android</span>
+              </div>
+              <div>
+                <div class="text-xs font-bold text-slate-100 leading-tight">Home Screen App</div>
+                <div class="text-[10px] text-slate-400 leading-tight mt-0.5">Install native full-screen icon</div>
+              </div>
             </button>
-            <button onclick="exportLeagueBackup()" class="btn-action justify-start px-3 py-2 text-xs text-slate-300">
-              <i class="fa-solid fa-download text-emerald-400 w-4"></i>
-              <span>Download JSON Backup</span>
+
+            <button onclick="exportLeagueBackup()" class="action-tile-card">
+              <div class="flex items-center justify-between w-full">
+                <span class="w-7 h-7 rounded-lg bg-emerald-500/15 border border-emerald-500/30 flex items-center justify-center text-emerald-400 text-xs">
+                  <i class="fa-solid fa-download"></i>
+                </span>
+                <span class="static-badge bg-emerald-950/60 text-emerald-300 border border-emerald-500/30">JSON</span>
+              </div>
+              <div>
+                <div class="text-xs font-bold text-slate-100 leading-tight">Download Backup</div>
+                <div class="text-[10px] text-slate-400 leading-tight mt-0.5">Save full league snapshot locally</div>
+              </div>
             </button>
-            <button onclick="cancelMoreToolsModal(); lockLeaguePassphrase();" class="btn-action justify-start px-3 py-2 text-xs text-slate-400">
-              <i class="fa-solid fa-lock text-slate-500 w-4"></i>
-              <span>Sign Out / Lock Device</span>
+
+            <button onclick="cancelMoreToolsModal(); lockLeaguePassphrase();" class="action-tile-card">
+              <div class="flex items-center justify-between w-full">
+                <span class="w-7 h-7 rounded-lg bg-slate-500/15 border border-slate-500/30 flex items-center justify-center text-slate-400 text-xs">
+                  <i class="fa-solid fa-lock"></i>
+                </span>
+                <span class="static-badge bg-white/[0.04] text-slate-400 border border-white/10">Session</span>
+              </div>
+              <div>
+                <div class="text-xs font-bold text-slate-200 leading-tight">Lock Device</div>
+                <div class="text-[10px] text-slate-400 leading-tight mt-0.5">Sign out of passphrase session</div>
+              </div>
             </button>
           </div>
         </div>
 
-        <!-- Section 3: Commissioner Controls -->
+        <!-- Section 3: Commissioner Controls (Action Tile Grid with Live Status Badges) -->
         <div class="space-y-2 pt-1 border-t border-white/[0.07]">
           <div class="flex items-center justify-between">
-            <span class="text-[10px] font-bold uppercase tracking-wider text-amber-400">Commissioner Controls</span>
+            <span class="text-[10px] font-bold uppercase tracking-wider text-amber-400"><i class="fa-solid fa-shield-halved mr-1"></i>Commissioner Controls</span>
             <span id="moreToolsCommishStatusBadge" class="static-badge bg-[#0B0D12] text-slate-400 border border-white/10">Locked</span>
           </div>
-          <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
-            <button onclick="cancelMoreToolsModal(); openPinModal();" id="moreToolsCommishToggleBtn" class="btn-garnet justify-start px-3 py-2 text-xs sm:col-span-2">
-              <i class="fa-solid fa-key w-4"></i>
-              <span id="moreToolsCommishToggleLabel">Unlock Commissioner Mode</span>
+          <div>
+            <button onclick="cancelMoreToolsModal(); openPinModal();" id="moreToolsCommishToggleBtn" class="btn-garnet justify-between w-full px-3.5 py-2.5 text-xs">
+              <span class="inline-flex items-center gap-2">
+                <i class="fa-solid fa-key w-4"></i>
+                <span id="moreToolsCommishToggleLabel">Unlock Commissioner Mode</span>
+              </span>
+              <i class="fa-solid fa-chevron-right text-[10px] opacity-80"></i>
             </button>
           </div>
-          <div id="moreToolsAdminActionsGrid" class="hidden grid grid-cols-1 sm:grid-cols-2 gap-2 pt-1">
-            <button onclick="cancelMoreToolsModal(); openEspnSyncModal();" id="moreToolsEspnSyncBtn" class="btn-garnet justify-start px-3 py-2 text-xs sm:col-span-2">
-              <i class="fa-solid fa-satellite-dish text-amber-300 w-4"></i>
-              <span>1-Click ESPN League Sync &amp; Keeper Rules</span>
+          <div id="moreToolsAdminActionsGrid" class="hidden grid grid-cols-2 gap-2 pt-1">
+            <button onclick="cancelMoreToolsModal(); openEspnSyncModal();" id="moreToolsEspnSyncBtn" class="action-tile-card col-span-2 border-amber-500/35 bg-gradient-to-r from-[#73000A]/35 via-[#13161F] to-[#13161F]">
+              <div class="flex items-center justify-between w-full">
+                <span class="inline-flex items-center gap-2">
+                  <span class="w-7 h-7 rounded-lg bg-amber-500/20 border border-amber-400/40 flex items-center justify-center text-amber-300 text-xs">
+                    <i class="fa-solid fa-satellite-dish"></i>
+                  </span>
+                  <span class="text-xs font-bold text-white">1-Click ESPN Sync &amp; Keeper Rules</span>
+                </span>
+                <span id="moreToolsEspnSyncStatusPill" class="static-badge bg-amber-950/80 text-amber-300 border border-amber-500/40">Ready</span>
+              </div>
+              <div class="text-[10px] text-slate-300 leading-tight">Sync live rosters, historical standings, keepers, matchups &amp; draft boards</div>
             </button>
-            <button onclick="cancelMoreToolsModal(); openLeagueBrandingModal();" class="btn-action justify-start px-3 py-2 text-xs text-amber-300">
-              <i class="fa-solid fa-crown text-amber-400 w-4"></i>
-              <span>Edit League Logo &amp; Title</span>
+
+            <button onclick="cancelMoreToolsModal(); openOrderConfigModal();" class="action-tile-card">
+              <div class="flex items-center justify-between w-full">
+                <span class="w-7 h-7 rounded-lg bg-amber-500/15 border border-amber-500/30 flex items-center justify-center text-amber-400 text-xs">
+                  <i class="fa-solid fa-list-ol"></i>
+                </span>
+                <span id="moreToolsOrderStatusPill" class="static-badge bg-amber-950/60 text-amber-300 border border-amber-500/30">Order</span>
+              </div>
+              <div>
+                <div class="text-xs font-bold text-slate-100 leading-tight">Draft Order &amp; Date</div>
+                <div class="text-[10px] text-slate-400 leading-tight mt-0.5">Slots 1–10, lock toggle &amp; timer</div>
+              </div>
             </button>
-            <button onclick="cancelMoreToolsModal(); openOrderConfigModal();" class="btn-action justify-start px-3 py-2 text-xs text-amber-300">
-              <i class="fa-solid fa-list-ol text-amber-400 w-4"></i>
-              <span>Draft Order &amp; Date</span>
+
+            <button onclick="cancelMoreToolsModal(); openCloudSyncModal();" class="action-tile-card">
+              <div class="flex items-center justify-between w-full">
+                <span class="w-7 h-7 rounded-lg bg-sky-500/15 border border-sky-500/30 flex items-center justify-center text-sky-400 text-xs">
+                  <i class="fa-solid fa-cloud-arrow-up"></i>
+                </span>
+                <span id="moreToolsCloudStatusPill" class="static-badge bg-emerald-950/70 text-emerald-300 border border-emerald-500/30">Live</span>
+              </div>
+              <div>
+                <div class="text-xs font-bold text-slate-100 leading-tight">PINs, Curse &amp; Cloud</div>
+                <div class="text-[10px] text-slate-400 leading-tight mt-0.5">Team PINs, curse override &amp; sync</div>
+              </div>
             </button>
-            <button onclick="cancelMoreToolsModal(); openCloudSyncModal();" class="btn-action justify-start px-3 py-2 text-xs text-sky-300">
-              <i class="fa-solid fa-cloud-arrow-up text-sky-400 w-4"></i>
-              <span>PINs, Curse Reset &amp; Cloud Sync</span>
+
+            <button onclick="cancelMoreToolsModal(); openLeagueBrandingModal();" class="action-tile-card">
+              <div class="flex items-center justify-between w-full">
+                <span class="w-7 h-7 rounded-lg bg-amber-500/15 border border-amber-500/30 flex items-center justify-center text-amber-400 text-xs">
+                  <i class="fa-solid fa-crown"></i>
+                </span>
+                <span class="static-badge bg-white/[0.05] text-slate-300 border border-white/10">Brand</span>
+              </div>
+              <div>
+                <div class="text-xs font-bold text-slate-100 leading-tight">Logo &amp; Title</div>
+                <div class="text-[10px] text-slate-400 leading-tight mt-0.5">Custom crest &amp; header title</div>
+              </div>
             </button>
-            <button onclick="cancelMoreToolsModal(); advanceSeasonWindow(1);" class="btn-action justify-start px-3 py-2 text-xs text-slate-300">
-              <i class="fa-solid fa-forward-step text-amber-400 w-4"></i>
-              <span>Roll Season Window (+1 Year)</span>
+
+            <button onclick="cancelMoreToolsModal(); advanceSeasonWindow(1);" class="action-tile-card">
+              <div class="flex items-center justify-between w-full">
+                <span class="w-7 h-7 rounded-lg bg-amber-500/15 border border-amber-500/30 flex items-center justify-center text-amber-400 text-xs">
+                  <i class="fa-solid fa-forward-step"></i>
+                </span>
+                <span id="moreToolsWindowStatusPill" class="static-badge bg-white/[0.05] text-amber-300 border border-amber-500/30">+1 Yr</span>
+              </div>
+              <div>
+                <div class="text-xs font-bold text-slate-100 leading-tight">Roll Season Window</div>
+                <div class="text-[10px] text-slate-400 leading-tight mt-0.5">Archive current &amp; open next year</div>
+              </div>
             </button>
-            <label class="btn-action justify-start px-3 py-2 text-xs text-slate-300 cursor-pointer">
-              <i class="fa-solid fa-upload text-amber-400 w-4"></i>
-              <span>Import JSON Backup</span>
+
+            <label class="action-tile-card cursor-pointer">
+              <div class="flex items-center justify-between w-full">
+                <span class="w-7 h-7 rounded-lg bg-amber-500/15 border border-amber-500/30 flex items-center justify-center text-amber-400 text-xs">
+                  <i class="fa-solid fa-upload"></i>
+                </span>
+                <span class="static-badge bg-white/[0.05] text-slate-300 border border-white/10">Restore</span>
+              </div>
+              <div>
+                <div class="text-xs font-bold text-slate-100 leading-tight">Import JSON Backup</div>
+                <div class="text-[10px] text-slate-400 leading-tight mt-0.5">Restore saved league state</div>
+              </div>
               <input type="file" accept=".json" onchange="cancelMoreToolsModal(); importLeagueBackup(event)" class="hidden">
             </label>
-            <button onclick="cancelMoreToolsModal(); confirmResetToSeed();" class="btn-action justify-start px-3 py-2 text-xs text-rose-300">
-              <i class="fa-solid fa-rotate-left text-rose-400 w-4"></i>
-              <span>Reset to Official Seed</span>
+
+            <button onclick="cancelMoreToolsModal(); confirmResetToSeed();" class="action-tile-card border-rose-500/25">
+              <div class="flex items-center justify-between w-full">
+                <span class="w-7 h-7 rounded-lg bg-rose-500/15 border border-rose-500/30 flex items-center justify-center text-rose-400 text-xs">
+                  <i class="fa-solid fa-rotate-left"></i>
+                </span>
+                <span class="static-badge bg-rose-950/60 text-rose-300 border border-rose-500/30">Reset</span>
+              </div>
+              <div>
+                <div class="text-xs font-bold text-rose-300 leading-tight">Reset to Seed</div>
+                <div class="text-[10px] text-slate-400 leading-tight mt-0.5">Restore official baseline</div>
+              </div>
             </button>
           </div>
         </div>
@@ -3414,7 +3633,7 @@
       "Depth Picks"
     ];
 
-    const APP_BUILD_VERSION = "8.5.0";
+    const APP_BUILD_VERSION = "8.6.0";
 
     let uiState = {
       isLeagueUnlocked: false,
@@ -3983,6 +4202,11 @@
             isToilet: isToiletVal,
             allPlayWins: Number(r.allPlayWins) || Math.round((Number(r.wins) || 6) * 9),
             allPlayLosses: Number(r.allPlayLosses) || Math.round((Number(r.losses) || 6) * 9),
+            acquisitions: Number(r.acquisitions) || 0,
+            drops: Number(r.drops) || 0,
+            espnTrades: Number(r.espnTrades ?? r.trades) || 0,
+            moveToIR: Number(r.moveToIR) || 0,
+            hasTransactions: Boolean(r.hasTransactions || Number(r.acquisitions) > 0 || Number(r.drops) > 0 || Number(r.espnTrades ?? r.trades) > 0),
             streak: cleanStr(r.streak || "W1", 8)
           };
         }).sort((a, b) => a.finalRank - b.finalRank);
@@ -4015,6 +4239,43 @@
         const resolvedFeaster = resolveAward(sObj?.phallicFeaster || sObj?.toiletBowl, toiletRow);
         const resolvedTbWinner = resolveAward(sObj?.toiletBowlWinner, defaultTbWinnerRow);
 
+        const cleanMatchups = Array.isArray(sObj?.matchups)
+          ? sObj.matchups.slice(0, 160).map(m => {
+              const hId = normalizeLegacyManagerAlias(m?.homeManagerId || m?.homeTeamId || m?.homeSlot || "");
+              const aId = normalizeLegacyManagerAlias(m?.awayManagerId || m?.awayTeamId || m?.awaySlot || "");
+              const hRow = normalizedRows.find(nr => nr.managerId === hId || nr.teamId === hId || (m?.homeSlot && nr.espnTeamId === Number(m.homeSlot)));
+              const aRow = normalizedRows.find(nr => nr.managerId === aId || nr.teamId === aId || (m?.awaySlot && nr.espnTeamId === Number(m.awaySlot)));
+              return {
+                week: Math.max(1, Math.min(22, Number(m?.week) || 1)),
+                homeTeamId: hRow?.teamId || (validTeamIds.has(hId) ? hId : ""),
+                homeManagerId: hRow?.managerId || hId || "",
+                homeScore: Math.round((Number(m?.homeScore) || 0) * 10) / 10,
+                awayTeamId: aRow?.teamId || (validTeamIds.has(aId) ? aId : ""),
+                awayManagerId: aRow?.managerId || aId || "",
+                awayScore: Math.round((Number(m?.awayScore) || 0) * 10) / 10,
+                tier: cleanStr(m?.tier || "NONE", 32).toUpperCase()
+              };
+            }).filter(m => m.homeManagerId && (m.homeScore > 0 || m.awayScore > 0))
+          : [];
+
+        const cleanKeptPlayers = Array.isArray(sObj?.keptPlayers)
+          ? sObj.keptPlayers.slice(0, 150).map(kp => {
+              const rawTid = normalizeLegacyManagerAlias(kp?.managerId || kp?.teamId || "");
+              const mRow = normalizedRows.find(nr => nr.managerId === rawTid || nr.teamId === rawTid || (kp?.espnTeamId && nr.espnTeamId === Number(kp.espnTeamId)));
+              return {
+                round: Math.max(1, Math.min(20, Number(kp?.round) || 1)),
+                espnTeamId: Number(kp?.espnTeamId) || mRow?.espnTeamId || 0,
+                teamId: mRow?.teamId || (validTeamIds.has(rawTid) ? rawTid : "syeth"),
+                managerId: mRow?.managerId || rawTid || "syeth",
+                playerId: cleanStr(kp?.playerId || "", 48),
+                espnId: Number(kp?.espnId) || 0,
+                name: cleanStr(kp?.name || "", 60).trim(),
+                pos: cleanStr(kp?.pos || "FLEX", 12).toUpperCase(),
+                nflTeam: cleanStr(kp?.nflTeam || "NFL", 8).toUpperCase()
+              };
+            }).filter(kp => kp.name)
+          : [];
+
         cleanSeasons[yrKey] = {
           year: yrNum,
           seasonCompleted: seasonDone,
@@ -4025,7 +4286,9 @@
           phallicFeaster: resolvedFeaster,
           toiletBowl: resolvedFeaster,
           highestScorer: resolveAward(sObj?.highestScorer, topScorerRow),
-          standings: normalizedRows
+          standings: normalizedRows,
+          matchups: cleanMatchups,
+          keptPlayers: cleanKeptPlayers
         };
       });
 
@@ -7013,6 +7276,19 @@
       return { recentTrades, recentEvents, unreadWireCount: recentTrades.length + recentEvents.length };
     }
 
+    function getUnvotedFairnessTradesForTeam(teamId) {
+      const tid = safeId(teamId || uiState?.myTeam || uiState?.selectedManager || "syeth");
+      const allTrades = Array.isArray(leagueDB?.trades) ? leagueDB.trades : [];
+      if (!tid) return [];
+      return allTrades.filter(tr => {
+        const partSet = new Set([tr.teamA, tr.teamB, tr.teamC].filter(Boolean).map(safeId));
+        if (partSet.has(tid)) return false; // Participants cannot vote on their own trade
+        const yesArr = Array.isArray(tr.fairnessVotes?.yes) ? tr.fairnessVotes.yes.map(safeId) : [];
+        const noArr = Array.isArray(tr.fairnessVotes?.no) ? tr.fairnessVotes.no.map(safeId) : [];
+        return !yesArr.includes(tid) && !noArr.includes(tid);
+      });
+    }
+
     function getActionRequiredNotifications(stateOpt = null) {
       const st = stateOpt || evaluateYearState(uiState.activeYear);
       const myTeam = uiState.myTeam || uiState.selectedManager || "syeth";
@@ -7044,9 +7320,12 @@
         !feasterProf?.feasterRenamedByChamp
       );
 
+      const unvotedFairnessTrades = getUnvotedFairnessTradesForTeam(myTeam);
+      const unvotedFairnessBubble = unvotedFairnessTrades.length > 0 ? 1 : 0;
+
       const { recentTrades, recentEvents, unreadWireCount } = getUnreadLeagueWireNotifications();
       const updateCount = uiState.updateAvailableVersion ? 1 : 0;
-      const totalCount = awaitingMeProposals.length + (keeperActionNeeded ? 1 : 0) + (champFeasterActionNeeded ? 1 : 0) + commishPendingCount + updateCount + unreadWireCount;
+      const totalCount = awaitingMeProposals.length + (keeperActionNeeded ? 1 : 0) + (champFeasterActionNeeded ? 1 : 0) + commishPendingCount + updateCount + unreadWireCount + unvotedFairnessBubble;
       return {
         totalCount,
         awaitingMeProposals,
@@ -7055,6 +7334,7 @@
         champFeasterActionNeeded,
         reigning,
         commishPendingCount,
+        unvotedFairnessTrades,
         recentTrades,
         recentEvents,
         unreadWireCount
@@ -7123,6 +7403,19 @@
         `);
       });
 
+      if (Array.isArray(notif.unvotedFairnessTrades) && notif.unvotedFairnessTrades.length > 0) {
+        const unvotedCnt = notif.unvotedFairnessTrades.length;
+        items.push(`
+          <button type="button" onclick="closeHeaderNotifDropdown(); switchMainTab('feed'); setActivitySubTab('FAIRNESS');" class="w-full text-left p-2.5 rounded-xl bg-amber-950/35 hover:bg-amber-950/60 border border-amber-500/40 transition flex items-center justify-between gap-2 cursor-pointer">
+            <div class="min-w-0">
+              <div class="text-[11px] font-black text-amber-200"><i class="fa-solid fa-scale-balanced mr-1 text-amber-400"></i>Trade Fairness Ballot (${unvotedCnt} Unvoted)</div>
+              <div class="text-[10px] text-slate-300">Cast 1-tap Fair / Lopsided votes to calibrate League Trade AI</div>
+            </div>
+            <span class="px-2 py-0.5 rounded bg-amber-500/20 border border-amber-400/50 text-amber-200 text-[10px] font-bold flex-shrink-0">Vote</span>
+          </button>
+        `);
+      }
+
       if (notif.keeperActionNeeded) {
         const dl = getKeeperDeadlineInfo();
         items.push(`
@@ -7163,7 +7456,7 @@
       (notif.recentTrades || []).forEach(tr => {
         const parts = [tr.teamA, tr.teamB, tr.teamC].filter(Boolean).map(id => getTeamName(id)).join(" ↔ ");
         items.push(`
-          <button type="button" onclick="closeHeaderNotifDropdown(); switchMainTab('feed'); setActivitySubTab('TRADES');" class="w-full text-left p-2.5 rounded-xl bg-emerald-950/30 hover:bg-emerald-950/55 border border-emerald-500/40 transition flex items-center justify-between gap-2 cursor-pointer">
+          <button type="button" onclick="closeHeaderNotifDropdown(); switchMainTab('feed'); setActivitySubTab('FAIRNESS');" class="w-full text-left p-2.5 rounded-xl bg-emerald-950/30 hover:bg-emerald-950/55 border border-emerald-500/40 transition flex items-center justify-between gap-2 cursor-pointer">
             <div class="min-w-0">
               <div class="text-[11px] font-black text-emerald-200 truncate"><i class="fa-solid fa-gavel mr-1 text-emerald-400"></i>Trade Completed: ${escapeHtml(parts)}</div>
               <div class="text-[10px] text-slate-300 truncate">${escapeHtml(tr.summary || tr.headline || tr.id)}</div>
@@ -7544,6 +7837,7 @@
 
     function setActivitySubTab(subTab) {
       uiState.activitySubTab = subTab;
+      if (!uiState.fairnessBallotMode) uiState.fairnessBallotMode = "UNVOTED";
       renderAll();
     }
 
@@ -9377,6 +9671,10 @@
             pointsAgainst: 0,
             allPlayWins: 0,
             allPlayLosses: 0,
+            expectedWinsTotal: 0,
+            acquisitionsTotal: 0,
+            espnTradesTotal: 0,
+            hasAnyTransactions: false,
             championships: 0,
             champYears: [],
             runnerUps: 0,
@@ -9397,7 +9695,6 @@
         const s = seasonsObj[String(yr)];
         if (!s || !Array.isArray(s.standings) || s.standings.length === 0) return;
         const yrOverrides = (ed.seasonOwnerOverrides && ed.seasonOwnerOverrides[String(yr)]) || {};
-        const resolveOwner = (rawId) => yrOverrides[rawId] || rawId;
 
         const isCompletedSeason = isSeasonOfficiallyCompleted(yr, s);
 
@@ -9432,14 +9729,28 @@
         s.standings.forEach(st => {
           const mid = yrOverrides[st.teamId] || st.managerId || st.teamId;
           const entry = ensureEntry(mid);
+          const w = Number(st.wins) || 0;
+          const l = Number(st.losses) || 0;
+          const t = Number(st.ties) || 0;
+          const apW = Number(st.allPlayWins) || 0;
+          const apL = Number(st.allPlayLosses) || 0;
+          const apTot = apW + apL;
+          const expW = apTot > 0 ? ((apW / apTot) * (w + l)) : w;
+
           entry.seasonsPlayed += 1;
-          entry.wins += Number(st.wins) || 0;
-          entry.losses += Number(st.losses) || 0;
-          entry.ties += Number(st.ties) || 0;
+          entry.wins += w;
+          entry.losses += l;
+          entry.ties += t;
           entry.pointsFor += Number(st.pointsFor) || 0;
           entry.pointsAgainst += Number(st.pointsAgainst) || 0;
-          entry.allPlayWins += Number(st.allPlayWins) || 0;
-          entry.allPlayLosses += Number(st.allPlayLosses) || 0;
+          entry.allPlayWins += apW;
+          entry.allPlayLosses += apL;
+          entry.expectedWinsTotal += expW;
+          if (st.hasTransactions || Number(st.acquisitions) > 0 || Number(st.espnTrades) > 0) {
+            entry.hasAnyTransactions = true;
+            entry.acquisitionsTotal += Number(st.acquisitions) || 0;
+            entry.espnTradesTotal += Number(st.espnTrades) || 0;
+          }
           if (isCompletedSeason && (Number(st.playoffSeed) || 10) <= playoffCutoff) {
             entry.playoffBerths += 1;
           }
@@ -9451,10 +9762,16 @@
         const winPct = totalGames > 0 ? ((item.wins + item.ties * 0.5) / totalGames) : 0;
         const allPlayTotal = item.allPlayWins + item.allPlayLosses;
         const allPlayPct = allPlayTotal > 0 ? (item.allPlayWins / allPlayTotal) : 0;
+        const pfClean = Math.round(item.pointsFor * 10) / 10;
+        const paClean = Math.round(item.pointsAgainst * 10) / 10;
+        const pointDiff = Math.round((pfClean - paClean) * 10) / 10;
+        const scheduleLuck = Math.round((item.wins - item.expectedWinsTotal) * 10) / 10;
         return {
           ...item,
-          pointsFor: Math.round(item.pointsFor * 10) / 10,
-          pointsAgainst: Math.round(item.pointsAgainst * 10) / 10,
+          pointsFor: pfClean,
+          pointsAgainst: paClean,
+          pointDiff,
+          scheduleLuck,
           winPct,
           allPlayPct
         };
@@ -9469,6 +9786,71 @@
         .sort((a, b) => (b.championships - a.championships) || (b.winPct - a.winPct) || (b.pointsFor - a.pointsFor));
 
       return { activeStandings, alumniStandings, totalSeasonsCount: sortedYears.length };
+    }
+
+    function computeSingleSeasonAllTimeRecords() {
+      const ed = leagueDB?.espnData || DEFAULT_ESPN_DATA;
+      const seasonsObj = ed.seasons || {};
+      const allSeasonRows = [];
+
+      Object.keys(seasonsObj).map(Number).sort((a, b) => a - b).forEach(yr => {
+        const s = seasonsObj[String(yr)];
+        if (!s || !Array.isArray(s.standings) || s.standings.length === 0) return;
+        const yrOverrides = (ed.seasonOwnerOverrides && ed.seasonOwnerOverrides[String(yr)]) || {};
+        s.standings.forEach((st, idx) => {
+          const w = Number(st.wins) || 0;
+          const l = Number(st.losses) || 0;
+          const t = Number(st.ties) || 0;
+          const gp = w + l + t;
+          if (gp === 0 && (Number(st.pointsFor) || 0) === 0) return;
+          const pf = Math.round((Number(st.pointsFor ?? st.pf) || 0) * 10) / 10;
+          const pa = Math.round((Number(st.pointsAgainst ?? st.pa) || 0) * 10) / 10;
+          const ppg = gp > 0 ? Math.round((pf / gp) * 10) / 10 : 0;
+          const diff = Math.round((pf - pa) * 10) / 10;
+          const apW = Number(st.allPlayWins) || 0;
+          const apL = Number(st.allPlayLosses) || 0;
+          const apTot = apW + apL;
+          const apPct = apTot > 0 ? (apW / apTot) : 0;
+          const expW = apTot > 0 ? ((apW / apTot) * (w + l)) : w;
+          const luck = Math.round((w - expW) * 10) / 10;
+          const mid = yrOverrides[st.teamId] || st.managerId || st.teamId;
+          allSeasonRows.push({
+            year: yr,
+            managerId: mid,
+            teamId: st.teamId,
+            teamName: st.teamName || "",
+            wins: w,
+            losses: l,
+            ties: t,
+            gp,
+            pf,
+            pa,
+            ppg,
+            diff,
+            apW,
+            apL,
+            apPct,
+            luck,
+            finalRank: Number(st.finalRank ?? st.rank) || (idx + 1)
+          });
+        });
+      });
+
+      const topSeasonPf = [...allSeasonRows].sort((a, b) => (b.pf - a.pf) || (b.ppg - a.ppg)).slice(0, 6);
+      const topAllPlaySeasons = [...allSeasonRows].filter(r => (r.apW + r.apL) > 0).sort((a, b) => (b.apPct - a.apPct) || (b.pf - a.pf)).slice(0, 6);
+      const topPointDiffSeasons = [...allSeasonRows].sort((a, b) => (b.diff - a.diff) || (b.pf - a.pf)).slice(0, 6);
+      const luckiestSeasons = [...allSeasonRows].sort((a, b) => (b.luck - a.luck) || (b.wins - a.wins)).slice(0, 3);
+      const unluckiestSeasons = [...allSeasonRows].sort((a, b) => (a.luck - b.luck) || (b.pf - a.pf)).slice(0, 3);
+
+      return {
+        topSeasonPf,
+        topAllPlaySeasons,
+        topPointDiffSeasons,
+        luckiestAndUnluckiest: [
+          ...luckiestSeasons.map(x => ({ ...x, luckTag: "LUCKIEST" })),
+          ...unluckiestSeasons.map(x => ({ ...x, luckTag: "UNLUCKIEST" }))
+        ]
+      };
     }
 
     function computeHeadToHeadMatrix() {
@@ -9615,10 +9997,17 @@
       const rowsHtml = (sObj.standings || []).map((st, idx) => {
         const ownerId = yrOverrides[st.teamId] || st.managerId || st.teamId;
         const ownerName = escapeHtml(getHistoricalManagerDisplayName(ownerId));
-        const pfPerGame = (st.wins + st.losses + st.ties) > 0 ? (st.pointsFor / (st.wins + st.losses + st.ties)).toFixed(1) : "0.0";
+        const pfVal = Number(st.pointsFor ?? st.pf) || 0;
+        const paVal = Number(st.pointsAgainst ?? st.pa) || 0;
+        const ptDiff = (pfVal - paVal).toFixed(1);
+        const pfPerGame = (st.wins + st.losses + st.ties) > 0 ? (pfVal / (st.wins + st.losses + st.ties)).toFixed(1) : "0.0";
         const allPlayTotal = (st.allPlayWins || 0) + (st.allPlayLosses || 0);
         const expectedWins = allPlayTotal > 0 ? ((st.allPlayWins / allPlayTotal) * (st.wins + st.losses)).toFixed(1) : st.wins;
         const luckDelta = (st.wins - Number(expectedWins)).toFixed(1);
+        const hasMoves = Boolean(st.hasTransactions || Number(st.acquisitions) > 0 || Number(st.espnTrades) > 0);
+        const movesLabel = hasMoves
+          ? `${Number(st.acquisitions) || 0} Add${Number(st.espnTrades) > 0 ? ` / ${Number(st.espnTrades)} Trd` : ''}`
+          : "—";
         const isChamp = isCompletedSeason && effectiveChampId ? (ownerId === effectiveChampId || st.teamId === effectiveChampId) : (idx === 0);
         const isTbWin = isCompletedSeason && effectiveTbWinnerId && (ownerId === effectiveTbWinnerId || st.teamId === effectiveTbWinnerId);
         const isFeaster = isCompletedSeason && effectiveFeasterId
@@ -9641,17 +10030,23 @@
             <td class="py-2.5 px-3 font-black text-white">
               <div class="flex items-center gap-2">
                 ${renderTeamAvatarHtml(st.teamId, "w-6 h-6 text-[10px]", "rounded-md")}
-                <span>${ownerName}</span>
-                ${ownerId !== st.teamId ? `<span class="text-[10px] text-amber-300 font-mono">(${escapeHtml(getOriginalManagerName(st.teamId))} Slot)</span>` : ''}
+                <div class="min-w-0">
+                  <div class="flex items-center gap-1.5">
+                    <span>${ownerName}</span>
+                    ${ownerId !== st.teamId ? `<span class="text-[10px] text-amber-300 font-mono">(${escapeHtml(getOriginalManagerName(st.teamId))} Slot)</span>` : ''}
+                  </div>
+                  ${st.teamName ? `<div class="text-[10px] text-slate-400 font-normal truncate">${escapeHtml(st.teamName)}</div>` : ''}
+                </div>
               </div>
             </td>
             <td class="py-2.5 px-3 font-mono font-bold text-center text-white">${st.wins}-${st.losses}${st.ties ? '-' + st.ties : ''}</td>
-            <td class="py-2.5 px-3 font-mono font-bold text-center text-emerald-300">${Number(st.pointsFor).toFixed(1)} <span class="text-[10px] text-slate-500">(${pfPerGame}/g)</span></td>
-            <td class="py-2.5 px-3 font-mono text-center text-slate-300">${Number(st.pointsAgainst).toFixed(1)}</td>
+            <td class="py-2.5 px-3 font-mono font-bold text-center text-emerald-300">${pfVal.toFixed(1)} <span class="text-[10px] text-slate-500">(${pfPerGame}/g)</span></td>
+            <td class="py-2.5 px-3 font-mono text-center text-slate-300">${paVal.toFixed(1)}</td>
+            <td class="py-2.5 px-3 font-mono font-bold text-center ${Number(ptDiff) >= 0 ? 'text-emerald-400' : 'text-rose-400'}">${Number(ptDiff) >= 0 ? '+' + ptDiff : ptDiff}</td>
             <td class="py-2.5 px-3 font-mono text-center text-sky-300">${st.allPlayWins || 0}-${st.allPlayLosses || 0}</td>
             <td class="py-2.5 px-3 font-mono text-center ${Number(luckDelta) >= 0 ? 'text-emerald-400' : 'text-rose-400'}">${Number(luckDelta) >= 0 ? '+' + luckDelta : luckDelta} W</td>
+            <td class="py-2.5 px-3 font-mono text-center text-slate-300">${escapeHtml(movesLabel)}</td>
             <td class="py-2.5 px-3 font-mono text-center text-amber-300">#${st.playoffSeed || (idx + 1)}</td>
-            <td class="py-2.5 px-3 font-mono text-center text-slate-300">${escapeHtml(st.streak || 'W1')}</td>
           </tr>
         `;
       }).join("");
@@ -9672,9 +10067,9 @@
               <p class="text-xs text-slate-400 mt-0.5">Post-playoff Final Standings determine <strong class="text-amber-300">Champion (#1 • Slot 1.10)</strong> and <strong class="text-fuchsia-300">Phallic Feaster (#10 • Slot 1.05 + renamed by Champ)</strong> • Toilet Bowl Winner earns <strong class="text-sky-300">1.01</strong>. Trading Pick 1.05 never passes on the Feaster penalty.</p>
             </div>
             <div class="flex flex-wrap items-center gap-2">
-              <div class="flex flex-wrap items-center gap-1 bg-[#0B0D12] p-1 rounded-xl border border-white/10">
+              <div class="segmented-bar flex-wrap">
                 ${years.map(y => `
-                  <button type="button" onclick="setLeagueHqSeasonYear(${y})" class="px-2.5 py-1 rounded-lg text-xs font-mono font-bold transition cursor-pointer ${y === selectedYr ? 'bg-[#73000A] text-white' : 'text-slate-400 hover:text-white'}">${y}</button>
+                  <button type="button" onclick="setLeagueHqSeasonYear(${y})" class="segmented-pill font-mono ${y === selectedYr ? 'active' : ''}">${y}</button>
                 `).join("")}
               </div>
               ${uiState.isCommish ? `
@@ -9724,14 +10119,15 @@
               <thead>
                 <tr class="border-b border-white/10 text-[10px] font-extrabold uppercase tracking-wider text-slate-400 bg-[#0B0D12]">
                   <th class="py-2.5 px-3 text-center">Finish</th>
-                  <th class="py-2.5 px-3">Manager / Franchise</th>
+                  <th class="py-2.5 px-3">Manager / ESPN Team</th>
                   <th class="py-2.5 px-3 text-center">Record</th>
                   <th class="py-2.5 px-3 text-center">Points For (PF)</th>
-                  <th class="py-2.5 px-3 text-center">Points Against</th>
+                  <th class="py-2.5 px-3 text-center">PA</th>
+                  <th class="py-2.5 px-3 text-center">Diff (+/-)</th>
                   <th class="py-2.5 px-3 text-center">All-Play W-L</th>
                   <th class="py-2.5 px-3 text-center">Schedule Luck</th>
+                  <th class="py-2.5 px-3 text-center">Moves</th>
                   <th class="py-2.5 px-3 text-center">Seed</th>
-                  <th class="py-2.5 px-3 text-center">Streak</th>
                 </tr>
               </thead>
               <tbody>
@@ -9768,7 +10164,9 @@
           <td class="py-2.5 px-3 font-mono font-bold text-center text-white">${m.wins}-${m.losses}${m.ties ? '-' + m.ties : ''}</td>
           <td class="py-2.5 px-3 font-mono font-extrabold text-center text-emerald-300">${(m.winPct * 100).toFixed(1)}%</td>
           <td class="py-2.5 px-3 font-mono text-center text-sky-300">${m.pointsFor.toLocaleString()}</td>
-          <td class="py-2.5 px-3 font-mono text-center text-slate-300">${(m.allPlayPct * 100).toFixed(1)}%</td>
+          <td class="py-2.5 px-3 font-mono font-bold text-center ${m.pointDiff >= 0 ? 'text-emerald-400' : 'text-rose-400'}">${m.pointDiff >= 0 ? '+' + m.pointDiff.toFixed(1) : m.pointDiff.toFixed(1)}</td>
+          <td class="py-2.5 px-3 font-mono text-center text-slate-300">${m.allPlayWins}-${m.allPlayLosses} <span class="text-[10px] text-slate-400">(${(m.allPlayPct * 100).toFixed(1)}%)</span></td>
+          <td class="py-2.5 px-3 font-mono text-center ${m.scheduleLuck >= 0 ? 'text-emerald-400' : 'text-rose-400'}">${m.scheduleLuck >= 0 ? '+' + m.scheduleLuck.toFixed(1) : m.scheduleLuck.toFixed(1)} W</td>
         </tr>
       `;
 
@@ -9783,7 +10181,7 @@
                   </span>
                   <h2 class="text-base sm:text-lg font-black text-white">Active Managers Career Leaderboard</h2>
                 </div>
-                <p class="text-xs text-slate-400 mt-0.5">Completed-season titles & Phallic Feaster (#10) finishes across 2016–present (9 founding franchises + Josh).</p>
+                <p class="text-xs text-slate-400 mt-0.5">Completed-season titles, Phallic Feaster (#10) finishes, career point differential, all-play W-L, and schedule luck across 2016–present.</p>
               </div>
               ${uiState.isCommish ? `
                 <button type="button" onclick="openEspnSyncModal()" class="btn-action px-3 py-1.5 text-xs text-sky-300">
@@ -9804,7 +10202,9 @@
                     <th class="py-2.5 px-3 text-center">Career W-L</th>
                     <th class="py-2.5 px-3 text-center">Win %</th>
                     <th class="py-2.5 px-3 text-center">Career PF</th>
-                    <th class="py-2.5 px-3 text-center">All-Play %</th>
+                    <th class="py-2.5 px-3 text-center">Diff (+/-)</th>
+                    <th class="py-2.5 px-3 text-center">All-Play W-L</th>
+                    <th class="py-2.5 px-3 text-center">Career Luck</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -9839,7 +10239,9 @@
                     <th class="py-2 px-3 text-center">Career W-L</th>
                     <th class="py-2 px-3 text-center">Win %</th>
                     <th class="py-2 px-3 text-center">Career PF</th>
-                    <th class="py-2 px-3 text-center">All-Play %</th>
+                    <th class="py-2 px-3 text-center">Diff (+/-)</th>
+                    <th class="py-2 px-3 text-center">All-Play W-L</th>
+                    <th class="py-2 px-3 text-center">Career Luck</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -9998,6 +10400,7 @@
     function buildRecordBookHtml() {
       const ed = leagueDB?.espnData || DEFAULT_ESPN_DATA;
       const recs = ed.records || DEFAULT_ESPN_DATA.records;
+      const seasonRecs = computeSingleSeasonAllTimeRecords();
 
       const renderRecCard = (title, badgeCls, icon, items, valFmt) => `
         <div class="bg-[#0B0D12] border border-white/10 rounded-xl p-3.5 sm:p-4 space-y-2.5">
@@ -10019,22 +10422,90 @@
         </div>
       `;
 
-      return `
-        <div class="app-card overflow-hidden p-4 sm:p-5 space-y-4">
-          <div class="border-b border-white/10 pb-3">
-            <div class="flex items-center gap-2">
-              <span class="static-badge bg-amber-950 text-amber-300 border border-amber-500/60">
-                <i class="fa-solid fa-scroll"></i> Record Book
-              </span>
-              <h2 class="text-base sm:text-lg font-black text-white">All-Time Single-Week & Margin Records</h2>
-            </div>
-            <p class="text-xs text-slate-400 mt-0.5">All-time highs, lows, blowouts, and heartbreakers across league history (2016–present).</p>
+      const renderSeasonLeaderCard = (title, badgeCls, icon, items, subFmt, valFmt) => `
+        <div class="bg-[#0B0D12] border border-white/10 rounded-xl p-3.5 sm:p-4 space-y-2.5">
+          <div class="flex items-center gap-2 border-b border-white/10 pb-2">
+            <span class="static-badge ${badgeCls}"><i class="fa-solid ${icon}"></i></span>
+            <h3 class="text-xs sm:text-sm font-black uppercase tracking-wider text-white">${escapeHtml(title)}</h3>
           </div>
-          <div class="grid grid-cols-1 md:grid-cols-2 gap-3.5">
-            ${renderRecCard("All-Time Single-Week High Scores", "bg-emerald-950 text-emerald-300 border border-emerald-600", "fa-fire", recs.highestSingleWeek || recs.highestSingleGame, it => `${Number(it.score).toFixed(1)} pts`)}
-            ${renderRecCard("All-Time Single-Week Low Scores", "bg-rose-950 text-rose-300 border border-rose-600", "fa-temperature-arrow-down", recs.lowestSingleWeek || recs.lowestSingleGame, it => `${Number(it.score).toFixed(1)} pts`)}
-            ${renderRecCard("Biggest Weekly Blowouts", "bg-sky-950 text-sky-300 border border-sky-600", "fa-explosion", recs.biggestBlowouts, it => `+${Number(it.margin).toFixed(1)} pts`)}
-            ${renderRecCard("Closest Weekly Heartbreakers", "bg-amber-950 text-amber-300 border border-amber-600", "fa-heart-crack", recs.closestGames, it => `${Number(it.margin).toFixed(1)} pts`)}
+          <div class="space-y-2">
+            ${(items || []).map((it, idx) => `
+              <div class="flex items-center justify-between gap-2 bg-[#13161F] border border-white/10 rounded-lg px-3 py-2 text-xs">
+                <div class="min-w-0">
+                  <div class="font-black text-white truncate">#${idx + 1} • ${escapeHtml(getHistoricalManagerDisplayName(it.managerId || it.teamId))} ${it.teamName ? `<span class="text-slate-400 font-normal">(${escapeHtml(it.teamName)})</span>` : ''}</div>
+                  <div class="text-[10px] font-mono text-slate-400">${Number(it.year)} Season • ${subFmt(it)}</div>
+                </div>
+                <span class="font-mono font-black text-sm text-amber-300 flex-shrink-0">${valFmt(it)}</span>
+              </div>
+            `).join("")}
+          </div>
+        </div>
+      `;
+
+      return `
+        <div class="space-y-4">
+          <div class="app-card overflow-hidden p-4 sm:p-5 space-y-4">
+            <div class="border-b border-white/10 pb-3">
+              <div class="flex items-center gap-2">
+                <span class="static-badge bg-amber-950 text-amber-300 border border-amber-500/60">
+                  <i class="fa-solid fa-scroll"></i> Weekly Record Book
+                </span>
+                <h2 class="text-base sm:text-lg font-black text-white">All-Time Single-Week &amp; Margin Records</h2>
+              </div>
+              <p class="text-xs text-slate-400 mt-0.5">All-time weekly highs, lows, blowouts, and heartbreakers across league history (2016–present).</p>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-3.5">
+              ${renderRecCard("All-Time Single-Week High Scores", "bg-emerald-950 text-emerald-300 border border-emerald-600", "fa-fire", recs.highestSingleWeek || recs.highestSingleGame, it => `${Number(it.score).toFixed(1)} pts`)}
+              ${renderRecCard("All-Time Single-Week Low Scores", "bg-rose-950 text-rose-300 border border-rose-600", "fa-temperature-arrow-down", recs.lowestSingleWeek || recs.lowestSingleGame, it => `${Number(it.score).toFixed(1)} pts`)}
+              ${renderRecCard("Biggest Weekly Blowouts", "bg-sky-950 text-sky-300 border border-sky-600", "fa-explosion", recs.biggestBlowouts, it => `+${Number(it.margin).toFixed(1)} pts`)}
+              ${renderRecCard("Closest Weekly Heartbreakers", "bg-amber-950 text-amber-300 border border-amber-600", "fa-heart-crack", recs.closestGames, it => `${Number(it.margin).toFixed(1)} pts`)}
+            </div>
+          </div>
+
+          <div id="singleSeasonAllTimeLeaderboardsCard" class="app-card overflow-hidden p-4 sm:p-5 space-y-4">
+            <div class="border-b border-white/10 pb-3">
+              <div class="flex flex-wrap items-center gap-2">
+                <span class="static-badge bg-sky-950 text-sky-300 border border-sky-500/60">
+                  <i class="fa-solid fa-medal"></i> Single-Season All-Time Leaderboards
+                </span>
+                <h2 class="text-base sm:text-lg font-black text-white">Most Dominant &amp; Luckiest Seasons (2016–Present)</h2>
+              </div>
+              <p class="text-xs text-slate-400 mt-0.5">Computed directly from 2016–present season standings — zero fabricated records.</p>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-3.5">
+              ${renderSeasonLeaderCard(
+                "Highest Single-Season Points For & PPG",
+                "bg-emerald-950 text-emerald-300 border border-emerald-600",
+                "fa-chart-line",
+                seasonRecs.topSeasonPf,
+                it => `${it.wins}-${it.losses}${it.ties ? '-' + it.ties : ''} • Finish #${it.finalRank} • ${it.ppg.toFixed(1)} PPG`,
+                it => `${it.pf.toFixed(1)} PF`
+              )}
+              ${renderSeasonLeaderCard(
+                "Most Dominant All-Play Season %",
+                "bg-sky-950 text-sky-300 border border-sky-600",
+                "fa-crown",
+                seasonRecs.topAllPlaySeasons,
+                it => `All-Play ${it.apW}-${it.apL} • Actual ${it.wins}-${it.losses} (#${it.finalRank})`,
+                it => `${(it.apPct * 100).toFixed(1)}%`
+              )}
+              ${renderSeasonLeaderCard(
+                "Best Single-Season Point Differential",
+                "bg-amber-950 text-amber-300 border border-amber-600",
+                "fa-scale-unbalanced",
+                seasonRecs.topPointDiffSeasons,
+                it => `${it.pf.toFixed(1)} PF vs. ${it.pa.toFixed(1)} PA • Finish #${it.finalRank}`,
+                it => `${it.diff >= 0 ? '+' : ''}${it.diff.toFixed(1)}`
+              )}
+              ${renderSeasonLeaderCard(
+                "Luckiest & Unluckiest Schedule Seasons",
+                "bg-fuchsia-950 text-fuchsia-300 border border-fuchsia-600",
+                "fa-dice",
+                seasonRecs.luckiestAndUnluckiest,
+                it => `${it.luckTag === 'LUCKIEST' ? '🍀 Luckiest' : '⚡ Unluckiest'} • ${it.wins}-${it.losses} vs. All-Play ${it.apW}-${it.apL}`,
+                it => `${it.luck >= 0 ? '+' : ''}${it.luck.toFixed(1)} W`
+              )}
+            </div>
           </div>
         </div>
       `;
@@ -13533,19 +14004,136 @@
       renderTradeFeedSection();
     }
 
+    function setActivityScopeFilter(scopeVal) {
+      const isYrOnly = scopeVal === "ACTIVE_YEAR" || scopeVal === "SELECTED_YEAR";
+      const cleanScope = isYrOnly ? "ACTIVE_YEAR" : "ALL_YEARS";
+      uiState.feedScope = cleanScope;
+      uiState.feedScopeFilter = scopeVal === "SELECTED_YEAR" ? "SELECTED_YEAR" : cleanScope;
+      const sel = document.getElementById("feedScopeFilter");
+      if (sel) sel.value = cleanScope;
+      renderTradeFeedSection();
+    }
+
+    function toggleActivityScopeFilterMobile() {
+      const cur = document.getElementById("feedScopeFilter")?.value || uiState.feedScope || "ALL_YEARS";
+      setActivityScopeFilter(cur === "ALL_YEARS" ? "ACTIVE_YEAR" : "ALL_YEARS");
+    }
+
+    function syncActivityScopeFromSelect() {
+      const val = document.getElementById("feedScopeFilter")?.value || "ALL_YEARS";
+      setActivityScopeFilter(val);
+    }
+
+    function toggleActivitySearchBar(forceState) {
+      const row = document.getElementById("feedSearchCollapsibleRow");
+      const btn = document.getElementById("feedSearchToggleBtn");
+      if (!row) return;
+      const nextOpen = typeof forceState === "boolean" ? forceState : row.classList.contains("hidden");
+      uiState.activitySearchOpen = nextOpen;
+      row.classList.toggle("hidden", !nextOpen);
+      if (btn) {
+        btn.classList.toggle("border-amber-400/60", nextOpen);
+        btn.classList.toggle("text-amber-300", nextOpen);
+      }
+      if (nextOpen) {
+        const inp = document.getElementById("feedSearchInput");
+        if (inp) setTimeout(() => inp.focus(), 30);
+      }
+    }
+
+    function clearActivitySearchInput() {
+      const inp = document.getElementById("feedSearchInput");
+      const typ = document.getElementById("feedTypeFilter");
+      if (inp) inp.value = "";
+      if (typ) typ.value = "ALL";
+      renderTradeFeedSection();
+    }
+
+    function setFairnessBallotMode(mode) {
+      uiState.fairnessBallotMode = mode === "ALL" ? "ALL" : "UNVOTED";
+      renderTradeFeedSection();
+    }
+
+    function getStreamItemGroupMeta(entry) {
+      if (entry.kind === "TRADE") {
+        const tr = entry.trade;
+        const parsed = Date.parse(tr.date || "");
+        if (!isNaN(parsed)) {
+          const d = new Date(parsed);
+          const monthLbl = d.toLocaleDateString("en-US", { month: "short", year: "numeric" });
+          return {
+            key: `M_${d.getFullYear()}_${String(d.getMonth() + 1).padStart(2, "0")}`,
+            label: `${monthLbl} • Trade Ledger`
+          };
+        }
+        const yrs = getTradeAffectedYears(tr).map(Number);
+        const primaryYr = yrs[0] || Number(tr.year) || uiState.activeYear || 2027;
+        return {
+          key: `Y_${primaryYr}`,
+          label: `${primaryYr} Draft Cycle • Trade Ledger`
+        };
+      }
+      const ev = entry.event || {};
+      const parsed = Number(ev.timestamp) || Date.parse(ev.dateLabel || "");
+      if (parsed && !isNaN(parsed) && parsed > 1000000000000) {
+        const d = new Date(parsed);
+        const monthLbl = d.toLocaleDateString("en-US", { month: "short", year: "numeric" });
+        return {
+          key: `M_${d.getFullYear()}_${String(d.getMonth() + 1).padStart(2, "0")}`,
+          label: `${monthLbl} • League Activity`
+        };
+      }
+      const evYr = Number(ev.year) || uiState.activeYear || 2026;
+      return {
+        key: `Y_${evYr}`,
+        label: `${evYr} Season • League Wire`
+      };
+    }
+
+    function buildCollapsedTradeQuickAssetStripHtml(tr) {
+      const participants = [tr.teamA, tr.teamB, tr.teamC].filter(Boolean);
+      const chunks = participants.map(tid => {
+        const shortName = escapeHtml(getOriginalManagerName(tid));
+        const assets = [];
+        (tr.playerTransfers || []).filter(pt => pt.toOwner === tid).forEach(pt => {
+          assets.push(`<span class="text-sky-300 font-semibold">${escapeHtml(pt.playerName)}</span>`);
+        });
+        (tr.directTransfers || []).filter(dt => dt.toOwner === tid).forEach(dt => {
+          assets.push(`<span class="text-emerald-300 font-mono">${String(dt.year).slice(-2)} R${Number(dt.round)}</span>`);
+        });
+        (tr.pools || []).filter(p => p.owedTo === tid).forEach(p => {
+          assets.push(`<span class="text-amber-300 font-mono">${String(p.year).slice(-2)} R${Number(p.round)} Pool</span>`);
+        });
+        (tr.conditionals || []).filter(c => c.teamA === tid || c.teamB === tid).forEach(c => {
+          assets.push(`<span class="text-amber-300 font-mono">${String(c.year).slice(-2)} R${(c.roundsInvolved || []).join('/')} Swap</span>`);
+        });
+        if (assets.length === 0) return "";
+        return `<span class="inline-flex items-center gap-1 text-[11px] bg-[#0B0D12]/90 border border-white/[0.07] rounded-md px-2 py-0.5"><strong class="text-white font-bold">${shortName}:</strong> ${assets.slice(0, 3).join('<span class="text-slate-500">, </span>')}${assets.length > 3 ? `<span class="text-slate-400"> +${assets.length - 3}</span>` : ''}</span>`;
+      }).filter(Boolean);
+
+      if (chunks.length === 0) {
+        return `<div class="text-xs text-slate-300 truncate pl-4">${escapeHtml(tr.headline)}</div>`;
+      }
+      return `
+        <div class="flex flex-wrap items-center gap-1.5 pl-4 pt-0.5">
+          ${chunks.join('<i class="fa-solid fa-right-left text-[9px] text-slate-500"></i>')}
+        </div>
+      `;
+    }
+
     function buildLeagueWireEventCardHtml(ev) {
       const typeMeta = {
-        DRAFT_DATE: { icon: `<i class="fa-solid fa-calendar-check text-sky-400"></i>`, badge: "Draft Date", cls: "border-sky-500/30 bg-sky-950/20 text-sky-300" },
-        DRAFT_ORDER: { icon: `<i class="fa-solid fa-list-ol text-emerald-400"></i>`, badge: "Draft Order", cls: "border-emerald-500/30 bg-emerald-950/20 text-emerald-300" },
-        FEASTER_DECREE: { icon: `<span>🍆</span>`, badge: "Feaster Decree", cls: "border-fuchsia-500/30 bg-fuchsia-950/25 text-fuchsia-200" },
-        HALL_OF_SHAME: { icon: `<i class="fa-solid fa-triangle-exclamation text-pink-400"></i>`, badge: "Hall of Shame", cls: "border-pink-500/35 bg-pink-950/25 text-pink-200" },
-        RECORD_SET: { icon: `<span>🏆</span>`, badge: "Record Set", cls: "border-amber-500/35 bg-amber-950/20 text-amber-200" },
-        WEEKLY_SYNC: { icon: `<i class="fa-solid fa-rotate text-emerald-400"></i>`, badge: "Weekly Auto-Sync", cls: "border-emerald-500/30 bg-emerald-950/15 text-emerald-300" },
-        ESPN_SYNC: { icon: `<i class="fa-solid fa-rotate text-emerald-400"></i>`, badge: "ESPN Sync", cls: "border-emerald-500/30 bg-emerald-950/15 text-emerald-300" }
-      }[ev.type] || { icon: `<i class="fa-solid fa-bolt text-slate-300"></i>`, badge: "League Wire", cls: "border-white/10 bg-[#0B0D12] text-slate-300" };
+        DRAFT_DATE: { icon: `<i class="fa-solid fa-calendar-check text-sky-400"></i>`, badge: "Draft Date", cls: "border-sky-500/35 bg-sky-950/30 text-sky-300", accent: "border-l-sky-400" },
+        DRAFT_ORDER: { icon: `<i class="fa-solid fa-list-ol text-emerald-400"></i>`, badge: "Draft Order", cls: "border-emerald-500/35 bg-emerald-950/30 text-emerald-300", accent: "border-l-emerald-400" },
+        FEASTER_DECREE: { icon: `<span>🍆</span>`, badge: "Feaster Decree", cls: "border-fuchsia-500/35 bg-fuchsia-950/35 text-fuchsia-200", accent: "border-l-fuchsia-400" },
+        HALL_OF_SHAME: { icon: `<i class="fa-solid fa-triangle-exclamation text-pink-400"></i>`, badge: "Hall of Shame", cls: "border-pink-500/40 bg-pink-950/35 text-pink-200", accent: "border-l-pink-400" },
+        RECORD_SET: { icon: `<span>🏆</span>`, badge: "Record Set", cls: "border-amber-500/40 bg-amber-950/30 text-amber-200", accent: "border-l-amber-400" },
+        WEEKLY_SYNC: { icon: `<i class="fa-solid fa-rotate text-emerald-400"></i>`, badge: "Weekly Auto-Sync", cls: "border-emerald-500/30 bg-emerald-950/20 text-emerald-300", accent: "border-l-emerald-400" },
+        ESPN_SYNC: { icon: `<i class="fa-solid fa-rotate text-emerald-400"></i>`, badge: "ESPN Sync", cls: "border-emerald-500/30 bg-emerald-950/20 text-emerald-300", accent: "border-l-emerald-400" }
+      }[ev.type] || { icon: `<i class="fa-solid fa-bolt text-slate-300"></i>`, badge: "League Wire", cls: "border-white/15 bg-[#0B0D12] text-slate-300", accent: "border-l-amber-400" };
 
       return `
-        <div class="bg-[#13161F] border border-white/10 rounded-xl px-3.5 py-2.5 flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+        <div class="wire-milestone-card ${typeMeta.accent} rounded-xl px-3.5 py-2.5 flex flex-col sm:flex-row sm:items-center justify-between gap-2">
           <div class="flex items-start sm:items-center gap-2.5 min-w-0">
             <span class="w-7 h-7 rounded-lg border ${typeMeta.cls} flex items-center justify-center text-xs flex-shrink-0">
               ${typeMeta.icon}
@@ -13570,20 +14158,41 @@
       const titleEl = document.getElementById("feedTitleText");
       const pendingBox = document.getElementById("pendingQueueContainer");
       const shameBox = document.getElementById("hallOfShameFeedBanner");
-      const scopeFilter = document.getElementById("feedScopeFilter")?.value || "ALL_YEARS";
+      const fairnessBanner = document.getElementById("fairnessBallotNudgeBanner");
+      const scopeFilter = document.getElementById("feedScopeFilter")?.value || uiState.feedScope || "ALL_YEARS";
       const poolsSection = document.getElementById("section-pools");
 
+      // Sync scope pills & mobile compact scope button
+      const pillAll = document.getElementById("feedScopePill-ALL_YEARS");
+      const pillActive = document.getElementById("feedScopePill-ACTIVE_YEAR");
+      const mobScopeLbl = document.getElementById("feedScopeMobileBtnLabel");
+      if (pillAll) pillAll.classList.toggle("active", scopeFilter === "ALL_YEARS");
+      if (pillActive) {
+        pillActive.classList.toggle("active", scopeFilter === "ACTIVE_YEAR");
+        pillActive.textContent = `${state.year} Only`;
+      }
+      if (mobScopeLbl) {
+        mobScopeLbl.textContent = scopeFilter === "ALL_YEARS" ? "All Yrs" : `${state.year}`;
+      }
+
+      const myTeamId = safeId(uiState.myTeam || uiState.selectedManager || "syeth");
+      const unvotedFairnessDeals = getUnvotedFairnessTradesForTeam(myTeamId);
+      const unvotedIdsSet = new Set(unvotedFairnessDeals.map(t => safeId(t.id)));
+
       const subTab = uiState.activitySubTab || "ALL";
-      const subTabs = ["ALL", "TRADES", "WIRE", "PENDING_FINAL", "MY_TEAM"];
+      const subTabs = ["ALL", "TRADES", "FAIRNESS", "WIRE", "PENDING_FINAL", "MY_TEAM"];
       subTabs.forEach(tabKey => {
         const btn = document.getElementById(`actSubTab-${tabKey}`);
         if (!btn) return;
         const active = subTab === tabKey;
-        const flexCls = tabKey === "PENDING_FINAL" ? " flex items-center gap-1.5" : "";
-        btn.className = active
-          ? `px-2.5 sm:px-3 py-1.5 rounded-lg text-[11px] sm:text-xs font-extrabold transition bg-[#73000A] text-white cursor-pointer${flexCls}`
-          : `px-2.5 sm:px-3 py-1.5 rounded-lg text-[11px] sm:text-xs font-bold transition text-slate-400 hover:text-white cursor-pointer${flexCls}`;
+        btn.classList.toggle("active", active);
       });
+
+      const subFairnessBadge = document.getElementById("actSubTabFairnessBadge");
+      if (subFairnessBadge) {
+        subFairnessBadge.textContent = String(unvotedFairnessDeals.length);
+        subFairnessBadge.classList.toggle("hidden", unvotedFairnessDeals.length === 0);
+      }
 
       const subPendingBadge = document.getElementById("actSubTabPendingBadge");
       const pendingTotalCount = state.activePools.length + state.activeConditionals.length + (leagueDB.pendingTrades?.length || 0);
@@ -13604,7 +14213,7 @@
           : "fa-solid fa-angles-down text-slate-400";
       }
       if (toggleAllLbl) {
-        toggleAllLbl.textContent = uiState.expandAllTrades ? "Collapse All" : "Expand All";
+        toggleAllLbl.textContent = uiState.expandAllTrades ? "Collapse" : "Expand";
       }
 
       // Show Waiting resolution cards & open proposals ONLY on the Waiting (PENDING_FINAL) sub-tab
@@ -13621,7 +14230,74 @@
       if (!container) return;
 
       const sourceTrades = scopeFilter === "ALL_YEARS" ? [...leagueDB.trades] : [...state.yearTrades];
-      const myTeamId = uiState.myTeam || uiState.selectedManager;
+
+      // Render Trade Fairness Ballot Nudge Banner / Dedicated Ballot Header (A1 & A2)
+      if (fairnessBanner) {
+        const allNeutralTrades = sourceTrades.filter(tr => {
+          const partSet = new Set([tr.teamA, tr.teamB, tr.teamC].filter(Boolean).map(safeId));
+          return !partSet.has(myTeamId);
+        });
+        let totalLeagueFairVotes = 0;
+        let totalLeagueYesVotes = 0;
+        (leagueDB.trades || []).forEach(tr => {
+          const pSet = new Set([tr.teamA, tr.teamB, tr.teamC].filter(Boolean).map(safeId));
+          const yC = (Array.isArray(tr.fairnessVotes?.yes) ? tr.fairnessVotes.yes : []).filter(id => !pSet.has(safeId(id))).length;
+          const nC = (Array.isArray(tr.fairnessVotes?.no) ? tr.fairnessVotes.no : []).filter(id => !pSet.has(safeId(id))).length;
+          totalLeagueFairVotes += (yC + nC);
+          totalLeagueYesVotes += yC;
+        });
+        const leagueFairPct = totalLeagueFairVotes > 0 ? Math.round((totalLeagueYesVotes / totalLeagueFairVotes) * 100) : 100;
+        const ballotMode = (uiState.fairnessBallotMode === "ALL" || unvotedFairnessDeals.length === 0) ? "ALL" : "UNVOTED";
+
+        if (subTab === "FAIRNESS") {
+          fairnessBanner.classList.remove("hidden");
+          fairnessBanner.innerHTML = `
+            <div class="app-card p-3.5 border border-amber-500/40 bg-gradient-to-r from-amber-950/35 via-[#13161F] to-[#13161F] space-y-2.5">
+              <div class="flex flex-wrap items-center justify-between gap-2">
+                <div class="flex items-center gap-2">
+                  <span class="w-8 h-8 rounded-xl bg-amber-500/20 border border-amber-400/40 flex items-center justify-center text-amber-300 text-sm">
+                    <i class="fa-solid fa-scale-balanced"></i>
+                  </span>
+                  <div>
+                    <div class="text-xs sm:text-sm font-black uppercase tracking-wider text-white flex items-center gap-1.5">
+                      <span>League Trade Fairness Ballot</span>
+                      <span class="static-badge bg-amber-950 text-amber-300 border border-amber-500/40">${totalLeagueFairVotes} Votes Cast</span>
+                    </div>
+                    <div class="text-[11px] text-slate-300">Neutral manager votes calibrate the Trade Center's Fairness Meter &amp; historical deal consensus (${totalLeagueFairVotes > 0 ? `${leagueFairPct}% Fair Avg` : '4+ votes per deal unlocks consensus'}).</div>
+                  </div>
+                </div>
+                <div class="segmented-bar">
+                  <button type="button" onclick="setFairnessBallotMode('UNVOTED')" class="segmented-pill ${ballotMode === 'UNVOTED' ? 'active' : ''}">
+                    <span>Unvoted (${unvotedFairnessDeals.length})</span>
+                  </button>
+                  <button type="button" onclick="setFairnessBallotMode('ALL')" class="segmented-pill ${ballotMode === 'ALL' ? 'active' : ''}">
+                    <span>All Neutral (${allNeutralTrades.length})</span>
+                  </button>
+                </div>
+              </div>
+            </div>
+          `;
+        } else if ((subTab === "ALL" || subTab === "TRADES") && unvotedFairnessDeals.length > 0) {
+          fairnessBanner.classList.remove("hidden");
+          fairnessBanner.innerHTML = `
+            <div class="rounded-xl px-3.5 py-2.5 bg-amber-950/35 border border-amber-500/40 flex flex-wrap items-center justify-between gap-2 text-xs">
+              <div class="flex items-center gap-2 min-w-0">
+                <i class="fa-solid fa-scale-balanced text-amber-400"></i>
+                <span class="text-slate-200">
+                  <strong class="text-amber-300 font-extrabold">${unvotedFairnessDeals.length} Completed Deal${unvotedFairnessDeals.length === 1 ? '' : 's'}</strong> awaiting your neutral Fairness Vote (${escapeHtml(getTeamName(myTeamId))}). Vote 1-tap inline on any card below!
+                </span>
+              </div>
+              <button type="button" onclick="setActivitySubTab('FAIRNESS')" class="btn-action px-2.5 py-1 text-[11px] text-amber-300 border-amber-500/40 flex-shrink-0">
+                <span>Open Ballot (${unvotedFairnessDeals.length})</span>
+                <i class="fa-solid fa-arrow-right text-[10px]"></i>
+              </button>
+            </div>
+          `;
+        } else {
+          fairnessBanner.classList.add("hidden");
+          fairnessBanner.innerHTML = "";
+        }
+      }
 
       if (pendingBox) {
         if (subTab === "PENDING_FINAL" && Array.isArray(leagueDB.pendingTrades) && leagueDB.pendingTrades.length > 0) {
@@ -13707,7 +14383,17 @@
 
       let trades = subTab === "WIRE" ? [] : sourceTrades;
 
-      if (subTab === "PENDING_FINAL") {
+      if (subTab === "FAIRNESS") {
+        const ballotMode = (uiState.fairnessBallotMode === "ALL" || unvotedFairnessDeals.length === 0) ? "ALL" : "UNVOTED";
+        trades = trades.filter(t => {
+          const partSet = new Set([t.teamA, t.teamB, t.teamC].filter(Boolean).map(safeId));
+          if (partSet.has(myTeamId)) return false;
+          if (ballotMode === "UNVOTED") {
+            return unvotedIdsSet.has(safeId(t.id));
+          }
+          return true;
+        });
+      } else if (subTab === "PENDING_FINAL") {
         trades = trades.filter(t => (t.pools && t.pools.length > 0) || (t.conditionals && t.conditionals.length > 0));
       } else if (subTab === "MY_TEAM" && myTeamId) {
         trades = trades.filter(t => t.teamA === myTeamId || t.teamB === myTeamId || t.teamC === myTeamId);
@@ -13758,6 +14444,8 @@
       if (titleEl) {
         const subTitleLabel = subTab === "PENDING_FINAL"
           ? "Deals Waiting on Approval / Commish"
+          : subTab === "FAIRNESS"
+          ? "Neutral Trade Fairness Ballot"
           : subTab === "WIRE"
           ? "League Wire Milestones & Alerts"
           : subTab === "TRADES"
@@ -13780,7 +14468,19 @@
       }
 
       let html = "";
+      let lastGroupKey = "";
       streamItems.forEach(entry => {
+        const gMeta = getStreamItemGroupMeta(entry);
+        if (gMeta.key !== lastGroupKey) {
+          lastGroupKey = gMeta.key;
+          html += `
+            <div class="timeline-group-header">
+              <i class="fa-regular fa-calendar text-amber-400/90 text-[10px]"></i>
+              <span>${escapeHtml(gMeta.label)}</span>
+            </div>
+          `;
+        }
+
         if (entry.kind === "WIRE") {
           html += buildLeagueWireEventCardHtml(entry.event);
           return;
@@ -13915,7 +14615,7 @@
           </div>
         `;
 
-        // Adaptive Trade Fairness Review (Neutral League Votes Only)
+        // Adaptive Trade Fairness Review (Neutral League Votes Only — Inline on Collapsed Card & Expanded Card per A1)
         const partSet = new Set([tr.teamA, tr.teamB, tr.teamC].filter(Boolean).map(safeId));
         const fvYesList = (Array.isArray(tr.fairnessVotes?.yes) ? tr.fairnessVotes.yes : []).filter(tid => !partSet.has(safeId(tid)));
         const fvNoList = (Array.isArray(tr.fairnessVotes?.no) ? tr.fairnessVotes.no : []).filter(tid => !partSet.has(safeId(tid)));
@@ -13928,32 +14628,52 @@
           ? `<span class="px-1.5 py-0.5 rounded text-[10px] font-mono border ${yesVotes >= noVotes ? 'bg-emerald-950/60 text-emerald-300 border-emerald-500/40' : 'bg-rose-950/60 text-rose-300 border-rose-500/40'}" title="Neutral League Trade Fairness Review">${Math.round((yesVotes / totalFairVotes) * 100)}% Fair (${totalFairVotes})</span>`
           : "";
 
+        const inlineFairnessButtonsHtml = isMyDeal
+          ? `<span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-[#0B0D12] text-slate-400 border border-white/10" title="Trade participants cannot vote on their own deal"><i class="fa-solid fa-scale-balanced text-amber-400 mr-1"></i>Your Deal${totalFairVotes > 0 ? ` (${yesVotes}Y/${noVotes}N)` : ''}</span>`
+          : `
+            <div class="inline-flex items-center gap-1 bg-[#0B0D12] border ${myFairVote ? 'border-white/15' : 'border-amber-500/45'} rounded-full px-1.5 py-0.5 text-[10px]" title="1-Tap Neutral Trade Fairness Vote">
+              <span class="text-amber-300 font-bold pl-1 hidden sm:inline"><i class="fa-solid fa-scale-balanced mr-0.5"></i>Fair?</span>
+              <button
+                type="button"
+                onclick="event.stopPropagation(); voteTradeFairness('${safeId(tr.id)}', 'YES');"
+                class="px-2 py-0.5 rounded-full font-extrabold transition cursor-pointer ${myFairVote === 'YES' ? 'bg-emerald-700 text-white' : 'text-emerald-300 hover:bg-emerald-950/70'}"
+                title="Vote Fair Deal"
+              >👍 Fair${yesVotes > 0 ? ` (${yesVotes})` : ''}</button>
+              <button
+                type="button"
+                onclick="event.stopPropagation(); voteTradeFairness('${safeId(tr.id)}', 'NO');"
+                class="px-2 py-0.5 rounded-full font-extrabold transition cursor-pointer ${myFairVote === 'NO' ? 'bg-rose-700 text-white' : 'text-rose-300 hover:bg-rose-950/70'}"
+                title="Vote Lopsided Deal"
+              >👎 Lopsided${noVotes > 0 ? ` (${noVotes})` : ''}</button>
+            </div>
+          `;
+
         const headerReactionChip = activeReactionPills
           ? `<span class="inline-flex items-center gap-1 text-[11px] text-slate-300">${TRADE_REACTION_EMOJIS.filter(em => Array.isArray(reactionsObj[em]) && reactionsObj[em].length > 0).map(em => `${em}${reactionsObj[em].length}`).join(" ")}</span>`
           : "";
 
         html += `
-          <div class="${isPendingFinal ? 'pending-pool-card' : 'app-card'} p-3.5 sm:p-4 space-y-0">
+          <div class="${isPendingFinal ? 'pending-pool-card' : 'app-card border-l-4 border-l-[#CC1429]'} p-3 sm:p-4 space-y-0">
             <div onclick="toggleTradeCardAccordion('${safeId(tr.id)}')" class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 cursor-pointer select-none">
               <div class="min-w-0 space-y-1">
-                <div class="flex flex-wrap items-center gap-2">
+                <div class="flex flex-wrap items-center gap-1.5 sm:gap-2">
                   <i class="fa-solid ${isExpanded ? 'fa-chevron-down text-amber-400' : 'fa-chevron-right text-slate-500'} text-[11px] w-3 text-center transition"></i>
-                  <span class="font-mono text-[11px] font-bold text-slate-300 bg-[#0B0D12] px-2 py-0.5 rounded border border-white/10">${escapeHtml(tr.id)}</span>
+                  <span class="font-mono text-[10px] sm:text-[11px] font-bold text-slate-300 bg-[#0B0D12] px-1.5 py-0.5 rounded border border-white/10">${escapeHtml(tr.id)}</span>
                   <span class="text-xs sm:text-sm font-black text-white">${participantsStr}</span>
                   ${isMultiYear ? `<span class="static-badge bg-amber-950 text-amber-300 border border-amber-600/80"><i class="fa-solid fa-calendar-plus mr-1"></i>${yrsAffected.join("/")}</span>` : ''}
-                  ${tr.teamC ? `<span class="static-badge bg-[#73000A] text-rose-200 border border-[#CC1429]">3-Team</span>` : ''}
                   <span class="text-[11px] text-slate-400">• ${escapeHtml(tr.date)}</span>
                   ${fairSummaryChip}
                   ${!isExpanded ? headerReactionChip : ''}
                 </div>
-                <div class="text-xs text-slate-300 truncate pl-5">${escapeHtml(tr.headline)}</div>
+                ${!isExpanded ? buildCollapsedTradeQuickAssetStripHtml(tr) : `<div class="text-xs text-slate-300 truncate pl-4">${escapeHtml(tr.headline)}</div>`}
               </div>
-              <div onclick="event.stopPropagation()" class="flex flex-wrap items-center gap-1.5 flex-shrink-0 pl-5 sm:pl-0">
+              <div onclick="event.stopPropagation()" class="flex flex-wrap items-center gap-1.5 flex-shrink-0 pl-4 sm:pl-0">
+                ${inlineFairnessButtonsHtml}
                 ${isPendingFinal ? (
                   uiState.isCommish
-                    ? `<button onclick="setActivitySubTab('PENDING_FINAL')" class="btn-pending px-2.5 py-1 text-xs"><span>Resolve ▾</span></button>`
+                    ? `<button onclick="setActivitySubTab('PENDING_FINAL')" class="btn-pending px-2 py-0.5 text-[11px]"><span>Resolve ▾</span></button>`
                     : `<span class="static-badge bg-amber-950 text-amber-300 border border-amber-500/50">Waiting</span>`
-                ) : `<span class="static-badge bg-emerald-950/80 text-emerald-300 border border-emerald-700/60">Official</span>`}
+                ) : `<span class="static-badge bg-emerald-950/80 text-emerald-300 border border-emerald-700/60 hidden sm:inline-flex">Official</span>`}
                 ${uiState.isCommish ? buildCommishMoreMenuHtml("tr_commish_" + safeId(tr.id), tr.id) : ''}
               </div>
             </div>
@@ -13970,25 +14690,6 @@
                   ${tr.submittedBy ? `<div class="text-[10px] text-slate-500"><i class="fa-solid fa-user-check mr-1 text-emerald-400"></i>Logged by ${escapeHtml(tr.submittedBy)}</div>` : ''}
                 </div>
                 <div class="flex flex-wrap items-center gap-2 flex-shrink-0">
-                  <div class="inline-flex items-center gap-1 bg-[#13161F] border border-white/10 rounded-full px-2.5 py-0.5 text-[11px]">
-                    <span class="text-slate-400 font-semibold mr-0.5"><i class="fa-solid fa-scale-balanced text-amber-400 mr-1"></i>Fair?</span>
-                    ${isMyDeal ? `
-                      <span class="px-1.5 py-0.5 rounded-full font-bold text-slate-400" title="Trade participants cannot vote on their own deal">Your Deal${totalFairVotes > 0 ? ` (${yesVotes}Y/${noVotes}N)` : ''}</span>
-                    ` : `
-                      <button
-                        type="button"
-                        onclick="voteTradeFairness('${safeId(tr.id)}', 'YES')"
-                        class="px-1.5 py-0.5 rounded-full font-bold transition cursor-pointer ${myFairVote === 'YES' ? 'bg-emerald-700 text-white' : 'text-emerald-300 hover:bg-emerald-950/60'}"
-                        title="Vote Yes — Fair Deal (calibrates League Fairness Guide)"
-                      >Yes${yesVotes > 0 ? ` (${yesVotes})` : ''}</button>
-                      <button
-                        type="button"
-                        onclick="voteTradeFairness('${safeId(tr.id)}', 'NO')"
-                        class="px-1.5 py-0.5 rounded-full font-bold transition cursor-pointer ${myFairVote === 'NO' ? 'bg-rose-700 text-white' : 'text-rose-300 hover:bg-rose-950/60'}"
-                        title="Vote No — Lopsided Deal (calibrates League Fairness Guide)"
-                      >No${noVotes > 0 ? ` (${noVotes})` : ''}</button>
-                    `}
-                  </div>
                   <div class="flex flex-wrap items-center gap-1">
                     ${activeReactionPills}
                     ${reactionPickerHtml}
@@ -15637,30 +16338,41 @@
       const pairCounts = {};
       const allRecords = [];
 
-      leagueDB.teams.forEach(t => { managerCounts[t.id] = { total: 0, archive: 0, modern: 0 }; });
+      leagueDB.teams.forEach(t => { managerCounts[t.id] = { total: 0, archive: 0, modern: 0, assetsMoved: 0 }; });
 
       // 1. Process 2018–2025 Archive Trades
       Object.keys(HISTORICAL_ARCHIVE).map(Number).sort((a, b) => b - a).forEach(yr => {
         const season = HISTORICAL_ARCHIVE[yr];
+        const parsedByIdx = {};
+        (season.parsedTransfers || []).forEach(pt => {
+          const ti = Number(pt.tradeIndex);
+          parsedByIdx[ti] = (parsedByIdx[ti] || 0) + 1;
+        });
         (season.trades || []).forEach((trObj, idx) => {
           const teams = trObj.teams || [];
+          const txt = String(trObj.text || "");
+          const pickCount = parsedByIdx[idx] || (txt.match(/\bRd\s*\d+|\b\d+(?:st|nd|rd|th)\s+round/gi) || []).length;
+          const plusFragments = (txt.match(/\+/g) || []).length;
+          const estimatedAssets = Math.max(2, pickCount + Math.max(1, plusFragments));
           teams.forEach(tid => {
-            if (!managerCounts[tid]) managerCounts[tid] = { total: 0, archive: 0, modern: 0 };
+            if (!managerCounts[tid]) managerCounts[tid] = { total: 0, archive: 0, modern: 0, assetsMoved: 0 };
             managerCounts[tid].total++;
             managerCounts[tid].archive++;
+            managerCounts[tid].assetsMoved += estimatedAssets;
           });
           if (teams.length >= 2) {
             const pairKey = [teams[0], teams[1]].sort().join("__");
             if (!pairCounts[pairKey]) pairCounts[pairKey] = { teamA: teams[0], teamB: teams[1], count: 0, deals: [] };
             pairCounts[pairKey].count++;
-            pairCounts[pairKey].deals.push({ year: yr, headline: trObj.text });
+            pairCounts[pairKey].deals.push({ year: yr, headline: trObj.text, assetCount: estimatedAssets });
           }
           allRecords.push({
             year: yr,
             id: `HIST-${yr}-${idx + 1}`,
             teams,
             headline: trObj.text,
-            isConditional: Boolean(trObj.isCond || trObj.text.includes("CONDITIONAL"))
+            assetCount: estimatedAssets,
+            isConditional: Boolean(trObj.isCond || txt.includes("CONDITIONAL"))
           });
         });
       });
@@ -15668,17 +16380,25 @@
       // 2. Process 2026+ Active Database Unified Trades
       leagueDB.trades.forEach(tr => {
         const teams = [tr.teamA, tr.teamB, tr.teamC].filter(Boolean);
+        const exactAssets = Math.max(
+          2,
+          (tr.directTransfers?.length || 0) +
+          (tr.playerTransfers?.length || 0) +
+          (tr.pools?.length || 0) +
+          (tr.conditionals?.length || 0)
+        );
         teams.forEach(tid => {
-          if (!managerCounts[tid]) managerCounts[tid] = { total: 0, archive: 0, modern: 0 };
+          if (!managerCounts[tid]) managerCounts[tid] = { total: 0, archive: 0, modern: 0, assetsMoved: 0 };
           managerCounts[tid].total++;
           managerCounts[tid].modern++;
+          managerCounts[tid].assetsMoved += exactAssets;
         });
         for (let i = 0; i < teams.length; i++) {
           for (let j = i + 1; j < teams.length; j++) {
             const pairKey = [teams[i], teams[j]].sort().join("__");
             if (!pairCounts[pairKey]) pairCounts[pairKey] = { teamA: teams[i], teamB: teams[j], count: 0, deals: [] };
             pairCounts[pairKey].count++;
-            pairCounts[pairKey].deals.push({ year: getTradeAffectedYears(tr).join("/"), headline: tr.headline });
+            pairCounts[pairKey].deals.push({ year: getTradeAffectedYears(tr).join("/"), headline: tr.headline, assetCount: exactAssets });
           }
         }
         allRecords.push({
@@ -15686,25 +16406,42 @@
           id: tr.id,
           teams,
           headline: tr.headline,
+          assetCount: exactAssets,
           isConditional: (tr.pools && tr.pools.length > 0) || (tr.conditionals && tr.conditionals.length > 0)
         });
       });
 
       const managerLeaderboard = Object.keys(managerCounts)
         .map(id => ({ id, name: getTeamName(id), ...managerCounts[id] }))
-        .sort((a, b) => b.total - a.total);
+        .sort((a, b) => (b.total - a.total) || (b.assetsMoved - a.assetsMoved));
 
       const topPairs = Object.values(pairCounts).sort((a, b) => b.count - a.count);
+      const biggestBlockbusters = [...allRecords]
+        .sort((a, b) => (b.assetCount - a.assetCount) || String(b.year).localeCompare(String(a.year)))
+        .slice(0, 8);
+      const conditionalDealsCount = allRecords.filter(r => r.isConditional).length;
 
       return {
         managerLeaderboard,
         topPairs,
+        biggestBlockbusters,
+        conditionalDealsCount,
         allRecords
       };
     }
 
+    function toggleArchiveSeasonMatchups() {
+      uiState.archiveShowMatchups = !uiState.archiveShowMatchups;
+      refreshArchiveViews();
+    }
+
+    function toggleArchiveSeasonKeepers() {
+      uiState.archiveShowKeepers = !uiState.archiveShowKeepers;
+      refreshArchiveViews();
+    }
+
     function buildArchiveBodyHtml() {
-      // MODE 1: ALL-TIME LEAGUE TRADE STATS & PARTNER MATRIX (2016–2027)
+      // MODE 1: ALL-TIME LEAGUE TRADE STATS, SUPERLATIVES & PARTNER MATRIX (2016–2027)
       if (uiState.archiveMode === "STATS") {
         const stats = computeAllTimeLeagueAnalytics();
         const maxCount = Math.max(1, stats.managerLeaderboard[0]?.total || 1);
@@ -15713,15 +16450,43 @@
           ? stats.allRecords.filter(r => `${r.year} ${r.id} ${r.headline} ${r.teams.map(t => getTeamName(t)).join(" ")}`.toLowerCase().includes(query))
           : stats.allRecords;
 
+        const topTrader = stats.managerLeaderboard[0];
+        const topPair = stats.topPairs[0];
+        const topBlockbuster = stats.biggestBlockbusters[0];
+
         return `
-          <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
+          <!-- 4-Card All-Time Trade Superlatives Strip (A4.4) -->
+          <div id="archiveTradeSuperlativesGrid" class="grid grid-cols-2 lg:grid-cols-4 gap-2.5">
+            <div class="bg-[#0B0D12] border border-amber-500/40 rounded-xl p-3 space-y-0.5">
+              <div class="text-[10px] font-extrabold uppercase tracking-wider text-amber-400"><i class="fa-solid fa-fire mr-1"></i>Most Active Trader</div>
+              <div class="text-xs sm:text-sm font-black text-white truncate">${topTrader ? escapeHtml(topTrader.name) : '—'}</div>
+              <div class="text-[11px] font-mono text-amber-300">${topTrader ? `${topTrader.total} Deals (${topTrader.assetsMoved} Assets)` : '0 Deals'}</div>
+            </div>
+            <div class="bg-[#0B0D12] border border-sky-500/40 rounded-xl p-3 space-y-0.5">
+              <div class="text-[10px] font-extrabold uppercase tracking-wider text-sky-400"><i class="fa-solid fa-handshake mr-1"></i>Top Trade Partners</div>
+              <div class="text-xs sm:text-sm font-black text-white truncate">${topPair ? `${escapeHtml(getOriginalManagerName(topPair.teamA))} ↔ ${escapeHtml(getOriginalManagerName(topPair.teamB))}` : '—'}</div>
+              <div class="text-[11px] font-mono text-sky-300">${topPair ? `${topPair.count} Completed Deals` : '0 Deals'}</div>
+            </div>
+            <div class="bg-[#0B0D12] border border-emerald-500/40 rounded-xl p-3 space-y-0.5">
+              <div class="text-[10px] font-extrabold uppercase tracking-wider text-emerald-400"><i class="fa-solid fa-bomb mr-1"></i>Biggest Blockbuster</div>
+              <div class="text-xs sm:text-sm font-black text-white truncate">${topBlockbuster ? `${topBlockbuster.teams.map(t => escapeHtml(getOriginalManagerName(t))).join(' ↔ ')}` : '—'}</div>
+              <div class="text-[11px] font-mono text-emerald-300">${topBlockbuster ? `[${escapeHtml(String(topBlockbuster.year))}] ${topBlockbuster.assetCount} Assets` : '—'}</div>
+            </div>
+            <div class="bg-[#0B0D12] border border-fuchsia-500/40 rounded-xl p-3 space-y-0.5">
+              <div class="text-[10px] font-extrabold uppercase tracking-wider text-fuchsia-300"><i class="fa-solid fa-layer-group mr-1"></i>Total Vault Volume</div>
+              <div class="text-xs sm:text-sm font-black text-white truncate">${stats.allRecords.length} Recorded Trades</div>
+              <div class="text-[11px] font-mono text-fuchsia-300">${stats.conditionalDealsCount} Conditional / Pool Deals</div>
+            </div>
+          </div>
+
+          <div class="grid grid-cols-1 lg:grid-cols-3 gap-4">
             <div class="bg-[#0B0D12] border border-white/10 rounded-2xl p-4 space-y-3">
               <div class="flex items-center justify-between border-b border-white/[0.07] pb-2">
                 <div>
-                  <h4 class="text-sm font-black text-amber-400 uppercase tracking-wider">
-                    <i class="fa-solid fa-chart-column mr-1.5"></i>All-Time Trade Volume by Manager (2016–2027)
+                  <h4 class="text-xs sm:text-sm font-black text-amber-400 uppercase tracking-wider">
+                    <i class="fa-solid fa-chart-column mr-1.5"></i>Trade Volume by Manager
                   </h4>
-                  <p class="text-[11px] text-slate-400">Recorded off-season & draft-pick trades across the Gamecock Mafia vault</p>
+                  <p class="text-[11px] text-slate-400">Off-season &amp; draft-pick trades (2018–2027)</p>
                 </div>
                 <span class="font-mono text-xs text-slate-400">${stats.allRecords.length} Deals</span>
               </div>
@@ -15731,8 +16496,8 @@
                   return `
                     <div class="space-y-1">
                       <div class="flex items-center justify-between text-xs">
-                        <span class="font-bold text-white">${idx + 1}. ${escapeHtml(m.name)}</span>
-                        <span class="font-mono text-amber-300 font-bold">${m.total} Trades <span class="text-[10px] text-slate-500">(${m.archive} Hist / ${m.modern} Active)</span></span>
+                        <span class="font-bold text-white truncate">${idx + 1}. ${escapeHtml(m.name)}</span>
+                        <span class="font-mono text-amber-300 font-bold flex-shrink-0">${m.total} <span class="text-[10px] text-slate-400">(${m.assetsMoved} assets)</span></span>
                       </div>
                       <div class="w-full h-2 bg-[#13161F] rounded-full overflow-hidden border border-white/10">
                         <div class="h-full bg-gradient-to-r from-[#CC1429] to-amber-400 rounded-full" style="width: ${pct}%"></div>
@@ -15746,29 +16511,57 @@
             <div class="bg-[#0B0D12] border border-white/10 rounded-2xl p-4 space-y-3">
               <div class="flex items-center justify-between border-b border-white/[0.07] pb-2">
                 <div>
-                  <h4 class="text-sm font-black text-sky-400 uppercase tracking-wider">
-                    <i class="fa-solid fa-handshake mr-1.5"></i>Most Frequent Trade Partners
+                  <h4 class="text-xs sm:text-sm font-black text-sky-400 uppercase tracking-wider">
+                    <i class="fa-solid fa-handshake mr-1.5"></i>Most Frequent Partners
                   </h4>
-                  <p class="text-[11px] text-slate-400">Manager pairs who have completed the most deals together</p>
+                  <p class="text-[11px] text-slate-400">Manager pairs with the most deals together</p>
                 </div>
               </div>
               <div class="space-y-2 max-h-[340px] overflow-y-auto pr-1">
                 ${stats.topPairs.slice(0, 12).map((pair, idx) => `
                   <div class="bg-[#13161F] border border-white/[0.08] rounded-xl p-3 space-y-1.5">
-                    <div class="flex items-center justify-between">
-                      <span class="text-xs font-black text-white">
+                    <div class="flex items-center justify-between gap-2">
+                      <span class="text-xs font-black text-white truncate">
                         #${idx + 1} • ${escapeHtml(getTeamName(pair.teamA))} ↔ ${escapeHtml(getTeamName(pair.teamB))}
                       </span>
-                      <span class="static-badge bg-sky-950 text-sky-300 border border-sky-600/60">
+                      <span class="static-badge bg-sky-950 text-sky-300 border border-sky-600/60 flex-shrink-0">
                         ${pair.count} Deal${pair.count > 1 ? 's' : ''}
                       </span>
                     </div>
                     <div class="space-y-1">
-                      ${pair.deals.map(d => `
+                      ${pair.deals.slice(0, 3).map(d => `
                         <div class="text-[11px] text-slate-400 truncate">
                           <strong class="text-amber-300 font-mono">[${escapeHtml(d.year)}]</strong> ${escapeHtml(d.headline)}
                         </div>
                       `).join("")}
+                    </div>
+                  </div>
+                `).join("")}
+              </div>
+            </div>
+
+            <div class="bg-[#0B0D12] border border-white/10 rounded-2xl p-4 space-y-3">
+              <div class="flex items-center justify-between border-b border-white/[0.07] pb-2">
+                <div>
+                  <h4 class="text-xs sm:text-sm font-black text-emerald-400 uppercase tracking-wider">
+                    <i class="fa-solid fa-bomb mr-1.5"></i>Biggest Blockbuster Deals
+                  </h4>
+                  <p class="text-[11px] text-slate-400">Largest multi-asset swaps in league history</p>
+                </div>
+              </div>
+              <div class="space-y-2 max-h-[340px] overflow-y-auto pr-1">
+                ${stats.biggestBlockbusters.map((bb, idx) => `
+                  <div class="bg-[#13161F] border border-white/[0.08] rounded-xl p-3 space-y-1">
+                    <div class="flex items-center justify-between gap-2">
+                      <span class="text-xs font-black text-white truncate">
+                        #${idx + 1} • ${bb.teams.map(t => escapeHtml(getOriginalManagerName(t))).join(" ↔ ")}
+                      </span>
+                      <span class="static-badge bg-emerald-950 text-emerald-300 border border-emerald-500/50 flex-shrink-0">
+                        ${bb.assetCount} Assets
+                      </span>
+                    </div>
+                    <div class="text-[11px] text-slate-300 line-clamp-2">
+                      <strong class="text-amber-300 font-mono">[${escapeHtml(String(bb.year))}]</strong> ${escapeHtml(bb.headline)}
                     </div>
                   </div>
                 `).join("")}
@@ -15799,7 +16592,10 @@
                     <span class="font-mono font-bold text-amber-300 whitespace-nowrap">[${escapeHtml(r.year)}]</span>
                     <span class="text-slate-100">${escapeHtml(r.headline)}</span>
                   </div>
-                  <span class="text-[10px] font-mono text-slate-400 whitespace-nowrap">${escapeHtml(r.id)}</span>
+                  <div class="flex items-center gap-1.5 flex-shrink-0">
+                    <span class="static-badge bg-white/[0.05] text-slate-300 border border-white/10">${r.assetCount} Assets</span>
+                    <span class="text-[10px] font-mono text-slate-400 whitespace-nowrap">${escapeHtml(r.id)}</span>
+                  </div>
                 </div>
               `).join("")}
             </div>
@@ -15807,7 +16603,7 @@
         `;
       }
 
-      // MODE 2: UNIFIED 2016–2025 SEASON TIME CAPSULE (PODIUM + FINAL STANDINGS + PICK TRADES + 20-ROUND DRAFT BOARD WITH ESPN PICKS)
+      // MODE 2: UNIFIED 2016–2025 SEASON TIME CAPSULE (PODIUM + FINAL STANDINGS + POSTSEASON MATCHUPS + KEEPERS + PICK TRADES + 20-ROUND DRAFT BOARD)
       const selectedYr = Number(uiState.activeArchiveYear) || 2025;
       const data = HISTORICAL_ARCHIVE[selectedYr] || null;
       const ed = leagueDB?.espnData || DEFAULT_ESPN_DATA;
@@ -15834,40 +16630,171 @@
       const tbWinnerId = outcomes.tbWinnerId || orderInfo.tbWinnerId || sObj?.toiletBowlWinner || rows[5]?.teamId || "";
       const feasterId = outcomes.feasterId || orderInfo.feasterId || sObj?.phallicFeaster || sObj?.sacko || rows[rows.length - 1]?.teamId || "";
 
+      const findRowForAward = (awardId, fallbackIdx) => {
+        if (awardId) {
+          const hit = rows.find(r => r.managerId === awardId || r.teamId === awardId || (yrOverrides[r.teamId] || r.managerId || r.teamId) === awardId);
+          if (hit) return hit;
+        }
+        return rows[fallbackIdx] || null;
+      };
+      const champRow = findRowForAward(champId, 0);
+      const runnerRow = findRowForAward(runnerUpId, 1);
+      const tbWinRow = findRowForAward(tbWinnerId, 5);
+      const feasterRow = findRowForAward(feasterId, rows.length - 1);
+
+      // Extract Championship Finals & Toilet Bowl Matchup Boxscores when weekly matchups are synced (A4.1)
+      const seasonMatchups = Array.isArray(sObj?.matchups) ? sObj.matchups : [];
+      const regSeasonWeeks = Number(ed.leagueScoring?.regSeasonWeeks) || 14;
+      const postseasonGames = seasonMatchups.filter(m => Number(m.week) > regSeasonWeeks || (m.tier && m.tier !== "NONE"));
+      const wbGames = seasonMatchups.filter(m => m.tier === "WINNERS_BRACKET" || Number(m.week) > regSeasonWeeks);
+      let champFinalGame = null;
+      if (wbGames.length > 0) {
+        const maxWk = Math.max(...wbGames.map(m => Number(m.week) || 1));
+        champFinalGame = wbGames.find(m =>
+          Number(m.week) === maxWk &&
+          ((m.homeManagerId === champId || m.homeTeamId === champId || m.awayManagerId === champId || m.awayTeamId === champId))
+        ) || wbGames.find(m => Number(m.week) === maxWk) || null;
+      }
+      const champScoreSubline = champFinalGame
+        ? `Finals Wk ${champFinalGame.week}: ${Math.max(champFinalGame.homeScore, champFinalGame.awayScore).toFixed(1)} – ${Math.min(champFinalGame.homeScore, champFinalGame.awayScore).toFixed(1)}`
+        : (champRow ? `${champRow.wins}-${champRow.losses} • ${Number(champRow.pointsFor ?? champRow.pf ?? 0).toFixed(1)} PF` : "");
+
+      const seasonKeptPlayers = Array.isArray(sObj?.keptPlayers) ? sObj.keptPlayers : [];
+
       const showStandingsTable = uiState.archiveShowStandingsManual
         ? Boolean(uiState.archiveShowStandings)
-        : (selectedYr <= 2017);
+        : !data;
+
+      const postseasonDrawerHtml = seasonMatchups.length > 0 ? `
+        <div class="pt-2 border-t border-white/10 space-y-2">
+          <div class="flex flex-wrap items-center justify-between gap-2">
+            <span class="text-[11px] font-bold uppercase tracking-wider text-amber-300">
+              <i class="fa-solid fa-sitemap mr-1"></i>${selectedYr} Synced Postseason &amp; Matchup Boxscores (${postseasonGames.length || seasonMatchups.length} Games)
+            </span>
+            <button type="button" onclick="toggleArchiveSeasonMatchups()" class="btn-action px-2.5 py-1 text-[11px] text-amber-300">
+              <i class="fa-solid ${uiState.archiveShowMatchups ? 'fa-chevron-up' : 'fa-chevron-down'} text-[10px]"></i>
+              <span>${uiState.archiveShowMatchups ? 'Hide Matchup Boxscores' : 'View Playoff & Toilet Bowl Scores'}</span>
+            </button>
+          </div>
+          ${uiState.archiveShowMatchups ? `
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2 pt-1">
+              ${(postseasonGames.length > 0 ? postseasonGames : seasonMatchups.slice(-12)).map(gm => {
+                const hWin = gm.homeScore >= gm.awayScore;
+                const tierBadge = gm.tier === "WINNERS_BRACKET"
+                  ? `<span class="static-badge bg-amber-950 text-amber-300 border border-amber-500/40">Playoff</span>`
+                  : (gm.tier && gm.tier !== "NONE")
+                  ? `<span class="static-badge bg-sky-950 text-sky-300 border border-sky-500/40">Toilet Bowl</span>`
+                  : `<span class="static-badge bg-white/[0.05] text-slate-300 border border-white/10">Wk ${gm.week}</span>`;
+                return `
+                  <div class="bg-[#13161F] border border-white/10 rounded-xl p-2.5 text-xs space-y-1">
+                    <div class="flex items-center justify-between text-[10px] font-mono text-slate-400">
+                      <span>Week ${Number(gm.week)}</span>
+                      ${tierBadge}
+                    </div>
+                    <div class="flex items-center justify-between ${hWin ? 'font-black text-white' : 'text-slate-300'}">
+                      <span class="truncate">${escapeHtml(resolveArchiveMgrName(gm.homeManagerId || gm.homeTeamId))}</span>
+                      <span class="font-mono ${hWin ? 'text-emerald-300' : 'text-slate-400'}">${Number(gm.homeScore).toFixed(1)}</span>
+                    </div>
+                    <div class="flex items-center justify-between ${!hWin ? 'font-black text-white' : 'text-slate-300'}">
+                      <span class="truncate">${escapeHtml(resolveArchiveMgrName(gm.awayManagerId || gm.awayTeamId))}</span>
+                      <span class="font-mono ${!hWin ? 'text-emerald-300' : 'text-slate-400'}">${Number(gm.awayScore).toFixed(1)}</span>
+                    </div>
+                  </div>
+                `;
+              }).join("")}
+            </div>
+          ` : ''}
+        </div>
+      ` : "";
+
+      const keepersByTeam = {};
+      seasonKeptPlayers.forEach(kp => {
+        const key = kp.managerId || kp.teamId || "syeth";
+        if (!keepersByTeam[key]) keepersByTeam[key] = [];
+        keepersByTeam[key].push(kp);
+      });
+
+      const keepersDrawerHtml = seasonKeptPlayers.length > 0 ? `
+        <div class="bg-[#0B0D12] border border-white/10 rounded-xl p-3.5 sm:p-4 space-y-2.5">
+          <div class="flex flex-wrap items-center justify-between gap-2">
+            <div class="flex flex-wrap items-center gap-2">
+              <span class="static-badge bg-emerald-950 text-emerald-300 border border-emerald-500/50">
+                <i class="fa-solid fa-user-shield"></i> ${selectedYr} Historical Keepers (${seasonKeptPlayers.length})
+              </span>
+              <span class="text-xs text-slate-300">Locked prior to the ${selectedYr} Snake Draft</span>
+            </div>
+            <button type="button" onclick="toggleArchiveSeasonKeepers()" class="btn-action px-2.5 py-1 text-xs text-emerald-300">
+              <i class="fa-solid ${uiState.archiveShowKeepers ? 'fa-chevron-up' : 'fa-chevron-down'} text-[10px]"></i>
+              <span>${uiState.archiveShowKeepers ? 'Hide Keepers' : 'View Kept Rosters'}</span>
+            </button>
+          </div>
+          ${uiState.archiveShowKeepers ? `
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-2.5 pt-1">
+              ${Object.entries(keepersByTeam).map(([mgrId, kList]) => `
+                <div class="bg-[#13161F] border border-white/10 rounded-xl p-2.5 space-y-1.5">
+                  <div class="flex items-center justify-between border-b border-white/10 pb-1">
+                    <span class="text-xs font-black text-white truncate">${escapeHtml(resolveArchiveMgrName(mgrId))}</span>
+                    <span class="text-[10px] font-mono text-emerald-300">${kList.length} Kept</span>
+                  </div>
+                  <div class="space-y-1 max-h-40 overflow-y-auto pr-0.5">
+                    ${kList.map(kp => `
+                      <div class="flex items-center justify-between gap-1 text-[11px]">
+                        <span class="text-slate-100 font-semibold truncate">${escapeHtml(kp.name)}</span>
+                        <span class="text-[9px] font-mono text-slate-400 flex-shrink-0">${escapeHtml(kp.pos)}</span>
+                      </div>
+                    `).join("")}
+                  </div>
+                </div>
+              `).join("")}
+            </div>
+          ` : ''}
+        </div>
+      ` : "";
 
       const podiumAndStandingsHtml = rows.length > 0 ? `
         <div class="bg-[#0B0D12] border border-white/10 rounded-xl p-3.5 sm:p-4 space-y-3">
           <div class="flex flex-wrap items-center justify-between gap-2">
             <div class="flex flex-wrap items-center gap-2">
               <span class="static-badge bg-amber-950 text-amber-300 border border-amber-500/50">
-                <i class="fa-solid fa-trophy"></i> ${selectedYr} Season Podium
+                <i class="fa-solid fa-trophy"></i> ${selectedYr} Season Podium &amp; Standings
               </span>
-              <span class="text-xs font-bold text-slate-300">Post-Playoff Final Outcomes</span>
+              <span class="text-xs font-bold text-slate-300">Post-Playoff Final Outcomes • Historical Team Names &amp; All-Play Metrics</span>
             </div>
-            <button type="button" onclick="toggleArchiveSeasonStandings()" class="btn-action px-2.5 py-1 text-xs text-sky-300">
-              <i class="fa-solid ${showStandingsTable ? 'fa-chevron-up' : 'fa-chevron-down'} text-[10px]"></i>
-              <span>${showStandingsTable ? 'Hide Final Standings (1–10)' : 'Show Final Standings (1–10)'}</span>
-            </button>
+            <div class="flex items-center gap-1.5">
+              <button type="button" onclick="setArchiveMode('STATS')" class="btn-action px-2.5 py-1 text-xs text-amber-300">
+                <i class="fa-solid fa-chart-pie text-[10px]"></i>
+                <span>Trade Analytics</span>
+              </button>
+              <button type="button" onclick="toggleArchiveSeasonStandings()" class="btn-action px-2.5 py-1 text-xs text-sky-300">
+                <i class="fa-solid ${showStandingsTable ? 'fa-chevron-up' : 'fa-chevron-down'} text-[10px]"></i>
+                <span>${showStandingsTable ? 'Hide Standings (1–10)' : 'Show Standings (1–10)'}</span>
+              </button>
+            </div>
           </div>
           <div class="grid grid-cols-2 lg:grid-cols-4 gap-2.5">
             <div class="bg-amber-950/25 border border-amber-500/40 rounded-xl p-2.5 sm:p-3">
               <div class="text-[10px] font-bold uppercase text-amber-300">🏆 Champion (#1)</div>
               <div class="text-xs sm:text-sm font-black text-white mt-0.5 truncate">${escapeHtml(resolveArchiveMgrName(champId))}</div>
+              ${champRow?.teamName ? `<div class="text-[10px] text-amber-200/90 truncate">${escapeHtml(champRow.teamName)}</div>` : ''}
+              ${champScoreSubline ? `<div class="text-[10px] font-mono text-slate-400 mt-0.5 truncate">${escapeHtml(champScoreSubline)}</div>` : ''}
             </div>
             <div class="bg-[#13161F] border border-white/10 rounded-xl p-2.5 sm:p-3">
               <div class="text-[10px] font-bold uppercase text-slate-400">🥈 Runner-Up (#2)</div>
               <div class="text-xs sm:text-sm font-black text-slate-100 mt-0.5 truncate">${escapeHtml(resolveArchiveMgrName(runnerUpId))}</div>
+              ${runnerRow?.teamName ? `<div class="text-[10px] text-slate-300 truncate">${escapeHtml(runnerRow.teamName)}</div>` : ''}
+              ${runnerRow ? `<div class="text-[10px] font-mono text-slate-400 mt-0.5">${runnerRow.wins}-${runnerRow.losses} • ${Number(runnerRow.pointsFor ?? runnerRow.pf ?? 0).toFixed(1)} PF</div>` : ''}
             </div>
             <div class="bg-sky-950/25 border border-sky-500/40 rounded-xl p-2.5 sm:p-3">
               <div class="text-[10px] font-bold uppercase text-sky-300">🧻 Toilet Bowl (1.01)</div>
               <div class="text-xs sm:text-sm font-black text-sky-100 mt-0.5 truncate">${escapeHtml(resolveArchiveMgrName(tbWinnerId))}</div>
+              ${tbWinRow?.teamName ? `<div class="text-[10px] text-sky-200/90 truncate">${escapeHtml(tbWinRow.teamName)}</div>` : ''}
+              ${tbWinRow ? `<div class="text-[10px] font-mono text-slate-400 mt-0.5">Earned ${selectedYr + 1} Pick 1.01</div>` : ''}
             </div>
             <div class="bg-purple-950/25 border border-purple-500/40 rounded-xl p-2.5 sm:p-3">
               <div class="text-[10px] font-bold uppercase text-purple-300">🍆 Phallic Feaster (#10)</div>
               <div class="text-xs sm:text-sm font-black text-purple-100 mt-0.5 truncate">${escapeHtml(resolveArchiveMgrName(feasterId))}</div>
+              ${feasterRow?.teamName ? `<div class="text-[10px] text-purple-200/90 truncate">${escapeHtml(feasterRow.teamName)}</div>` : ''}
+              ${feasterRow ? `<div class="text-[10px] font-mono text-slate-400 mt-0.5">${feasterRow.wins}-${feasterRow.losses} • #10 Toilet Loser</div>` : ''}
             </div>
           </div>
           ${showStandingsTable ? `
@@ -15875,29 +16802,59 @@
               <table class="w-full text-left border-collapse text-xs">
                 <thead>
                   <tr class="bg-[#13161F] text-[10px] font-black uppercase tracking-wider text-slate-400 border-b border-white/10">
-                    <th class="py-2 px-3">Finish</th>
-                    <th class="py-2 px-3">Manager</th>
-                    <th class="py-2 px-3">ESPN Team Name</th>
-                    <th class="py-2 px-3 text-center">Record</th>
-                    <th class="py-2 px-3 text-right">PF</th>
-                    <th class="py-2 px-3 text-right">PA</th>
+                    <th class="py-2 px-2.5">Finish</th>
+                    <th class="py-2 px-2.5">Manager &amp; Historical Team Name</th>
+                    <th class="py-2 px-2.5 text-center">Record</th>
+                    <th class="py-2 px-2.5 text-right">PF (PPG)</th>
+                    <th class="py-2 px-2.5 text-right">PA</th>
+                    <th class="py-2 px-2.5 text-right">Diff</th>
+                    <th class="py-2 px-2.5 text-center">All-Play</th>
+                    <th class="py-2 px-2.5 text-center">Luck</th>
+                    <th class="py-2 px-2.5 text-center">Moves</th>
                   </tr>
                 </thead>
                 <tbody class="divide-y divide-white/[0.06]">
-                  ${rows.map((r, i) => `
-                    <tr class="hover:bg-[#13161F]/70">
-                      <td class="py-2 px-3 font-mono font-bold text-slate-300">#${Number(r.finalRank ?? r.rank) || (i + 1)}</td>
-                      <td class="py-2 px-3 font-bold text-white">${escapeHtml(resolveArchiveMgrName(r.managerId || r.teamId))}</td>
-                      <td class="py-2 px-3 text-slate-400">${escapeHtml(r.espnTeamName || r.teamName || "")}</td>
-                      <td class="py-2 px-3 text-center font-mono text-amber-200">${r.wins}-${r.losses}${r.ties ? `-${r.ties}` : ""}</td>
-                      <td class="py-2 px-3 text-right font-mono text-emerald-300">${Number(r.pointsFor ?? r.pf ?? 0).toFixed(1)}</td>
-                      <td class="py-2 px-3 text-right font-mono text-slate-400">${Number(r.pointsAgainst ?? r.pa ?? 0).toFixed(1)}</td>
-                    </tr>
-                  `).join("")}
+                  ${rows.map((r, i) => {
+                    const w = Number(r.wins) || 0;
+                    const l = Number(r.losses) || 0;
+                    const t = Number(r.ties) || 0;
+                    const gp = Math.max(1, w + l + t);
+                    const pf = Number(r.pointsFor ?? r.pf ?? 0);
+                    const pa = Number(r.pointsAgainst ?? r.pa ?? 0);
+                    const ppg = (pf / gp).toFixed(1);
+                    const diff = (pf - pa).toFixed(1);
+                    const apW = Number(r.allPlayWins) || 0;
+                    const apL = Number(r.allPlayLosses) || 0;
+                    const apTot = apW + apL;
+                    const expW = apTot > 0 ? ((apW / apTot) * (w + l)) : w;
+                    const luck = (w - expW).toFixed(1);
+                    const hasMoves = Boolean(r.hasTransactions || Number(r.acquisitions) > 0 || Number(r.espnTrades) > 0);
+                    const movesTxt = hasMoves
+                      ? `${Number(r.acquisitions) || 0} Add${Number(r.espnTrades) > 0 ? ` / ${Number(r.espnTrades)} Trd` : ''}`
+                      : "—";
+                    const histTeamName = r.espnTeamName || r.teamName || "";
+                    return `
+                      <tr class="hover:bg-[#13161F]/70">
+                        <td class="py-2 px-2.5 font-mono font-bold text-slate-300">#${Number(r.finalRank ?? r.rank) || (i + 1)}</td>
+                        <td class="py-2 px-2.5">
+                          <div class="font-bold text-white">${escapeHtml(resolveArchiveMgrName(r.managerId || r.teamId))}</div>
+                          ${histTeamName ? `<div class="text-[10px] text-amber-300/90 font-medium">${escapeHtml(histTeamName)}</div>` : ''}
+                        </td>
+                        <td class="py-2 px-2.5 text-center font-mono font-bold text-white">${w}-${l}${t ? `-${t}` : ""}</td>
+                        <td class="py-2 px-2.5 text-right font-mono text-emerald-300">${pf.toFixed(1)} <span class="text-[10px] text-slate-500">(${ppg})</span></td>
+                        <td class="py-2 px-2.5 text-right font-mono text-slate-400">${pa.toFixed(1)}</td>
+                        <td class="py-2 px-2.5 text-right font-mono font-bold ${Number(diff) >= 0 ? 'text-emerald-400' : 'text-rose-400'}">${Number(diff) >= 0 ? '+' + diff : diff}</td>
+                        <td class="py-2 px-2.5 text-center font-mono text-sky-300">${apW}-${apL}</td>
+                        <td class="py-2 px-2.5 text-center font-mono ${Number(luck) >= 0 ? 'text-emerald-400' : 'text-rose-400'}">${Number(luck) >= 0 ? '+' + luck : luck} W</td>
+                        <td class="py-2 px-2.5 text-center font-mono text-slate-400">${escapeHtml(movesTxt)}</td>
+                      </tr>
+                    `;
+                  }).join("")}
                 </tbody>
               </table>
             </div>
           ` : ''}
+          ${postseasonDrawerHtml}
         </div>
       ` : "";
 
@@ -15959,6 +16916,7 @@
             <span class="static-badge bg-amber-950/70 text-amber-200 border border-amber-500/40">Est. 2016 Vault</span>
           </div>
           ${podiumAndStandingsHtml || `<div class="bg-[#0B0D12] border border-white/10 rounded-xl p-4 text-xs text-slate-400">Run the Commissioner 1-Click ESPN Sync to import full ${selectedYr} standings & draft selections.</div>`}
+          ${keepersDrawerHtml}
           ${foundingBoardHtml ? `
             <div class="space-y-2.5">
               <div class="text-xs font-bold uppercase tracking-wider text-amber-300">${selectedYr} Synced ESPN 20-Round Draft Board</div>
@@ -16079,9 +17037,15 @@
         </div>
 
         ${podiumAndStandingsHtml}
+        ${keepersDrawerHtml}
 
         <div class="space-y-2">
-          <div class="text-xs font-bold uppercase tracking-wider text-slate-400">${selectedYr} Recorded Off-Season Pick Trades & Conditions (${data.trades.length})</div>
+          <div class="flex flex-wrap items-center justify-between gap-2">
+            <div class="text-xs font-bold uppercase tracking-wider text-slate-400">${selectedYr} Recorded Off-Season Pick Trades &amp; Conditions (${data.trades.length})</div>
+            <button type="button" onclick="setArchiveMode('STATS')" class="text-[11px] font-bold text-amber-300 hover:underline cursor-pointer">
+              <i class="fa-solid fa-chart-column mr-1"></i>Explore All-Time Trade Analytics &amp; Blockbusters ▸
+            </button>
+          </div>
           <div class="grid grid-cols-1 md:grid-cols-2 gap-2">
             ${data.trades.map(tObj => {
               const isCond = tObj.isCond || tObj.text.includes("CONDITIONAL");
@@ -16104,7 +17068,8 @@
 
     function toggleArchiveSeasonStandings() {
       const selectedYr = Number(uiState.activeArchiveYear) || 2025;
-      const current = uiState.archiveShowStandingsManual ? Boolean(uiState.archiveShowStandings) : (selectedYr <= 2017);
+      const isFoundingEra = !HISTORICAL_ARCHIVE[selectedYr];
+      const current = uiState.archiveShowStandingsManual ? Boolean(uiState.archiveShowStandings) : isFoundingEra;
       uiState.archiveShowStandingsManual = true;
       uiState.archiveShowStandings = !current;
       refreshArchiveViews();
@@ -16119,26 +17084,26 @@
             <div>
               <h3 class="text-base sm:text-lg font-black text-white flex items-center gap-2">
                 <i class="fa-solid fa-box-archive text-amber-400"></i>
-                <span>Historical Vault (2016–2025) & All-Time Trade Analytics</span>
+                <span>Historical Vault (2016–2025) &amp; All-Time Trade Analytics</span>
               </h3>
-              <p class="text-xs text-slate-400">Founding ESPN seasons (2016–2017), full 20-round historical draft boards (2018–2025) & all-time trade leaderboards.</p>
+              <p class="text-xs text-slate-400">Founding ESPN seasons (2016–2017), full 20-round historical draft boards (2018–2025), historical ESPN team names, keepers &amp; all-time trade leaderboards.</p>
             </div>
           </div>
 
           <div class="flex flex-wrap items-center justify-between gap-2.5 bg-[#0B0D12] p-2.5 rounded-xl border border-white/10">
-            <div class="flex flex-wrap items-center gap-1.5">
-              <button onclick="setArchiveMode('STATS')" class="${uiState.archiveMode === 'STATS' ? 'btn-garnet' : 'btn-action text-slate-300'} px-3 py-1.5 text-xs">
+            <div class="segmented-bar">
+              <button onclick="setArchiveMode('STATS')" class="segmented-pill ${uiState.archiveMode === 'STATS' ? 'active' : ''}">
                 <i class="fa-solid fa-chart-pie"></i>
-                <span>All-Time Trade Stats</span>
+                <span>All-Time Trade Analytics</span>
               </button>
-              <button onclick="setArchiveMode('SEASONS')" class="${uiState.archiveMode === 'SEASONS' ? 'btn-garnet' : 'btn-action text-slate-300'} px-3 py-1.5 text-xs">
+              <button onclick="setArchiveMode('SEASONS')" class="segmented-pill ${uiState.archiveMode === 'SEASONS' ? 'active' : ''}">
                 <i class="fa-solid fa-table-cells"></i>
-                <span>2016–2025 Seasons & Draft Boards</span>
+                <span>2016–2025 Time Capsules</span>
               </button>
             </div>
-            <div class="flex flex-wrap gap-1">
+            <div class="segmented-bar flex-wrap">
               ${years.map(yr => `
-                <button onclick="selectArchiveSeasonYear(${yr})" class="${uiState.archiveMode === 'SEASONS' && yr === uiState.activeArchiveYear ? 'btn-garnet' : 'btn-action text-slate-300'} px-2.5 py-1 text-[11px]">
+                <button onclick="selectArchiveSeasonYear(${yr})" class="segmented-pill font-mono ${uiState.archiveMode === 'SEASONS' && yr === uiState.activeArchiveYear ? 'active' : ''}">
                   ${yr}
                 </button>
               `).join("")}
@@ -16852,9 +17817,34 @@
       const mtBadge = document.getElementById("moreToolsCommishStatusBadge");
       const mtBtnLbl = document.getElementById("moreToolsCommishToggleLabel");
       const mtAdminGrid = document.getElementById("moreToolsAdminActionsGrid");
+      const mtEspnPill = document.getElementById("moreToolsEspnSyncStatusPill");
+      const mtOrderPill = document.getElementById("moreToolsOrderStatusPill");
+      const mtCloudPill = document.getElementById("moreToolsCloudStatusPill");
+      const mtWindowPill = document.getElementById("moreToolsWindowStatusPill");
 
+      const syncShort = formatEspnLastSyncedShort();
       if (hdrEspnBadge) {
-        hdrEspnBadge.textContent = formatEspnLastSyncedShort();
+        hdrEspnBadge.textContent = syncShort;
+      }
+      if (mtEspnPill) {
+        mtEspnPill.textContent = syncShort === "Ready" ? "Ready" : `Synced ${syncShort}`;
+      }
+      if (mtOrderPill && typeof leagueDB !== "undefined") {
+        const activeYr = Number(uiState.activeYear) || Number(leagueDB?.baseUpcomingYear) || 2027;
+        const ord = leagueDB?.draftOrders?.[activeYr];
+        const isLocked = Boolean(ord && ord.isLocked);
+        mtOrderPill.textContent = `${activeYr} ${isLocked ? "Locked" : "Projected"}`;
+        mtOrderPill.className = isLocked
+          ? "static-badge bg-emerald-950/70 text-emerald-300 border border-emerald-500/30"
+          : "static-badge bg-amber-950/60 text-amber-300 border border-amber-500/30";
+      }
+      if (mtCloudPill) {
+        const hasCloud = Boolean(typeof getActiveCloudSyncUrl === "function" && getActiveCloudSyncUrl());
+        mtCloudPill.textContent = hasCloud ? "Cloud Live" : "Local";
+      }
+      if (mtWindowPill && typeof getActiveDraftYears === "function") {
+        const yrs = getActiveDraftYears();
+        mtWindowPill.textContent = yrs.length ? `${yrs[0]}–${yrs[yrs.length - 1]}` : "+1 Yr";
       }
 
       if (uiState.isCommish) {
@@ -17976,6 +18966,11 @@
           allPlayLosses: ap.l,
           toiletWins: tb.w,
           toiletPoints: Math.round(tb.pts * 10) / 10,
+          acquisitions: Number(tm.transactionCounter?.acquisitions) || 0,
+          drops: Number(tm.transactionCounter?.drops) || 0,
+          espnTrades: Number(tm.transactionCounter?.trades) || 0,
+          moveToIR: Number(tm.transactionCounter?.moveToIR) || 0,
+          hasTransactions: Boolean(tm.transactionCounter),
           streak: (tm.record?.overall?.streakType === "WIN" ? "W" : "L") + (tm.record?.overall?.streakLength || 1)
         };
       }).sort((a, b) => (a.finalRank - b.finalRank) || (b.wins - a.wins) || (b.pointsFor - a.pointsFor));
@@ -17994,13 +18989,16 @@
       const tbWinnerId = sortedTb[0]?.teamId || standings[5]?.teamId || "";
       const feasterId = sortedTb[sortedTb.length - 1]?.teamId || standings[standings.length - 1]?.teamId || "";
 
-      // Extract Post-Keeper Draft Selections (1.01 - 20.10) from mDraftDetail when available
+      // Extract Post-Keeper Draft Selections (1.01 - 20.10) AND Historical Keepers from mDraftDetail when available
       let extractedDraftPicks = [];
+      let extractedKeepers = [];
       const rawDraftPicks = Array.isArray(lg.draftDetail?.picks) ? lg.draftDetail.picks : [];
       if (rawDraftPicks.length > 0) {
         const nonKeeperRaw = rawDraftPicks.filter(pk => !pk.keeper && Number(pk.playerId) > 0);
+        const keeperRaw = rawDraftPicks.filter(pk => Boolean(pk.keeper) && Number(pk.playerId) > 0);
         const targetPicks = nonKeeperRaw.length > 0 ? nonKeeperRaw : rawDraftPicks.filter(pk => Number(pk.playerId) > 0);
-        const missingPids = [...new Set(targetPicks.map(pk => Number(pk.playerId)).filter(pid => pid > 0 && !globalPlayerMap[pid]))];
+        const allReferencedPicks = [...targetPicks, ...keeperRaw];
+        const missingPids = [...new Set(allReferencedPicks.map(pk => Number(pk.playerId)).filter(pid => pid > 0 && !globalPlayerMap[pid]))];
         if (missingPids.length > 0 && yr >= 2018) {
           try {
             const pRes = await fetch(\`https://lm-api-reads.fantasy.espn.com/apis/v3/games/ffl/seasons/\${yr}/segments/0/leagues/\${leagueId}?view=kona_player_info\`, {
@@ -18053,6 +19051,20 @@
         if (extractedDraftPicks.length > 0) {
           out.draftResults[String(yr)] = extractedDraftPicks;
         }
+        extractedKeepers = keeperRaw.slice(0, 150).map((pk, idx) => {
+          const pid = Number(pk.playerId) || 0;
+          const pMeta = globalPlayerMap[pid] || null;
+          return {
+            round: Math.max(1, Math.min(20, Number(pk.roundId) || ((idx % 12) + 1))),
+            espnTeamId: Number(pk.teamId) || 0,
+            teamId: "espn_" + (Number(pk.teamId) || 0),
+            playerId: "espn_p_" + pid,
+            espnId: pid,
+            name: pMeta ? pMeta.name : (pk.playerName || ("Player #" + pid)),
+            pos: pMeta ? pMeta.pos : "FLEX",
+            nflTeam: pMeta ? pMeta.nflTeam : "NFL"
+          };
+        });
       }
 
       out.seasons[String(yr)] = {
@@ -18065,7 +19077,8 @@
         toiletBowl: seasonCompleted ? feasterId : "",
         standings,
         matchups,
-        draftPicks: extractedDraftPicks
+        draftPicks: extractedDraftPicks,
+        keptPlayers: extractedKeepers
       };
 
       if (yr >= 2025 || Object.keys(out.rosters).length === 0) {
@@ -18764,11 +19777,62 @@
                     finalStanding: rankVal,
                     toiletWins: Number(st.toiletWins) || 0,
                     toiletPoints: Number(st.toiletPoints) || 0,
+                    acquisitions: Number(st.acquisitions) || 0,
+                    drops: Number(st.drops) || 0,
+                    espnTrades: Number(st.espnTrades ?? st.trades) || 0,
+                    moveToIR: Number(st.moveToIR) || 0,
+                    hasTransactions: Boolean(st.hasTransactions || Number(st.acquisitions) > 0 || Number(st.drops) > 0 || Number(st.espnTrades ?? st.trades) > 0),
                     streak: cleanStr(st.streak || "W1", 8),
                     allPlayWins: Number(st.allPlayWins) || Math.round((Number(st.wins) || 7) * 9),
                     allPlayLosses: Number(st.allPlayLosses) || Math.round((Number(st.losses) || 7) * 9)
                   };
                 })
+              : [];
+
+            const normalizedSeasonMatchups = [];
+            if (Array.isArray(sObj.matchups)) {
+              sObj.matchups.forEach(m => {
+                const hId = resolveEspnSlotToGcmId(m.homeSlot || m.homeManagerId || m.homeTeamId);
+                const aId = resolveEspnSlotToGcmId(m.awaySlot || m.awayManagerId || m.awayTeamId);
+                const hScore = Math.round((Number(m.homeScore) || 0) * 10) / 10;
+                const aScore = Math.round((Number(m.awayScore) || 0) * 10) / 10;
+                const wk = Number(m.week) || 1;
+                if (!hId || !aId || (hScore === 0 && aScore === 0)) return;
+                const hMgr = slotToHistoricalManager[String(m.homeSlot || "").replace(/^espn_/, "")] || hId;
+                const aMgr = slotToHistoricalManager[String(m.awaySlot || "").replace(/^espn_/, "")] || aId;
+                normalizedSeasonMatchups.push({
+                  week: wk,
+                  homeTeamId: hId,
+                  homeManagerId: hMgr,
+                  homeScore: hScore,
+                  awayTeamId: aId,
+                  awayManagerId: aMgr,
+                  awayScore: aScore,
+                  tier: cleanStr(m.tier || "NONE", 32).toUpperCase()
+                });
+              });
+            }
+
+            const normalizedKeptPlayers = Array.isArray(sObj.keptPlayers)
+              ? sObj.keptPlayers.slice(0, 150).map((kp, idx) => {
+                  const slotKey = String(kp.espnTeamId || kp.teamId || "").replace(/^espn_/, "");
+                  const gcmTid = resolveEspnSlotToGcmId(kp.espnTeamId || kp.teamId || kp.managerId) || "syeth";
+                  const mgrId = slotToHistoricalManager[slotKey] || gcmTid;
+                  const numPid = Number(kp.espnId) || Number(String(kp.playerId || "").replace(/^espn_p_/, "")) || 0;
+                  const fallbackPl = numPid > 0 ? rosterPlayerByEspnId[numPid] : null;
+                  const pName = cleanStr(kp.name || kp.playerName || fallbackPl?.name || "", 60).trim();
+                  return {
+                    round: Math.max(1, Math.min(20, Number(kp.round) || ((idx % 12) + 1))),
+                    espnTeamId: Number(kp.espnTeamId) || 0,
+                    teamId: gcmTid,
+                    managerId: mgrId,
+                    playerId: cleanStr(kp.playerId || (numPid > 0 ? `espn_p_${numPid}` : ""), 48),
+                    espnId: numPid,
+                    name: pName,
+                    pos: cleanStr(kp.pos || fallbackPl?.pos || "FLEX", 12).toUpperCase(),
+                    nflTeam: cleanStr(kp.nflTeam || fallbackPl?.nflTeam || "NFL", 8).toUpperCase()
+                  };
+                }).filter(kp => kp.name)
               : [];
 
             if (standings.length > 0) {
@@ -18803,7 +19867,9 @@
                 phallicFeaster: isCompleted ? resolveSeasonAwardee(sObj.phallicFeaster || sObj.toiletBowl, finalTenthRow) : "",
                 toiletBowl: isCompleted ? resolveSeasonAwardee(sObj.phallicFeaster || sObj.toiletBowl, finalTenthRow) : "",
                 highestScorer: resolveSeasonAwardee(sObj.highestScorer, topPfRow),
-                standings
+                standings,
+                matchups: normalizedSeasonMatchups,
+                keptPlayers: normalizedKeptPlayers
               };
               ed.seasonStandings[String(yr)] = standings;
             }
