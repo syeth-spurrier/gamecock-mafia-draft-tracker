@@ -88,103 +88,186 @@
   </script>
   <style>
     :root {
-      --bg-obsidian: #0B0D12;
-      --bg-surface: #13161F;
-      --bg-elevated: #1B1F2B;
-      --border-subtle: rgba(255, 255, 255, 0.07);
+      --bg-obsidian: #0C0A0C;
+      --bg-obsidian-rgb: 12, 10, 12;
+      --bg-surface: #151216;
+      --bg-surface-rgb: 21, 18, 22;
+      --bg-elevated: #211B22;
+      --bg-elevated-rgb: 33, 27, 34;
+      --border-subtle: rgba(204, 20, 41, 0.16);
       --usc-garnet: #73000A;
+      --usc-garnet-rgb: 115, 0, 10;
       --usc-garnet-bright: #99000F;
       --usc-garnet-hi: #CC1429;
-      --theme-hero-grad: linear-gradient(135deg, #2D070C 0%, #590007 42%, #13161F 100%);
+      --usc-garnet-hi-rgb: 204, 20, 41;
+      --theme-trim: #D4AF37;
+      --theme-trim-rgb: 212, 175, 55;
+      --theme-ambient-bg:
+        radial-gradient(ellipse 92% 42% at 50% -6%, rgba(153, 0, 15, 0.24) 0%, transparent 68%),
+        radial-gradient(circle at 92% 102%, rgba(212, 175, 55, 0.08) 0%, transparent 48%);
+      --theme-card-grad: linear-gradient(165deg, rgba(25, 19, 24, 0.96) 0%, rgba(18, 15, 19, 0.98) 100%);
+      --theme-hero-grad: linear-gradient(135deg, #32070D 0%, #630009 44%, #161217 100%);
       --theme-btn-grad: linear-gradient(180deg, #99000F 0%, #73000A 100%);
       --theme-btn-hover: linear-gradient(180deg, #B30012 0%, #87000C 100%);
-      --theme-border-hi: rgba(204, 20, 41, 0.55);
-      --theme-glow: rgba(153, 0, 15, 0.38);
+      --theme-border-hi: rgba(204, 20, 41, 0.58);
+      --theme-glow: rgba(153, 0, 15, 0.4);
     }
-    /* Cohesive Matte Dark Surfaces Across All 6 Normal Colorways (Team Accents Only) */
-    /* Colorway 1: Sandstorm Noir (Default USC Garnet & Matte Slate) */
+    /* Balanced Stadium-Tinted Dark Surfaces + Two-Tone Jersey Trim Across All 6 Normal Colorways */
+    /* Colorway 1: Sandstorm Noir (USC Garnet, Championship Gold Trim & Warm Obsidian) */
     body.theme-sandstorm_noir {
-      --bg-obsidian: #0B0D12;
-      --bg-surface: #13161F;
-      --bg-elevated: #1B1F2B;
+      --bg-obsidian: #0C0A0C;
+      --bg-obsidian-rgb: 12, 10, 12;
+      --bg-surface: #151216;
+      --bg-surface-rgb: 21, 18, 22;
+      --bg-elevated: #211B22;
+      --bg-elevated-rgb: 33, 27, 34;
+      --border-subtle: rgba(204, 20, 41, 0.16);
       --usc-garnet: #73000A;
+      --usc-garnet-rgb: 115, 0, 10;
       --usc-garnet-bright: #99000F;
       --usc-garnet-hi: #CC1429;
-      --theme-hero-grad: linear-gradient(135deg, #2D070C 0%, #590007 42%, #13161F 100%);
+      --usc-garnet-hi-rgb: 204, 20, 41;
+      --theme-trim: #D4AF37;
+      --theme-trim-rgb: 212, 175, 55;
+      --theme-ambient-bg:
+        radial-gradient(ellipse 92% 42% at 50% -6%, rgba(153, 0, 15, 0.24) 0%, transparent 68%),
+        radial-gradient(circle at 92% 102%, rgba(212, 175, 55, 0.08) 0%, transparent 48%);
+      --theme-card-grad: linear-gradient(165deg, rgba(25, 19, 24, 0.96) 0%, rgba(18, 15, 19, 0.98) 100%);
+      --theme-hero-grad: linear-gradient(135deg, #32070D 0%, #630009 44%, #161217 100%);
       --theme-btn-grad: linear-gradient(180deg, #99000F 0%, #73000A 100%);
       --theme-btn-hover: linear-gradient(180deg, #B30012 0%, #87000C 100%);
-      --theme-border-hi: rgba(204, 20, 41, 0.55);
-      --theme-glow: rgba(153, 0, 15, 0.38);
+      --theme-border-hi: rgba(204, 20, 41, 0.58);
+      --theme-glow: rgba(153, 0, 15, 0.4);
     }
-    /* Colorway 2: Chapel Sky (UNC Tarheel Blue Accents on Matte Slate) */
+    /* Colorway 2: Chapel Sky (UNC Carolina Sky Blue, Crisp White-Ice Trim & Deep Chapel Navy Slate) */
     body.theme-chapel_sky {
-      --bg-obsidian: #0B0D12;
-      --bg-surface: #13161F;
-      --bg-elevated: #1B1F2B;
+      --bg-obsidian: #07101E;
+      --bg-obsidian-rgb: 7, 16, 30;
+      --bg-surface: #0E1B31;
+      --bg-surface-rgb: 14, 27, 49;
+      --bg-elevated: #162847;
+      --bg-elevated-rgb: 22, 40, 71;
+      --border-subtle: rgba(75, 156, 211, 0.22);
       --usc-garnet: #1E4E8C;
+      --usc-garnet-rgb: 30, 78, 140;
       --usc-garnet-bright: #2B6CB0;
       --usc-garnet-hi: #4B9CD3;
-      --theme-hero-grad: linear-gradient(135deg, #102442 0%, #1E4E8C 44%, #13161F 100%);
+      --usc-garnet-hi-rgb: 75, 156, 211;
+      --theme-trim: #E0F2FE;
+      --theme-trim-rgb: 224, 242, 254;
+      --theme-ambient-bg:
+        radial-gradient(ellipse 92% 45% at 50% -6%, rgba(75, 156, 211, 0.27) 0%, transparent 70%),
+        radial-gradient(circle at 12% 96%, rgba(19, 41, 75, 0.45) 0%, transparent 55%);
+      --theme-card-grad: linear-gradient(165deg, rgba(17, 32, 58, 0.96) 0%, rgba(12, 23, 42, 0.98) 100%);
+      --theme-hero-grad: linear-gradient(135deg, #0F2342 0%, #235A9E 45%, #0E1B31 100%);
       --theme-btn-grad: linear-gradient(180deg, #4B9CD3 0%, #1E4E8C 100%);
       --theme-btn-hover: linear-gradient(180deg, #63B3ED 0%, #2B6CB0 100%);
-      --theme-border-hi: rgba(123, 175, 212, 0.55);
-      --theme-glow: rgba(75, 156, 211, 0.35);
+      --theme-border-hi: rgba(123, 175, 212, 0.62);
+      --theme-glow: rgba(75, 156, 211, 0.4);
     }
-    /* Colorway 3: Honolulu Gridiron (Detroit Lions Honolulu Blue Accents on Matte Slate) */
+    /* Colorway 3: Honolulu Gridiron (Detroit Honolulu Blue, Metallic Silver Trim & Ford Field Gunmetal) */
     body.theme-honolulu_gridiron {
-      --bg-obsidian: #0B0D12;
-      --bg-surface: #13161F;
-      --bg-elevated: #1B1F2B;
+      --bg-obsidian: #07121A;
+      --bg-obsidian-rgb: 7, 18, 26;
+      --bg-surface: #0E1E2B;
+      --bg-surface-rgb: 14, 30, 43;
+      --bg-elevated: #172D3F;
+      --bg-elevated-rgb: 23, 45, 63;
+      --border-subtle: rgba(176, 183, 188, 0.22);
       --usc-garnet: #005A8B;
+      --usc-garnet-rgb: 0, 90, 139;
       --usc-garnet-bright: #0076B6;
-      --usc-garnet-hi: #38BDF8;
-      --theme-hero-grad: linear-gradient(135deg, #072940 0%, #00669C 44%, #13161F 100%);
-      --theme-btn-grad: linear-gradient(180deg, #0076B6 0%, #005582 100%);
-      --theme-btn-hover: linear-gradient(180deg, #0088D1 0%, #00669C 100%);
-      --theme-border-hi: rgba(56, 189, 248, 0.5);
-      --theme-glow: rgba(0, 118, 182, 0.36);
+      --usc-garnet-hi: #0092DF;
+      --usc-garnet-hi-rgb: 0, 146, 223;
+      --theme-trim: #CBD5E1;
+      --theme-trim-rgb: 203, 213, 225;
+      --theme-ambient-bg:
+        radial-gradient(ellipse 92% 45% at 50% -6%, rgba(0, 118, 182, 0.28) 0%, transparent 70%),
+        radial-gradient(circle at 88% 96%, rgba(176, 183, 188, 0.14) 0%, transparent 52%);
+      --theme-card-grad: linear-gradient(165deg, rgba(16, 35, 50, 0.96) 0%, rgba(12, 26, 38, 0.98) 100%);
+      --theme-hero-grad: linear-gradient(135deg, #06283E 0%, #0076B6 44%, #102230 100%);
+      --theme-btn-grad: linear-gradient(180deg, #0082C8 0%, #005582 100%);
+      --theme-btn-hover: linear-gradient(180deg, #0096E6 0%, #00669C 100%);
+      --theme-border-hi: rgba(176, 183, 188, 0.6);
+      --theme-glow: rgba(0, 118, 182, 0.42);
     }
-    /* Colorway 4: Foundry Orange (Cleveland Browns Orange Accents on Matte Slate) */
+    /* Colorway 4: Foundry Orange (Cleveland Forge Orange, Warm Copper-Brown Trim & Espresso Slate) */
     body.theme-foundry_orange {
-      --bg-obsidian: #0B0D12;
-      --bg-surface: #13161F;
-      --bg-elevated: #1B1F2B;
+      --bg-obsidian: #120B08;
+      --bg-obsidian-rgb: 18, 11, 8;
+      --bg-surface: #1E130E;
+      --bg-surface-rgb: 30, 19, 14;
+      --bg-elevated: #2C1C15;
+      --bg-elevated-rgb: 44, 28, 21;
+      --border-subtle: rgba(255, 60, 0, 0.2);
       --usc-garnet: #9A2600;
+      --usc-garnet-rgb: 154, 38, 0;
       --usc-garnet-bright: #CC3000;
-      --usc-garnet-hi: #FF3C00;
-      --theme-hero-grad: linear-gradient(135deg, #331306 0%, #9A2600 44%, #13161F 100%);
+      --usc-garnet-hi: #FF4800;
+      --usc-garnet-hi-rgb: 255, 72, 0;
+      --theme-trim: #FDBA74;
+      --theme-trim-rgb: 253, 186, 116;
+      --theme-ambient-bg:
+        radial-gradient(ellipse 92% 44% at 50% -6%, rgba(255, 60, 0, 0.24) 0%, transparent 68%),
+        radial-gradient(circle at 14% 96%, rgba(92, 45, 18, 0.32) 0%, transparent 52%);
+      --theme-card-grad: linear-gradient(165deg, rgba(35, 22, 16, 0.96) 0%, rgba(25, 16, 12, 0.98) 100%);
+      --theme-hero-grad: linear-gradient(135deg, #311D00 0%, #B32D00 45%, #1E130E 100%);
       --theme-btn-grad: linear-gradient(180deg, #E63600 0%, #9A2600 100%);
       --theme-btn-hover: linear-gradient(180deg, #FF5722 0%, #CC3000 100%);
-      --theme-border-hi: rgba(255, 60, 0, 0.55);
-      --theme-glow: rgba(255, 60, 0, 0.34);
+      --theme-border-hi: rgba(255, 90, 31, 0.6);
+      --theme-glow: rgba(255, 60, 0, 0.38);
     }
-    /* Colorway 5: Emerald Sound '98 (Seahawks Royal & Action Green Accents on Matte Slate) */
+    /* Colorway 5: Emerald Sound '98 (Throwback Seahawks Pacific Royal, Action Green Trim & Deep Evergreen-Navy) */
     body.theme-emerald_sound {
-      --bg-obsidian: #0B0D12;
-      --bg-surface: #13161F;
-      --bg-elevated: #1B1F2B;
-      --usc-garnet: #0F5C3A;
-      --usc-garnet-bright: #1E7E48;
+      --bg-obsidian: #06121A;
+      --bg-obsidian-rgb: 6, 18, 26;
+      --bg-surface: #0C1F2D;
+      --bg-surface-rgb: 12, 31, 45;
+      --bg-elevated: #143044;
+      --bg-elevated-rgb: 20, 48, 68;
+      --border-subtle: rgba(105, 190, 40, 0.22);
+      --usc-garnet: #004B8D;
+      --usc-garnet-rgb: 0, 75, 141;
+      --usc-garnet-bright: #196F52;
       --usc-garnet-hi: #69BE28;
-      --theme-hero-grad: linear-gradient(135deg, #092B4C 0%, #145A32 45%, #13161F 100%);
-      --theme-btn-grad: linear-gradient(180deg, #23864C 0%, #0B4F6C 100%);
-      --theme-btn-hover: linear-gradient(180deg, #2EA05B 0%, #0E6387 100%);
-      --theme-border-hi: rgba(105, 190, 40, 0.55);
-      --theme-glow: rgba(105, 190, 40, 0.32);
+      --usc-garnet-hi-rgb: 105, 190, 40;
+      --theme-trim: #69BE28;
+      --theme-trim-rgb: 105, 190, 40;
+      --theme-ambient-bg:
+        radial-gradient(ellipse 92% 45% at 50% -6%, rgba(0, 75, 141, 0.3) 0%, transparent 68%),
+        radial-gradient(circle at 86% 96%, rgba(105, 190, 40, 0.16) 0%, transparent 52%);
+      --theme-card-grad: linear-gradient(165deg, rgba(14, 35, 50, 0.96) 0%, rgba(10, 26, 38, 0.98) 100%);
+      --theme-hero-grad: linear-gradient(135deg, #003E75 0%, #15653B 46%, #0C1F2D 100%);
+      --theme-btn-grad: linear-gradient(180deg, #23864C 0%, #004B8D 100%);
+      --theme-btn-hover: linear-gradient(180deg, #2EA05B 0%, #005FA8 100%);
+      --theme-border-hi: rgba(105, 190, 40, 0.62);
+      --theme-glow: rgba(105, 190, 40, 0.36);
     }
-    /* Colorway 6: Jets of the West (Arizona Cardinals Red, Black & Yellow Accents on Matte Slate) */
+    /* Colorway 6: Jets of the West (Desert Cardinal Crimson, Sunburst Gold Trim & Warm Onyx) */
     body.theme-jets_of_the_west {
-      --bg-obsidian: #0B0D12;
-      --bg-surface: #13161F;
-      --bg-elevated: #1B1F2B;
+      --bg-obsidian: #11090C;
+      --bg-obsidian-rgb: 17, 9, 12;
+      --bg-surface: #1C1015;
+      --bg-surface-rgb: 28, 16, 21;
+      --bg-elevated: #2A1820;
+      --bg-elevated-rgb: 42, 24, 32;
+      --border-subtle: rgba(255, 182, 18, 0.22);
       --usc-garnet: #97233F;
+      --usc-garnet-rgb: 151, 35, 63;
       --usc-garnet-bright: #C41E3A;
       --usc-garnet-hi: #FFB612;
-      --theme-hero-grad: linear-gradient(135deg, #3B0B17 0%, #871D36 44%, #13161F 100%);
+      --usc-garnet-hi-rgb: 255, 182, 18;
+      --theme-trim: #FFB612;
+      --theme-trim-rgb: 255, 182, 18;
+      --theme-ambient-bg:
+        radial-gradient(ellipse 92% 45% at 50% -6%, rgba(151, 35, 63, 0.3) 0%, transparent 68%),
+        radial-gradient(circle at 88% 96%, rgba(255, 182, 18, 0.14) 0%, transparent 50%);
+      --theme-card-grad: linear-gradient(165deg, rgba(33, 18, 25, 0.96) 0%, rgba(24, 13, 18, 0.98) 100%);
+      --theme-hero-grad: linear-gradient(135deg, #3B0B17 0%, #97233F 44%, #1C1015 100%);
       --theme-btn-grad: linear-gradient(180deg, #B81D38 0%, #7A162D 100%);
       --theme-btn-hover: linear-gradient(180deg, #D42240 0%, #97233F 100%);
-      --theme-border-hi: rgba(255, 182, 18, 0.6);
-      --theme-glow: rgba(151, 35, 63, 0.42);
+      --theme-border-hi: rgba(255, 182, 18, 0.65);
+      --theme-glow: rgba(151, 35, 63, 0.44);
     }
     /* Colorway 7: Upstate Kitties (Enhanced Maximum Clemson Troll Chaos — Sparkly Hot-Pink & Glitter!) */
     @keyframes kittySparkleShift {
@@ -214,11 +297,19 @@
     }
     body.theme-upstate_kitties {
       --bg-obsidian: #330524;
+      --bg-obsidian-rgb: 51, 5, 36;
       --bg-surface: #520D3B;
+      --bg-surface-rgb: 82, 13, 59;
       --bg-elevated: #6B134E;
+      --bg-elevated-rgb: 107, 19, 78;
+      --border-subtle: rgba(251, 207, 232, 0.65);
       --usc-garnet: #DB2777;
+      --usc-garnet-rgb: 219, 39, 119;
       --usc-garnet-bright: #EC4899;
       --usc-garnet-hi: #FF1493;
+      --usc-garnet-hi-rgb: 255, 20, 147;
+      --theme-trim: #F9A8D4;
+      --theme-trim-rgb: 249, 168, 212;
       --theme-hero-grad: linear-gradient(135deg, #FF1493 0%, #EC4899 35%, #D946EF 68%, #FF69B4 100%);
       --theme-btn-grad: linear-gradient(180deg, #FF1493 0%, #BE185D 100%);
       --theme-btn-hover: linear-gradient(180deg, #FF69B4 0%, #DB2777 100%);
@@ -259,25 +350,83 @@
     body.theme-upstate_kitties .kitty-curse-badge {
       animation: kittyBadgeWiggle 1.8s ease-in-out infinite;
     }
+    body:not(.theme-upstate_kitties) {
+      background-color: var(--bg-obsidian);
+      background-image: var(--theme-ambient-bg);
+      background-attachment: fixed;
+    }
     body {
       background-color: var(--bg-obsidian);
       color: #F8FAFC;
       font-feature-settings: "cv02", "cv03", "cv04", "cv11";
       transition: background-color 0.22s ease;
     }
+    header#appHeaderShell {
+      background-color: rgba(var(--bg-obsidian-rgb), 0.92) !important;
+      border-bottom: 1px solid rgba(var(--theme-trim-rgb), 0.24) !important;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.35);
+    }
+    nav#mobileBottomNav {
+      background-color: rgba(var(--bg-obsidian-rgb), 0.96) !important;
+      border-top: 1px solid rgba(var(--theme-trim-rgb), 0.26) !important;
+    }
+    /* Global Theme-Reactive Overrides for Hardcoded Utility Classes */
+    .bg-\[\#0B0D12\] { background-color: var(--bg-obsidian) !important; }
+    .bg-\[\#0B0D12\]\/98 { background-color: rgba(var(--bg-obsidian-rgb), 0.98) !important; }
+    .bg-\[\#0B0D12\]\/95 { background-color: rgba(var(--bg-obsidian-rgb), 0.95) !important; }
+    .bg-\[\#0B0D12\]\/90 { background-color: rgba(var(--bg-obsidian-rgb), 0.90) !important; }
+    .bg-\[\#0B0D12\]\/70 { background-color: rgba(var(--bg-obsidian-rgb), 0.70) !important; }
+    .bg-\[\#0B0D12\]\/60 { background-color: rgba(var(--bg-obsidian-rgb), 0.60) !important; }
+    .bg-\[\#0B0D12\]\/50 { background-color: rgba(var(--bg-obsidian-rgb), 0.50) !important; }
+    .bg-\[\#13161F\] { background-color: var(--bg-surface) !important; }
+    .bg-\[\#13161F\]\/98 { background-color: rgba(var(--bg-surface-rgb), 0.98) !important; }
+    .bg-\[\#13161F\]\/95 { background-color: rgba(var(--bg-surface-rgb), 0.95) !important; }
+    .bg-\[\#13161F\]\/80 { background-color: rgba(var(--bg-surface-rgb), 0.80) !important; }
+    .bg-\[\#13161F\]\/70 { background-color: rgba(var(--bg-surface-rgb), 0.70) !important; }
+    .bg-\[\#1B1F2B\] { background-color: var(--bg-elevated) !important; }
+    .hover\:bg-\[\#13161F\]:hover { background-color: var(--bg-surface) !important; }
+    .hover\:bg-\[\#1B1F2B\]:hover { background-color: var(--bg-elevated) !important; }
+    .bg-\[\#73000A\] { background-color: var(--usc-garnet) !important; }
+    .bg-\[\#73000A\]\/80 { background-color: rgba(var(--usc-garnet-rgb), 0.82) !important; }
+    .bg-\[\#73000A\]\/70 { background-color: rgba(var(--usc-garnet-rgb), 0.72) !important; }
+    .bg-\[\#73000A\]\/60 { background-color: rgba(var(--usc-garnet-rgb), 0.62) !important; }
+    .bg-\[\#73000A\]\/40 { background-color: rgba(var(--usc-garnet-rgb), 0.42) !important; }
+    .bg-\[\#73000A\]\/20 { background-color: rgba(var(--usc-garnet-rgb), 0.22) !important; }
+    .bg-\[\#73000A\]\/15 { background-color: rgba(var(--usc-garnet-rgb), 0.16) !important; }
+    .bg-\[\#CC1429\] { background-color: var(--usc-garnet-hi) !important; }
+    .text-\[\#CC1429\] { color: var(--usc-garnet-hi) !important; }
+    .border-\[\#CC1429\] { border-color: var(--usc-garnet-hi) !important; }
+    .border-\[\#CC1429\]\/70 { border-color: rgba(var(--usc-garnet-hi-rgb), 0.72) !important; }
+    .border-\[\#CC1429\]\/60 { border-color: rgba(var(--usc-garnet-hi-rgb), 0.62) !important; }
+    .border-\[\#CC1429\]\/50 { border-color: rgba(var(--usc-garnet-hi-rgb), 0.52) !important; }
+    .focus\:border-\[\#CC1429\]:focus { border-color: var(--usc-garnet-hi) !important; }
+    .hover\:border-\[\#CC1429\]\/50:hover { border-color: rgba(var(--usc-garnet-hi-rgb), 0.55) !important; }
+    .from-\[\#73000A\] {
+      --tw-gradient-from: var(--usc-garnet) var(--tw-gradient-from-position) !important;
+      --tw-gradient-to: rgba(var(--usc-garnet-rgb), 0) var(--tw-gradient-to-position) !important;
+      --tw-gradient-stops: var(--tw-gradient-from), var(--tw-gradient-to) !important;
+    }
+    .from-\[\#CC1429\] {
+      --tw-gradient-from: var(--usc-garnet-hi) var(--tw-gradient-from-position) !important;
+      --tw-gradient-to: rgba(var(--usc-garnet-hi-rgb), 0) var(--tw-gradient-to-position) !important;
+      --tw-gradient-stops: var(--tw-gradient-from), var(--tw-gradient-to) !important;
+    }
+    .to-\[\#CC1429\] {
+      --tw-gradient-to: var(--usc-garnet-hi) var(--tw-gradient-to-position) !important;
+    }
     ::-webkit-scrollbar {
       width: 6px;
       height: 6px;
     }
     ::-webkit-scrollbar-track {
-      background: #0B0D12;
+      background: var(--bg-obsidian);
     }
     ::-webkit-scrollbar-thumb {
-      background: #262B38;
+      background: rgba(var(--theme-trim-rgb), 0.28);
       border-radius: 9999px;
     }
     ::-webkit-scrollbar-thumb:hover {
-      background: #3B4254;
+      background: rgba(var(--theme-trim-rgb), 0.48);
     }
     .no-scrollbar::-webkit-scrollbar {
       display: none;
@@ -286,22 +435,22 @@
       -ms-overflow-style: none;
       scrollbar-width: none;
     }
-    /* Sleek Sports App Matte Cards & Hairline Surfaces (Sleeper / Apple Sports Style) */
+    /* Sleek Sports App Matte Cards & Hairline Surfaces (Theme-Aware + Two-Tone Identity Trim) */
     .app-card {
-      background: var(--bg-surface);
+      background: var(--theme-card-grad, var(--bg-surface));
       border: 1px solid var(--border-subtle);
       border-radius: 1rem;
-      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.28);
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.32), inset 0 1px 0 rgba(var(--theme-trim-rgb), 0.14);
     }
     .app-card-elevated {
       background: var(--bg-elevated);
-      border: 1px solid rgba(255, 255, 255, 0.06);
+      border: 1px solid rgba(var(--theme-trim-rgb), 0.14);
       border-radius: 0.875rem;
     }
     .garnet-hero-banner {
       background: var(--theme-hero-grad);
-      border: 1px solid rgba(255, 255, 255, 0.1);
-      box-shadow: 0 10px 28px rgba(0, 0, 0, 0.38), inset 0 1px 0 rgba(255, 255, 255, 0.1);
+      border: 1px solid rgba(var(--theme-trim-rgb), 0.35);
+      box-shadow: 0 10px 28px rgba(0, 0, 0, 0.42), inset 0 1px 0 rgba(var(--theme-trim-rgb), 0.25);
     }
     .segmented-bar {
       display: inline-flex;
@@ -309,8 +458,8 @@
       gap: 0.25rem;
       padding: 0.25rem;
       border-radius: 0.75rem;
-      background: #0B0D12;
-      border: 1px solid rgba(255, 255, 255, 0.07);
+      background: var(--bg-obsidian);
+      border: 1px solid rgba(var(--theme-trim-rgb), 0.16);
     }
     .segmented-pill {
       display: inline-flex;
@@ -322,6 +471,7 @@
       font-size: 0.75rem;
       font-weight: 700;
       color: #94A3B8;
+      border: 1px solid transparent;
       transition: all 0.15s ease;
       cursor: pointer;
       white-space: nowrap;
@@ -332,6 +482,7 @@
     .segmented-pill.active {
       background: var(--theme-btn-grad);
       color: #FFFFFF;
+      border: 1px solid rgba(var(--theme-trim-rgb), 0.45);
       box-shadow: 0 2px 8px var(--theme-glow);
     }
     .btn-action {
@@ -341,7 +492,7 @@
       gap: 0.4rem;
       font-weight: 600;
       border-radius: 0.625rem;
-      border: 1px solid rgba(255, 255, 255, 0.09);
+      border: 1px solid rgba(var(--theme-trim-rgb), 0.16);
       background: var(--bg-elevated);
       color: #E2E8F0;
       box-shadow: 0 1px 2px rgba(0, 0, 0, 0.25);
@@ -350,8 +501,8 @@
       user-select: none;
     }
     .btn-action:hover {
-      border-color: rgba(255, 255, 255, 0.2);
-      background: #242938;
+      border-color: rgba(var(--theme-trim-rgb), 0.42);
+      background: rgba(var(--usc-garnet-rgb), 0.22);
       color: #FFFFFF;
     }
     .btn-action:active {
@@ -367,16 +518,16 @@
       border: 1px solid var(--theme-border-hi);
       background: var(--theme-btn-grad);
       color: #ffffff;
-      box-shadow: 0 2px 10px var(--theme-glow), inset 0 1px 0 rgba(255, 255, 255, 0.16);
+      box-shadow: 0 2px 10px var(--theme-glow), inset 0 1px 0 rgba(var(--theme-trim-rgb), 0.28);
       transition: all 0.15s ease;
       cursor: pointer;
       user-select: none;
     }
     .btn-garnet:hover {
       background: var(--theme-btn-hover);
-      border-color: rgba(255, 255, 255, 0.55);
+      border-color: var(--theme-trim);
       transform: translateY(-1px);
-      box-shadow: 0 4px 14px var(--theme-glow), inset 0 1px 0 rgba(255, 255, 255, 0.24);
+      box-shadow: 0 4px 14px var(--theme-glow), inset 0 1px 0 rgba(var(--theme-trim-rgb), 0.38);
     }
     .btn-pending {
       display: inline-flex;
@@ -386,14 +537,14 @@
       font-weight: 700;
       border-radius: 0.625rem;
       border: 1px solid rgba(251, 191, 36, 0.45);
-      background: linear-gradient(180deg, #73000A 0%, #3B0005 100%);
+      background: var(--theme-btn-grad);
       color: #FDE68A;
       box-shadow: 0 2px 6px rgba(0, 0, 0, 0.35);
       transition: all 0.15s ease;
       cursor: pointer;
     }
     .btn-pending:hover {
-      background: linear-gradient(180deg, #99000F 0%, #590007 100%);
+      background: var(--theme-btn-hover);
       border-color: #FDE68A;
     }
     .static-badge {
@@ -410,7 +561,7 @@
       user-select: none;
     }
     .pending-pool-card {
-      background: linear-gradient(135deg, rgba(115, 0, 10, 0.35) 0%, rgba(27, 31, 43, 0.95) 100%);
+      background: linear-gradient(135deg, rgba(var(--usc-garnet-rgb), 0.35) 0%, rgba(var(--bg-elevated-rgb), 0.95) 100%);
       border: 1px solid rgba(245, 158, 11, 0.45);
     }
     .drag-slot-over {
@@ -465,7 +616,8 @@
       position: sticky;
       top: -0.75rem;
       z-index: 25;
-      background: rgba(19, 22, 31, 0.92);
+      background: rgba(var(--bg-surface-rgb), 0.92);
+      border-color: rgba(var(--theme-trim-rgb), 0.22);
       backdrop-filter: blur(14px);
       -webkit-backdrop-filter: blur(14px);
     }
@@ -644,7 +796,7 @@
     </div>
     <!-- Non-Disruptive App Version Update Banner (Shown only when version.json reports a newer release) -->
     <div id="pwaUpdateAvailableBanner" class="hidden w-full bg-emerald-950/90 border-b border-emerald-500/40 px-3 py-1.5 flex items-center justify-center gap-3 text-xs text-emerald-100">
-      <span><i class="fa-solid fa-wand-magic-sparkles text-amber-300 mr-1"></i>New Gamecock Mafia Tracker update (<strong id="pwaUpdateVersionText" class="font-mono text-amber-300">v8.3.2</strong>) is ready!</span>
+      <span><i class="fa-solid fa-wand-magic-sparkles text-amber-300 mr-1"></i>New Gamecock Mafia Tracker update (<strong id="pwaUpdateVersionText" class="font-mono text-amber-300">v8.3.3</strong>) is ready!</span>
       <button type="button" onclick="applyRemoteAppUpdateNow()" class="px-2.5 py-0.5 rounded-md bg-emerald-500 hover:bg-emerald-400 text-black font-black text-[11px] cursor-pointer transition">Refresh Now</button>
     </div>
 
@@ -2861,7 +3013,7 @@
       "Depth Picks"
     ];
 
-    const APP_BUILD_VERSION = "8.3.2";
+    const APP_BUILD_VERSION = "8.3.3";
 
     let uiState = {
       isLeagueUnlocked: false,
@@ -4672,13 +4824,84 @@
 
     const COLOR_THEME_STORAGE_KEY = "gamecock_mafia_color_theme";
     const COVERT_COLOR_SCHEMES = [
-      { id: "sandstorm_noir",    label: "Sandstorm Noir",    sub: "Garnet & Obsidian", dots: ["#73000A", "#CC1429", "#09090B"] },
-      { id: "chapel_sky",        label: "Chapel Sky",        sub: "Sky, White & Navy", dots: ["#4B9CD3", "#FFFFFF", "#13294B"] },
-      { id: "honolulu_gridiron", label: "Honolulu Gridiron", sub: "Blue, Silver & White", dots: ["#0076B6", "#B0B7BC", "#FFFFFF"] },
-      { id: "foundry_orange",    label: "Foundry Orange",    sub: "Orange, Brown & White", dots: ["#FF3C00", "#311D00", "#FFFFFF"] },
-      { id: "emerald_sound",     label: "Emerald Sound '98", sub: "Royal, Green & Silver", dots: ["#004B8D", "#69BE28", "#9EA2A2"] },
-      { id: "jets_of_the_west",  label: "Jets of the West",  sub: "Cardinal Red, Black & Yellow", dots: ["#97233F", "#0A0808", "#FFB612"] },
-      { id: "upstate_kitties",   label: "Upstate Kitties",   sub: "Orange & Regal Purple", dots: ["#F56600", "#522D80", "#FFFFFF"], isTrap: true }
+      {
+        id: "sandstorm_noir",
+        label: "Sandstorm Noir",
+        sub: "Garnet, Gold & Obsidian",
+        dots: ["#73000A", "#CC1429", "#E5B84B"],
+        bgHex: "#0B0D12",
+        surfaceHex: "#151116",
+        trimHex: "#E5B84B",
+        accentHex: "#CC1429",
+        heroGrad: "linear-gradient(135deg, #4A0006 0%, #24080C 60%, #151116 100%)"
+      },
+      {
+        id: "chapel_sky",
+        label: "Chapel Sky",
+        sub: "Carolina Sky, White-Ice & Navy",
+        dots: ["#4B9CD3", "#E0F2FE", "#13294B"],
+        bgHex: "#07101E",
+        surfaceHex: "#0E1C33",
+        trimHex: "#E0F2FE",
+        accentHex: "#4B9CD3",
+        heroGrad: "linear-gradient(135deg, #13294B 0%, #1E467A 55%, #4B9CD3 100%)"
+      },
+      {
+        id: "honolulu_gridiron",
+        label: "Honolulu Gridiron",
+        sub: "Honolulu Blue & Silver",
+        dots: ["#0076B6", "#38BDF8", "#C8D0D8"],
+        bgHex: "#06111C",
+        surfaceHex: "#0C1E30",
+        trimHex: "#C8D0D8",
+        accentHex: "#38BDF8",
+        heroGrad: "linear-gradient(135deg, #00385C 0%, #005A8D 55%, #0076B6 100%)"
+      },
+      {
+        id: "foundry_orange",
+        label: "Foundry Orange",
+        sub: "Blaze Orange, Copper & Brown",
+        dots: ["#FF3C00", "#D97736", "#311D00"],
+        bgHex: "#110A06",
+        surfaceHex: "#1D120B",
+        trimHex: "#D97736",
+        accentHex: "#FF3C00",
+        heroGrad: "linear-gradient(135deg, #311D00 0%, #5C2804 58%, #9A2B00 100%)"
+      },
+      {
+        id: "emerald_sound",
+        label: "Emerald Sound '98",
+        sub: "Pacific Royal & Action Green",
+        dots: ["#004B8D", "#69BE28", "#9EA2A2"],
+        bgHex: "#061118",
+        surfaceHex: "#0B1E2B",
+        trimHex: "#69BE28",
+        accentHex: "#69BE28",
+        heroGrad: "linear-gradient(135deg, #002B52 0%, #004B8D 60%, #1E6B3A 100%)"
+      },
+      {
+        id: "jets_of_the_west",
+        label: "Jets of the West",
+        sub: "Cardinal Red & Sunburst Gold",
+        dots: ["#97233F", "#FFB612", "#12090C"],
+        bgHex: "#12090C",
+        surfaceHex: "#1E1015",
+        trimHex: "#FFB612",
+        accentHex: "#FFB612",
+        heroGrad: "linear-gradient(135deg, #4D0F1E 0%, #7A1A31 58%, #261205 100%)"
+      },
+      {
+        id: "upstate_kitties",
+        label: "Upstate Kitties",
+        sub: "Orange & Regal Purple",
+        dots: ["#F56600", "#522D80", "#FFFFFF"],
+        bgHex: "#130B1C",
+        surfaceHex: "#1E122B",
+        trimHex: "#F56600",
+        accentHex: "#F56600",
+        heroGrad: "linear-gradient(135deg, #522D80 0%, #8A3A1B 58%, #F56600 100%)",
+        isTrap: true
+      }
     ];
 
     function isCurrentTeamKittyCursed() {
@@ -4704,6 +4927,15 @@
       uiState.colorTheme = themeId;
       COVERT_COLOR_SCHEMES.forEach(s => document.body.classList.remove(`theme-${s.id}`));
       document.body.classList.add(`theme-${themeId}`);
+      const metaTheme = document.querySelector('meta[name="theme-color"]');
+      if (metaTheme) {
+        if (themeId === "upstate_kitties") {
+          metaTheme.setAttribute("content", "#1F0818");
+        } else {
+          const scheme = COVERT_COLOR_SCHEMES.find(s => s.id === themeId);
+          metaTheme.setAttribute("content", scheme?.bgHex || "#0B0D12");
+        }
+      }
     }
 
     function stageColorThemeSelection(themeId) {
@@ -5075,14 +5307,14 @@
         statusEl.innerHTML = cursed
           ? `<span class="text-pink-400 font-bold">Locked by Upstate Kitties Curse (Ask Commish to Reset)</span>`
           : hasUnconfirmed
-          ? `<span class="text-amber-300 font-bold">Selection staged — tap Confirm below</span>`
-          : `Sleek dark surface + team accent`;
+          ? `<span class="text-amber-300 font-bold">Live preview active — tap Confirm below to save</span>`
+          : `Full stadium surface, header & two-tone trim`;
       }
 
       const stagedObj = COVERT_COLOR_SCHEMES.find(s => s.id === stagedTheme) || COVERT_COLOR_SCHEMES[0];
       if (pendingLbl) {
         pendingLbl.innerHTML = hasUnconfirmed
-          ? `Selected: <strong class="text-amber-300">${escapeHtml(stagedObj.label)}</strong> <span class="text-[10px] text-amber-400">(Unconfirmed)</span>`
+          ? `Previewing: <strong class="text-amber-300">${escapeHtml(stagedObj.label)}</strong> <span class="text-[10px] text-amber-400">(Tap Confirm)</span>`
           : `Active: <strong class="text-emerald-300">${escapeHtml(stagedObj.label)}</strong>`;
       }
       if (confirmBtn) {
@@ -5095,20 +5327,28 @@
         const isStaged = sc.id === stagedTheme;
         const isSaved = sc.id === activeTheme;
         const isLockedOut = cursed && sc.id !== "upstate_kitties" && !uiState.isCommish;
-        const dotsHtml = sc.dots.map(c => `<span class="w-3 h-3 rounded-full border border-white/30 inline-block" style="background:${c}"></span>`).join("");
+        const dotsHtml = sc.dots.map(c => `<span class="w-2.5 h-2.5 rounded-full border border-white/40 inline-block shadow-sm" style="background:${c}"></span>`).join("");
+        const cardBorderStyle = isStaged
+          ? (isSaved ? "border-color: #34D399; box-shadow: 0 0 0 1px rgba(52,211,153,0.45), 0 6px 16px rgba(0,0,0,0.4);" : "border-color: #FBBF24; box-shadow: 0 0 0 1px rgba(251,191,36,0.55), 0 6px 16px rgba(0,0,0,0.4);")
+          : `border-color: ${sc.trimHex}44;`;
         return `
           <button
             type="button"
             onclick="stageColorThemeSelection('${sc.id}')"
-            class="p-2.5 rounded-xl border text-left transition flex flex-col justify-between gap-1.5 cursor-pointer ${isStaged ? (isSaved ? 'bg-[#1B1F2B] border-emerald-400 shadow-md' : 'bg-[#1B1F2B] border-amber-400 ring-1 ring-amber-400/60 shadow-md') : 'bg-[#0B0D12] border-white/10 hover:border-white/25'} ${isLockedOut ? 'opacity-50' : ''}"
+            style="background: linear-gradient(180deg, ${sc.surfaceHex || '#13161F'} 0%, ${sc.bgHex || '#0B0D12'} 100%); ${cardBorderStyle}"
+            class="rounded-xl border text-left transition overflow-hidden flex flex-col justify-between cursor-pointer hover:brightness-110 ${isLockedOut ? 'opacity-50' : ''}"
           >
-            <div class="flex items-center justify-between gap-1">
-              <span class="text-xs font-extrabold text-white truncate">${escapeHtml(sc.label)}</span>
-              ${isStaged ? `<i class="fa-solid ${isSaved ? 'fa-circle-check text-emerald-400' : 'fa-clock text-amber-400'} text-xs"></i>` : ''}
-            </div>
-            <div class="flex items-center justify-between gap-1">
+            <div class="w-full h-3.5 relative flex items-center justify-end px-2" style="background: ${sc.heroGrad}; border-bottom: 1.5px solid ${sc.trimHex};">
               <div class="flex items-center gap-1">${dotsHtml}</div>
-              <span class="text-[10px] text-slate-400 truncate">${escapeHtml(sc.sub)}</span>
+            </div>
+            <div class="p-2.5 flex flex-col gap-1 w-full">
+              <div class="flex items-center justify-between gap-1">
+                <span class="text-xs font-extrabold text-white truncate">${escapeHtml(sc.label)}</span>
+                ${isStaged ? `<span class="inline-flex items-center gap-1 px-1.5 py-0.5 rounded-full text-[9px] font-black uppercase ${isSaved ? 'bg-emerald-950/90 text-emerald-300 border border-emerald-500/40' : 'bg-amber-950/90 text-amber-300 border border-amber-500/40'}"><i class="fa-solid ${isSaved ? 'fa-check' : 'fa-eye'} text-[8px]"></i>${isSaved ? 'Active' : 'Preview'}</span>` : ''}
+              </div>
+              <div class="flex items-center justify-between gap-1">
+                <span class="text-[10px] font-semibold truncate" style="color: ${sc.trimHex};">${escapeHtml(sc.sub)}</span>
+              </div>
             </div>
           </button>
         `;

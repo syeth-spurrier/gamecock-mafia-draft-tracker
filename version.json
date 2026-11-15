@@ -1,5 +1,5 @@
 {
-  "version": "8.3.2",
-  "releasedAt": "2026-11-15T08:23:00Z",
-  "notes": "v8.3.2 Radiant 24K Gold Championship Crest Icon: Restored 100% alpha opacity on the gold laurel wreath (fixing the 66% semi-transparent source layer bleed) and boosted metallic 24K gold contrast across all iOS/Android icons and in-app brand badges."
+  "version": "8.3.3",
+  "releasedAt": "2026-11-15T17:12:00Z",
+  "notes": "v8.3.3: Differentiated 7-Colorway System — Full stadium-tinted dark surfaces, card gradients, two-tone team identity trim (--theme-trim), theme-reactive Top Header & Mobile Bottom Nav, and live preview swatches in Settings."
 }
