@@ -1,5 +1,5 @@
 {
-  "version": "8.3.0",
-  "releasedAt": "2026-11-15T07:25:00Z",
-  "notes": "v8.3 Mobile-First War Room, Share Removal, Rivalry Engine & Logic Hardening: 4-Tile War Room Command Strip + 1-Tap Quick Needs/Block Bar, 1-Tap Opponent Scouting to Trade Machine, 5 Official League Rivalries (Syeth×Mary, Corbyn×Matt, Geltz×Dylan, Leo×Josh, Chris×Boss), Final Standings Decoupling (#1 Champ & #10 Phallic Feaster independent of trading Pick 1.05), Upgraded In-App Notification Center with Unread Tracking, Trade Machine Asset Mode Toggle (All | Players | Picks), Draft Board Round Tier Jump Bar, 4-Vote Adaptive Fairness Threshold, Auto-Pruned Orphaned Tags, and Commissioner Rollover Pending-Trade Warning"
+  "version": "8.3.1",
+  "releasedAt": "2026-11-15T08:15:00Z",
+  "notes": "v8.3.1 Official Championship Crest PWA App Icon: Replaced SVG icon with crisp Championship White & Metallic Gold Gamecock Laurel Crest on USC Garnet & Obsidian (180x180 iOS apple-touch-icon, 192x192 & 512x512 Android/PWA PNGs, 512x512 Maskable safe-zone icon, favicon, and Login Gate & Top Header league logo)."
 }

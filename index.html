@@ -11,8 +11,10 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="apple-mobile-web-app-title" content="GCM Picks">
   <link rel="manifest" href="./manifest.json">
-  <link rel="icon" type="image/svg+xml" href="./icon.svg">
-  <link rel="apple-touch-icon" href="./icon.svg">
+  <link rel="icon" type="image/png" sizes="96x96" href="./favicon-96.png">
+  <link rel="icon" type="image/png" sizes="192x192" href="./icon-192.png">
+  <link rel="shortcut icon" href="./favicon-96.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="./apple-touch-icon.png">
   <!-- Tailwind CSS -->
   <script src="https://cdn.tailwindcss.com"></script>
   <!-- Font Awesome 6 Icons -->
@@ -567,8 +569,8 @@
   <!-- ========================================================= -->
   <div id="passphraseGateOverlay" class="fixed inset-0 z-[90] bg-[#0B0D12] flex items-center justify-center p-3 sm:p-4 overflow-y-auto overflow-x-hidden">
     <div class="bg-[#13161F] border border-white/10 rounded-2xl max-w-md w-full p-5 sm:p-7 shadow-2xl text-center space-y-4 sm:space-y-5 my-4">
-      <div id="gateBrandAvatarBox" class="w-14 h-14 sm:w-16 sm:h-16 mx-auto rounded-2xl garnet-hero-banner flex items-center justify-center shadow-xl overflow-hidden">
-        <span class="font-display font-extrabold text-2xl tracking-wider text-white">GCM</span>
+      <div id="gateBrandAvatarBox" class="w-16 h-16 sm:w-20 sm:h-20 mx-auto rounded-2xl garnet-hero-banner flex items-center justify-center shadow-xl overflow-hidden p-1.5 border border-amber-400/30">
+        <img src="./league-crest.png" alt="Gamecock Mafia Crest" class="w-full h-full object-contain">
       </div>
       <div class="space-y-1">
         <span class="static-badge bg-[#73000A]/40 text-amber-300 border border-[#CC1429]/50">Official Franchise Portal</span>
@@ -642,7 +644,7 @@
     </div>
     <!-- Non-Disruptive App Version Update Banner (Shown only when version.json reports a newer release) -->
     <div id="pwaUpdateAvailableBanner" class="hidden w-full bg-emerald-950/90 border-b border-emerald-500/40 px-3 py-1.5 flex items-center justify-center gap-3 text-xs text-emerald-100">
-      <span><i class="fa-solid fa-wand-magic-sparkles text-amber-300 mr-1"></i>New Gamecock Mafia Tracker update (<strong id="pwaUpdateVersionText" class="font-mono text-amber-300">v8.3.0</strong>) is ready!</span>
+      <span><i class="fa-solid fa-wand-magic-sparkles text-amber-300 mr-1"></i>New Gamecock Mafia Tracker update (<strong id="pwaUpdateVersionText" class="font-mono text-amber-300">v8.3.1</strong>) is ready!</span>
       <button type="button" onclick="applyRemoteAppUpdateNow()" class="px-2.5 py-0.5 rounded-md bg-emerald-500 hover:bg-emerald-400 text-black font-black text-[11px] cursor-pointer transition">Refresh Now</button>
     </div>
 
@@ -656,11 +658,11 @@
             type="button"
             id="headerBrandAvatarBtn"
             onclick="handleHeaderBrandClick()"
-            class="relative w-8 h-8 sm:w-9 sm:h-9 rounded-xl garnet-hero-banner flex items-center justify-center flex-shrink-0 overflow-hidden cursor-pointer group"
+            class="relative w-8 h-8 sm:w-9 sm:h-9 rounded-xl garnet-hero-banner flex items-center justify-center flex-shrink-0 overflow-hidden cursor-pointer group border border-amber-400/25"
             title="Gamecock Mafia Official Brand (Commissioner can click to customize)"
           >
-            <div id="headerBrandAvatarBox" class="w-full h-full flex items-center justify-center">
-              <span class="font-display font-extrabold text-sm sm:text-base tracking-wider text-white">GCM</span>
+            <div id="headerBrandAvatarBox" class="w-full h-full flex items-center justify-center p-0.5">
+              <img src="./league-crest.png" alt="Gamecock Mafia Crest" class="w-full h-full object-contain">
             </div>
             <span id="headerBrandEditBadge" class="hidden absolute -bottom-0.5 -right-0.5 w-3.5 h-3.5 rounded-full bg-amber-400 text-black text-[8px] font-black items-center justify-center shadow">
               <i class="fa-solid fa-pen"></i>
@@ -2859,7 +2861,7 @@
       "Depth Picks"
     ];
 
-    const APP_BUILD_VERSION = "8.3.0";
+    const APP_BUILD_VERSION = "8.3.1";
 
     let uiState = {
       isLeagueUnlocked: false,
@@ -5160,14 +5162,19 @@
         title: "GAMECOCK MAFIA",
         subtitle: "Off-Season & In-Season Draft Pick Tracker"
       };
+      const useDefaultCrest = !brand.avatarImageDataUrl && !brand.avatarEmoji && (!brand.avatarText || brand.avatarText === "GCM");
       const avatarHtml = brand.avatarImageDataUrl
         ? `<img src="${escapeHtml(brand.avatarImageDataUrl)}" alt="League Logo" class="w-full h-full object-cover">`
+        : useDefaultCrest
+        ? `<img src="./league-crest.png" alt="Gamecock Mafia Crest" class="w-full h-full object-contain">`
         : brand.avatarEmoji
         ? `<span class="text-lg sm:text-xl leading-none">${escapeHtml(brand.avatarEmoji)}</span>`
         : `<span class="font-display font-extrabold text-base sm:text-lg tracking-wider text-white">${escapeHtml(brand.avatarText || "GCM")}</span>`;
 
       const gateAvatarHtml = brand.avatarImageDataUrl
         ? `<img src="${escapeHtml(brand.avatarImageDataUrl)}" alt="League Logo" class="w-full h-full object-cover">`
+        : useDefaultCrest
+        ? `<img src="./league-crest.png" alt="Gamecock Mafia Crest" class="w-full h-full object-contain">`
         : brand.avatarEmoji
         ? `<span class="text-3xl leading-none">${escapeHtml(brand.avatarEmoji)}</span>`
         : `<span class="font-display font-extrabold text-2xl tracking-wider text-white">${escapeHtml(brand.avatarText || "GCM")}</span>`;
