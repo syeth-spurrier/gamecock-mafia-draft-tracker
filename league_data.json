@@ -28,6 +28,22 @@
         "OTHER": 3
       }
     },
+    "leagueScoring": {
+      "ppr": 1,
+      "tePremium": 1,
+      "passTdPts": 4,
+      "qbSlots": 1,
+      "rbSlots": 2,
+      "wrSlots": 2,
+      "teSlots": 1,
+      "flexSlots": 1,
+      "opSlots": 0,
+      "idpSlots": 3,
+      "sackPts": 3,
+      "tacklePts": 1,
+      "playoffTeamCount": 5,
+      "syncedFromEspn": false
+    },
     "teamSlotMap": {
       "1": "syeth",
       "2": "matt",
