@@ -1592,6 +1592,9 @@ function autoWeeklyEspnSync() {
         toiletWinnerId = nonPlayoff[0].managerId || "";
         feasterId = nonPlayoff[nonPlayoff.length - 1].managerId || "";
       }
+      if (!feasterId && rawTeamRows.length >= 10) {
+        feasterId = rawTeamRows[rawTeamRows.length - 1].managerId || "";
+      }
     }
 
     if (!ed.seasons || typeof ed.seasons !== "object") ed.seasons = {};

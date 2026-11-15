@@ -22,6 +22,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700;800&family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@500;600;700&display=swap" rel="stylesheet" crossorigin="anonymous" referrerpolicy="no-referrer">
   <script>
+    window.tailwind = window.tailwind || {};
     tailwind.config = {
       darkMode: 'class',
       theme: {
@@ -641,7 +642,7 @@
     </div>
     <!-- Non-Disruptive App Version Update Banner (Shown only when version.json reports a newer release) -->
     <div id="pwaUpdateAvailableBanner" class="hidden w-full bg-emerald-950/90 border-b border-emerald-500/40 px-3 py-1.5 flex items-center justify-center gap-3 text-xs text-emerald-100">
-      <span><i class="fa-solid fa-wand-magic-sparkles text-amber-300 mr-1"></i>New Gamecock Mafia Tracker update (<strong id="pwaUpdateVersionText" class="font-mono text-amber-300">v8.2.0</strong>) is ready!</span>
+      <span><i class="fa-solid fa-wand-magic-sparkles text-amber-300 mr-1"></i>New Gamecock Mafia Tracker update (<strong id="pwaUpdateVersionText" class="font-mono text-amber-300">v8.3.0</strong>) is ready!</span>
       <button type="button" onclick="applyRemoteAppUpdateNow()" class="px-2.5 py-0.5 rounded-md bg-emerald-500 hover:bg-emerald-400 text-black font-black text-[11px] cursor-pointer transition">Refresh Now</button>
     </div>
 
@@ -968,6 +969,9 @@
             </div>
           </div>
 
+          <!-- Round Tier Quick-Jump Bar (All Rounds | Early Rds 1-5 | Mid Rds 6-10 | Late Rds 11-20) -->
+          <div id="boardRoundRangeBar" class="pt-2 border-t border-white/[0.06] flex items-center gap-1.5 overflow-x-auto no-scrollbar"></div>
+
           <!-- Slim Inline Legend Strip -->
           <div class="pt-2 border-t border-white/[0.06] flex flex-wrap items-center justify-between gap-2 text-[10px] sm:text-[11px]">
             <div class="flex flex-wrap items-center gap-3">
@@ -1083,7 +1087,7 @@
       <footer id="appFooterShell" class="hidden border-t border-white/[0.06] pt-4 pb-2 mt-6 no-print">
         <div class="flex flex-col sm:flex-row items-center justify-between gap-2 text-[11px] text-slate-500">
           <div class="flex items-center gap-2">
-            <span class="font-bold text-slate-400">Gamecock Mafia League Hub &amp; Draft Tracker v8.2</span>
+            <span class="font-bold text-slate-400">Gamecock Mafia League Hub &amp; Draft Tracker v8.3</span>
             <span>•</span>
             <span>Est. 2016</span>
           </div>
@@ -1483,9 +1487,6 @@
             <button onclick="fetchRemoteJsonNow()" class="btn-action px-3 py-1.5 text-xs text-sky-300">
               <i class="fa-solid fa-rotate"></i> Pull Latest Now
             </button>
-            <button onclick="copyShareableSnapshotLink()" class="btn-action px-3 py-1.5 text-xs text-amber-300">
-              <i class="fa-solid fa-link"></i> Copy Snapshot Link
-            </button>
           </div>
         </div>
 
@@ -1668,22 +1669,10 @@
           </div>
         </div>
 
-        <!-- Section 2: Quick Share, Archive, App Install & Exports -->
+        <!-- Section 2: App Install, Draft Exports & Device Lock -->
         <div class="space-y-2 pt-1 border-t border-white/[0.07]">
-          <div class="text-[10px] font-bold uppercase tracking-wider text-slate-400">Share, App Install &amp; Draft Exports</div>
+          <div class="text-[10px] font-bold uppercase tracking-wider text-slate-400">App Install &amp; Draft Exports</div>
           <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
-            <button onclick="cancelMoreToolsModal(); copyManagerLedgerForChat();" class="btn-action justify-start px-3 py-2 text-xs text-emerald-300">
-              <i class="fa-solid fa-comment-sms text-emerald-400 w-4"></i>
-              <span>Copy My Picks for Group Chat</span>
-            </button>
-            <button onclick="cancelMoreToolsModal(); copyPersonalizedViewLink();" class="btn-action justify-start px-3 py-2 text-xs text-sky-300">
-              <i class="fa-solid fa-link text-sky-400 w-4"></i>
-              <span>Copy Personalized View Link</span>
-            </button>
-            <button onclick="cancelMoreToolsModal(); openLeagueArchiveTab();" class="btn-action justify-start px-3 py-2 text-xs text-amber-300">
-              <i class="fa-solid fa-box-archive text-amber-400 w-4"></i>
-              <span>2016–2025 Historical Vault</span>
-            </button>
             <button onclick="cancelMoreToolsModal(); openEspnExportModal();" class="btn-action justify-start px-3 py-2 text-xs text-slate-100">
               <i class="fa-solid fa-file-export text-rose-400 w-4"></i>
               <span>ESPN / CSV / Print Draft Sheet</span>
@@ -1696,7 +1685,7 @@
               <i class="fa-solid fa-download text-emerald-400 w-4"></i>
               <span>Download JSON Backup</span>
             </button>
-            <button onclick="cancelMoreToolsModal(); lockLeaguePassphrase();" class="btn-action justify-start px-3 py-2 text-xs text-slate-400 sm:col-span-2">
+            <button onclick="cancelMoreToolsModal(); lockLeaguePassphrase();" class="btn-action justify-start px-3 py-2 text-xs text-slate-400">
               <i class="fa-solid fa-lock text-slate-500 w-4"></i>
               <span>Sign Out / Lock Device</span>
             </button>
@@ -2865,11 +2854,12 @@
       "RB",
       "WR",
       "TE",
+      "IDP",
       "Early Picks",
       "Depth Picks"
     ];
 
-    const APP_BUILD_VERSION = "8.2.0";
+    const APP_BUILD_VERSION = "8.3.0";
 
     let uiState = {
       isLeagueUnlocked: false,
@@ -2901,12 +2891,14 @@
       dealStagingExpanded: false,   // Expand/collapse asset chips drawer in sticky Deal Ready bar
       stagedModalPlayers: [],       // Player transfers attached to active trade proposal modal
       tradeMachineShowRosters: true,// Show side-by-side player swap drawer in Trade Machine
+      tradeMachineAssetMode: "ALL", // 'ALL' | 'PLAYERS' | 'PICKS' mobile-first asset focus toggle
       tradeMachineCompactRounds: false, // Filter Trade Machine rounds to Early Rds 1-5 & active swaps
       tradeMachinePosFilter: "ALL", // 'ALL' | 'QB' | 'RB' | 'WR' | 'TE' | 'IDP' | 'OTB' | 'KEEPERS'
       tradePlayerSearch: "",        // Quick player search query inside Trade Machine roster tray
       tradeBlockCollapsed: false,   // Toggleable League Trade Block in Trade Center
       tradeBlockFilter: "ALL",      // 'ALL' | 'PLAYERS' | 'PICKS' | 'NEEDS_MATCH'
       warRoomDrawerOpen: false,     // Pop-up Team Profile Editor open state
+      warRoomQuickBarOpen: false,   // 1-tap inline Needs & Trade Block bar on My Team War Room
       warRoomDirty: false,          // Tracks unconfirmed edits inside Team Profile Editor
       keepersDirty: false,          // Tracks unconfirmed keeper checkbox edits
       warRoomSnapshot: null,        // Snapshot for clean Cancel inside Team Profile Editor
@@ -2916,12 +2908,14 @@
       showCapitalDrawer: false,
       ledgerFilter: "ALL",          // 'ALL' | 'EARLY' | 'HOLDINGS' | 'TRADED_AWAY'
       rosterPosFilter: "ALL",       // 'ALL' | 'KEEPERS' | 'QB' | 'RB' | 'WR' | 'TE' | 'IDP' | 'OTB'
+      rosterPlayerSearch: "",       // Quick player search query inside My Team -> Roster & Keepers
       showUnchangedRounds: true,    // Compact 1-line round rows show all 20 rounds by default
       boardDisplayMode: (typeof window !== "undefined" && Number(window.innerWidth) > 0 && window.innerWidth < 768) ? "CARDS" : "MATRIX", // Smart responsive default
       boardDisplayModeManual: false,
       boardTeamFilter: "ALL",
       boardOnlyTraded: false,
       boardMyPicksOnly: false,      // 1-tap filter to highlight/filter My Team's picks on Draft Board
+      boardRoundRange: "ALL",       // 'ALL' | 'EARLY' | 'MID' | 'LATE' round tier filter on Draft Board
       boardShowKeepers: false,      // Post-keeper draft board: clean Rounds 1–20 with zero keepers overlaid
       leagueHqSubTab: "CAPITAL",    // 'CAPITAL' | 'STANDINGS' | 'VAULT' | 'RIVALRY' | 'RECORDS' | 'ARCHIVE'
       expandedHubTeamIds: {},       // Expandable 'Picks & Needs' drawer state per team in League Hub
@@ -2930,7 +2924,7 @@
       activitySubTab: "ALL",        // 'ALL' | 'TRADES' | 'WIRE' | 'PENDING_FINAL' | 'MY_TEAM'
       expandedTradeIds: {},         // Collapsible trade card state in Activity Wire
       expandAllTrades: false,       // Master Expand All / Collapse All toggle in Activity Wire
-      openCardMenuId: "",           // Active Share / Commish '•••' popover ID
+      openCardMenuId: "",           // Active Commish '•••' popover ID
       openReactionPickerId: "",     // Active '+ React' emoji picker ID
       isCommish: false,
       failedPinAttempts: 0,
@@ -4143,16 +4137,84 @@
       return getVisibleDraftYears().filter(y => isDraftYearTradeable(y));
     }
 
-    function advanceSeasonWindow(delta) {
+    function pruneOrphanedAssetTagsAndKeepers(yearStateOpt = null) {
+      if (!leagueDB || !leagueDB.teamProfiles) return false;
+      let changed = false;
+      const rostersMap = leagueDB?.espnData?.rosters || {};
+      const keepersMap = leagueDB?.espnData?.keepers || {};
+      const hasAnyRosterData = Object.keys(rostersMap).some(tid => Array.isArray(rostersMap[tid]) && rostersMap[tid].length > 0);
+      const yr = Number(yearStateOpt?.year || uiState?.activeYear || leagueDB?.baseUpcomingYear || 2027);
+      const picksList = Array.isArray(yearStateOpt?.picks) ? yearStateOpt.picks : null;
+
+      for (const [tid, prof] of Object.entries(leagueDB.teamProfiles || {})) {
+        if (!prof || typeof prof !== "object") continue;
+        if (prof.pickTags && typeof prof.pickTags === "object" && picksList) {
+          for (const key of Object.keys(prof.pickTags)) {
+            const parts = String(key).split(":");
+            if (parts.length === 3 && Number(parts[0]) === yr) {
+              const rNum = Number(parts[1]);
+              const orig = parts[2];
+              const matchPick = picksList.find(p => p.round === rNum && p.originalOwner === orig);
+              if (matchPick && matchPick.currentOwner !== tid) {
+                delete prof.pickTags[key];
+                changed = true;
+              }
+            }
+          }
+        }
+        if (hasAnyRosterData && Array.isArray(rostersMap[tid])) {
+          const validIds = new Set(rostersMap[tid].map(p => String(p.id)));
+          const validNames = new Set(rostersMap[tid].map(p => String(p.name || "").trim().toLowerCase()));
+          if (prof.playerTags && typeof prof.playerTags === "object") {
+            for (const pKey of Object.keys(prof.playerTags)) {
+              if (!validIds.has(String(pKey)) && !validNames.has(String(pKey).trim().toLowerCase())) {
+                delete prof.playerTags[pKey];
+                changed = true;
+              }
+            }
+          }
+          if (Array.isArray(keepersMap[tid]) && keepersMap[tid].length > 0) {
+            const filteredKeepers = keepersMap[tid].filter(kId => validIds.has(String(kId)) || validNames.has(String(kId).trim().toLowerCase()));
+            if (filteredKeepers.length !== keepersMap[tid].length) {
+              keepersMap[tid] = filteredKeepers;
+              changed = true;
+            }
+          }
+        }
+      }
+      return changed;
+    }
+
+    function advanceSeasonWindow(delta, forceRollover = false) {
       if (!requireCommish()) return;
-      const nextBase = (leagueDB.baseUpcomingYear || 2027) + delta;
+      const curBase = leagueDB.baseUpcomingYear || 2027;
+      const nextBase = curBase + delta;
       if (nextBase < 2027 || nextBase > 2035) {
         showToast("Season window is already at its boundary.", "info");
         return;
       }
+      if (delta > 0 && !forceRollover) {
+        const curState = evaluateYearState(curBase);
+        const openProposalsCount = Array.isArray(leagueDB.pendingTrades) ? leagueDB.pendingTrades.length : 0;
+        const openPoolsCount = Array.isArray(curState.activePools) ? curState.activePools.length : 0;
+        const openCondsCount = Array.isArray(curState.activeConditionals) ? curState.activeConditionals.length : 0;
+        if (openProposalsCount > 0 || openPoolsCount > 0 || openCondsCount > 0) {
+          const parts = [];
+          if (openProposalsCount > 0) parts.push(`${openProposalsCount} pending trade proposal${openProposalsCount === 1 ? "" : "s"}`);
+          if (openPoolsCount > 0) parts.push(`${openPoolsCount} unresolved pick pool${openPoolsCount === 1 ? "" : "s"}`);
+          if (openCondsCount > 0) parts.push(`${openCondsCount} unresolved conditional swap${openCondsCount === 1 ? "" : "s"}`);
+          openConfirmModal(
+            "Unresolved Trades Before Rollover",
+            `Warning: There are still ${parts.join(", ")} open for ${curBase}. We recommend finalizing or declining all pending trades before advancing the season window to ${nextBase} & ${nextBase + 1}. Advance anyway?`,
+            () => advanceSeasonWindow(delta, true)
+          );
+          return;
+        }
+      }
       pushUndoState(`Roll Season Window to ${nextBase} & ${nextBase + 1}`);
       leagueDB.baseUpcomingYear = nextBase;
       ensureRollingWindowYearsExist();
+      pruneOrphanedAssetTagsAndKeepers(evaluateYearState(nextBase));
       uiState.activeYear = nextBase;
       saveDatabase(true, `ROLL_SEASON_${nextBase}`);
       renderAll();
@@ -4513,6 +4575,8 @@
           activeRoundsSet.add(p.round);
         }
       });
+
+      pruneOrphanedAssetTagsAndKeepers({ year: yr, picks });
 
       return {
         year: yr,
@@ -5583,13 +5647,17 @@
 
     /**
      * Dynamically calibrates the Trade Fairness engine over time using completed-trade Yes/No reviews in the Activity Wire.
+     * Requires at least 4 community fairness votes before adaptive nudges take effect.
      */
+    const MIN_FAIRNESS_VOTES_FOR_CALIBRATION = 4;
     function computeAdaptiveFairnessCalibration() {
       const defaults = {
         reviewedTradesCount: 0,
         totalVotes: 0,
         yesVotes: 0,
         noVotes: 0,
+        minVotesRequired: MIN_FAIRNESS_VOTES_FOR_CALIBRATION,
+        isCalibrated: false,
         pickVsPlayerFactor: 1.0,
         earlyPickPremium: 1.0,
         fairGapThreshold: 0.12,
@@ -5636,7 +5704,6 @@
         const heavierEarlyShare = heavier.total > 0 ? (heavier.earlyPickPts / heavier.total) : 0;
 
         if (netRatio > 0) {
-          // League voted FAIR: if baseline saw a gap, boost whichever asset mix was undervalued on the lighter side
           if (rawGap > 0.08) {
             gapNudge += 0.015 * netRatio * confidence;
             if (lighterPickShare > heavierPickShare + 0.12) {
@@ -5651,14 +5718,12 @@
             gapNudge += 0.005 * netRatio * confidence;
           }
         } else if (netRatio < 0) {
-          // League voted UNFAIR: tighten fairness tolerance and sharpen premium asset weighting
           const unfairStrength = Math.abs(netRatio) * confidence;
           gapNudge -= 0.018 * unfairStrength;
           if (heavierEarlyShare > lighterEarlyShare + 0.10 || lighterEarlyShare > heavierEarlyShare + 0.10) {
             earlyNudge += 0.035 * unfairStrength;
           }
           if (rawGap < 0.16) {
-            // Baseline thought it was close, but league called it lopsided: separate player vs pick valuation
             if (heavierPickShare > lighterPickShare + 0.12) {
               pickNudge -= 0.035 * unfairStrength;
             } else if (lighterPickShare > heavierPickShare + 0.12) {
@@ -5671,19 +5736,24 @@
       const totalVotes = yesVotes + noVotes;
       if (totalVotes === 0) return defaults;
 
-      const pickVsPlayerFactor = Math.min(1.22, Math.max(0.82, Number((1 + pickNudge).toFixed(3))));
-      const earlyPickPremium = Math.min(1.18, Math.max(0.90, Number((1 + earlyNudge).toFixed(3))));
-      const fairGapThreshold = Math.min(0.18, Math.max(0.08, Number((0.12 + gapNudge).toFixed(3))));
-      const heavyEdgeThreshold = Math.min(0.34, Math.max(0.20, Number((0.28 + (gapNudge * 1.15)).toFixed(3))));
+      const isCalibrated = totalVotes >= MIN_FAIRNESS_VOTES_FOR_CALIBRATION;
+      const pickVsPlayerFactor = isCalibrated ? Math.min(1.22, Math.max(0.82, Number((1 + pickNudge).toFixed(3)))) : 1.0;
+      const earlyPickPremium = isCalibrated ? Math.min(1.18, Math.max(0.90, Number((1 + earlyNudge).toFixed(3)))) : 1.0;
+      const fairGapThreshold = isCalibrated ? Math.min(0.18, Math.max(0.08, Number((0.12 + gapNudge).toFixed(3)))) : 0.12;
+      const heavyEdgeThreshold = isCalibrated ? Math.min(0.34, Math.max(0.20, Number((0.28 + (gapNudge * 1.15)).toFixed(3)))) : 0.28;
 
       const pctFair = Math.round((yesVotes / totalVotes) * 100);
-      const summaryLabel = `League-Tuned (${totalVotes} vote${totalVotes === 1 ? "" : "s"} • ${pctFair}% Fair)`;
+      const summaryLabel = isCalibrated
+        ? `League-Tuned (${totalVotes} votes • ${pctFair}% Fair)`
+        : `Warming Up (${totalVotes}/${MIN_FAIRNESS_VOTES_FOR_CALIBRATION} votes needed)`;
 
       return {
         reviewedTradesCount,
         totalVotes,
         yesVotes,
         noVotes,
+        minVotesRequired: MIN_FAIRNESS_VOTES_FOR_CALIBRATION,
+        isCalibrated,
         pickVsPlayerFactor,
         earlyPickPremium,
         fairGapThreshold,
@@ -5977,6 +6047,8 @@
 
       const matrix = computeHeadToHeadMatrix();
       const row = matrix[tid] || {};
+      const officialRival = getOfficialRivalForTeam(tid);
+      const officialRivalRec = officialRival ? (row[officialRival.rivalId] || { wins: 0, losses: 0 }) : null;
       let bestVictim = null;
       let archNemesis = null;
 
@@ -6011,7 +6083,13 @@
             ${ringsHtml}
             <span class="px-1.5 py-0.5 rounded bg-[#09090B]/80 border border-zinc-700/80 font-mono text-[10px] text-zinc-200">${st.wins}-${st.losses} (${winPctStr})</span>
           </div>
-          <div class="md:col-span-5 flex flex-wrap items-center gap-2 min-w-0">
+          <div class="md:col-span-7 flex flex-wrap items-center md:justify-end gap-1.5 min-w-0">
+            ${officialRival ? `
+              <button type="button" onclick="switchTab('capital'); setLeagueHqSubTab('RIVALRY');" class="inline-flex items-center gap-1 px-2 py-0.5 rounded-lg bg-amber-950/75 hover:bg-amber-900/75 border border-amber-400/70 text-[11px] text-amber-200 cursor-pointer transition" title="Official League Rivalry">
+                <span>⚔️ Rival: <strong>vs. ${escapeHtml(officialRival.rivalOrigName)}</strong></span>
+                <span class="font-mono text-[10px] text-amber-300">(${Number(officialRivalRec?.wins) || 0}-${Number(officialRivalRec?.losses) || 0})</span>
+              </button>
+            ` : ''}
             ${bestVictim ? `
               <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-lg bg-emerald-950/60 border border-emerald-600/50 text-[11px] text-emerald-200">
                 <span>🎯 Owns <strong>${escapeHtml(getOriginalManagerName(bestVictim.id))}</strong></span>
@@ -6024,12 +6102,6 @@
                 <span class="font-mono text-[10px] text-rose-300">(${archNemesis.wins}-${archNemesis.losses})</span>
               </span>
             ` : ''}
-          </div>
-          <div class="md:col-span-2 flex justify-start md:justify-end">
-            <button type="button" onclick="shareBrandedCardToChat('TROPHY', '${safeId(tid)}')" class="btn-action px-2.5 py-1 text-[11px] text-amber-300 bg-[#09090B]/85 w-full md:w-auto justify-center" title="Share Franchise Trophy Card to Group Chat">
-              <i class="fa-solid fa-share-from-square"></i>
-              <span>Share Card</span>
-            </button>
           </div>
         </div>
       `;
@@ -6257,6 +6329,43 @@
       return true;
     }
 
+    const NOTIF_LAST_READ_STORAGE_KEY = "gcm_notif_last_read_ts_v1";
+
+    function getNotifLastReadTimestamp() {
+      try {
+        const raw = Number(localStorage.getItem(NOTIF_LAST_READ_STORAGE_KEY) || 0);
+        if (raw > 0) return raw;
+        const initTs = Date.now() - (48 * 3600 * 1000);
+        localStorage.setItem(NOTIF_LAST_READ_STORAGE_KEY, String(initTs));
+        return initTs;
+      } catch (e) {
+        return 0;
+      }
+    }
+
+    function markAllNotificationsRead() {
+      try {
+        localStorage.setItem(NOTIF_LAST_READ_STORAGE_KEY, String(Date.now()));
+      } catch (e) {}
+      updateHeaderNotificationBellUI();
+      showToast("Marked all League Wire & trade notifications as read.", "info");
+    }
+
+    function getUnreadLeagueWireNotifications() {
+      const lastReadTs = getNotifLastReadTimestamp();
+      const recentTrades = (Array.isArray(leagueDB?.trades) ? leagueDB.trades : [])
+        .filter(tr => Number(tr.createdAt || tr.timestamp || 0) > lastReadTs)
+        .slice(-4)
+        .reverse();
+      const wireLogs = Array.isArray(leagueDB?.activityLog)
+        ? leagueDB.activityLog
+        : (Array.isArray(leagueDB?.activityEvents) ? leagueDB.activityEvents : []);
+      const recentEvents = wireLogs
+        .filter(ev => Number(ev.timestamp || ev.createdAt || 0) > lastReadTs)
+        .slice(0, 4);
+      return { recentTrades, recentEvents, unreadWireCount: recentTrades.length + recentEvents.length };
+    }
+
     function getActionRequiredNotifications(stateOpt = null) {
       const st = stateOpt || evaluateYearState(uiState.activeYear);
       const myTeam = uiState.myTeam || uiState.selectedManager || "syeth";
@@ -6288,8 +6397,9 @@
         !feasterProf?.feasterRenamedByChamp
       );
 
+      const { recentTrades, recentEvents, unreadWireCount } = getUnreadLeagueWireNotifications();
       const updateCount = uiState.updateAvailableVersion ? 1 : 0;
-      const totalCount = awaitingMeProposals.length + (keeperActionNeeded ? 1 : 0) + (champFeasterActionNeeded ? 1 : 0) + commishPendingCount + updateCount;
+      const totalCount = awaitingMeProposals.length + (keeperActionNeeded ? 1 : 0) + (champFeasterActionNeeded ? 1 : 0) + commishPendingCount + updateCount + unreadWireCount;
       return {
         totalCount,
         awaitingMeProposals,
@@ -6297,7 +6407,10 @@
         keeperActionNeeded,
         champFeasterActionNeeded,
         reigning,
-        commishPendingCount
+        commishPendingCount,
+        recentTrades,
+        recentEvents,
+        unreadWireCount
       };
     }
 
@@ -6353,7 +6466,7 @@
       notif.awaitingMeProposals.forEach(pt => {
         const proposer = getTeamName(pt.proposerTeamId || pt.proposedBy || pt.teamA);
         items.push(`
-          <button type="button" onclick="closeHeaderNotifDropdown(); setPrimarySection('MY_TEAM'); setMyTeamSubView('OFFERS');" class="w-full text-left p-2.5 rounded-xl bg-amber-950/40 hover:bg-amber-950/65 border border-amber-500/45 transition flex items-center justify-between gap-2 cursor-pointer">
+          <button type="button" onclick="closeHeaderNotifDropdown(); switchMainTab('ledger'); setMyTeamSubView('OFFERS');" class="w-full text-left p-2.5 rounded-xl bg-amber-950/40 hover:bg-amber-950/65 border border-amber-500/45 transition flex items-center justify-between gap-2 cursor-pointer">
             <div class="min-w-0">
               <div class="text-[11px] font-black text-amber-200 truncate"><i class="fa-solid fa-handshake mr-1 text-amber-400"></i>Offer from ${escapeHtml(proposer)}</div>
               <div class="text-[10px] text-slate-300 truncate">${escapeHtml(pt.headline || pt.id)}</div>
@@ -6378,7 +6491,7 @@
 
       if (notif.champFeasterActionNeeded && notif.reigning?.feasterId) {
         items.push(`
-          <button type="button" onclick="closeHeaderNotifDropdown(); uiState.leagueHqSeasonYear = ${Number(notif.reigning.seasonYear) || 2026}; switchMainTab('capital'); setLeagueHqSubTab('STANDINGS');" class="w-full text-left p-2.5 rounded-xl bg-fuchsia-950/40 hover:bg-fuchsia-950/65 border border-fuchsia-500/45 transition flex items-center justify-between gap-2 cursor-pointer">
+          <button type="button" onclick="closeHeaderNotifDropdown(); uiState.espnStandingsYear = ${Number(notif.reigning.seasonYear) || 2026}; switchMainTab('capital'); setLeagueHqSubTab('STANDINGS');" class="w-full text-left p-2.5 rounded-xl bg-fuchsia-950/40 hover:bg-fuchsia-950/65 border border-fuchsia-500/45 transition flex items-center justify-between gap-2 cursor-pointer">
             <div class="min-w-0">
               <div class="text-[11px] font-black text-fuchsia-200">🍆 Champion's Naming Rights</div>
               <div class="text-[10px] text-slate-300 truncate">Rename Phallic Feaster (${escapeHtml(getOriginalManagerName(notif.reigning.feasterId))})</div>
@@ -6400,9 +6513,34 @@
         `);
       }
 
+      (notif.recentTrades || []).forEach(tr => {
+        const parts = [tr.teamA, tr.teamB, tr.teamC].filter(Boolean).map(id => getTeamName(id)).join(" ↔ ");
+        items.push(`
+          <button type="button" onclick="closeHeaderNotifDropdown(); switchMainTab('feed'); setActivitySubTab('TRADES');" class="w-full text-left p-2.5 rounded-xl bg-emerald-950/30 hover:bg-emerald-950/55 border border-emerald-500/40 transition flex items-center justify-between gap-2 cursor-pointer">
+            <div class="min-w-0">
+              <div class="text-[11px] font-black text-emerald-200 truncate"><i class="fa-solid fa-gavel mr-1 text-emerald-400"></i>Trade Completed: ${escapeHtml(parts)}</div>
+              <div class="text-[10px] text-slate-300 truncate">${escapeHtml(tr.summary || tr.headline || tr.id)}</div>
+            </div>
+            <span class="text-[9px] font-mono text-emerald-300 flex-shrink-0">Vote Fair?</span>
+          </button>
+        `);
+      });
+
+      (notif.recentEvents || []).forEach(ev => {
+        items.push(`
+          <button type="button" onclick="closeHeaderNotifDropdown(); switchMainTab('feed'); setActivitySubTab('WIRE');" class="w-full text-left p-2 rounded-xl bg-[#13161F] hover:bg-[#1B1F2B] border border-white/10 transition flex items-center justify-between gap-2 cursor-pointer">
+            <div class="min-w-0">
+              <div class="text-[10px] font-bold text-amber-200 truncate"><i class="fa-solid fa-bolt mr-1 text-amber-400"></i>${escapeHtml(ev.title || 'League Wire Alert')}</div>
+              <div class="text-[10px] text-slate-400 truncate">${escapeHtml(ev.detail || '')}</div>
+            </div>
+            <span class="text-[9px] font-mono text-slate-400 flex-shrink-0">Wire</span>
+          </button>
+        `);
+      });
+
       notif.outgoingProposals.forEach(pt => {
         items.push(`
-          <button type="button" onclick="closeHeaderNotifDropdown(); setPrimarySection('MY_TEAM'); setMyTeamSubView('OFFERS');" class="w-full text-left p-2 rounded-xl bg-[#0B0D12] hover:bg-[#13161F] border border-white/10 transition flex items-center justify-between gap-2 cursor-pointer">
+          <button type="button" onclick="closeHeaderNotifDropdown(); switchMainTab('ledger'); setMyTeamSubView('OFFERS');" class="w-full text-left p-2 rounded-xl bg-[#0B0D12] hover:bg-[#13161F] border border-white/10 transition flex items-center justify-between gap-2 cursor-pointer">
             <div class="min-w-0">
               <div class="text-[10px] font-bold text-slate-300 truncate"><i class="fa-solid fa-paper-plane mr-1 text-sky-400"></i>Sent Offer (${escapeHtml(pt.id)})</div>
               <div class="text-[10px] text-slate-400 truncate">${escapeHtml(pt.headline || '')}</div>
@@ -6423,11 +6561,16 @@
         <div class="flex items-center justify-between gap-2 pb-2 mb-2 border-b border-white/10">
           <span class="text-[11px] font-black uppercase tracking-wider text-white flex items-center gap-1.5">
             <i class="fa-solid fa-bell text-amber-400"></i>
-            <span>Action Center</span>
+            <span>Notifications &amp; Wire</span>
           </span>
           <div class="flex items-center gap-1">
+            ${notif.unreadWireCount > 0 ? `
+              <button type="button" onclick="markAllNotificationsRead()" class="px-2 py-1 rounded-lg bg-[#0B0D12] hover:bg-[#1B1F2B] border border-white/10 text-[10px] font-bold text-amber-300 cursor-pointer">
+                <i class="fa-solid fa-check-double mr-0.5"></i>Mark Read
+              </button>
+            ` : ''}
             <button type="button" onclick="closeHeaderNotifDropdown(); initCloudSyncOnLoad(false);" class="px-2 py-1 rounded-lg bg-[#0B0D12] hover:bg-[#1B1F2B] border border-white/10 text-[10px] font-bold text-emerald-300 cursor-pointer">
-              <i class="fa-solid fa-rotate mr-0.5"></i>Sync Now
+              <i class="fa-solid fa-rotate mr-0.5"></i>Sync
             </button>
             <button type="button" onclick="closeHeaderNotifDropdown()" class="w-6 h-6 rounded-lg bg-[#0B0D12] hover:bg-[#1B1F2B] border border-white/10 text-slate-400 hover:text-white text-[10px] inline-flex items-center justify-center cursor-pointer" aria-label="Close notifications">
               <i class="fa-solid fa-xmark"></i>
@@ -7384,6 +7527,30 @@
       }
     }
 
+    function toggleWarRoomQuickBar() {
+      uiState.warRoomQuickBarOpen = !uiState.warRoomQuickBarOpen;
+      renderAll();
+    }
+
+    async function saveQuickWarRoomBlockNote() {
+      const targetTeamId = uiState.isCommish ? uiState.selectedManager : uiState.myTeam;
+      if (!targetTeamId) return;
+      const noteEl = document.getElementById("quickWarRoomBlockNoteInput");
+      if (!noteEl) return;
+      const prof = getTeamProfile(targetTeamId);
+      prof.tradeBlockNote = cleanStr(noteEl.value, 240);
+      prof.updatedAt = Date.now();
+      leagueDB.updatedAt = Date.now();
+      if (uiState.isCommish) {
+        saveDatabase(true, `QUICK_BLOCK_NOTE_${targetTeamId.toUpperCase()}`);
+      } else {
+        saveDatabase(false);
+        await pushMemberProfileUpdateToCloud(targetTeamId, prof);
+      }
+      renderAll();
+      showToast(`Updated ${getTeamName(targetTeamId)}'s Trade Block headline!`, "success");
+    }
+
     function renderTeamWarRoomSection(state) {
       const box = document.getElementById("teamWarRoomContainer");
       const settingsProfileHost = document.getElementById("settingsProfileEditorHost");
@@ -7409,13 +7576,24 @@
       const heroOtbPicks = heroBlockEntry ? heroBlockEntry.onBlockPicks : [];
       const heroOtbPlayers = heroBlockEntry && Array.isArray(heroBlockEntry.onBlockPlayers) ? heroBlockEntry.onBlockPlayers : [];
       const heroChips = Array.isArray(inspectedProf.needsChips) ? inspectedProf.needsChips : [];
-      const kStats = typeof getTeamKeeperCountsAndCaps === "function" ? getTeamKeeperCountsAndCaps(inspectedTeamId) : { totalKeepers: 0, maxKeepers: 12 };
+      const kStats = typeof getTeamKeeperCountsAndCaps === "function" ? getTeamKeeperCountsAndCaps(inspectedTeamId) : { totalKeepers: 0, maxKeepers: 12, posCounts: {} };
+      const teamOffers = getTeamPendingTradeOffers(inspectedTeamId);
 
-      // 1. Streamlined My Team Identity Hero (Round 2 #4 = A & B11 = A)
+      const heldPicksSorted = state.picks
+        .filter(p => p.currentOwner === inspectedTeamId && !state.activePools.some(pool => pool.round === p.round && pool.poolHolder === inspectedTeamId))
+        .sort((a, b) => (a.round - b.round) || ((a.overallPickNum || 999) - (b.overallPickNum || 999)));
+      const earliestHeldPick = heldPicksSorted[0] || null;
+      const leadPickDisplay = earliestHeldPick
+        ? (state.orderCfg.isLocked && earliestHeldPick.formattedSlot
+            ? `${earliestHeldPick.formattedSlot} (#${earliestHeldPick.overallPickNum})`
+            : `Rd ${earliestHeldPick.round} (${getTeamName(earliestHeldPick.originalOwner)}'s)`)
+        : "None";
+
+      // 1. Mobile-First War Room Command Center (Q1 = A & Q2 = A)
       if (box) {
         const compactBlockBits = [
           ...(inspectedProf.tradeBlockNote ? [`<span class="text-xs font-semibold text-white truncate max-w-[260px] sm:max-w-[360px]">"${escapeHtml(inspectedProf.tradeBlockNote)}"</span>`] : []),
-          ...heroChips.slice(0, 3).map(c => `<span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-[#73000A]/80 text-white border border-[#CC1429]/60">${escapeHtml(c)}</span>`),
+          ...heroChips.slice(0, 4).map(c => `<span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-[#73000A]/80 text-white border border-[#CC1429]/60">${escapeHtml(c)}</span>`),
           ...(inspectedProf.lookingFor ? [`<span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-sky-950/90 text-sky-300 border border-sky-700/70">Seeking: ${escapeHtml(inspectedProf.lookingFor)}</span>`] : []),
           ...heroOtbPlayers.slice(0, 3).map(pl => `<span class="px-1.5 py-0.5 rounded bg-emerald-950/90 border border-emerald-500/60 text-[10px] font-bold text-emerald-200">${escapeHtml(pl.label)}</span>`),
           ...heroOtbPicks.slice(0, 3).map(pk => `<span class="px-1.5 py-0.5 rounded bg-amber-950/90 border border-amber-500/60 text-[10px] font-mono font-bold text-amber-200">${escapeHtml(pk.label)}</span>`)
@@ -7439,6 +7617,69 @@
                  ${leagueDB.teams.filter(t => t.id !== uiState.myTeam).map(t => `<option value="${safeId(t.id)}" class="bg-[#0B0D12]" ${t.id === inspectedTeamId ? 'selected' : ''}>Scout: ${escapeHtml(getTeamName(t.id))}</option>`).join("")}
                </select>
              </div>`;
+
+        const totalOtbForTeam = heroOtbPlayers.length + heroOtbPicks.length;
+        const commandStripHtml = `
+          <div id="warRoomCommandStrip" class="mt-3 grid grid-cols-2 sm:grid-cols-4 gap-2">
+            <button type="button" onclick="setMyTeamSubView('PICKS')" class="bg-[#0B0D12]/90 hover:bg-[#0B0D12] border border-white/10 hover:border-amber-400/50 rounded-xl p-2.5 text-left transition cursor-pointer">
+              <div class="text-[10px] font-extrabold uppercase tracking-wider text-slate-400 flex items-center justify-between">
+                <span>${Number(state.year)} Capital</span>
+                <span class="font-mono text-amber-300">#${heroRankInfo.totalRank}</span>
+              </div>
+              <div class="text-sm sm:text-base font-black text-white font-mono mt-0.5">${heroRankInfo.totalPicks} Picks <span class="text-[11px] font-bold text-slate-300">(${heroRankInfo.inCount} In / ${heroRankInfo.outCount} Out)</span></div>
+            </button>
+            <button type="button" onclick="setMyTeamSubView('ROSTER')" class="bg-[#0B0D12]/90 hover:bg-[#0B0D12] border border-white/10 hover:border-emerald-400/50 rounded-xl p-2.5 text-left transition cursor-pointer">
+              <div class="text-[10px] font-extrabold uppercase tracking-wider text-slate-400 flex items-center justify-between">
+                <span>Keepers</span>
+                <i class="fa-solid fa-user-lock text-[10px] text-emerald-400"></i>
+              </div>
+              <div class="text-sm sm:text-base font-black text-emerald-300 font-mono mt-0.5">${kStats.totalKeepers}/${kStats.maxKeepers} <span class="text-[11px] font-bold text-slate-300">RB ${kStats.posCounts?.RB || 0}/4 • WR ${kStats.posCounts?.WR || 0}/4</span></div>
+            </button>
+            <button type="button" onclick="setMyTeamSubView('OFFERS')" class="bg-[#0B0D12]/90 hover:bg-[#0B0D12] border ${teamOffers.incomingCount > 0 ? 'border-amber-400/70' : 'border-white/10'} hover:border-sky-400/50 rounded-xl p-2.5 text-left transition cursor-pointer">
+              <div class="text-[10px] font-extrabold uppercase tracking-wider text-slate-400 flex items-center justify-between">
+                <span>Offers & Block</span>
+                ${teamOffers.incomingCount > 0 ? `<span class="px-1.5 py-0.2 rounded-full bg-amber-400 text-black font-mono text-[9px] font-black">${teamOffers.incomingCount} New</span>` : `<i class="fa-solid fa-handshake text-[10px] text-sky-400"></i>`}
+              </div>
+              <div class="text-sm sm:text-base font-black text-white font-mono mt-0.5">${teamOffers.incomingCount} In <span class="text-[11px] font-bold text-amber-300">• ${totalOtbForTeam} OTB</span></div>
+            </button>
+            <button type="button" onclick="switchTab('board')" class="bg-[#0B0D12]/90 hover:bg-[#0B0D12] border border-white/10 hover:border-amber-400/50 rounded-xl p-2.5 text-left transition cursor-pointer">
+              <div class="text-[10px] font-extrabold uppercase tracking-wider text-slate-400 flex items-center justify-between">
+                <span>Lead Pick</span>
+                <i class="fa-solid fa-table-cells text-[10px] text-amber-400"></i>
+              </div>
+              <div class="text-xs sm:text-sm font-black text-amber-300 font-mono truncate mt-0.5">${escapeHtml(leadPickDisplay)}</div>
+            </button>
+          </div>
+        `;
+
+        const quickBarHtml = (!isScoutingOpponent && uiState.warRoomQuickBarOpen) ? `
+          <div id="warRoomQuickNeedsBar" class="mt-2.5 pt-2.5 border-t border-white/15 bg-[#0B0D12]/90 rounded-xl p-3 space-y-2.5">
+            <div class="flex flex-wrap items-center justify-between gap-2">
+              <span class="text-[10px] font-extrabold uppercase tracking-wider text-amber-300 flex items-center gap-1.5">
+                <i class="fa-solid fa-bolt"></i>
+                <span>1-Tap Team Needs & Trade Block</span>
+              </span>
+              <span class="text-[10px] text-slate-400">Tap any chip to toggle instantly</span>
+            </div>
+            <div class="flex flex-wrap gap-1.5">
+              ${WAR_ROOM_CHIP_OPTIONS.map(chip => {
+                const active = heroChips.includes(chip);
+                return `
+                  <button type="button" onclick="toggleWarRoomChip('${escapeHtml(chip)}')" class="px-2.5 py-1 rounded-full text-[11px] font-bold border transition cursor-pointer ${active ? 'bg-[#73000A] text-white border-[#CC1429] shadow' : 'bg-[#13161F] text-slate-300 border-white/10 hover:border-white/30'}">
+                    ${active ? '<i class="fa-solid fa-check mr-1 text-[9px] text-amber-300"></i>' : '+ '}${escapeHtml(chip)}
+                  </button>
+                `;
+              }).join("")}
+            </div>
+            <div class="flex flex-col sm:flex-row items-stretch sm:items-center gap-2">
+              <input id="quickWarRoomBlockNoteInput" type="text" maxlength="240" value="${escapeHtml(inspectedProf.tradeBlockNote || '')}" placeholder="Trade Block headline (e.g., Shopping 2nd + WR for RB1)..." class="flex-1 bg-[#13161F] text-white text-xs rounded-lg px-3 py-1.5 border border-white/10 focus:border-amber-400 focus:outline-none">
+              <button type="button" onclick="saveQuickWarRoomBlockNote()" class="btn-garnet px-3 py-1.5 text-xs flex-shrink-0">
+                <i class="fa-solid fa-floppy-disk"></i>
+                <span>Save Headline</span>
+              </button>
+            </div>
+          </div>
+        ` : "";
 
         box.innerHTML = `
           <div class="app-card overflow-hidden">
@@ -7464,38 +7705,36 @@
               <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-2.5">
                 <div class="flex items-center gap-3 min-w-0">
                   ${renderTeamAvatarHtml(inspectedTeamId, "w-11 h-11 sm:w-12 sm:h-12 text-base sm:text-lg shadow-lg", "rounded-2xl")}
-                  <div class="min-w-0 flex-1 space-y-1">
+                  <div class="min-w-0 flex-1 space-y-0.5">
                     <div class="flex flex-wrap items-center gap-1.5">
                       <h2 class="text-base sm:text-xl font-black text-white tracking-tight truncate">${inspectedName}</h2>
                       ${inspectedHasPin && !isScoutingOpponent ? `<span class="static-badge bg-emerald-950/90 text-emerald-300 border border-emerald-600/50"><i class="fa-solid fa-lock"></i> PIN</span>` : ''}
                     </div>
-                    <div class="flex flex-wrap items-center gap-x-2.5 gap-y-1 text-[11px] font-mono text-slate-200">
-                      <span><strong class="text-white">${heroRankInfo.totalPicks}</strong> Picks <span class="text-amber-300">(#${heroRankInfo.totalRank})</span></span>
-                      <span class="text-slate-500">•</span>
-                      <span><strong class="text-amber-300">${heroRankInfo.earlyPicks}</strong> Early Rds</span>
-                      <span class="text-slate-500">•</span>
-                      <button type="button" onclick="setMyTeamSubView('ROSTER')" class="text-emerald-300 hover:underline font-bold cursor-pointer">
-                        Keepers ${kStats.totalKeepers}/${kStats.maxKeepers}
-                      </button>
-                      <span class="text-slate-500">•</span>
-                      <span><span class="text-sky-300">+${heroRankInfo.inCount}</span>/<span class="text-rose-300">-${heroRankInfo.outCount}</span></span>
-                    </div>
+                    <div class="text-[11px] text-slate-300">Manager: <strong class="text-white">${escapeHtml(getOriginalManagerName(inspectedTeamId))}</strong></div>
                   </div>
                 </div>
 
                 <div class="flex flex-wrap items-center gap-1.5 flex-shrink-0">
                   ${teamSwitcherControlHtml}
                   ${!isScoutingOpponent ? `
-                    <button type="button" onclick="toggleWarRoomDrawer()" id="toggleWarRoomDrawerBtn" class="btn-action px-3 py-1.5 text-[11px] sm:text-xs text-slate-100 bg-[#0B0D12]/90">
-                      <i class="fa-solid fa-sliders text-amber-400"></i>
-                      <span>Edit Team</span>
+                    <button type="button" onclick="toggleWarRoomQuickBar()" id="toggleWarRoomQuickBarBtn" class="btn-action px-2.5 py-1.5 text-[11px] sm:text-xs ${uiState.warRoomQuickBarOpen ? 'text-amber-300 border-amber-400/60' : 'text-slate-100'} bg-[#0B0D12]/90" title="1-Tap Quick Needs & Trade Block Bar">
+                      <i class="fa-solid fa-tag text-amber-400"></i>
+                      <span>Needs & Block</span>
+                    </button>
+                    <button type="button" onclick="toggleWarRoomDrawer()" id="toggleWarRoomDrawerBtn" class="btn-action px-2.5 py-1.5 text-[11px] sm:text-xs text-slate-100 bg-[#0B0D12]/90">
+                      <i class="fa-solid fa-sliders text-sky-400"></i>
+                      <span>Badge & PIN</span>
                     </button>
                   ` : ''}
                 </div>
               </div>
 
+              ${commandStripHtml}
+
+              ${quickBarHtml}
+
               ${compactBlockBits.length > 0 ? `
-                <div class="mt-2 pt-2 border-t border-white/10 flex flex-wrap items-center gap-1.5">
+                <div class="mt-2.5 pt-2 border-t border-white/10 flex flex-wrap items-center gap-1.5">
                   <span class="text-[10px] font-extrabold uppercase tracking-wider text-amber-400"><i class="fa-solid fa-tag mr-1"></i>Block:</span>
                   ${compactBlockBits.join("")}
                 </div>
@@ -7901,8 +8140,6 @@
                     ${espnSt ? `<span>${espnRecordStr}</span>${espnPfStr ? ` • <span class="text-emerald-300">${espnPfStr}</span>` : ''}` : `<span class="text-slate-500">No record</span>`}
                     <span class="text-slate-600 mx-1">•</span>
                     <span class="${net > 0 ? 'text-emerald-300' : net < 0 ? 'text-rose-300' : 'text-white'} font-bold">${m.effectivePickCount} Picks (${net >= 0 ? '+' + net : net})</span>
-                    <span class="text-slate-600 mx-1">•</span>
-                    <span class="text-amber-300 font-bold">${m.earlyCapitalCount} Early</span>
                   </div>
                 </div>
               </div>
@@ -7942,10 +8179,8 @@
                 : `<span class="text-slate-500">—</span>`}
             </td>
             <td class="py-2.5 px-3 font-mono text-center">
-              <span class="font-extrabold text-sm ${net > 0 ? 'text-emerald-300' : net < 0 ? 'text-rose-300' : 'text-white'}">${m.effectivePickCount}</span>
+              <span class="font-extrabold text-sm ${net > 0 ? 'text-emerald-300' : net < 0 ? 'text-rose-300' : 'text-white'}">${m.effectivePickCount} Picks</span>
               <span class="text-[11px] text-slate-400">(${net >= 0 ? '+' + net : net})</span>
-              <span class="text-slate-600 mx-1.5">•</span>
-              <span class="text-amber-300 font-bold">${m.earlyCapitalCount} Early</span>
             </td>
             <td class="py-2.5 px-3 text-right">
               <div class="inline-flex items-center justify-end gap-1.5">
@@ -8004,7 +8239,7 @@
                   <th class="py-2.5 px-3 text-center w-12">#</th>
                   <th class="py-2.5 px-3">Team</th>
                   <th class="py-2.5 px-3 text-center">${latestEspnYr} Record • PF</th>
-                  <th class="py-2.5 px-3 text-center">${Number(state.year)} Picks • Early Rds 1–5</th>
+                  <th class="py-2.5 px-3 text-center">${Number(state.year)} Draft Picks</th>
                   <th class="py-2.5 px-3 text-right">Action</th>
                 </tr>
               </thead>
@@ -8112,6 +8347,63 @@
       return false;
     }
 
+    const OFFICIAL_RIVALRY_PAIRS = [
+      { id: "syeth_mary", teamA: "syeth", teamB: "mary", title: "Syeth × Mary" },
+      { id: "corbyn_matt", teamA: "corbyn", teamB: "matt", title: "Corbyn × Matt" },
+      { id: "geltz_dylan", teamA: "geltz", teamB: "dylan", title: "Geltz × Dylan" },
+      { id: "leo_josh", teamA: "leo", teamB: "josh", title: "Leo × Josh" },
+      { id: "chris_boss", teamA: "chris", teamB: "boss", title: "Chris × Boss" }
+    ];
+
+    function getOfficialRivalForTeam(teamId) {
+      const tid = safeId(teamId);
+      const pair = OFFICIAL_RIVALRY_PAIRS.find(p => p.teamA === tid || p.teamB === tid);
+      if (!pair) return null;
+      const rivalId = pair.teamA === tid ? pair.teamB : pair.teamA;
+      return {
+        pairId: pair.id,
+        title: pair.title,
+        teamId: tid,
+        rivalId,
+        rivalName: getTeamName(rivalId),
+        rivalOrigName: getOriginalManagerName(rivalId)
+      };
+    }
+
+    function getSeasonFinalStandingsOutcomes(seasonYr) {
+      const yr = Number(seasonYr) || uiState.leagueHqSeasonYear || 2026;
+      const ed = leagueDB?.espnData || DEFAULT_ESPN_DATA;
+      const sObj = (ed.seasons && ed.seasons[String(yr)]) || { standings: [] };
+      const yrOverrides = (ed.seasonOwnerOverrides && ed.seasonOwnerOverrides[String(yr)]) || {};
+      const resolveOwner = (rawId) => yrOverrides[rawId] || rawId || "";
+      const standings = [...(sObj.standings || [])].sort(
+        (a, b) => (Number(a.finalRank || a.rank || a.playoffSeed || 99) - Number(b.finalRank || b.rank || b.playoffSeed || 99))
+      );
+      const firstRow = standings[0] || null;
+      const secondRow = standings[1] || null;
+      const lastRow = standings[standings.length - 1] || null;
+
+      // Final Standings strictly determine Champion (#1) and Phallic Feaster (#10 / Toilet Bowl loser).
+      // Pick 1.05 ownership never transfers or determines the Phallic Feaster punishment.
+      const champId = yrOverrides.__champion || resolveOwner(sObj.champion || (firstRow ? (firstRow.managerId || firstRow.teamId) : ""));
+      const runnerUpId = yrOverrides.__runnerUp || resolveOwner(sObj.runnerUp || (secondRow ? (secondRow.managerId || secondRow.teamId) : ""));
+      const feasterId = yrOverrides.__phallicFeaster || yrOverrides.__toiletBowl || resolveOwner(
+        sObj.phallicFeaster || sObj.toiletBowl || (lastRow ? (lastRow.managerId || lastRow.teamId) : "")
+      );
+      const tbWinnerId = yrOverrides.__toiletBowlWinner || resolveOwner(sObj.toiletBowlWinner || "");
+
+      return {
+        year: yr,
+        isCompleted: isSeasonOfficiallyCompleted(yr, sObj),
+        champId,
+        runnerUpId,
+        feasterId,
+        tbWinnerId,
+        firstRow,
+        lastRow
+      };
+    }
+
     function computeGamecockDraftOrderFromSeason(seasonYr) {
       const yr = Number(seasonYr) || uiState.leagueHqSeasonYear || 2026;
       const ed = leagueDB?.espnData || DEFAULT_ESPN_DATA;
@@ -8142,10 +8434,11 @@
         };
       }
 
-      const explicitChampSlot = mapToSlotTeamId(yrOverrides.__champion || sObj.champion);
-      const explicitRunnerSlot = mapToSlotTeamId(yrOverrides.__runnerUp || sObj.runnerUp);
-      const explicitTbWinnerSlot = mapToSlotTeamId(yrOverrides.__toiletBowlWinner || sObj.toiletBowlWinner);
-      const explicitFeasterSlot = mapToSlotTeamId(yrOverrides.__phallicFeaster || yrOverrides.__toiletBowl || sObj.phallicFeaster || sObj.toiletBowl);
+      const outcomes = getSeasonFinalStandingsOutcomes(yr);
+      const explicitChampSlot = mapToSlotTeamId(outcomes.champId || rows[0]?.teamId);
+      const explicitRunnerSlot = mapToSlotTeamId(outcomes.runnerUpId || rows[1]?.teamId);
+      const explicitTbWinnerSlot = mapToSlotTeamId(outcomes.tbWinnerId);
+      const explicitFeasterSlot = mapToSlotTeamId(outcomes.feasterId || rows[rows.length - 1]?.teamId);
 
       // Split into Playoff teams (1.06–1.10) and Toilet Bowl teams (1.01–1.05)
       const targetPlayoffCount = rows.length >= 6 ? 5 : Math.max(1, rows.length - 1);
@@ -8162,7 +8455,7 @@
       const playoffRows = rows.filter(r => playoffIds.has(r.teamId));
       const toiletRows = rows.filter(r => !playoffIds.has(r.teamId));
 
-      // Toilet Bowl: most wins + points in Toilet Bowl gets 1.01; loser is Phallic Feaster at 1.05
+      // Toilet Bowl: most wins + points in Toilet Bowl gets 1.01; #10 final standing (Phallic Feaster) starts with 1.05
       const sortedToilet = [...toiletRows].sort((a, b) => {
         const twDiff = (Number(b.toiletWins) || 0) - (Number(a.toiletWins) || 0);
         if (twDiff !== 0) return twDiff;
@@ -8176,7 +8469,7 @@
       let slot1_01 = (explicitTbWinnerSlot && sortedToilet.some(r => r.teamId === explicitTbWinnerSlot))
         ? explicitTbWinnerSlot
         : (nonFeasterToilet[0]?.teamId || sortedToilet[0]?.teamId || "");
-      let slot1_05 = (explicitFeasterSlot && explicitFeasterSlot !== slot1_01 && sortedToilet.some(r => r.teamId === explicitFeasterSlot))
+      let slot1_05 = (explicitFeasterSlot && explicitFeasterSlot !== slot1_01 && rows.some(r => r.teamId === explicitFeasterSlot))
         ? explicitFeasterSlot
         : ([...sortedToilet].reverse().find(r => r.teamId !== slot1_01)?.teamId || "");
       const middleToilet = sortedToilet
@@ -8200,7 +8493,6 @@
         .map(r => r.teamId)
         .filter(id => id !== slot1_10 && id !== slot1_09);
 
-      // If partial standings (<10 teams) were imported, pad missing teams into middle slots so 1.05, 1.09, & 1.10 stay anchored
       const initialUsed = new Set([slot1_01, ...middleToilet, slot1_05, ...earlyPlayoffOut, slot1_09, slot1_10].filter(Boolean));
       const missingIds = activeTeams.filter(id => !initialUsed.has(id));
       if (explicitFeasterSlot && slot1_01 === explicitFeasterSlot && !slot1_05 && missingIds.length > 0) {
@@ -8237,10 +8529,10 @@
       return {
         slots: finalSlots.slice(0, 10),
         tbWinnerId: finalSlots[0] || "",
-        feasterId: finalSlots[4] || "",
-        runnerUpId: finalSlots[8] || "",
-        champId: finalSlots[9] || "",
-        isCompleted: isSeasonOfficiallyCompleted(yr, sObj)
+        feasterId: explicitFeasterSlot || finalSlots[4] || "",
+        runnerUpId: explicitRunnerSlot || finalSlots[8] || "",
+        champId: explicitChampSlot || finalSlots[9] || "",
+        isCompleted: outcomes.isCompleted
       };
     }
 
@@ -8255,12 +8547,13 @@
       if (!latestYr) {
         return { seasonYear: 0, champId: "", tbWinnerId: "", feasterId: "" };
       }
+      const outcomes = getSeasonFinalStandingsOutcomes(latestYr);
       const order = computeGamecockDraftOrderFromSeason(latestYr);
       return {
         seasonYear: latestYr,
-        champId: order.champId || "",
-        tbWinnerId: order.tbWinnerId || "",
-        feasterId: order.feasterId || ""
+        champId: outcomes.champId || order.champId || "",
+        tbWinnerId: outcomes.tbWinnerId || order.tbWinnerId || "",
+        feasterId: outcomes.feasterId || order.feasterId || ""
       };
     }
 
@@ -8446,10 +8739,11 @@
         const isCompletedSeason = isSeasonOfficiallyCompleted(yr, s);
 
         if (isCompletedSeason) {
-          const champId = yrOverrides.__champion || resolveOwner(s.champion);
-          const runnerId = yrOverrides.__runnerUp || resolveOwner(s.runnerUp);
-          const tbWinId = yrOverrides.__toiletBowlWinner || resolveOwner(s.toiletBowlWinner);
-          const feasterId = yrOverrides.__phallicFeaster || yrOverrides.__toiletBowl || resolveOwner(s.phallicFeaster || s.toiletBowl);
+          const outcomes = getSeasonFinalStandingsOutcomes(yr);
+          const champId = outcomes.champId;
+          const runnerId = outcomes.runnerUpId;
+          const tbWinId = outcomes.tbWinnerId;
+          const feasterId = outcomes.feasterId;
 
           if (champId) {
             const e = ensureEntry(champId);
@@ -8634,15 +8928,16 @@
       const maxGamesPlayed = (sObj.standings || []).reduce((mx, st) => Math.max(mx, (Number(st.wins) || 0) + (Number(st.losses) || 0) + (Number(st.ties) || 0)), 0);
       const isCompletedSeason = isSeasonOfficiallyCompleted(selectedYr, sObj);
       const orderInfo = computeGamecockDraftOrderFromSeason(selectedYr);
+      const outcomes = getSeasonFinalStandingsOutcomes(selectedYr);
 
       const effectiveChampId = isCompletedSeason
-        ? (yrOverrides.__champion || resolveOwner(sObj.champion || orderInfo.champId))
+        ? (outcomes.champId || orderInfo.champId)
         : (sObj.standings[0] ? resolveOwner(sObj.standings[0].managerId || sObj.standings[0].teamId) : "");
       const effectiveRunnerId = isCompletedSeason
-        ? (yrOverrides.__runnerUp || resolveOwner(sObj.runnerUp || orderInfo.runnerUpId))
+        ? (outcomes.runnerUpId || orderInfo.runnerUpId)
         : (sObj.standings[1] ? resolveOwner(sObj.standings[1].managerId || sObj.standings[1].teamId) : "");
-      const effectiveTbWinnerId = yrOverrides.__toiletBowlWinner || resolveOwner(sObj.toiletBowlWinner || orderInfo.tbWinnerId);
-      const effectiveFeasterId = yrOverrides.__phallicFeaster || yrOverrides.__toiletBowl || resolveOwner(sObj.phallicFeaster || sObj.toiletBowl || orderInfo.feasterId);
+      const effectiveTbWinnerId = outcomes.tbWinnerId || orderInfo.tbWinnerId;
+      const effectiveFeasterId = outcomes.feasterId || orderInfo.feasterId;
 
       const champName = effectiveChampId ? escapeHtml(getHistoricalManagerDisplayName(effectiveChampId)) : "TBD";
       const runnerName = effectiveRunnerId ? escapeHtml(getHistoricalManagerDisplayName(effectiveRunnerId)) : "TBD";
@@ -8665,9 +8960,9 @@
              <div class="space-y-0.5 min-w-0">
                <div class="flex flex-wrap items-center gap-1.5">
                  <span class="static-badge bg-fuchsia-950 text-fuchsia-200 border border-fuchsia-500/60">🍆 Champion's Decree</span>
-                 <span class="text-xs font-black text-white">Rename the Phallic Feaster (${escapeHtml(getOriginalManagerName(feasterActiveTeamId))} • Pick 1.05)</span>
+                 <span class="text-xs font-black text-white">Rename the Phallic Feaster (${escapeHtml(getOriginalManagerName(feasterActiveTeamId))} • #10 Final Standing)</span>
                </div>
-               <p class="text-[11px] text-slate-300">As reigning Overall Champion, you hold naming rights over ${escapeHtml(getOriginalManagerName(feasterActiveTeamId))}'s franchise${feasterProf?.feasterRenamedByChamp ? ' <strong class="text-fuchsia-300">(Currently Locked)</strong>' : ''}.</p>
+               <p class="text-[11px] text-slate-300">As reigning Overall Champion (#1), you hold naming rights over ${escapeHtml(getOriginalManagerName(feasterActiveTeamId))}'s franchise (#10 Toilet Bowl Loser — trading Pick 1.05 never transfers this penalty)${feasterProf?.feasterRenamedByChamp ? ' <strong class="text-fuchsia-300">(Currently Locked)</strong>' : ''}.</p>
              </div>
              <div class="flex flex-wrap items-center gap-2 flex-shrink-0">
                <input id="standingsChampFeasterNameInput" type="text" maxlength="24" value="${escapeHtml(feasterProf?.customTeamName || '')}" placeholder="Enter Phallic Feaster team name..." class="w-52 bg-[#0B0D12] text-white text-xs font-bold rounded-lg px-3 py-1.5 border border-fuchsia-500/50 focus:border-fuchsia-400 focus:outline-none">
@@ -8703,7 +8998,7 @@
           : isTbWin
           ? `🧻 1.01`
           : isFeaster
-          ? (isCompletedSeason ? '🍆 1.05' : `#${idx + 1}`)
+          ? (isCompletedSeason ? '🍆 #10' : `#${idx + 1}`)
           : `#${idx + 1}`;
 
         return `
@@ -8742,7 +9037,7 @@
                   : `<span class="static-badge bg-[#13161F] text-slate-200 border border-white/15"><i class="fa-solid fa-flag-checkered text-[10px]"></i> Final</span>`}
                 <h2 class="text-base sm:text-lg font-black text-white">${selectedYr} Standings & Draft Stakes</h2>
               </div>
-              <p class="text-xs text-slate-400 mt-0.5">Toilet Bowl Winner earns <strong class="text-sky-300">1.01</strong> • Toilet Bowl Loser is <strong class="text-fuchsia-300">Phallic Feaster (1.05 + renamed by Champ)</strong> • Champion picks <strong class="text-amber-300">1.10</strong>.</p>
+              <p class="text-xs text-slate-400 mt-0.5">Post-playoff Final Standings determine <strong class="text-amber-300">Champion (#1 • Slot 1.10)</strong> and <strong class="text-fuchsia-300">Phallic Feaster (#10 • Slot 1.05 + renamed by Champ)</strong> • Toilet Bowl Winner earns <strong class="text-sky-300">1.01</strong>. Trading Pick 1.05 never passes on the Feaster penalty.</p>
             </div>
             <div class="flex flex-wrap items-center gap-2">
               <div class="flex flex-wrap items-center gap-1 bg-[#0B0D12] p-1 rounded-xl border border-white/10">
@@ -8762,14 +9057,14 @@
           <div class="grid grid-cols-2 lg:grid-cols-4 gap-2.5">
             <div class="bg-[#0B0D12] border border-amber-500/40 rounded-xl px-3 py-2 flex items-center justify-between gap-2">
               <div class="min-w-0">
-                <div class="text-[10px] font-extrabold uppercase text-amber-400 truncate">${isCompletedSeason ? 'Champion (1.10)' : 'Current #1 Seed'}</div>
+                <div class="text-[10px] font-extrabold uppercase text-amber-400 truncate">${isCompletedSeason ? 'Champion (#1 • 1.10)' : 'Current #1 Seed'}</div>
                 <div class="text-xs sm:text-sm font-black text-white truncate">${champName}</div>
               </div>
               <span class="text-lg flex-shrink-0">${isCompletedSeason ? '🏆' : '<i class="fa-solid fa-crown text-amber-300 text-sm"></i>'}</span>
             </div>
             <div class="bg-[#0B0D12] border border-white/10 rounded-xl px-3 py-2 flex items-center justify-between gap-2">
               <div class="min-w-0">
-                <div class="text-[10px] font-extrabold uppercase text-slate-400 truncate">${isCompletedSeason ? 'Runner-Up (1.09)' : 'Current #2 Seed'}</div>
+                <div class="text-[10px] font-extrabold uppercase text-slate-400 truncate">${isCompletedSeason ? 'Runner-Up (#2 • 1.09)' : 'Current #2 Seed'}</div>
                 <div class="text-xs sm:text-sm font-black text-slate-200 truncate">${runnerName}</div>
               </div>
               <span class="text-lg flex-shrink-0">${isCompletedSeason ? '🥈' : '<i class="fa-solid fa-medal text-slate-300 text-sm"></i>'}</span>
@@ -8783,7 +9078,7 @@
             </div>
             <div class="bg-[#0B0D12] border border-fuchsia-500/40 rounded-xl px-3 py-2 flex items-center justify-between gap-2">
               <div class="min-w-0">
-                <div class="text-[10px] font-extrabold uppercase text-fuchsia-400 truncate">${isCompletedSeason ? 'Phallic Feaster (1.05)' : 'Current #10'}</div>
+                <div class="text-[10px] font-extrabold uppercase text-fuchsia-400 truncate">${isCompletedSeason ? 'Phallic Feaster (#10)' : 'Current #10'}</div>
                 <div class="text-xs sm:text-sm font-black text-fuchsia-200 truncate">${feasterName}</div>
               </div>
               <span class="text-lg flex-shrink-0">${isCompletedSeason ? '🍆' : '<i class="fa-solid fa-arrow-trend-down text-fuchsia-300 text-sm"></i>'}</span>
@@ -8929,6 +9224,50 @@
       const teams = leagueDB?.teams || DEFAULT_TEAMS;
       const matrix = computeHeadToHeadMatrix();
 
+      const officialRivalryCardsHtml = OFFICIAL_RIVALRY_PAIRS.map(pair => {
+        const recAB = matrix[pair.teamA]?.[pair.teamB] || { wins: 0, losses: 0 };
+        const aWins = Number(recAB.wins) || 0;
+        const bWins = Number(recAB.losses) || 0;
+        const total = aWins + bWins;
+        const aPct = total > 0 ? Math.round((aWins / total) * 100) : 50;
+        const leaderText = aWins > bWins
+          ? `${escapeHtml(getOriginalManagerName(pair.teamA))} leads ${aWins}-${bWins}`
+          : bWins > aWins
+          ? `${escapeHtml(getOriginalManagerName(pair.teamB))} leads ${bWins}-${aWins}`
+          : `Series tied ${aWins}-${bWins}`;
+        return `
+          <div class="bg-[#0B0D12] border border-amber-500/40 rounded-xl p-3 space-y-2">
+            <div class="flex items-center justify-between gap-2">
+              <span class="static-badge bg-[#73000A] text-amber-200 border border-[#CC1429] text-[10px]">⚔️ Official Rivalry</span>
+              <span class="font-mono text-[11px] font-extrabold text-amber-300">${leaderText}</span>
+            </div>
+            <div class="flex items-center justify-between gap-2 text-xs">
+              <div class="flex items-center gap-1.5 min-w-0">
+                ${renderTeamAvatarHtml(pair.teamA, "w-6 h-6 text-[10px]", "rounded-md")}
+                <div class="min-w-0">
+                  <div class="font-black text-white truncate">${escapeHtml(getOriginalManagerName(pair.teamA))}</div>
+                  <div class="text-[10px] text-slate-400 truncate">${escapeHtml(getTeamName(pair.teamA))}</div>
+                </div>
+              </div>
+              <div class="font-mono font-black text-sm px-2 py-0.5 rounded-lg bg-[#13161F] border border-white/10 text-white flex-shrink-0">
+                ${aWins} – ${bWins}
+              </div>
+              <div class="flex items-center gap-1.5 min-w-0 text-right justify-end">
+                <div class="min-w-0">
+                  <div class="font-black text-white truncate">${escapeHtml(getOriginalManagerName(pair.teamB))}</div>
+                  <div class="text-[10px] text-slate-400 truncate">${escapeHtml(getTeamName(pair.teamB))}</div>
+                </div>
+                ${renderTeamAvatarHtml(pair.teamB, "w-6 h-6 text-[10px]", "rounded-md")}
+              </div>
+            </div>
+            <div class="w-full h-1.5 rounded-full bg-sky-950 overflow-hidden flex">
+              <div class="h-full bg-[#CC1429]" style="width:${aPct}%"></div>
+              <div class="h-full bg-sky-400" style="width:${100 - aPct}%"></div>
+            </div>
+          </div>
+        `;
+      }).join("");
+
       const headerCols = teams.map(t => `
         <th class="py-2 px-2 text-center text-[10px] font-extrabold uppercase text-slate-300 bg-[#0B0D12] border-b border-r border-white/10">
           ${escapeHtml(getOriginalManagerName(t.id))}
@@ -8936,17 +9275,19 @@
       `).join("");
 
       const bodyRows = teams.map(rowTeam => {
+        const officialRival = getOfficialRivalForTeam(rowTeam.id);
         const cells = teams.map(colTeam => {
           if (rowTeam.id === colTeam.id) {
             return `<td class="py-2 px-2 text-center bg-[#13161F] border-b border-r border-white/10 text-[10px] font-mono text-slate-600">—</td>`;
           }
+          const isOfficialRivalCell = officialRival && officialRival.rivalId === colTeam.id;
           const rec = matrix[rowTeam.id]?.[colTeam.id] || { wins: 0, losses: 0 };
           const cls = rec.wins > rec.losses
             ? "bg-emerald-950/35 text-emerald-300 font-bold"
             : rec.wins < rec.losses
             ? "bg-rose-950/35 text-rose-300"
             : "bg-[#0B0D12] text-slate-300";
-          return `<td class="py-2 px-2 text-center border-b border-r border-white/10 font-mono text-[11px] ${cls}">${rec.wins}-${rec.losses}</td>`;
+          return `<td class="py-2 px-2 text-center border-b border-r ${isOfficialRivalCell ? 'border-amber-400/70 ring-1 ring-inset ring-amber-400/50' : 'border-white/10'} font-mono text-[11px] ${cls}" title="${isOfficialRivalCell ? 'Official League Rivalry Matchup' : ''}">${isOfficialRivalCell ? '⚔️ ' : ''}${rec.wins}-${rec.losses}</td>`;
         }).join("");
 
         return `
@@ -8960,28 +9301,45 @@
       }).join("");
 
       return `
-        <div class="app-card overflow-hidden p-4 sm:p-5 space-y-3">
-          <div class="border-b border-white/10 pb-3">
-            <div class="flex items-center gap-2">
-              <span class="static-badge bg-[#73000A] text-white border border-[#CC1429]">
-                <i class="fa-solid fa-people-arrows"></i> Rivalry Matrix
-              </span>
-              <h2 class="text-base sm:text-lg font-black text-white">All-Time 10×10 Head-to-Head Grid (2016–Present)</h2>
+        <div class="space-y-4">
+          <div class="app-card overflow-hidden p-4 sm:p-5 space-y-3">
+            <div class="border-b border-white/10 pb-3">
+              <div class="flex flex-wrap items-center gap-2">
+                <span class="static-badge bg-[#73000A] text-amber-200 border border-[#CC1429]">
+                  ⚔️ Official Rivalry Week Matchups
+                </span>
+                <h2 class="text-base sm:text-lg font-black text-white">5 Fixed League Rivalries (All-Time Series)</h2>
+              </div>
+              <p class="text-xs text-slate-400 mt-0.5">Syeth × Mary • Corbyn × Matt • Geltz × Dylan • Leo × Josh • Chris × Boss</p>
             </div>
-            <p class="text-xs text-slate-400 mt-0.5">Read across any row to see that manager's all-time W-L record against every opponent column.</p>
+            <div id="officialRivalriesGrid" class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-3">
+              ${officialRivalryCardsHtml}
+            </div>
           </div>
-          <div class="overflow-x-auto rounded-xl border border-white/10">
-            <table class="w-full border-collapse text-left">
-              <thead>
-                <tr>
-                  <th class="py-2 px-3 text-[10px] font-extrabold uppercase text-slate-400 bg-[#0B0D12] border-b border-r border-white/10">Manager ╲ Opponent</th>
-                  ${headerCols}
-                </tr>
-              </thead>
-              <tbody>
-                ${bodyRows}
-              </tbody>
-            </table>
+
+          <div class="app-card overflow-hidden p-4 sm:p-5 space-y-3">
+            <div class="border-b border-white/10 pb-3">
+              <div class="flex items-center gap-2">
+                <span class="static-badge bg-[#13161F] text-white border border-white/15">
+                  <i class="fa-solid fa-people-arrows"></i> Rivalry Matrix
+                </span>
+                <h2 class="text-base sm:text-lg font-black text-white">All-Time 10×10 Head-to-Head Grid (2016–Present)</h2>
+              </div>
+              <p class="text-xs text-slate-400 mt-0.5">Read across any row to see that manager's all-time W-L record against every opponent column (<span class="text-amber-300 font-bold">⚔️ = Official Rival</span>).</p>
+            </div>
+            <div class="overflow-x-auto rounded-xl border border-white/10">
+              <table class="w-full border-collapse text-left">
+                <thead>
+                  <tr>
+                    <th class="py-2 px-3 text-[10px] font-extrabold uppercase text-slate-400 bg-[#0B0D12] border-b border-r border-white/10">Manager ╲ Opponent</th>
+                    ${headerCols}
+                  </tr>
+                </thead>
+                <tbody>
+                  ${bodyRows}
+                </tbody>
+              </table>
+            </div>
           </div>
         </div>
       `;
@@ -9047,6 +9405,8 @@
       const focusName = escapeHtml(getTeamName(focusTeamId));
       const matrix = computeHeadToHeadMatrix();
       const myRow = matrix[focusTeamId] || {};
+      const officialRival = getOfficialRivalForTeam(focusTeamId);
+      const officialRivalRec = officialRival ? (myRow[officialRival.rivalId] || { wins: 0, losses: 0 }) : null;
       const oppEntries = Object.entries(myRow)
         .filter(([oppId, rec]) => oppId !== focusTeamId && ((rec.wins || 0) + (rec.losses || 0)) > 0)
         .map(([oppId, rec]) => ({
@@ -9166,8 +9526,17 @@
                 </button>
               </div>
               <div class="space-y-2 text-xs">
+                ${officialRival ? `
+                  <div class="bg-[#0B0D12] border border-amber-500/50 rounded-xl p-2.5 flex items-center justify-between gap-2">
+                    <div class="min-w-0">
+                      <div class="text-[10px] font-extrabold uppercase text-amber-300">⚔️ Official League Rival</div>
+                      <div class="font-bold text-white truncate mt-0.5">vs. ${escapeHtml(officialRival.rivalName)} (${escapeHtml(officialRival.rivalOrigName)})</div>
+                    </div>
+                    <span class="font-mono font-black text-sm text-amber-300">${Number(officialRivalRec?.wins) || 0}-${Number(officialRivalRec?.losses) || 0}</span>
+                  </div>
+                ` : ''}
                 ${topOwned ? `
-                  <div class="bg-[#0B0D12] border border-emerald-500/30 rounded-xl p-3 flex items-center justify-between gap-2">
+                  <div class="bg-[#0B0D12] border border-emerald-500/30 rounded-xl p-2.5 flex items-center justify-between gap-2">
                     <div class="min-w-0">
                       <div class="text-[10px] font-extrabold uppercase text-emerald-400">Best Matchup</div>
                       <div class="font-bold text-white truncate mt-0.5">vs. ${escapeHtml(topOwned.oppName)}</div>
@@ -9176,7 +9545,7 @@
                   </div>
                 ` : ''}
                 ${topNemesis ? `
-                  <div class="bg-[#0B0D12] border border-rose-500/30 rounded-xl p-3 flex items-center justify-between gap-2">
+                  <div class="bg-[#0B0D12] border border-rose-500/30 rounded-xl p-2.5 flex items-center justify-between gap-2">
                     <div class="min-w-0">
                       <div class="text-[10px] font-extrabold uppercase text-rose-400">Toughest Nemesis</div>
                       <div class="font-bold text-white truncate mt-0.5">vs. ${escapeHtml(topNemesis.oppName)}</div>
@@ -9184,7 +9553,7 @@
                     <span class="font-mono font-black text-sm text-rose-300">${topNemesis.wins}-${topNemesis.losses}</span>
                   </div>
                 ` : ''}
-                <p class="text-[11px] text-slate-400 pt-0.5">Tap <strong class="text-slate-200">View All</strong> for the full 10×10 all-time head-to-head grid.</p>
+                <p class="text-[11px] text-slate-400 pt-0.5">Tap <strong class="text-slate-200">View All</strong> for all 5 Official Rivalries & the 10×10 H2H grid.</p>
               </div>
             </div>
           </div>
@@ -9817,6 +10186,12 @@
       `;
     }
 
+    function setTradeMachineAssetMode(mode) {
+      uiState.tradeMachineAssetMode = ["ALL", "PLAYERS", "PICKS"].includes(mode) ? mode : "ALL";
+      const state = evaluateYearState(uiState.activeYear);
+      renderTwoTeamComparisonLedger(state);
+    }
+
     function renderTwoTeamComparisonLedger(state) {
       const workspace = document.getElementById("tradeMachineWorkspace");
       const partnerBar = document.getElementById("tradeMachinePartnerBar");
@@ -9855,10 +10230,6 @@
 
       const dA = computeWhatIfDeltas(teamA.id);
       const dB = computeWhatIfDeltas(teamB.id);
-
-      const sharedTradesInYear = state.yearTrades.filter(t =>
-        [t.teamA, t.teamB, t.teamC].includes(teamA.id) && [t.teamA, t.teamB, t.teamC].includes(teamB.id)
-      );
 
       // Build Interactive Side-by-Side Roster Player Chips for Player+Pick Trade Machine
       const rosterA = (leagueDB?.espnData?.rosters && leagueDB.espnData.rosters[teamA.id]) || [];
@@ -10175,6 +10546,27 @@
         </div>
       ` : "";
 
+      const assetMode = ["ALL", "PLAYERS", "PICKS"].includes(uiState.tradeMachineAssetMode) ? uiState.tradeMachineAssetMode : "ALL";
+      const assetModeBarHtml = `
+        <div class="bg-[#0B0D12] border border-white/10 rounded-xl px-3 py-2 flex flex-wrap items-center justify-between gap-2">
+          <span class="text-[11px] font-extrabold uppercase tracking-wider text-slate-400">Asset View:</span>
+          <div class="segmented-bar overflow-x-auto max-w-full" role="tablist" aria-label="Trade Machine Asset Mode">
+            <button type="button" onclick="setTradeMachineAssetMode('ALL')" class="segmented-pill text-xs ${assetMode === 'ALL' ? 'segmented-pill-active' : ''}">
+              <i class="fa-solid fa-layer-group text-[10px]"></i>
+              <span>All Assets</span>
+            </button>
+            <button type="button" onclick="setTradeMachineAssetMode('PLAYERS')" class="segmented-pill text-xs ${assetMode === 'PLAYERS' ? 'segmented-pill-active' : ''}">
+              <i class="fa-solid fa-people-arrows text-[10px]"></i>
+              <span>Players Only (${uiState.whatIfPlayerSwaps.length})</span>
+            </button>
+            <button type="button" onclick="setTradeMachineAssetMode('PICKS')" class="segmented-pill text-xs ${assetMode === 'PICKS' ? 'segmented-pill-active' : ''}">
+              <i class="fa-solid fa-list-ol text-[10px]"></i>
+              <span>Picks Only (${uiState.whatIfSwaps.length})</span>
+            </button>
+          </div>
+        </div>
+      `;
+
       workspace.innerHTML = `
         <div class="space-y-3">
           ${counteringBarHtml}
@@ -10216,28 +10608,16 @@
             </div>
           </div>
 
-          ${playerTrayHtml}
+          ${assetModeBarHtml}
 
-          ${pickYearBarHtml}
+          ${assetMode !== "PICKS" ? playerTrayHtml : ""}
 
-          ${sharedTradesInYear.length > 0 ? `
-            <div class="bg-[#0B0D12] border border-white/10 rounded-xl p-3 space-y-1.5">
-              <div class="text-[10px] font-extrabold uppercase text-amber-300 flex items-center gap-1.5">
-                <i class="fa-solid fa-handshake"></i>
-                <span>Completed ${Number(state.year)} Deals Between ${escapeHtml(teamA.name)} & ${escapeHtml(teamB.name)} (${sharedTradesInYear.length})</span>
-              </div>
-              ${sharedTradesInYear.map(tr => `
-                <div class="text-xs text-slate-200 flex items-center justify-between gap-2 bg-[#13161F] px-3 py-1.5 rounded-lg border border-white/10">
-                  <span class="break-words min-w-0"><strong class="font-mono text-amber-300">${escapeHtml(tr.id)}:</strong> ${escapeHtml(tr.headline)}</span>
-                  ${uiState.isCommish ? `<button onclick="openEditTradeModal('${safeId(tr.id)}')" class="text-[11px] text-sky-300 hover:underline whitespace-nowrap cursor-pointer flex-shrink-0"><i class="fa-solid fa-pen mr-1"></i>Edit</button>` : ''}
-                </div>
-              `).join("")}
+          ${assetMode !== "PLAYERS" ? `
+            ${pickYearBarHtml}
+            <div class="space-y-1.5">
+              ${rowsHtml}
             </div>
-          ` : ''}
-
-          <div class="space-y-1.5">
-            ${rowsHtml}
-          </div>
+          ` : ""}
 
           ${stagingBarHtml}
         </div>
@@ -10462,7 +10842,6 @@
                   <span>Withdraw</span>
                 </button>
               ` : ''}
-              ${buildUnifiedShareMenuHtml(`myoffer_share_${safeId(pt.id)}`, "PROPOSAL", pt.id, `copyProposalPingForChat('${safeId(pt.id)}')`, "Copy Offer Ping for Chat")}
             </div>
           </div>
         `;
@@ -10700,6 +11079,22 @@
       showToast(`Removed ${removed.name} from ${getTeamName(tid)}'s roster.`, "info");
     }
 
+    function setRosterPlayerSearch(queryStr) {
+      uiState.rosterPlayerSearch = String(queryStr || "");
+      const state = evaluateYearState(uiState.activeYear);
+      const rosterBox = document.getElementById("myTeamRosterKeeperViewContainer");
+      if (rosterBox) {
+        const viewTeamId = getInspectedTeamOnMyTeam();
+        rosterBox.innerHTML = renderTeamRosterAndKeepersView(viewTeamId, state);
+        const searchEl = document.getElementById("rosterPlayerSearchInput");
+        if (searchEl) {
+          searchEl.focus();
+          const len = searchEl.value.length;
+          searchEl.setSelectionRange(len, len);
+        }
+      }
+    }
+
     function renderTeamRosterAndKeepersView(teamId, state) {
       const tid = safeId(teamId);
       const team = getTeamObj(tid);
@@ -10710,6 +11105,7 @@
       const canManage = !isScouting && (uiState.isCommish || tid === uiState.myTeam);
       const lockedByTimer = !uiState.isCommish && isKeeperDeadlineLocked();
       const posFilter = uiState.rosterPosFilter || "ALL";
+      const searchQ = String(uiState.rosterPlayerSearch || "").trim().toLowerCase();
 
       const otherBuckets = ["QB", "TE", "DL", "LB", "DB", "K", "D/ST"].filter(b => (caps.posCounts[b] || 0) > 0);
       const otherSummary = otherBuckets.length > 0
@@ -10718,7 +11114,14 @@
 
       const posOrder = { QB: 1, RB: 2, WR: 3, TE: 4, DL: 5, DE: 5, DT: 5, LB: 6, DB: 7, CB: 7, S: 7, K: 8, "D/ST": 9 };
       const sortedRoster = [...roster].sort((a, b) => (posOrder[a.pos] || 99) - (posOrder[b.pos] || 99));
-      const filteredRoster = sortedRoster.filter(p => doesPlayerMatchPosFilter(p, posFilter, prof));
+      const filteredRoster = sortedRoster.filter(p => {
+        if (!doesPlayerMatchPosFilter(p, posFilter, prof)) return false;
+        if (searchQ) {
+          const hay = `${p.name || ""} ${p.pos || ""} ${p.nflTeam || ""} ${p.posRank || ""}`.toLowerCase();
+          if (!hay.includes(searchQ)) return false;
+        }
+        return true;
+      });
 
       const rosterFilterPills = [
         { id: "ALL", label: `All (${roster.length})` },
@@ -10732,7 +11135,7 @@
       ];
 
       const playerRowsHtml = filteredRoster.length === 0
-        ? `<div class="p-6 text-center text-xs text-slate-500">No players on ${escapeHtml(team.name)}'s roster match the <strong class="text-slate-300">${escapeHtml(posFilter)}</strong> filter.</div>`
+        ? `<div class="p-6 text-center text-xs text-slate-500">No players on ${escapeHtml(team.name)}'s roster match the active filter${searchQ ? ` or "${escapeHtml(searchQ)}"` : ""}.</div>`
         : filteredRoster.map(p => {
         const keeperIdx = caps.keeperIds.indexOf(p.id);
         const isKeeper = keeperIdx !== -1;
@@ -10742,6 +11145,7 @@
         const isIdp = ["DL", "LB", "DB"].includes(bucket);
         const acqRaw = String(p.acquiredVia || "").trim();
         const showAcqNote = Boolean(acqRaw && !/^(espn|espn roster|synced|default)$/i.test(acqRaw));
+        const pVal = computePlayerTradeValue(p);
 
         return `
           <div class="px-3 py-2.5 flex flex-col sm:flex-row sm:items-center justify-between gap-2 ${isKeeper ? 'bg-[#73000A]/20 border-l-4 border-l-[#CC1429]' : 'bg-[#0B0D12]/70'}">
@@ -10753,6 +11157,7 @@
                   <span class="px-1.5 py-0.5 rounded text-[10px] font-mono font-black border leading-none ${isIdp ? 'bg-purple-950/80 text-purple-300 border-purple-500/50' : bucket === 'RB' ? 'bg-emerald-950/80 text-emerald-300 border-emerald-500/50' : bucket === 'WR' ? 'bg-sky-950/80 text-sky-300 border-sky-500/50' : 'bg-amber-950/80 text-amber-300 border-amber-500/50'}">${escapeHtml(p.pos)}</span>
                   ${renderNflTeamPillHtml(p.nflTeam)}
                   ${p.posRank ? `<span class="px-1.5 py-0.2 rounded bg-[#13161F] border border-white/10 text-[10px] font-mono text-emerald-300">${escapeHtml(p.posRank)}</span>` : ''}
+                  <span class="px-1.5 py-0.2 rounded bg-[#13161F] border border-white/10 text-[10px] font-mono text-slate-300" title="Estimated Trade Value">${pVal} pts</span>
                   ${isKeeper ? `<span class="static-badge bg-[#73000A] text-amber-200 border border-[#CC1429]"><i class="fa-solid fa-lock text-[9px]"></i> Keeper #${keeperRound}</span>` : ''}
                   ${pTag === 'ON_BLOCK' ? `<span class="static-badge bg-amber-950 text-amber-300 border border-amber-500/70"><i class="fa-solid fa-tag text-[9px]"></i> On Block</span>` : ''}
                   ${pTag === 'UNTOUCHABLE' ? `<span class="static-badge bg-[#13161F] text-slate-200 border border-white/15"><i class="fa-solid fa-shield-halved text-[9px]"></i> Untouchable</span>` : ''}
@@ -10790,6 +11195,18 @@
                   <i class="fa-solid fa-shield-halved text-[10px]"></i>
                 </button>
               </div>
+            ` : isScouting ? `
+              <div class="flex flex-wrap items-center gap-1.5 flex-shrink-0">
+                <button
+                  type="button"
+                  onclick="stageTradeBlockAssetInMachine('${safeId(tid)}', 'PLAYER', { playerId: '${safeId(p.id)}' })"
+                  class="px-2.5 py-1 rounded-lg text-[11px] font-extrabold bg-[#73000A] hover:bg-[#990012] text-white border border-[#CC1429] transition cursor-pointer inline-flex items-center gap-1"
+                  title="Stage ${escapeHtml(p.name)} in Trade Machine"
+                >
+                  <i class="fa-solid fa-scale-balanced text-[10px]"></i>
+                  <span>Target in Trade</span>
+                </button>
+              </div>
             ` : ''}
           </div>
         `;
@@ -10812,7 +11229,6 @@
 
       return `
         <div class="space-y-3">
-          <!-- League-Wide Keeper Lock Countdown & X/10 Franchises Ready Bar -->
           ${renderKeeperReadinessBannerHtml(false)}
 
           <!-- Keeper Cap & Positional Limit Meter Bar -->
@@ -10821,17 +11237,13 @@
               <div>
                 <div class="flex flex-wrap items-center gap-2">
                   <span class="static-badge bg-[#73000A] text-white border border-[#CC1429]">
-                    <i class="fa-solid fa-user-lock"></i> ${Number(state.year)} Keepers
+                    <i class="fa-solid fa-user-lock"></i> ${Number(state.year)} Keepers & Trade Value
                   </span>
-                  <h3 class="text-sm sm:text-base font-black text-white">${escapeHtml(team.name)} • ${caps.totalKeepers}/${caps.maxKeepers} Selected</h3>
+                  <h3 class="text-sm sm:text-base font-black text-white">${escapeHtml(team.name)} • ${caps.totalKeepers}/${caps.maxKeepers} Locked</h3>
                 </div>
                 <p class="text-[11px] text-slate-400 mt-0.5">Caps: Max <strong class="text-white">${caps.maxKeepers} Keepers</strong> • Max <strong class="text-emerald-300">${caps.maxRb} RB</strong> • Max <strong class="text-sky-300">${caps.maxWr} WR</strong> • Max <strong class="text-amber-300">${caps.maxOtherSinglePos} per individual pos</strong> (QB, TE, DL, LB, DB, K, D/ST).</p>
               </div>
               <div class="flex flex-wrap items-center gap-2 self-start lg:self-auto">
-                <button type="button" onclick="shareBrandedCardToChat('KEEPERS', '${safeId(tid)}')" class="btn-action px-3 py-1.5 text-xs text-amber-300" title="Share Branded Keeper Slate Card to Group Chat">
-                  <i class="fa-solid fa-share-nodes"></i>
-                  <span>Share Keepers</span>
-                </button>
                 ${canManage ? `
                   <button type="button" id="confirmKeepersBtn" onclick="confirmTeamKeepersAndRoster('${safeId(tid)}')" class="btn-garnet px-3.5 py-1.5 text-xs">
                     <i class="fa-solid fa-circle-check"></i>
@@ -10861,16 +11273,29 @@
               </div>
             </div>
 
-            <!-- 1-Tap Position & Keeper Filter Pills -->
-            <div class="flex flex-wrap items-center gap-1.5 pt-1 border-t border-white/10">
-              <span class="text-[10px] font-extrabold uppercase tracking-wider text-slate-400 mr-1">Filter:</span>
-              ${rosterFilterPills.map(fp => `
-                <button
-                  type="button"
-                  onclick="setRosterPosFilter('${fp.id}')"
-                  class="px-2.5 py-1 rounded-lg text-[11px] font-extrabold border transition cursor-pointer ${posFilter === fp.id ? 'bg-[#73000A] text-white border-[#CC1429]' : 'bg-[#13161F] text-slate-400 border-white/10 hover:text-white'}"
-                >${fp.label}</button>
-              `).join("")}
+            <!-- 1-Tap Position & Keeper Filter Pills + Quick Search -->
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 pt-2 border-t border-white/10">
+              <div class="flex items-center gap-1.5 overflow-x-auto no-scrollbar pb-0.5">
+                <span class="text-[10px] font-extrabold uppercase tracking-wider text-slate-400 mr-1 flex-shrink-0">Filter:</span>
+                ${rosterFilterPills.map(fp => `
+                  <button
+                    type="button"
+                    onclick="setRosterPosFilter('${fp.id}')"
+                    class="px-2.5 py-1 rounded-lg text-[11px] font-extrabold border transition cursor-pointer flex-shrink-0 ${posFilter === fp.id ? 'bg-[#73000A] text-white border-[#CC1429]' : 'bg-[#13161F] text-slate-400 border-white/10 hover:text-white'}"
+                  >${fp.label}</button>
+                `).join("")}
+              </div>
+              <div class="relative w-full sm:w-52 flex-shrink-0">
+                <i class="fa-solid fa-magnifying-glass text-[10px] text-slate-500 absolute left-2.5 top-1/2 -translate-y-1/2"></i>
+                <input
+                  id="rosterPlayerSearchInput"
+                  type="search"
+                  value="${escapeHtml(uiState.rosterPlayerSearch || '')}"
+                  oninput="setRosterPlayerSearch(this.value)"
+                  placeholder="Search player or NFL team..."
+                  class="w-full bg-[#13161F] border border-white/10 focus:border-amber-400/60 rounded-lg pl-7 pr-2.5 py-1 text-xs text-white placeholder-slate-500 outline-none"
+                />
+              </div>
             </div>
           </div>
 
@@ -10972,6 +11397,13 @@
                 <i class="fa-solid fa-shield-halved text-[9px]"></i>
               </button>
             `);
+          } else if (isScouting && isDraftYearTradeable(state.year)) {
+            tagToggleBtns.push(`
+              <button type="button" onclick="offerTradeForInspectedPick(${Number(state.year)}, ${Number(r)}, '${safeId(team.id)}', '${safeId(team.id)}')" class="px-2 py-1 rounded-md text-[10px] font-extrabold bg-[#73000A] hover:bg-[#990012] text-white border border-[#CC1429] transition cursor-pointer inline-flex items-center gap-1" title="Stage Own Rd ${r} in Trade Machine">
+                <i class="fa-solid fa-scale-balanced text-[9px]"></i>
+                <span>Target Pick</span>
+              </button>
+            `);
           }
         }
 
@@ -11000,6 +11432,13 @@
                 <button type="button" onclick="toggleMyPickTradeTag('${safeId(team.id)}', ${Number(state.year)}, ${Number(r)}, '${safeId(acqPick.originalOwner)}', 'ON_BLOCK')" class="px-2 py-1 rounded-md text-[10px] font-bold border transition cursor-pointer max-w-[125px] truncate inline-flex items-center gap-1 ${acqTag === 'ON_BLOCK' ? 'bg-amber-950 text-amber-300 border-amber-500' : 'bg-[#0B0D12] text-slate-400 border-white/10 hover:text-slate-200'}" title="Toggle ${origOwnerName}'s Rd ${r} On Trade Block">
                   <i class="fa-solid fa-tag text-[9px] flex-shrink-0"></i>
                   <span class="truncate">${origOwnerName}</span>
+                </button>
+              `);
+            } else if (isScouting && isDraftYearTradeable(state.year)) {
+              tagToggleBtns.push(`
+                <button type="button" onclick="offerTradeForInspectedPick(${Number(state.year)}, ${Number(r)}, '${safeId(acqPick.originalOwner)}', '${safeId(team.id)}')" class="px-2 py-1 rounded-md text-[10px] font-extrabold bg-[#73000A] hover:bg-[#990012] text-white border border-[#CC1429] transition cursor-pointer max-w-[135px] truncate inline-flex items-center gap-1" title="Stage ${origOwnerName}'s Rd ${r} in Trade Machine">
+                  <i class="fa-solid fa-scale-balanced text-[9px] flex-shrink-0"></i>
+                  <span class="truncate">Target ${origOwnerName}</span>
                 </button>
               `);
             }
@@ -11121,13 +11560,6 @@
                   </button>
                 </div>
               ` : ''}
-            </div>
-
-            <div class="flex items-center gap-2 no-print">
-              <button onclick="copyManagerLedgerForChat()" class="btn-action px-2.5 py-1 text-[11px] sm:text-xs text-emerald-300" title="Copy formatted pick summary for group chat">
-                <i class="fa-solid fa-copy"></i>
-                <span>Copy Picks</span>
-              </button>
             </div>
           </div>
 
@@ -11574,6 +12006,21 @@
       renderAll();
     }
 
+    function setBoardRoundRange(rangeKey) {
+      const valid = ["ALL", "EARLY_1_5", "MID_6_10", "LATE_11_20"];
+      uiState.boardRoundRange = valid.includes(rangeKey) ? rangeKey : "ALL";
+      renderDraftBoardSection();
+    }
+
+    function doesRoundMatchBoardRange(roundNum) {
+      const r = Number(roundNum) || 1;
+      const mode = uiState.boardRoundRange || "ALL";
+      if (mode === "EARLY_1_5") return r >= 1 && r <= 5;
+      if (mode === "MID_6_10") return r >= 6 && r <= 10;
+      if (mode === "LATE_11_20") return r >= 11 && r <= 20;
+      return true;
+    }
+
     function renderDraftBoardSection(passedState) {
       const state = passedState || evaluateYearState(uiState.activeYear);
       const container = document.getElementById("draftBoardGridContainer");
@@ -11587,6 +12034,7 @@
       const cardsBtn = document.getElementById("boardModeCardsBtn");
       const myPicksBtn = document.getElementById("boardMyPicksToggleBtn");
       const myPicksLbl = document.getElementById("boardMyPicksToggleLabel");
+      const roundRangeBar = document.getElementById("boardRoundRangeBar");
 
       if (!container) return;
 
@@ -11596,6 +12044,24 @@
 
       if (setOrderBtn) {
         setOrderBtn.classList.toggle("hidden", !uiState.isCommish);
+      }
+
+      if (roundRangeBar) {
+        const curRange = uiState.boardRoundRange || "ALL";
+        const rangeOpts = [
+          { id: "ALL", label: "All Rounds (1–20)" },
+          { id: "EARLY_1_5", label: "Early Rds 1–5" },
+          { id: "MID_6_10", label: "Mid Rds 6–10" },
+          { id: "LATE_11_20", label: "Late Rds 11–20" }
+        ];
+        roundRangeBar.innerHTML = rangeOpts.map(opt => `
+          <button
+            type="button"
+            id="boardRangeBtn-${opt.id}"
+            onclick="setBoardRoundRange('${opt.id}')"
+            class="px-2.5 py-1 rounded-lg text-[11px] font-extrabold border transition whitespace-nowrap cursor-pointer ${curRange === opt.id ? 'bg-[#73000A] text-white border-[#CC1429]' : 'bg-[#0B0D12] text-slate-400 border-white/10 hover:text-white'}"
+          >${opt.label}</button>
+        `).join("");
       }
 
       const isMatrix = uiState.boardDisplayMode !== "CARDS";
@@ -11668,6 +12134,7 @@
 
         let matrixRowsHtml = "";
         for (let r = 1; r <= TOTAL_ROUNDS; r++) {
+          if (!doesRoundMatchBoardRange(r)) continue;
           if (uiState.boardOnlyTraded && !state.activeRoundsSet.has(r)) continue;
           const isEven = (r % 2 === 0);
 
@@ -11759,6 +12226,9 @@
       let html = "";
 
       for (let r = 1; r <= TOTAL_ROUNDS; r++) {
+        if (!doesRoundMatchBoardRange(r)) {
+          continue;
+        }
         if (uiState.boardOnlyTraded && !state.activeRoundsSet.has(r)) {
           continue;
         }
@@ -12028,7 +12498,6 @@
                 <i class="fa-solid fa-xmark"></i>
                 <span>Decline</span>
               </button>
-              ${buildUnifiedShareMenuHtml("banner_share_" + safeId(pt.id), "PROPOSAL", pt.id, "copyProposalPingForChat('" + safeId(pt.id) + "')", "Copy Offer Ping for Chat")}
             </div>
           </div>
         `;
@@ -12432,7 +12901,6 @@
                           <i class="fa-solid fa-rotate-left"></i> Withdraw
                         </button>
                       ` : ''}
-                      ${buildUnifiedShareMenuHtml("pend_share_" + safeId(pt.id), "PROPOSAL", pt.id, "copyProposalPingForChat('" + safeId(pt.id) + "')", "Copy Offer Ping for Chat")}
                       ${uiState.isCommish ? `
                         <button onclick="approvePendingSubmission(${Number(idx)})" class="btn-garnet px-2.5 py-1.5 text-xs" title="Commissioner Force-Approve">Force Approve</button>
                         <button onclick="rejectPendingSubmission(${Number(idx)})" class="btn-action px-2.5 py-1.5 text-xs text-rose-400" title="Commissioner Delete"><i class="fa-solid fa-trash"></i></button>
@@ -12699,7 +13167,6 @@
                     ? `<button onclick="setActivitySubTab('PENDING_FINAL')" class="btn-pending px-2.5 py-1 text-xs"><span>Resolve ▾</span></button>`
                     : `<span class="static-badge bg-amber-950 text-amber-300 border border-amber-500/50">Waiting</span>`
                 ) : `<span class="static-badge bg-emerald-950/80 text-emerald-300 border border-emerald-700/60">Official</span>`}
-                ${buildUnifiedShareMenuHtml("tr_share_" + safeId(tr.id), "TRADE", tr.id, "copyTradeReceiptForChat('" + safeId(tr.id) + "')", "Copy Plain Text Receipt")}
                 ${uiState.isCommish ? buildCommishMoreMenuHtml("tr_commish_" + safeId(tr.id), tr.id) : ''}
               </div>
             </div>
@@ -17220,14 +17687,15 @@
                 ? Boolean(sObj.seasonCompleted)
                 : (yr < (ed.currentSeason || 2026));
               const tbWinFallback = sortedTb.length >= 2 ? sortedTb[0] : (sObj.standings?.some(r => r.isToilet) ? null : sortedTb[0]);
+              const finalTenthRow = standings[standings.length - 1] || sortedTb[sortedTb.length - 1];
               ed.seasons[String(yr)] = {
                 year: yr,
                 seasonCompleted: isCompleted,
                 champion: isCompleted ? resolveSeasonAwardee(sObj.champion, standings[0]) : "",
                 runnerUp: isCompleted ? resolveSeasonAwardee(sObj.runnerUp, standings[1]) : "",
                 toiletBowlWinner: isCompleted ? resolveSeasonAwardee(sObj.toiletBowlWinner, tbWinFallback) : "",
-                phallicFeaster: isCompleted ? resolveSeasonAwardee(sObj.phallicFeaster || sObj.toiletBowl, sortedTb[sortedTb.length - 1]) : "",
-                toiletBowl: isCompleted ? resolveSeasonAwardee(sObj.phallicFeaster || sObj.toiletBowl, sortedTb[sortedTb.length - 1]) : "",
+                phallicFeaster: isCompleted ? resolveSeasonAwardee(sObj.phallicFeaster || sObj.toiletBowl, finalTenthRow) : "",
+                toiletBowl: isCompleted ? resolveSeasonAwardee(sObj.phallicFeaster || sObj.toiletBowl, finalTenthRow) : "",
                 highestScorer: resolveSeasonAwardee(sObj.highestScorer, topPfRow),
                 standings
               };

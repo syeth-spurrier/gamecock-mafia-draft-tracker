@@ -1,6 +1,5 @@
 {
-  "version": "8.2.0",
-  "releasedAt": "2026-11-15T04:05:00Z",
-  "notes": "v8.2 Final Beta UI/UX Polish: Simplified 4-point League Hub Power Rows + inline Archive Vault, Top-Placed 1-Tap Trade Block Market, Collapsible League Activity Wire (Trades, Draft Date/Order, Feaster Decrees, Hall of Shame, Records & Weekly Syncs), Adaptive Yes/No Trade Fairness Review, Sticky Deal & Keeper Bars, and Unified Dark Surface Palette"
+  "version": "8.3.0",
+  "releasedAt": "2026-11-15T07:25:00Z",
+  "notes": "v8.3 Mobile-First War Room, Share Removal, Rivalry Engine & Logic Hardening: 4-Tile War Room Command Strip + 1-Tap Quick Needs/Block Bar, 1-Tap Opponent Scouting to Trade Machine, 5 Official League Rivalries (Syeth×Mary, Corbyn×Matt, Geltz×Dylan, Leo×Josh, Chris×Boss), Final Standings Decoupling (#1 Champ & #10 Phallic Feaster independent of trading Pick 1.05), Upgraded In-App Notification Center with Unread Tracking, Trade Machine Asset Mode Toggle (All | Players | Picks), Draft Board Round Tier Jump Bar, 4-Vote Adaptive Fairness Threshold, Auto-Pruned Orphaned Tags, and Commissioner Rollover Pending-Trade Warning"
 }
-
