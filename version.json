@@ -1,5 +1,5 @@
 {
-  "version": "8.4.0",
-  "releasedAt": "2026-11-15T18:15:00Z",
-  "notes": "Differentiated 3-Layer Colorways (Chapel Sky white base + Tar Heel blue fills + navy accents; Honolulu Gridiron blue base + white fills + silver/black accents; Emerald Sound '90s seafoam/royal base + green fills + white accents; Sandstorm Noir black base + garnet fills + white accents), Cloud Colorway & Login Gate Sync, 72h Pre-Draft Keeper Lock (Picks-Only Trading), Strict 12/12 Keeper Readiness, Smart ESPN Player ID Migration, 2-Way Trade Streamlining, Sticky Mobile Scouting Bar, and Offline Service Worker."
+  "version": "8.4.1",
+  "releasedAt": "2026-11-15T18:33:00Z",
+  "notes": "v8.4.1: ESPN Post-Draft Auto-Populate onto 200-Pick Draft Board (Matrix + Round Cards + Pick Inspect Modal) & Live Draft Cheat Sheet"
 }

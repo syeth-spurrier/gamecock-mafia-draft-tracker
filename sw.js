@@ -1,4 +1,4 @@
-const CACHE_NAME = "gcm-tracker-v8.4.0";
+const CACHE_NAME = "gcm-tracker-v8.4.1";
 const APP_SHELL_ASSETS = [
   "./",
   "./index.html",

@@ -989,7 +989,7 @@
     </div>
     <!-- Non-Disruptive App Version Update Banner (Shown only when version.json reports a newer release) -->
     <div id="pwaUpdateAvailableBanner" class="hidden w-full bg-emerald-950/90 border-b border-emerald-500/40 px-3 py-1.5 flex items-center justify-center gap-3 text-xs text-emerald-100">
-      <span><i class="fa-solid fa-wand-magic-sparkles text-amber-300 mr-1"></i>New Gamecock Mafia Tracker update (<strong id="pwaUpdateVersionText" class="font-mono text-amber-300">v8.4.0</strong>) is ready!</span>
+      <span><i class="fa-solid fa-wand-magic-sparkles text-amber-300 mr-1"></i>New Gamecock Mafia Tracker update (<strong id="pwaUpdateVersionText" class="font-mono text-amber-300">v8.4.1</strong>) is ready!</span>
       <button type="button" onclick="applyRemoteAppUpdateNow()" class="px-2.5 py-0.5 rounded-md bg-emerald-500 hover:bg-emerald-400 text-black font-black text-[11px] cursor-pointer transition">Refresh Now</button>
     </div>
 
@@ -1302,6 +1302,12 @@
                 <span id="boardTradedToggleLabel">Traded Rds</span>
               </button>
 
+              <!-- Synced Drafted Players Overlay Toggle (Visible when ESPN Draft Results are populated) -->
+              <button onclick="toggleBoardDraftedPlayers()" id="boardDraftedPlayersToggleBtn" class="hidden btn-action px-2.5 py-1.5 text-[11px] sm:text-xs text-emerald-300 border-emerald-500/40" title="Show or hide drafted player names synced from ESPN">
+                <i class="fa-solid fa-football text-amber-300"></i>
+                <span id="boardDraftedPlayersToggleLabel">Players</span>
+              </button>
+
               <!-- Configure Draft Order & Date Button (Commissioner Only) -->
               <button onclick="openOrderConfigModal()" id="boardSetOrderBtn" class="hidden btn-action px-2.5 py-1.5 text-[11px] sm:text-xs text-amber-300">
                 <i class="fa-solid fa-list-ol"></i>
@@ -1332,7 +1338,7 @@
                 <span class="w-2 h-2 rounded-full bg-amber-400 inline-block"></span> Waiting on Commish
               </span>
             </div>
-            <span class="text-slate-400">20-round post-keeper draft • Tap any pick to inspect or offer</span>
+            <span id="boardSyncHintText" class="text-slate-400">📋 Live Draft Cheat Sheet • Auto-populates drafted players via 1-Click ESPN Sync after draft</span>
           </div>
         </div>
 
@@ -3164,7 +3170,8 @@
           { managerId: "chris",  type: "LOSS", length: 7,  seasons: "2023",       label: "Chris — 7-Game Losing Skid (2023 Season)" }
         ]
       },
-      pastDraftPicks: {}
+      pastDraftPicks: {},
+      draftResults: {}
     };
 
     /* -----------------------------------------------------------
@@ -3204,7 +3211,7 @@
       "Depth Picks"
     ];
 
-    const APP_BUILD_VERSION = "8.4.0";
+    const APP_BUILD_VERSION = "8.4.1";
 
     let uiState = {
       isLeagueUnlocked: false,
@@ -3262,6 +3269,7 @@
       boardMyPicksOnly: false,      // 1-tap filter to highlight/filter My Team's picks on Draft Board
       boardRoundRange: "ALL",       // 'ALL' | 'EARLY' | 'MID' | 'LATE' round tier filter on Draft Board
       boardShowKeepers: false,      // Post-keeper draft board: clean Rounds 1–20 with zero keepers overlaid
+      boardShowDraftedPlayers: true,// Show auto-populated ESPN drafted players on post-draft Draft Board
       leagueHqSubTab: "CAPITAL",    // 'CAPITAL' | 'STANDINGS' | 'VAULT' | 'RIVALRY' | 'RECORDS' | 'ARCHIVE'
       expandedHubTeamIds: {},       // Expandable 'Picks & Needs' drawer state per team in League Hub
       espnStandingsYear: 2026,
@@ -3889,7 +3897,8 @@
         seasons: cleanSeasons,
         headToHead: (src.headToHead && typeof src.headToHead === "object") ? src.headToHead : {},
         records: cleanRecords,
-        pastDraftPicks: (src.pastDraftPicks && typeof src.pastDraftPicks === "object") ? src.pastDraftPicks : {}
+        pastDraftPicks: (src.pastDraftPicks && typeof src.pastDraftPicks === "object") ? src.pastDraftPicks : ((src.draftResults && typeof src.draftResults === "object") ? src.draftResults : {}),
+        draftResults: (src.draftResults && typeof src.draftResults === "object") ? src.draftResults : ((src.pastDraftPicks && typeof src.pastDraftPicks === "object") ? src.pastDraftPicks : {})
       };
     }
 
@@ -12575,6 +12584,58 @@
       renderAll();
     }
 
+    function toggleBoardDraftedPlayers() {
+      uiState.boardShowDraftedPlayers = uiState.boardShowDraftedPlayers === false;
+      renderDraftBoardSection();
+    }
+
+    function getDraftedPlayerForPick(pick, stateOverride = null) {
+      if (!pick) return null;
+      const yrStr = String(pick.year || uiState.activeYear || 2027);
+      const ed = leagueDB?.espnData;
+      const yrEntry = ed?.draftResults?.[yrStr] || ed?.pastDraftPicks?.[yrStr];
+      if (!yrEntry || typeof yrEntry !== "object") return null;
+
+      const r = Number(pick.round) || 1;
+      const slots = stateOverride?.orderCfg?.slots || leagueDB?.draftOrders?.[yrStr]?.slots || DEFAULT_TEAMS.map(t => t.id);
+      const colIdx = slots.indexOf(pick.originalOwner);
+      const snakeSlot = colIdx >= 0 ? ((r % 2 === 0) ? (10 - colIdx) : (colIdx + 1)) : 0;
+      const fallbackFormatted = snakeSlot > 0 ? `${r}.${String(snakeSlot).padStart(2, "0")}` : "";
+      const fallbackOverall = snakeSlot > 0 ? ((r - 1) * 10 + snakeSlot) : 0;
+
+      const slotKey = pick.formattedSlot || fallbackFormatted;
+      const overallNum = Number(pick.overallPickNum) || fallbackOverall;
+
+      let hit = null;
+      const rawArr = Array.isArray(yrEntry) ? yrEntry : (Array.isArray(yrEntry.picks) ? yrEntry.picks : null);
+      const mapObj = (!Array.isArray(yrEntry) && typeof yrEntry === "object")
+        ? (yrEntry.bySlot && typeof yrEntry.bySlot === "object" ? yrEntry.bySlot : (!Array.isArray(yrEntry.picks) && typeof yrEntry.picks === "object" ? yrEntry.picks : yrEntry))
+        : null;
+
+      if (mapObj) {
+        hit = (slotKey && mapObj[slotKey]) || (fallbackFormatted && mapObj[fallbackFormatted]) || (overallNum && mapObj[String(overallNum)]) || null;
+      }
+      if (!hit && rawArr) {
+        hit = rawArr.find(item =>
+          (slotKey && String(item?.formattedSlot) === slotKey) ||
+          (fallbackFormatted && String(item?.formattedSlot) === fallbackFormatted) ||
+          (overallNum > 0 && Number(item?.overall) === overallNum) ||
+          (Number(item?.round) === r && snakeSlot > 0 && Number(item?.slot) === snakeSlot)
+        ) || null;
+      }
+      if (!hit || !hit.name) return null;
+      return {
+        name: String(hit.name),
+        pos: String(hit.pos || "FLEX").toUpperCase(),
+        nflTeam: String(hit.nflTeam || "NFL").toUpperCase(),
+        playerId: String(hit.playerId || ""),
+        espnId: Number(hit.espnId) || 0,
+        teamId: hit.teamId || pick.currentOwner,
+        overall: Number(hit.overall) || overallNum,
+        formattedSlot: String(hit.formattedSlot || slotKey || fallbackFormatted)
+      };
+    }
+
     function getTeamKeeperForRound(teamId, roundNum) {
       // Keepers are tracked in Roster & Keepers; the Draft Board shows the clean 20-round post-keeper draft
       return null;
@@ -12615,6 +12676,9 @@
       const myPicksBtn = document.getElementById("boardMyPicksToggleBtn");
       const myPicksLbl = document.getElementById("boardMyPicksToggleLabel");
       const roundRangeBar = document.getElementById("boardRoundRangeBar");
+      const draftedToggleBtn = document.getElementById("boardDraftedPlayersToggleBtn");
+      const draftedToggleLbl = document.getElementById("boardDraftedPlayersToggleLabel");
+      const syncHintEl = document.getElementById("boardSyncHintText");
 
       if (!container) return;
 
@@ -12624,6 +12688,30 @@
 
       if (setOrderBtn) {
         setOrderBtn.classList.toggle("hidden", !uiState.isCommish);
+      }
+
+      let syncedDraftCount = 0;
+      state.picks.forEach(pk => {
+        if (getDraftedPlayerForPick(pk, state)) syncedDraftCount += 1;
+      });
+      const showDraftedPlayers = syncedDraftCount > 0 && uiState.boardShowDraftedPlayers !== false;
+      if (draftedToggleBtn) {
+        draftedToggleBtn.classList.toggle("hidden", syncedDraftCount === 0);
+        draftedToggleBtn.className = syncedDraftCount === 0
+          ? "hidden"
+          : (showDraftedPlayers
+              ? "btn-garnet px-2.5 py-1.5 text-[11px] sm:text-xs text-white"
+              : "btn-action px-2.5 py-1.5 text-[11px] sm:text-xs text-emerald-300 border-emerald-500/40");
+      }
+      if (draftedToggleLbl && syncedDraftCount > 0) {
+        draftedToggleLbl.textContent = showDraftedPlayers
+          ? `Players (${syncedDraftCount})`
+          : `Show Players (${syncedDraftCount})`;
+      }
+      if (syncHintEl) {
+        syncHintEl.innerHTML = syncedDraftCount > 0
+          ? `<span class="text-emerald-300 font-bold"><i class="fa-solid fa-circle-check mr-1"></i>ESPN Draft Results Synced (${syncedDraftCount} picks populated)</span> • Tap any pick for full details`
+          : `📋 Live Draft Cheat Sheet • Auto-populates drafted players via 1-Click ESPN Sync after draft`;
       }
 
       if (roundRangeBar) {
@@ -12757,6 +12845,13 @@
             const slotLabel = state.orderCfg.isLocked && pick.overallPickNum
               ? `${escapeHtml(pick.formattedSlot)}`
               : `R${r}`;
+            const draftedPlayer = showDraftedPlayers ? getDraftedPlayerForPick(pick, state) : null;
+            const draftedHtml = draftedPlayer ? `
+              <div class="mt-0.5 pt-0.5 border-t border-white/10 flex items-center justify-between gap-1 text-[9px] leading-tight">
+                <span class="font-extrabold text-amber-200 truncate" title="${escapeHtml(draftedPlayer.name)} (${escapeHtml(draftedPlayer.pos)} • ${escapeHtml(draftedPlayer.nflTeam)})">${escapeHtml(draftedPlayer.name)}</span>
+                <span class="font-mono text-[8px] px-1 rounded bg-black/40 text-slate-300 flex-shrink-0">${escapeHtml(draftedPlayer.pos)}</span>
+              </div>
+            ` : "";
 
             return `
               <td class="p-1 border-b border-r border-white/[0.06] ${dimCell ? 'opacity-25' : ''}">
@@ -12767,6 +12862,7 @@
                   </div>
                   <div class="text-[11px] font-bold truncate ${ownerTxtCls}">${currName}</div>
                   <div class="truncate leading-tight">${subBadge}</div>
+                  ${draftedHtml}
                 </button>
               </td>
             `;
@@ -12877,6 +12973,13 @@
           const topSlotLabel = state.orderCfg.isLocked && pick.overallPickNum
             ? `${escapeHtml(pick.formattedSlot)} <span class="text-slate-500">#${pick.overallPickNum}</span>`
             : `R${Number(pick.round)}`;
+          const draftedPlayer = showDraftedPlayers ? getDraftedPlayerForPick(pick, state) : null;
+          const draftedCardRow = draftedPlayer ? `
+            <div class="mt-1 pt-1 border-t border-white/10 flex items-center justify-between gap-1">
+              <span class="text-[11px] font-extrabold text-amber-200 truncate" title="${escapeHtml(draftedPlayer.name)}">🏈 ${escapeHtml(draftedPlayer.name)}</span>
+              <span class="text-[9px] font-mono font-bold px-1.5 py-0.5 rounded bg-black/40 text-slate-300 flex-shrink-0">${escapeHtml(draftedPlayer.pos)} • ${escapeHtml(draftedPlayer.nflTeam)}</span>
+            </div>
+          ` : "";
 
           html += `
             <button onclick="openInspectModalForPick(${Number(pick.year)}, ${Number(pick.round)}, '${safeId(pick.originalOwner)}')" class="p-2.5 rounded-xl border text-left transition cursor-pointer flex flex-col justify-between gap-1 ${cellClasses}">
@@ -12887,6 +12990,7 @@
               <div class="min-w-0">
                 <div class="text-xs font-black text-white truncate">${ownerDisplay}</div>
                 <div class="truncate leading-tight">${statusLine}</div>
+                ${draftedCardRow}
               </div>
             </button>
           `;
@@ -13928,7 +14032,25 @@
         ? `Pick ${pick.formattedSlot} (#${pick.overallPickNum} Overall) — ${origName}'s Original Slot`
         : `${origName}'s Original ${Number(year)} Round ${Number(round)} Pick`;
 
+      const draftedPlayer = getDraftedPlayerForPick(pick, state);
+      const draftedBannerHtml = draftedPlayer ? `
+        <div class="bg-emerald-950/35 border border-emerald-500/50 rounded-xl p-3.5 flex items-center justify-between gap-3">
+          <div class="min-w-0 space-y-0.5">
+            <div class="text-[10px] font-extrabold uppercase tracking-wider text-emerald-300">
+              <i class="fa-solid fa-football mr-1 text-amber-300"></i>Official ESPN Draft Selection (${escapeHtml(draftedPlayer.formattedSlot || `Rd ${round}`)})
+            </div>
+            <div class="text-sm sm:text-base font-black text-white truncate">${escapeHtml(draftedPlayer.name)}</div>
+            <div class="text-[11px] text-slate-300">Selected by <strong class="text-emerald-200">${escapeHtml(getTeamName(draftedPlayer.teamId || pick.currentOwner))}</strong></div>
+          </div>
+          <div class="flex flex-col items-end gap-1 flex-shrink-0">
+            <span class="px-2.5 py-1 rounded-lg text-xs font-mono font-black bg-[#0B0D12] text-amber-300 border border-amber-500/40">${escapeHtml(draftedPlayer.pos)} • ${escapeHtml(draftedPlayer.nflTeam)}</span>
+            ${draftedPlayer.overall ? `<span class="text-[10px] font-mono text-slate-400">Overall #${Number(draftedPlayer.overall)}</span>` : ''}
+          </div>
+        </div>
+      ` : "";
+
       let bodyHtml = `
+        ${draftedBannerHtml}
         <div class="bg-[#0b0f19] p-3.5 rounded-xl border border-slate-800 space-y-3">
           <div class="flex flex-wrap items-center justify-between gap-2">
             <div class="text-[10px] font-extrabold uppercase tracking-wider text-amber-300"><i class="fa-solid fa-route mr-1"></i>Pick Provenance Chain</div>
@@ -17513,7 +17635,7 @@
     function buildEspnBrowserConsoleExtractorSnippet(leagueIdOverride = "") {
       const lid = (leagueIdOverride || leagueDB?.espnData?.leagueId || "").trim();
       return `(async () => {
-  /* GAMECOCK MAFIA — 1-CLICK ESPN PRIVATE LEAGUE EXTRACTOR (2016–Present Full History + Scoring + Toilet Bowl)
+  /* GAMECOCK MAFIA — 1-CLICK ESPN PRIVATE LEAGUE EXTRACTOR (2016–Present Full History + Scoring + Toilet Bowl + Draft Results)
      Run inside your browser DevTools Console (F12) while logged into fantasy.espn.com */
   const urlMatch = location.href.match(/leagueId=(\\d+)/);
   const leagueId = "${escapeHtml(lid)}" || (urlMatch ? urlMatch[1] : prompt("Enter your ESPN League ID:"));
@@ -17524,12 +17646,13 @@
   const curCalYr = new Date().getFullYear();
   const years = [2015, 2016, 2017, 2018, 2019, 2020, 2021, 2022, 2023, 2024, 2025, 2026];
   if (curCalYr > 2026 && !years.includes(curCalYr)) years.push(curCalYr);
-  const out = { leagueId: String(leagueId), currentSeason: 2026, lastSyncedAt: Date.now(), leagueScoring: null, seasons: {}, rosters: {}, rawTeams: [] };
-  console.log("🐓 Fetching Gamecock Mafia FULL ESPN history, Scoring & Toilet Bowl (2016–Present) for League " + leagueId + "...");
+  const out = { leagueId: String(leagueId), currentSeason: 2026, lastSyncedAt: Date.now(), leagueScoring: null, seasons: {}, rosters: {}, draftResults: {}, rawTeams: [] };
+  const globalPlayerMap = {};
+  console.log("🐓 Fetching Gamecock Mafia FULL ESPN history, Scoring, Toilet Bowl & Draft Board Results (2016–Present) for League " + leagueId + "...");
 
   const histArchiveByYear = {};
   try {
-    const bulkRes = await fetch(\`https://lm-api-reads.fantasy.espn.com/apis/v3/games/ffl/leagueHistory/\${leagueId}?view=mTeam&view=mRoster&view=mMatchupScore&view=mStandings&view=mSettings&view=mNav\`, { credentials: "include" });
+    const bulkRes = await fetch(\`https://lm-api-reads.fantasy.espn.com/apis/v3/games/ffl/leagueHistory/\${leagueId}?view=mTeam&view=mRoster&view=mMatchupScore&view=mStandings&view=mSettings&view=mDraftDetail&view=mNav\`, { credentials: "include" });
     if (bulkRes.ok) {
       const bulkArr = await bulkRes.json();
       if (Array.isArray(bulkArr)) {
@@ -17543,8 +17666,8 @@
       let lg = histArchiveByYear[yr] || null;
       if (!lg) {
         const endpoint = yr >= 2018
-          ? \`https://lm-api-reads.fantasy.espn.com/apis/v3/games/ffl/seasons/\${yr}/segments/0/leagues/\${leagueId}?view=mTeam&view=mRoster&view=mMatchupScore&view=mStandings&view=mSettings&view=mNav\`
-          : \`https://lm-api-reads.fantasy.espn.com/apis/v3/games/ffl/leagueHistory/\${leagueId}?seasonId=\${yr}&view=mTeam&view=mRoster&view=mMatchupScore&view=mStandings&view=mSettings&view=mNav\`;
+          ? \`https://lm-api-reads.fantasy.espn.com/apis/v3/games/ffl/seasons/\${yr}/segments/0/leagues/\${leagueId}?view=mTeam&view=mRoster&view=mMatchupScore&view=mStandings&view=mSettings&view=mDraftDetail&view=mNav\`
+          : \`https://lm-api-reads.fantasy.espn.com/apis/v3/games/ffl/leagueHistory/\${leagueId}?seasonId=\${yr}&view=mTeam&view=mRoster&view=mMatchupScore&view=mStandings&view=mSettings&view=mDraftDetail&view=mNav\`;
         const res = await fetch(endpoint, { credentials: "include" });
         if (!res.ok) continue;
         const data = await res.json();
@@ -17553,6 +17676,23 @@
       if (!lg || !Array.isArray(lg.teams) || lg.teams.length === 0) continue;
       if (lg.seasonId && Number(lg.seasonId) !== yr) continue;
       out.currentSeason = Math.max(out.currentSeason, yr);
+
+      // Index all roster players into globalPlayerMap for draft pick resolution
+      lg.teams.forEach(tm => {
+        (tm.roster?.entries || []).forEach(en => {
+          const p = en.playerPoolEntry?.player || {};
+          const pid = Number(p.id || en.playerId) || 0;
+          if (pid > 0 && p.fullName) {
+            globalPlayerMap[pid] = {
+              espnId: pid,
+              playerId: "espn_p_" + pid,
+              name: p.fullName,
+              pos: POS_MAP[p.defaultPositionId] || "FLEX",
+              nflTeam: TEAM_NFL[p.proTeamId] || "NFL"
+            };
+          }
+        });
+      });
 
       // Extract ESPN League Scoring & Lineup Settings from latest available season
       if (lg.settings) {
@@ -17717,6 +17857,67 @@
       const tbWinnerId = sortedTb[0]?.teamId || standings[5]?.teamId || "";
       const feasterId = sortedTb[sortedTb.length - 1]?.teamId || standings[standings.length - 1]?.teamId || "";
 
+      // Extract Post-Keeper Draft Selections (1.01 - 20.10) from mDraftDetail when available
+      let extractedDraftPicks = [];
+      const rawDraftPicks = Array.isArray(lg.draftDetail?.picks) ? lg.draftDetail.picks : [];
+      if (rawDraftPicks.length > 0) {
+        const nonKeeperRaw = rawDraftPicks.filter(pk => !pk.keeper && Number(pk.playerId) > 0);
+        const targetPicks = nonKeeperRaw.length > 0 ? nonKeeperRaw : rawDraftPicks.filter(pk => Number(pk.playerId) > 0);
+        const missingPids = [...new Set(targetPicks.map(pk => Number(pk.playerId)).filter(pid => pid > 0 && !globalPlayerMap[pid]))];
+        if (missingPids.length > 0 && yr >= 2018) {
+          try {
+            const pRes = await fetch(\`https://lm-api-reads.fantasy.espn.com/apis/v3/games/ffl/seasons/\${yr}/segments/0/leagues/\${leagueId}?view=kona_player_info\`, {
+              credentials: "include",
+              headers: { "x-fantasy-filter": JSON.stringify({ players: { filterIds: { value: missingPids } } }) }
+            });
+            if (pRes.ok) {
+              const pData = await pRes.json();
+              (pData?.players || []).forEach(pl => {
+                const pObj = pl?.player || pl;
+                const pid = Number(pObj?.id || pl?.id) || 0;
+                if (pid > 0 && pObj?.fullName) {
+                  globalPlayerMap[pid] = {
+                    espnId: pid,
+                    playerId: "espn_p_" + pid,
+                    name: pObj.fullName,
+                    pos: POS_MAP[pObj.defaultPositionId] || "FLEX",
+                    nflTeam: TEAM_NFL[pObj.proTeamId] || "NFL"
+                  };
+                }
+              });
+            }
+          } catch (e) {}
+        }
+        const sortedRawPicks = [...targetPicks].sort((a, b) => (Number(a.overallPickNumber) || 0) - (Number(b.overallPickNumber) || 0));
+        const minRoundId = sortedRawPicks.reduce((mn, pk) => Math.min(mn, Number(pk.roundId) || 1), 99);
+        extractedDraftPicks = sortedRawPicks.slice(0, 200).map((pk, idx) => {
+          const rawRd = Number(pk.roundId) || (Math.floor(idx / 10) + 1);
+          const normRd = minRoundId > 1 ? (rawRd - minRoundId + 1) : rawRd;
+          const postKeeperRound = Math.max(1, Math.min(20, normRd));
+          const slotInRound = Math.max(1, Math.min(10, Number(pk.roundPickNumber) || ((idx % 10) + 1)));
+          const overall = (postKeeperRound - 1) * 10 + slotInRound;
+          const formattedSlot = postKeeperRound + "." + String(slotInRound).padStart(2, "0");
+          const pid = Number(pk.playerId) || 0;
+          const pMeta = globalPlayerMap[pid] || null;
+          return {
+            round: postKeeperRound,
+            slot: slotInRound,
+            overall,
+            formattedSlot,
+            espnTeamId: Number(pk.teamId) || 0,
+            teamId: "espn_" + (Number(pk.teamId) || 0),
+            playerId: "espn_p_" + pid,
+            espnId: pid,
+            name: pMeta ? pMeta.name : (pk.playerName || ("Player #" + pid)),
+            pos: pMeta ? pMeta.pos : "FLEX",
+            nflTeam: pMeta ? pMeta.nflTeam : "NFL"
+          };
+        });
+        if (extractedDraftPicks.length > 0) {
+          out.draftResults[String(yr)] = extractedDraftPicks;
+        }
+      }
+
       out.seasons[String(yr)] = {
         year: yr,
         seasonCompleted,
@@ -17726,7 +17927,8 @@
         phallicFeaster: seasonCompleted ? feasterId : "",
         toiletBowl: seasonCompleted ? feasterId : "",
         standings,
-        matchups
+        matchups,
+        draftPicks: extractedDraftPicks
       };
 
       if (yr >= 2025 || Object.keys(out.rosters).length === 0) {
@@ -17761,7 +17963,7 @@
           });
         });
       }
-      console.log("✓ Pulled " + yr + " (" + (seasonCompleted ? "Final" : "In Progress") + ", " + standings.length + " teams)");
+      console.log("✓ Pulled " + yr + " (" + (seasonCompleted ? "Final" : "In Progress") + ", " + standings.length + " teams" + (extractedDraftPicks.length > 0 ? ", " + extractedDraftPicks.length + " draft picks" : "") + ")");
     } catch (err) { console.warn("Skipped " + yr, err); }
   }
   const pulledYrs = Object.keys(out.seasons).sort();
@@ -18312,6 +18514,8 @@
 
         ed.seasons = {};
         ed.seasonStandings = {};
+        if (!ed.draftResults || typeof ed.draftResults !== "object") ed.draftResults = {};
+        if (!ed.pastDraftPicks || typeof ed.pastDraftPicks !== "object") ed.pastDraftPicks = {};
         const prevOverrides = ed.seasonOwnerOverrides || {};
         ed.seasonOwnerOverrides = prevOverrides;
         const h2hTotals = {};
@@ -18321,6 +18525,60 @@
         });
         const allWeeklyPerformances = [];
         const allMatchupDiffs = [];
+
+        const rosterPlayerByEspnId = {};
+        Object.values(ed.rosters || {}).forEach(rArr => {
+          (Array.isArray(rArr) ? rArr : []).forEach(pl => {
+            const numId = Number(pl?.espnId) || extractPlayerEspnNumericId(pl) || 0;
+            if (numId > 0 && pl?.name) {
+              rosterPlayerByEspnId[numId] = pl;
+            }
+          });
+        });
+
+        const ingestSeasonDraftPicks = (yrNum, rawInput, slotToMgr = {}) => {
+          if (!rawInput || typeof rawInput !== "object") return;
+          const rawList = Array.isArray(rawInput)
+            ? rawInput
+            : (Array.isArray(rawInput.picks) ? rawInput.picks : Object.values(rawInput.bySlot || rawInput.picks || rawInput));
+          if (!Array.isArray(rawList) || rawList.length === 0) return;
+
+          const bySlot = {};
+          const picksArr = [];
+          rawList.slice(0, 200).forEach((pk, idx) => {
+            if (!pk || typeof pk !== "object") return;
+            const rd = Math.max(1, Math.min(20, Number(pk.round) || (Math.floor(idx / 10) + 1)));
+            const sl = Math.max(1, Math.min(10, Number(pk.slot) || ((idx % 10) + 1)));
+            const ov = Number(pk.overall) || ((rd - 1) * 10 + sl);
+            const fmt = cleanStr(pk.formattedSlot || `${rd}.${String(sl).padStart(2, "0")}`, 10);
+            const rawSlotStr = String(pk.espnTeamId || pk.teamId || "").replace(/^espn_/, "");
+            const gcmTeamId = slotToMgr[rawSlotStr] || resolveEspnSlotToGcmId(pk.espnTeamId || pk.teamId) || "";
+            const numPid = Number(pk.espnId) || Number(String(pk.playerId || "").replace(/^espn_p_/, "")) || 0;
+            const fallbackPl = numPid > 0 ? rosterPlayerByEspnId[numPid] : null;
+            const pName = cleanStr(pk.name || pk.playerName || fallbackPl?.name || "", 64).trim();
+            if (!pName) return;
+            const entry = {
+              round: rd,
+              slot: sl,
+              overall: ov,
+              formattedSlot: fmt,
+              espnTeamId: Number(pk.espnTeamId) || 0,
+              teamId: gcmTeamId,
+              playerId: cleanStr(pk.playerId || (numPid > 0 ? `espn_p_${numPid}` : ""), 48),
+              espnId: numPid,
+              name: pName,
+              pos: cleanStr(pk.pos || fallbackPl?.pos || "FLEX", 12).toUpperCase(),
+              nflTeam: cleanStr(pk.nflTeam || fallbackPl?.nflTeam || "NFL", 8).toUpperCase()
+            };
+            bySlot[fmt] = entry;
+            picksArr.push(entry);
+          });
+          if (picksArr.length > 0) {
+            const record = { year: yrNum, completed: true, bySlot, picks: picksArr };
+            ed.draftResults[String(yrNum)] = record;
+            ed.pastDraftPicks[String(yrNum)] = record;
+          }
+        };
 
         if (parsed.seasons && typeof parsed.seasons === "object") {
           for (const [yrStr, sObj] of Object.entries(parsed.seasons)) {
@@ -18413,6 +18671,10 @@
               ed.seasonStandings[String(yr)] = standings;
             }
 
+            if (sObj.draftPicks || sObj.draftResults) {
+              ingestSeasonDraftPicks(yr, sObj.draftPicks || sObj.draftResults, slotToHistoricalManager);
+            }
+
             if (Array.isArray(sObj.matchups)) {
               sObj.matchups.forEach(m => {
                 const hId = resolveEspnSlotToGcmId(m.homeSlot || m.homeManagerId);
@@ -18455,6 +18717,16 @@
                   });
                 }
               });
+            }
+          }
+        }
+
+        const topDraftMap = parsed.draftResults || parsed.pastDraftPicks || null;
+        if (topDraftMap && typeof topDraftMap === "object") {
+          for (const [dYrStr, dVal] of Object.entries(topDraftMap)) {
+            const dYr = Number(dYrStr);
+            if (!isNaN(dYr) && dYr >= 2010 && dYr <= 2035 && dVal) {
+              ingestSeasonDraftPicks(dYr, dVal, {});
             }
           }
         }
