@@ -1344,6 +1344,17 @@ function doPost(e) {
           ? Object.assign({}, existingEspn.faabTransactions || {}, incomingEspn.faabTransactions)
           : (existingEspn.faabTransactions || {})
       };
+      if (body.faabData && typeof body.faabData === "object") {
+        var prevFaab = (baseStateEspn.faabData && typeof baseStateEspn.faabData === "object") ? baseStateEspn.faabData : {};
+        baseStateEspn.faabData = {
+          defaultBudget: Number(body.faabData.defaultBudget || prevFaab.defaultBudget) || 600,
+          annualBudget: Number(body.faabData.annualBudget || prevFaab.annualBudget) || 600,
+          seasons: Object.assign({}, prevFaab.seasons || {}, body.faabData.seasons || {}),
+          records: (body.faabData.records && typeof body.faabData.records === "object")
+            ? body.faabData.records
+            : (prevFaab.records || { highestBids: [], mostSpentSeason: [], mostSavedSeason: [] })
+        };
+      }
       var nextRecs = baseStateEspn.espnData.records || {};
       if (nextRecs.highestWeekScore && Number(nextRecs.highestWeekScore.score || 0) > Number((prevRecords.highestWeekScore && prevRecords.highestWeekScore.score) || 0) && Number((prevRecords.highestWeekScore && prevRecords.highestWeekScore.score) || 0) > 0) {
         appendServerActivityEvent(baseStateEspn, "RECORD_SET", "New All-Time Single-Week Scoring Record!", (nextRecs.highestWeekScore.managerId || "Manager") + " posted " + nextRecs.highestWeekScore.score + " pts (Wk " + (nextRecs.highestWeekScore.week || "?") + ", " + (nextRecs.highestWeekScore.year || "") + ").", { year: nextRecs.highestWeekScore.year, teamId: nextRecs.highestWeekScore.managerId });
@@ -1353,7 +1364,7 @@ function doPost(e) {
         baseStateEspn,
         "ESPN_SYNC",
         "ESPN League Sync Completed (" + baseStateEspn.espnData.currentSeason + ")",
-        "Synced " + syncedRosterCount + " rosters, standings, head-to-head rivalries, and record book.",
+        "Synced " + syncedRosterCount + " rosters, historical rosters, FAAB waivers, standings, head-to-head rivalries, and record book.",
         { year: baseStateEspn.espnData.currentSeason }
       );
       // Auto-void open pending proposals if a staged player was dropped/moved on ESPN
@@ -1364,7 +1375,7 @@ function doPost(e) {
     }
 
     // ------------------------------------------------------------------------
-    // ACTION 1I: 4-STAGE PLAYER HALL OF FAME OFFSEASON FUNNEL (WAVE 2 SEC 4)
+    // ACTION 1I: 4-STAGE PLAYER HALL OF FAME OFFSEASON FUNNEL (WAVE 2 & WAVE 3)
     // Stages: IDLE -> NOMINATIONS_OPEN -> VOTING_OPEN -> RESULTS_PUBLISHED
     // ------------------------------------------------------------------------
     if (action === "PUBLISH_HOF_CANDIDATES" || action === "PUBLISH_HOF_BALLOT" || action === "SUBMIT_HOF_VOTE" || action === "CLOSE_HOF_BALLOT") {
@@ -1380,12 +1391,14 @@ function doPost(e) {
         : {
             stage: "IDLE",
             classYear: Number(baseStateFunnel.baseUpcomingYear) || 2027,
+            maxClassSize: 3,
             candidates: [],
             ballot: [],
             votesByManager: {},
             inductedPlayers: [],
             carryoverPool: [],
             droppedPlayerIds: [],
+            excludedActivePlayers: [],
             lastResults: null
           };
       if (!Array.isArray(hofState.candidates)) hofState.candidates = [];
@@ -1394,6 +1407,12 @@ function doPost(e) {
       if (!Array.isArray(hofState.inductedPlayers)) hofState.inductedPlayers = [];
       if (!Array.isArray(hofState.carryoverPool)) hofState.carryoverPool = [];
       if (!Array.isArray(hofState.droppedPlayerIds)) hofState.droppedPlayerIds = [];
+      if (!Array.isArray(hofState.excludedActivePlayers)) hofState.excludedActivePlayers = [];
+      var maxClassCap = Math.max(1, Math.min(5, Number((baseStateFunnel.hofState && baseStateFunnel.hofState.maxClassSize) || hofState.maxClassSize || body.maxClassSize) || 3));
+      hofState.maxClassSize = maxClassCap;
+      if (Array.isArray(body.excludedActivePlayers)) {
+        hofState.excludedActivePlayers = body.excludedActivePlayers.slice(0, 250).map(function(x) { return String(x || "").trim(); }).filter(Boolean);
+      }
 
       var isCommishFunnel = Boolean(body.commishAuthHash && String(body.commishAuthHash).toLowerCase() === getExpectedCommishHash(stored));
 
@@ -1409,7 +1428,7 @@ function doPost(e) {
         hofState.carryoverPool.forEach(function(co) {
           if (!co || !co.playerId) return;
           var pid = String(co.playerId);
-          if (hofState.droppedPlayerIds.indexOf(pid) !== -1) return;
+          if (hofState.droppedPlayerIds.indexOf(pid) !== -1 || hofState.excludedActivePlayers.indexOf(pid) !== -1) return;
           if (Number(co.yearsOnBallot || 1) >= 5) return;
           seenCandIds[pid] = true;
           mergedCands.push(Object.assign({}, co, { isCarryover: true }));
@@ -1417,7 +1436,7 @@ function doPost(e) {
         incomingCands.forEach(function(c) {
           if (!c || !(c.playerId || c.id || c.name || c.playerName)) return;
           var pid = String(c.playerId || c.id || c.name || c.playerName).trim();
-          if (seenCandIds[pid] || hofState.droppedPlayerIds.indexOf(pid) !== -1) return;
+          if (seenCandIds[pid] || hofState.droppedPlayerIds.indexOf(pid) !== -1 || hofState.excludedActivePlayers.indexOf(pid) !== -1) return;
           seenCandIds[pid] = true;
           mergedCands.push({
             playerId: pid,
@@ -1494,13 +1513,13 @@ function doPost(e) {
           baseStateFunnel,
           "HOF_BALLOT_OPEN",
           "Class of " + hofState.classYear + " Final 5-Man HOF Ballot Open!",
-          "Blind manager voting is now open (select up to 2 finalists; 7/10 supermajority required, max 2 inductees).",
+          "Manager voting is now open (select up to " + maxClassCap + " finalists; 7/10 supermajority required, max " + maxClassCap + " inductees).",
           { year: hofState.classYear }
         );
         dispatchOneSignalPush(baseStateFunnel, {
           category: "HOF",
           title: "🗳️ HOF Final 5-Man Ballot is LIVE!",
-          message: "Cast your blind vote (up to 2 players) for the Class of " + hofState.classYear + " Hall of Fame."
+          message: "Cast your vote (up to " + maxClassCap + " players) for the Class of " + hofState.classYear + " Hall of Fame."
         });
         baseStateFunnel.updatedAt = Date.now();
         saveAndMirrorToSheets(sheets, baseStateFunnel, "PUBLISH_HOF_BALLOT:" + hofState.classYear);
@@ -1523,8 +1542,8 @@ function doPost(e) {
         picks.forEach(function(pid) {
           if (validBallotIds[pid] && uniquePicks.indexOf(pid) === -1) uniquePicks.push(pid);
         });
-        if (uniquePicks.length > 2) {
-          return jsonResponse({ ok: false, error: "Each manager may vote for at most 2 finalists on the 5-man ballot." });
+        if (uniquePicks.length > maxClassCap) {
+          return jsonResponse({ ok: false, error: "Each manager may vote for at most " + maxClassCap + " finalists on the 5-man ballot." });
         }
         hofState.votesByManager[voterId] = {
           selectedPlayerIds: uniquePicks,
@@ -1570,7 +1589,7 @@ function doPost(e) {
         var inductedThisYear = [];
         var nextCarryover = [];
         tally.forEach(function(item) {
-          if (item.metSupermajority && inductedThisYear.length < 2) {
+          if (item.metSupermajority && inductedThisYear.length < maxClassCap) {
             item.outcome = "INDUCTED";
             var plaque = Object.assign({}, item, {
               classYear: hofState.classYear,
@@ -2286,7 +2305,7 @@ function autoWeeklyEspnSync() {
     var targetYear = (now.getMonth() <= 1 && Number(ed.currentSeason)) ? Number(ed.currentSeason) : now.getFullYear();
     var url = "https://lm-api-reads.fantasy.espn.com/apis/v3/games/ffl/seasons/" +
       targetYear + "/segments/0/leagues/" + leagueId +
-      "?view=mTeam&view=mRoster&view=mStandings&view=mMatchupScore&view=mSettings";
+      "?view=mTeam&view=mRoster&view=mStandings&view=mMatchupScore&view=mSettings&view=mTransactions2&view=mBoxscore";
 
     var headers = {};
     if (espnS2 && espnSwid) {
@@ -2714,6 +2733,163 @@ function autoWeeklyEspnSync() {
       }
     }
 
+    // 4B. Extract Weekly Player Boxscore Points + mTransactions2 FAAB Waivers for Active Season
+    var weeklyPtsByPid = {};
+    schedule.forEach(function(m) {
+      var wk = Number(m && m.matchupPeriodId) || 0;
+      if (!wk) return;
+      [m.home, m.away].forEach(function(side) {
+        var entries = (side && side.rosterForCurrentScoringPeriod && side.rosterForCurrentScoringPeriod.entries) ||
+                      (side && side.rosterForMatchupPeriod && side.rosterForMatchupPeriod.entries) || [];
+        entries.forEach(function(en) {
+          var pObj = (en && en.playerPoolEntry && en.playerPoolEntry.player) || {};
+          var pid = Number((en && en.playerId) || pObj.id) || 0;
+          var pts = Number((en && en.playerPoolEntry && en.playerPoolEntry.appliedStatTotal) || 0);
+          if (pid <= 0) return;
+          if (!weeklyPtsByPid[pid]) weeklyPtsByPid[pid] = {};
+          weeklyPtsByPid[pid][wk] = Math.round(pts * 100) / 100;
+        });
+      });
+    });
+
+    var rawTxs = Array.isArray(data.transactions) ? data.transactions : [];
+    try {
+      var txUrl = "https://lm-api-reads.fantasy.espn.com/apis/v3/games/ffl/seasons/" +
+        seasonYr + "/segments/0/leagues/" + leagueId + "?view=mTransactions2";
+      var txHeaders = Object.assign({}, headers, {
+        "x-fantasy-filter": JSON.stringify({ transactions: { limit: 2000 } })
+      });
+      var txResp = UrlFetchApp.fetch(txUrl, { method: "get", headers: txHeaders, muteHttpExceptions: true });
+      if (txResp.getResponseCode() === 200) {
+        var txJson = JSON.parse(txResp.getContentText());
+        if (txJson && Array.isArray(txJson.transactions) && txJson.transactions.length >= rawTxs.length) {
+          rawTxs = txJson.transactions;
+        }
+      }
+    } catch (txSyncErr) {}
+
+    var faabTeamsMap = {};
+    rawTeamRows.forEach(function(stRow) {
+      if (!stRow.managerId) return;
+      faabTeamsMap[stRow.managerId] = {
+        budget: annualFaabBudget,
+        spent: Number(stRow.faabSpent) || 0,
+        remaining: Math.max(0, annualFaabBudget - (Number(stRow.faabSpent) || 0)),
+        moves: Number(stRow.acquisitions) || 0,
+        zeroDollarAdds: 0,
+        maxSingleBid: 0,
+        maxBidPlayer: "",
+        totalWaiverPts: 0,
+        bestBargainPts: 0,
+        bestBargainBid: 0,
+        bestBargainPlayer: "",
+        worstBusterBid: 0,
+        worstBusterPts: 0,
+        worstBusterPtsPerDollar: null,
+        worstBusterPlayer: ""
+      };
+    });
+
+    var addEvents = [];
+    var dropEvents = [];
+    rawTxs.forEach(function(tx) {
+      if (!tx || String(tx.status || "").toUpperCase() !== "EXECUTED") return;
+      var txType = String(tx.type || "").toUpperCase();
+      var wk = Math.max(1, Number(tx.scoringPeriodId || tx.matchupPeriodId) || 1);
+      var bid = Math.max(0, Number(tx.bidAmount) || 0);
+      var ts = Number(tx.processDate || tx.proposedDate) || 0;
+      (Array.isArray(tx.items) ? tx.items : []).forEach(function(it) {
+        var itType = String((it && it.type) || "").toUpperCase();
+        var pid = Number(it && it.playerId) || 0;
+        if (pid <= 0) return;
+        if (itType === "ADD" && (txType.indexOf("WAIVER") !== -1 || txType.indexOf("FREEAGENT") !== -1 || it.toTeamId)) {
+          var toMgr = slotMap[String(it.toTeamId || tx.teamId)] || "";
+          if (toMgr) addEvents.push({ mgrId: toMgr, pid: pid, bid: bid, wk: wk, ts: ts });
+        } else if (itType === "DROP" || (itType === "TRADE" && it.fromTeamId)) {
+          var fromMgr = slotMap[String(it.fromTeamId || tx.teamId)] || "";
+          if (fromMgr) dropEvents.push({ mgrId: fromMgr, pid: pid, wk: wk, ts: ts });
+        }
+      });
+    });
+    addEvents.sort(function(a, b) { return (a.wk - b.wk) || (a.ts - b.ts); });
+    dropEvents.sort(function(a, b) { return (a.wk - b.wk) || (a.ts - b.ts); });
+
+    var bargainCap = Math.max(0, Math.round(annualFaabBudget * 0.02));
+    var busterFloor = Math.ceil(annualFaabBudget * 0.25);
+    var hasWkBox = Object.keys(weeklyPtsByPid).length > 0;
+    var executedClaims = [];
+    addEvents.forEach(function(ad) {
+      var tRec = faabTeamsMap[ad.mgrId];
+      if (!tRec) return;
+      var nextDrop = null;
+      for (var di = 0; di < dropEvents.length; di++) {
+        var dr = dropEvents[di];
+        if (dr.mgrId === ad.mgrId && dr.pid === ad.pid && (dr.wk > ad.wk || (dr.wk === ad.wk && dr.ts > ad.ts))) {
+          nextDrop = dr;
+          break;
+        }
+      }
+      var endWk = nextDrop ? nextDrop.wk : 18;
+      var rPts = 0;
+      if (hasWkBox && weeklyPtsByPid[ad.pid]) {
+        for (var w = ad.wk; w < endWk; w++) rPts += Number(weeklyPtsByPid[ad.pid][w] || 0);
+        if (ad.wk === endWk && weeklyPtsByPid[ad.pid][ad.wk]) rPts += Number(weeklyPtsByPid[ad.pid][ad.wk] || 0);
+      }
+      rPts = Math.round(rPts * 10) / 10;
+      var pName = "Player #" + ad.pid;
+      Object.keys(ed.rosters || {}).forEach(function(mKey) {
+        (ed.rosters[mKey] || []).forEach(function(rp) {
+          if (Number(rp.espnId) === ad.pid && rp.name) pName = rp.name;
+        });
+      });
+      if (ad.bid === 0) tRec.zeroDollarAdds += 1;
+      if (ad.bid > tRec.maxSingleBid) {
+        tRec.maxSingleBid = ad.bid;
+        tRec.maxBidPlayer = pName;
+      }
+      tRec.totalWaiverPts = Math.round((tRec.totalWaiverPts + rPts) * 10) / 10;
+      if (ad.bid <= bargainCap && rPts > tRec.bestBargainPts) {
+        tRec.bestBargainPts = rPts;
+        tRec.bestBargainBid = ad.bid;
+        tRec.bestBargainPlayer = pName;
+      }
+      if (ad.bid >= busterFloor) {
+        var ppd = Math.round((rPts / Math.max(1, ad.bid)) * 100) / 100;
+        if (tRec.worstBusterPtsPerDollar === null || ppd < tRec.worstBusterPtsPerDollar) {
+          tRec.worstBusterPtsPerDollar = ppd;
+          tRec.worstBusterBid = ad.bid;
+          tRec.worstBusterPts = rPts;
+          tRec.worstBusterPlayer = pName;
+        }
+      }
+      executedClaims.push({
+        teamId: ad.mgrId,
+        playerId: "espn_p_" + ad.pid,
+        playerName: pName,
+        bid: ad.bid,
+        addWeek: ad.wk,
+        dropWeek: nextDrop ? nextDrop.wk : null,
+        rosteredPts: rPts
+      });
+    });
+
+    var seasonFaabObj = {
+      isFaabEra: true,
+      synced: true,
+      budget: annualFaabBudget,
+      hasExecutedClaims: executedClaims.length > 0,
+      usedRosFallback: !hasWkBox,
+      teams: faabTeamsMap,
+      claims: executedClaims.slice(0, 250)
+    };
+    if (!currentState.faabData || typeof currentState.faabData !== "object") {
+      currentState.faabData = { defaultBudget: 600, annualBudget: annualFaabBudget, seasons: {}, records: { highestBids: [], mostSpentSeason: [], mostSavedSeason: [] } };
+    }
+    if (!currentState.faabData.seasons || typeof currentState.faabData.seasons !== "object") {
+      currentState.faabData.seasons = {};
+    }
+    currentState.faabData.seasons[String(seasonYr)] = seasonFaabObj;
+
     if (!ed.seasons || typeof ed.seasons !== "object") ed.seasons = {};
     if (!ed.seasonStandings || typeof ed.seasonStandings !== "object") ed.seasonStandings = {};
     var prevSeasonObj = ed.seasons[String(seasonYr)] || {};
@@ -2727,6 +2903,8 @@ function autoWeeklyEspnSync() {
       toiletBowlWinner: toiletWinnerId || prevSeasonObj.toiletBowlWinner || "",
       phallicFeaster: feasterId || prevSeasonObj.phallicFeaster || "",
       standings: rawTeamRows,
+      rosters: ed.rosters,
+      faab: seasonFaabObj,
       matchups: syncedSeasonMatchups.length > 0 ? syncedSeasonMatchups : (prevSeasonObj.matchups || []),
       keptPlayers: Array.isArray(prevSeasonObj.keptPlayers) ? prevSeasonObj.keptPlayers : [],
       draftPicks: Array.isArray(prevSeasonObj.draftPicks) ? prevSeasonObj.draftPicks : undefined

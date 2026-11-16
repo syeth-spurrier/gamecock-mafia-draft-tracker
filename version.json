@@ -1,6 +1,5 @@
 {
-  "version": "10.0.0",
-  "releasedAt": "2026-11-16T05:30:00Z",
-  "notes": "v10.0.0 (Wave 2): 5-Tab Modern Navigation Architecture, Single-Slot Priority Banner, 4-Stage Individual Player Hall of Fame (25-Pool -> 10-Ballot -> 3/10 Finals -> 7/10 Inducted), Playoff & Bye Odds Simulator, 3-Pillar Power Rankings, FAAB Analytics & 6 Custom Badges ($600 Budget), Central Banker Dues Ledger ($150 Entry, Leo & Commish Access), Interactive League Bylaws, 72-Hour Pre-Draft Lock Hub, 14-Round Post-Keeper Live Draft (ESPN Rounds 13-26), Optional +3rd Team Trade Builder, Waiver Replacement Value Adjustment, 1-Year Hindsight Trade Receipts, Time Machine & Season Rollover Wizard, and OneSignal Web Push Notifications"
+  "version": "11.0.0",
+  "releasedAt": "2026-11-16T17:15:00Z",
+  "notes": "v11.0.0 (Wave 3): 64 Verbatim Canonical Trades & Locked Draft Orders (2018–2027) from Official Draft Sheet, Split Vault Architecture (Trade Vault 2-Tier Mobile Header + What It Became Flip + Time Capsules 2016–2026), Calibrated Player HOF VORP Formula (50/25/15/10, Skill 1.00x / IDP 0.88x / K & D/ST 0.65x 72/82 Cap, 3 Concrete Proof Chips, Active NFL Exclusion Toggle), Automated mTransactions2 FAAB Analytics & 6 Custom Badges, and Active-Era Trade Center History Scope"
 }
-
