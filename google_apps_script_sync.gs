@@ -72,14 +72,13 @@ function ensureSheetsExist(ss) {
   };
 }
 
-function readStoredState(stateSheet) {
-  var raw = stateSheet.getRange("B2").getValue();
+function readRowChunkedJson(stateSheet, rowNum, primaryColNum, overflowStartColNum, maxOverflowCols) {
+  var raw = stateSheet.getRange(rowNum, primaryColNum).getValue();
   if (!raw || typeof raw !== "string") return null;
   var joined = raw;
-  // Support multi-cell overflow chunks in D2:Z2 when full ESPN history + rosters exceed 44,000 chars
   if (raw.length >= CELL_CHUNK_SIZE) {
     try {
-      var extraRow = stateSheet.getRange(2, 4, 1, 20).getValues();
+      var extraRow = stateSheet.getRange(rowNum, overflowStartColNum, 1, maxOverflowCols || 12).getValues();
       if (extraRow && extraRow[0]) {
         for (var c = 0; c < extraRow[0].length; c++) {
           var part = extraRow[0][c];
@@ -103,6 +102,41 @@ function readStoredState(stateSheet) {
   }
 }
 
+function readStoredState(stateSheet) {
+  // Primary chunk in B2 (col 2), overflow chunks across D2:M2 (cols 4..13) or C2:M2 if legacy
+  return readRowChunkedJson(stateSheet, 2, 2, 4, 15);
+}
+
+function readSnapshotStateAtRow(stateSheet, rowNum) {
+  // Snapshot rows 5..35 store primary chunk in D (col 4) and overflow chunks across E:M (cols 5..13)
+  return readRowChunkedJson(stateSheet, rowNum, 4, 5, 12);
+}
+
+function listSnapshotsFromSheet(stateSheet) {
+  var lastRow = stateSheet.getLastRow();
+  if (lastRow < 5) return [];
+  var numRows = Math.min(30, lastRow - 4);
+  var metaVals = stateSheet.getRange(5, 1, numRows, 4).getValues();
+  var out = [];
+  for (var i = 0; i < metaVals.length; i++) {
+    var r = metaVals[i];
+    var ts = Number(r[0]) || 0;
+    var iso = String(r[1] || "");
+    var act = String(r[2] || "");
+    var snapPreview = String(r[3] || "");
+    if (!ts && !iso && !snapPreview) continue;
+    out.push({
+      rowNumber: 5 + i,
+      index: i,
+      timestamp: ts,
+      updatedIso: iso,
+      actionLabel: act,
+      sizeApprox: snapPreview.length
+    });
+  }
+  return out;
+}
+
 function getExpectedPassHash(storedState) {
   if (storedState && storedState.leaguePassphraseHash && /^[a-f0-9]{64}$/i.test(storedState.leaguePassphraseHash)) {
     return storedState.leaguePassphraseHash.toLowerCase();
@@ -123,6 +157,11 @@ function sanitizeStateForClient(stateObj) {
   delete clone.commishPinHash;
   delete clone.leaguePassphraseHash;
   delete clone.cloudSyncUrl;
+  delete clone.oneSignalRestKey;
+  if (clone.pushConfig && typeof clone.pushConfig === "object") {
+    delete clone.pushConfig.oneSignalRestKey;
+    delete clone.pushConfig.restApiKey;
+  }
   if (clone.teamProfiles && typeof clone.teamProfiles === "object") {
     Object.keys(clone.teamProfiles).forEach(function(tid) {
       if (clone.teamProfiles[tid]) {
@@ -130,7 +169,108 @@ function sanitizeStateForClient(stateObj) {
       }
     });
   }
+  clone.hasOneSignalRestKey = Boolean(
+    (stateObj.oneSignalRestKey && String(stateObj.oneSignalRestKey).trim()) ||
+    (stateObj.pushConfig && stateObj.pushConfig.oneSignalRestKey && String(stateObj.pushConfig.oneSignalRestKey).trim())
+  );
   return clone;
+}
+
+/**
+ * Dispatches server-side Web Push via OneSignal REST API.
+ * Enforces 10:00 PM – 8:00 AM EST quiet hours on non-urgent broadcasts while delivering live trade offers immediately.
+ */
+function dispatchOneSignalPush(stateObj, opts) {
+  try {
+    if (!stateObj || !opts) return { sent: false, reason: "NO_OPTS" };
+    var props = null;
+    try { props = PropertiesService.getScriptProperties(); } catch (ignorePropErr) {}
+    var appId = String(
+      (stateObj.pushConfig && stateObj.pushConfig.oneSignalAppId) ||
+      stateObj.oneSignalAppId ||
+      (props && props.getProperty("ONESIGNAL_APP_ID")) ||
+      ""
+    ).trim();
+    var restKey = String(
+      (stateObj.pushConfig && stateObj.pushConfig.oneSignalRestKey) ||
+      stateObj.oneSignalRestKey ||
+      (props && props.getProperty("ONESIGNAL_REST_KEY")) ||
+      ""
+    ).trim();
+    if (!appId || !restKey) {
+      return { sent: false, reason: "MISSING_ONESIGNAL_KEYS" };
+    }
+
+    var category = String(opts.category || "BROADCAST").toUpperCase(); // DIRECT_TRADE | CONDITIONAL | BROADCAST | HOF | KEEPER | CUSTOM
+    var isUrgentDirect = Boolean(opts.urgent || category === "DIRECT_TRADE" || category === "CONDITIONAL");
+    var targetTeamIds = Array.isArray(opts.targetTeamIds) ? opts.targetTeamIds : null;
+
+    // Collect opted-in player/subscription IDs from teamProfiles[tid].pushPrefs
+    var profiles = (stateObj.teamProfiles && typeof stateObj.teamProfiles === "object") ? stateObj.teamProfiles : {};
+    var subIds = [];
+    Object.keys(profiles).forEach(function(tid) {
+      if (targetTeamIds && targetTeamIds.indexOf(tid) === -1) return;
+      var pf = profiles[tid] && profiles[tid].pushPrefs;
+      if (!pf || !pf.enabled || !pf.subscriptionId) return;
+      if (category === "DIRECT_TRADE" && pf.directTradeAlerts === false) return;
+      if (category === "CONDITIONAL" && pf.conditionalAlerts === false) return;
+      if (category === "BROADCAST" && pf.tradeBroadcasts === false) return;
+      if (category === "HOF" && pf.hofAlerts === false) return;
+      if (category === "KEEPER" && pf.keeperAlerts === false) return;
+      var sid = String(pf.subscriptionId).trim();
+      if (sid && subIds.indexOf(sid) === -1) subIds.push(sid);
+    });
+
+    // Check EST Quiet Hours (10:00 PM – 8:00 AM America/New_York) for non-urgent broadcasts
+    var sendAfterIso = null;
+    if (!isUrgentDirect) {
+      try {
+        var estHourStr = Utilities.formatDate(new Date(), "America/New_York", "H");
+        var estHour = parseInt(estHourStr, 10);
+        if (!isNaN(estHour) && (estHour >= 22 || estHour < 8)) {
+          var delayHours = estHour >= 22 ? (24 - estHour + 8) : (8 - estHour);
+          var releaseDate = new Date(Date.now() + delayHours * 3600 * 1000);
+          releaseDate.setMinutes(0, 0, 0);
+          sendAfterIso = releaseDate.toUTCString();
+        }
+      } catch (tzErr) {}
+    }
+
+    var payload = {
+      app_id: appId,
+      headings: { en: String(opts.title || "Gamecock Mafia Tracker").slice(0, 100) },
+      contents: { en: String(opts.message || "").slice(0, 260) },
+      url: String(opts.url || "https://syeth-spurrier.github.io/gamecock-mafia-draft-tracker/")
+    };
+    if (subIds.length > 0) {
+      payload.include_subscription_ids = subIds;
+    } else if (!targetTeamIds) {
+      payload.included_segments = ["Subscribed Users"];
+    } else {
+      return { sent: false, reason: "NO_SUBSCRIBED_TARGETS" };
+    }
+    if (sendAfterIso) {
+      payload.send_after = sendAfterIso;
+    }
+
+    var resp = UrlFetchApp.fetch("https://onesignal.com/api/v1/notifications", {
+      method: "post",
+      contentType: "application/json; charset=utf-8",
+      headers: {
+        Authorization: "Basic " + restKey
+      },
+      payload: JSON.stringify(payload),
+      muteHttpExceptions: true
+    });
+    return {
+      sent: resp.getResponseCode() >= 200 && resp.getResponseCode() < 300,
+      statusCode: resp.getResponseCode(),
+      queuedForMorning: Boolean(sendAfterIso),
+      sendAfter: sendAfterIso || null
+    };
+  } catch (pushErr) {
+    return { sent: false, error: String(pushErr) };
+  }
 }
 
 function safeSheetCell(val) {
@@ -165,7 +305,8 @@ function appendServerActivityEvent(stateObj, evtType, title, detail, meta) {
 }
 
 /**
- * GET endpoint: Returns canonical live JSON state to authorized league members.
+ * GET endpoint: Returns canonical live JSON state to authorized league members,
+ * or snapshot metadata/preview for Commissioner Time Machine Rollback.
  */
 function doGet(e) {
   var ss = SpreadsheetApp.getActiveSpreadsheet();
@@ -178,10 +319,20 @@ function doGet(e) {
     return jsonResponse({ ok: false, error: "Unauthorized league passphrase." });
   }
 
+  var mode = (e && e.parameter && e.parameter.mode) ? String(e.parameter.mode).toUpperCase() : "";
+  if (mode === "SNAPSHOT_LIST") {
+    return jsonResponse({ ok: true, snapshots: listSnapshotsFromSheet(sheets.stateSheet) });
+  }
+  if (mode === "SNAPSHOT_PREVIEW") {
+    var rowNum = Number(e.parameter.rowNumber) || 5;
+    var snapState = readSnapshotStateAtRow(sheets.stateSheet, rowNum);
+    return jsonResponse({ ok: Boolean(snapState), rowNumber: rowNum, snapshotState: sanitizeStateForClient(snapState) });
+  }
+
   if (!stored) {
     return jsonResponse({ ok: true, empty: true, state: null });
   }
-  return jsonResponse({ ok: true, empty: false, state: sanitizeStateForClient(stored) });
+  return jsonResponse({ ok: true, empty: false, state: sanitizeStateForClient(stored), snapshots: listSnapshotsFromSheet(sheets.stateSheet) });
 }
 
 /**
@@ -488,6 +639,18 @@ function doPost(e) {
         baseState.pendingTrades.push(cleanProp);
         baseState.updatedAt = Date.now();
         saveAndMirrorToSheets(sheets, baseState, (supersededId ? "COUNTER_PROPOSAL:" : "TRADE_PROPOSAL:") + propId);
+        var partnerTargets = [cleanProp.teamA, cleanProp.teamB, cleanProp.teamC].filter(function(tid) {
+          return Boolean(tid && tid !== cleanProp.proposedByTeam);
+        });
+        if (partnerTargets.length > 0) {
+          dispatchOneSignalPush(baseState, {
+            category: "DIRECT_TRADE",
+            urgent: true,
+            targetTeamIds: partnerTargets,
+            title: "🤝 Incoming Trade Offer (" + propId + ")",
+            message: cleanProp.headline
+          });
+        }
         return jsonResponse({ ok: true, assignedId: propId, state: sanitizeStateForClient(baseState) });
       }
 
@@ -499,6 +662,11 @@ function doPost(e) {
       baseState.updatedAt = Date.now();
 
       saveAndMirrorToSheets(sheets, baseState, "MEMBER_TRADE:" + assignedId);
+      dispatchOneSignalPush(baseState, {
+        category: "BROADCAST",
+        title: "🚨 Official Trade Logged (" + assignedId + ")",
+        message: cleanTrade.headline
+      });
       return jsonResponse({ ok: true, assignedId: assignedId, state: sanitizeStateForClient(baseState) });
     }
 
@@ -534,6 +702,15 @@ function doPost(e) {
         baseStateResp.pendingTrades.splice(foundIdx, 1);
         baseStateResp.updatedAt = Date.now();
         saveAndMirrorToSheets(sheets, baseStateResp, subAction + "_PROPOSAL:" + propIdTarget + (replyNote ? " (" + replyNote + ")" : ""));
+        if (subAction === "DECLINE" && propObj.proposedByTeam) {
+          dispatchOneSignalPush(baseStateResp, {
+            category: "DIRECT_TRADE",
+            urgent: true,
+            targetTeamIds: [propObj.proposedByTeam],
+            title: "Trade Proposal Declined (" + propIdTarget + ")",
+            message: propObj.headline + (replyNote ? (" — Note: " + replyNote) : "")
+          });
+        }
         return jsonResponse({ ok: true, state: sanitizeStateForClient(baseStateResp) });
       }
 
@@ -606,6 +783,11 @@ function doPost(e) {
 
         baseStateResp.updatedAt = Date.now();
         saveAndMirrorToSheets(sheets, baseStateResp, "CONFIRMED_TRADE:" + finalId);
+        dispatchOneSignalPush(baseStateResp, {
+          category: "BROADCAST",
+          title: "✅ Trade Confirmed (" + finalId + ")",
+          message: propObj.headline
+        });
         return jsonResponse({ ok: true, finalizedTradeId: finalId, state: sanitizeStateForClient(baseStateResp) });
       } else {
         baseStateResp.updatedAt = Date.now();
@@ -937,27 +1119,52 @@ function doPost(e) {
         ? String(existingProf.customTeamName || "").trim().slice(0, 24)
         : String(incoming.customTeamName || "").trim().slice(0, 24);
 
+      var allowedStrategyTags = ["ALL_IN", "BALANCED", "RETOOLING", ""];
+      var resolvedStrategyTag = incoming.strategyTag !== undefined && allowedStrategyTags.indexOf(String(incoming.strategyTag || "").toUpperCase()) !== -1
+        ? String(incoming.strategyTag || "").toUpperCase()
+        : String(existingProf.strategyTag || "BALANCED");
+
+      var existingPush = (existingProf.pushPrefs && typeof existingProf.pushPrefs === "object") ? existingProf.pushPrefs : {};
+      var incomingPush = (incoming.pushPrefs && typeof incoming.pushPrefs === "object") ? incoming.pushPrefs : null;
+      var sanitizedPushPrefs = {
+        enabled: incomingPush ? Boolean(incomingPush.enabled) : Boolean(existingPush.enabled),
+        subscriptionId: String((incomingPush && incomingPush.subscriptionId !== undefined ? incomingPush.subscriptionId : existingPush.subscriptionId) || "").trim().slice(0, 120),
+        directTradeAlerts: incomingPush && incomingPush.directTradeAlerts !== undefined ? Boolean(incomingPush.directTradeAlerts) : (existingPush.directTradeAlerts !== false),
+        conditionalAlerts: incomingPush && incomingPush.conditionalAlerts !== undefined ? Boolean(incomingPush.conditionalAlerts) : (existingPush.conditionalAlerts !== false),
+        tradeBroadcasts: incomingPush && incomingPush.tradeBroadcasts !== undefined ? Boolean(incomingPush.tradeBroadcasts) : (existingPush.tradeBroadcasts !== false),
+        hofAlerts: incomingPush && incomingPush.hofAlerts !== undefined ? Boolean(incomingPush.hofAlerts) : (existingPush.hofAlerts !== false),
+        keeperAlerts: incomingPush && incomingPush.keeperAlerts !== undefined ? Boolean(incomingPush.keeperAlerts) : (existingPush.keeperAlerts !== false),
+        dismissedPrompt: incomingPush && incomingPush.dismissedPrompt !== undefined ? Boolean(incomingPush.dismissedPrompt) : Boolean(existingPush.dismissedPrompt),
+        updatedAt: Date.now()
+      };
+
       baseStateProf.teamProfiles[teamId] = {
-        tradeBlockNote: String(incoming.tradeBlockNote || "").slice(0, 280),
-        lookingFor: String(incoming.lookingFor || "").slice(0, 180),
-        needsChips: sanitizedChips,
-        pickTags: sanitizedTags,
+        tradeBlockNote: String(incoming.tradeBlockNote !== undefined ? incoming.tradeBlockNote : (existingProf.tradeBlockNote || "")).slice(0, 280),
+        lookingFor: String(incoming.lookingFor !== undefined ? incoming.lookingFor : (existingProf.lookingFor || "")).slice(0, 180),
+        needsChips: incoming.needsChips !== undefined ? sanitizedChips : (Array.isArray(existingProf.needsChips) ? existingProf.needsChips : []),
+        pickTags: incoming.pickTags && typeof incoming.pickTags === "object" ? sanitizedTags : (existingProf.pickTags || {}),
         playerTags: incoming.playerTags && typeof incoming.playerTags === "object" ? sanitizedPlayerTags : (existingProf.playerTags || {}),
+        strategyTag: resolvedStrategyTag,
+        pushPrefs: sanitizedPushPrefs,
         keepers: sanitizedKeepers,
-        keepersConfirmedAt: Number(incoming.keepersConfirmedAt || existingProf.keepersConfirmedAt || 0),
+        keepersConfirmedAt: Number(incoming.keepersConfirmedAt !== undefined ? incoming.keepersConfirmedAt : (existingProf.keepersConfirmedAt || 0)),
         customTeamName: resolvedCustomName,
         feasterRenamedByChamp: feasterLocked,
         feasterRenamedBy: String(existingProf.feasterRenamedBy || "").slice(0, 30),
         avatarType: ["MONOGRAM", "EMOJI", "IMAGE"].indexOf(incoming.avatarType) !== -1 ? incoming.avatarType : (existingProf.avatarType || "MONOGRAM"),
-        avatarText: String(incoming.avatarText || "").trim().slice(0, 4),
-        avatarEmoji: String(incoming.avatarEmoji || "").trim().slice(0, 12),
-        avatarBg: String(incoming.avatarBg || "").trim().slice(0, 24),
-        avatarImageDataUrl: String(incoming.avatarImageDataUrl || "").trim().slice(0, 8000),
+        avatarText: String(incoming.avatarText !== undefined ? incoming.avatarText : (existingProf.avatarText || "")).trim().slice(0, 4),
+        avatarEmoji: String(incoming.avatarEmoji !== undefined ? incoming.avatarEmoji : (existingProf.avatarEmoji || "")).trim().slice(0, 12),
+        avatarBg: String(incoming.avatarBg !== undefined ? incoming.avatarBg : (existingProf.avatarBg || "")).trim().slice(0, 24),
+        avatarImageDataUrl: String(incoming.avatarImageDataUrl !== undefined ? incoming.avatarImageDataUrl : (existingProf.avatarImageDataUrl || "")).trim().slice(0, 8000),
         upstateKittyCursed: nowCursed,
         upstateKittyCursedAt: nowCursed ? (Number(existingProf.upstateKittyCursedAt) || Date.now()) : 0,
         flairBadge: String(existingProf.flairBadge || ""),
-        teamPinVerifier: (incoming.teamPinVerifier && /^[a-f0-9]{64}$/i.test(incoming.teamPinVerifier)) ? incoming.teamPinVerifier.toLowerCase() : "",
-        teamPinHash: (incoming.teamPinHash && /^[a-f0-9]{64}$/i.test(incoming.teamPinHash)) ? incoming.teamPinHash.toLowerCase() : "",
+        teamPinVerifier: (incoming.teamPinVerifier && /^[a-f0-9]{64}$/i.test(incoming.teamPinVerifier))
+          ? incoming.teamPinVerifier.toLowerCase()
+          : (incoming.clearTeamPin ? "" : String(existingProf.teamPinVerifier || "")),
+        teamPinHash: (incoming.teamPinHash && /^[a-f0-9]{64}$/i.test(incoming.teamPinHash))
+          ? incoming.teamPinHash.toLowerCase()
+          : (incoming.clearTeamPin ? "" : String(existingProf.teamPinHash || "")),
         updatedAt: Date.now()
       };
       if (Array.isArray(incoming.roster)) {
@@ -1129,7 +1336,13 @@ function doPost(e) {
           : (existingEspn.positionalRecords || {}),
         playerHofBallots: (incomingEspn.playerHofBallots && typeof incomingEspn.playerHofBallots === "object")
           ? Object.assign({}, existingEspn.playerHofBallots || {}, incomingEspn.playerHofBallots)
-          : (existingEspn.playerHofBallots || {})
+          : (existingEspn.playerHofBallots || {}),
+        hofState: (incomingEspn.hofState && typeof incomingEspn.hofState === "object")
+          ? Object.assign({}, existingEspn.hofState || {}, incomingEspn.hofState)
+          : (existingEspn.hofState || null),
+        faabTransactions: (incomingEspn.faabTransactions && typeof incomingEspn.faabTransactions === "object")
+          ? Object.assign({}, existingEspn.faabTransactions || {}, incomingEspn.faabTransactions)
+          : (existingEspn.faabTransactions || {})
       };
       var nextRecs = baseStateEspn.espnData.records || {};
       if (nextRecs.highestWeekScore && Number(nextRecs.highestWeekScore.score || 0) > Number((prevRecords.highestWeekScore && prevRecords.highestWeekScore.score) || 0) && Number((prevRecords.highestWeekScore && prevRecords.highestWeekScore.score) || 0) > 0) {
@@ -1148,6 +1361,538 @@ function doPost(e) {
       baseStateEspn.updatedAt = Date.now();
       saveAndMirrorToSheets(sheets, baseStateEspn, "ESPN_SYNC_UPDATE:" + (baseStateEspn.espnData.leagueId || "LIVE"));
       return jsonResponse({ ok: true, state: sanitizeStateForClient(baseStateEspn) });
+    }
+
+    // ------------------------------------------------------------------------
+    // ACTION 1I: 4-STAGE PLAYER HALL OF FAME OFFSEASON FUNNEL (WAVE 2 SEC 4)
+    // Stages: IDLE -> NOMINATIONS_OPEN -> VOTING_OPEN -> RESULTS_PUBLISHED
+    // ------------------------------------------------------------------------
+    if (action === "PUBLISH_HOF_CANDIDATES" || action === "PUBLISH_HOF_BALLOT" || action === "SUBMIT_HOF_VOTE" || action === "CLOSE_HOF_BALLOT") {
+      var baseStateFunnel = stored || body.fallbackBaseState;
+      if (!baseStateFunnel || !Array.isArray(baseStateFunnel.teams)) {
+        return jsonResponse({ ok: false, error: "Initialize database first." });
+      }
+      if (!baseStateFunnel.espnData || typeof baseStateFunnel.espnData !== "object") {
+        baseStateFunnel.espnData = {};
+      }
+      var hofState = (baseStateFunnel.espnData.hofState && typeof baseStateFunnel.espnData.hofState === "object")
+        ? baseStateFunnel.espnData.hofState
+        : {
+            stage: "IDLE",
+            classYear: Number(baseStateFunnel.baseUpcomingYear) || 2027,
+            candidates: [],
+            ballot: [],
+            votesByManager: {},
+            inductedPlayers: [],
+            carryoverPool: [],
+            droppedPlayerIds: [],
+            lastResults: null
+          };
+      if (!Array.isArray(hofState.candidates)) hofState.candidates = [];
+      if (!Array.isArray(hofState.ballot)) hofState.ballot = [];
+      if (!hofState.votesByManager || typeof hofState.votesByManager !== "object") hofState.votesByManager = {};
+      if (!Array.isArray(hofState.inductedPlayers)) hofState.inductedPlayers = [];
+      if (!Array.isArray(hofState.carryoverPool)) hofState.carryoverPool = [];
+      if (!Array.isArray(hofState.droppedPlayerIds)) hofState.droppedPlayerIds = [];
+
+      var isCommishFunnel = Boolean(body.commishAuthHash && String(body.commishAuthHash).toLowerCase() === getExpectedCommishHash(stored));
+
+      if (action === "PUBLISH_HOF_CANDIDATES") {
+        if (!isCommishFunnel) {
+          return jsonResponse({ ok: false, error: "Only the Commissioner can publish the Official HOF Candidate Watchlist." });
+        }
+        var classYr = Number(body.classYear) || Number(hofState.classYear) || Number(baseStateFunnel.baseUpcomingYear) || 2027;
+        var incomingCands = Array.isArray(body.candidates) ? body.candidates : [];
+        var mergedCands = [];
+        var seenCandIds = {};
+        // Automatically include prior-year carryover finalists (up to 5 years on ballot) unless permanently dropped
+        hofState.carryoverPool.forEach(function(co) {
+          if (!co || !co.playerId) return;
+          var pid = String(co.playerId);
+          if (hofState.droppedPlayerIds.indexOf(pid) !== -1) return;
+          if (Number(co.yearsOnBallot || 1) >= 5) return;
+          seenCandIds[pid] = true;
+          mergedCands.push(Object.assign({}, co, { isCarryover: true }));
+        });
+        incomingCands.forEach(function(c) {
+          if (!c || !(c.playerId || c.id || c.name || c.playerName)) return;
+          var pid = String(c.playerId || c.id || c.name || c.playerName).trim();
+          if (seenCandIds[pid] || hofState.droppedPlayerIds.indexOf(pid) !== -1) return;
+          seenCandIds[pid] = true;
+          mergedCands.push({
+            playerId: pid,
+            playerName: String(c.playerName || c.name || pid).trim().slice(0, 64),
+            name: String(c.playerName || c.name || pid).trim().slice(0, 64),
+            pos: String(c.pos || "FLEX").trim().toUpperCase().slice(0, 12),
+            legacyScore: Number(c.legacyScore) || 0,
+            totalLeaguePts: Number(c.totalLeaguePts || c.totalPts) || 0,
+            peakSummary: String(c.peakSummary || "").slice(0, 160),
+            ringsCount: Number(c.ringsCount || c.rings) || 0,
+            pedigree: String(c.pedigree || "").slice(0, 120),
+            faabCost: c.faabCost !== undefined ? Number(c.faabCost) : null,
+            yearsOnBallot: Number(c.yearsOnBallot) || 1,
+            isCarryover: Boolean(c.isCarryover)
+          });
+        });
+        if (mergedCands.length === 0) {
+          return jsonResponse({ ok: false, error: "Select at least 1 candidate to publish the Offseason Watchlist." });
+        }
+        hofState.classYear = classYr;
+        hofState.stage = "NOMINATIONS_OPEN";
+        hofState.candidates = mergedCands;
+        hofState.ballot = [];
+        hofState.votesByManager = {};
+        hofState.updatedAt = Date.now();
+        baseStateFunnel.espnData.hofState = hofState;
+        appendServerActivityEvent(
+          baseStateFunnel,
+          "HOF_WATCHLIST",
+          "Class of " + classYr + " HOF Candidate Watchlist Published",
+          "Commissioner published " + mergedCands.length + " Official HOF Candidates for league debate.",
+          { year: classYr }
+        );
+        dispatchOneSignalPush(baseStateFunnel, {
+          category: "HOF",
+          title: "🏛️ HOF Class of " + classYr + " Watchlist Open!",
+          message: "The Commissioner published " + mergedCands.length + " Official Player HOF Candidates in The Vault."
+        });
+        baseStateFunnel.updatedAt = Date.now();
+        saveAndMirrorToSheets(sheets, baseStateFunnel, "PUBLISH_HOF_CANDIDATES:" + classYr);
+        return jsonResponse({ ok: true, state: sanitizeStateForClient(baseStateFunnel) });
+      }
+
+      if (action === "PUBLISH_HOF_BALLOT") {
+        if (!isCommishFunnel) {
+          return jsonResponse({ ok: false, error: "Only the Commissioner can lock and publish the Final 5-Man HOF Ballot." });
+        }
+        var incomingBallot = Array.isArray(body.ballot) ? body.ballot : [];
+        if (incomingBallot.length !== 5) {
+          return jsonResponse({ ok: false, error: "The Final HOF Ballot must contain exactly 5 finalists." });
+        }
+        var cleanBallot = incomingBallot.map(function(b) {
+          var pid = String(b.playerId || b.id || b.playerName || b.name || "").trim();
+          return {
+            playerId: pid,
+            playerName: String(b.playerName || b.name || pid).trim().slice(0, 64),
+            name: String(b.playerName || b.name || pid).trim().slice(0, 64),
+            pos: String(b.pos || "FLEX").trim().toUpperCase().slice(0, 12),
+            legacyScore: Number(b.legacyScore) || 0,
+            totalLeaguePts: Number(b.totalLeaguePts || b.totalPts) || 0,
+            peakSummary: String(b.peakSummary || "").slice(0, 160),
+            ringsCount: Number(b.ringsCount || b.rings) || 0,
+            pedigree: String(b.pedigree || "").slice(0, 120),
+            faabCost: b.faabCost !== undefined ? Number(b.faabCost) : null,
+            yearsOnBallot: Number(b.yearsOnBallot) || 1
+          };
+        });
+        hofState.stage = "VOTING_OPEN";
+        hofState.ballot = cleanBallot;
+        hofState.votesByManager = {};
+        hofState.updatedAt = Date.now();
+        baseStateFunnel.espnData.hofState = hofState;
+        appendServerActivityEvent(
+          baseStateFunnel,
+          "HOF_BALLOT_OPEN",
+          "Class of " + hofState.classYear + " Final 5-Man HOF Ballot Open!",
+          "Blind manager voting is now open (select up to 2 finalists; 7/10 supermajority required, max 2 inductees).",
+          { year: hofState.classYear }
+        );
+        dispatchOneSignalPush(baseStateFunnel, {
+          category: "HOF",
+          title: "🗳️ HOF Final 5-Man Ballot is LIVE!",
+          message: "Cast your blind vote (up to 2 players) for the Class of " + hofState.classYear + " Hall of Fame."
+        });
+        baseStateFunnel.updatedAt = Date.now();
+        saveAndMirrorToSheets(sheets, baseStateFunnel, "PUBLISH_HOF_BALLOT:" + hofState.classYear);
+        return jsonResponse({ ok: true, state: sanitizeStateForClient(baseStateFunnel) });
+      }
+
+      if (action === "SUBMIT_HOF_VOTE") {
+        if (hofState.stage !== "VOTING_OPEN") {
+          return jsonResponse({ ok: false, error: "HOF ballot voting is not currently open." });
+        }
+        var voterId = String(body.teamId || body.actorTeamId || "").trim();
+        var validMgr = baseStateFunnel.teams.some(function(t) { return t.id === voterId; });
+        if (!validMgr) {
+          return jsonResponse({ ok: false, error: "Invalid manager ID for HOF ballot." });
+        }
+        var picks = Array.isArray(body.selectedPlayerIds) ? body.selectedPlayerIds.map(String) : [];
+        var uniquePicks = [];
+        var validBallotIds = {};
+        hofState.ballot.forEach(function(b) { validBallotIds[String(b.playerId)] = true; });
+        picks.forEach(function(pid) {
+          if (validBallotIds[pid] && uniquePicks.indexOf(pid) === -1) uniquePicks.push(pid);
+        });
+        if (uniquePicks.length > 2) {
+          return jsonResponse({ ok: false, error: "Each manager may vote for at most 2 finalists on the 5-man ballot." });
+        }
+        hofState.votesByManager[voterId] = {
+          selectedPlayerIds: uniquePicks,
+          submittedAt: Date.now()
+        };
+        hofState.updatedAt = Date.now();
+        baseStateFunnel.espnData.hofState = hofState;
+        baseStateFunnel.updatedAt = Date.now();
+        saveAndMirrorToSheets(sheets, baseStateFunnel, "SUBMIT_HOF_VOTE:" + voterId);
+        return jsonResponse({ ok: true, state: sanitizeStateForClient(baseStateFunnel) });
+      }
+
+      if (action === "CLOSE_HOF_BALLOT") {
+        if (!isCommishFunnel) {
+          return jsonResponse({ ok: false, error: "Only the Commissioner can close HOF voting and publish official results." });
+        }
+        var voteMap = hofState.votesByManager || {};
+        var totalVoters = 10;
+        var tally = hofState.ballot.map(function(b) {
+          var pid = String(b.playerId);
+          var voters = [];
+          Object.keys(voteMap).forEach(function(mgrId) {
+            var vEntry = voteMap[mgrId];
+            var sel = (vEntry && Array.isArray(vEntry.selectedPlayerIds)) ? vEntry.selectedPlayerIds : (Array.isArray(vEntry) ? vEntry : []);
+            if (sel.indexOf(pid) !== -1) voters.push(mgrId);
+          });
+          var cnt = voters.length;
+          var pct = Math.round((cnt / totalVoters) * 100);
+          return Object.assign({}, b, {
+            voteCount: cnt,
+            votePct: pct,
+            voters: voters,
+            metSupermajority: cnt >= 7
+          });
+        });
+
+        // Sort by voteCount DESC, tie-break by legacyScore DESC
+        tally.sort(function(a, b) {
+          if (b.voteCount !== a.voteCount) return b.voteCount - a.voteCount;
+          return (Number(b.legacyScore) || 0) - (Number(a.legacyScore) || 0);
+        });
+
+        var inductedThisYear = [];
+        var nextCarryover = [];
+        tally.forEach(function(item) {
+          if (item.metSupermajority && inductedThisYear.length < 2) {
+            item.outcome = "INDUCTED";
+            var plaque = Object.assign({}, item, {
+              classYear: hofState.classYear,
+              inductedAt: Date.now()
+            });
+            inductedThisYear.push(plaque);
+            var alreadyInducted = hofState.inductedPlayers.some(function(ip) { return String(ip.playerId) === String(item.playerId); });
+            if (!alreadyInducted) hofState.inductedPlayers.push(plaque);
+          } else if (item.voteCount < 2) {
+            // < 2 votes (<20%) permanently drops finalist from future ballots
+            item.outcome = "DROPPED_UNDER_20_PCT";
+            if (hofState.droppedPlayerIds.indexOf(String(item.playerId)) === -1) {
+              hofState.droppedPlayerIds.push(String(item.playerId));
+            }
+          } else {
+            var nextYrs = (Number(item.yearsOnBallot) || 1) + 1;
+            if (nextYrs > 5) {
+              item.outcome = "EXPIRED_5_YEAR_CAP";
+              if (hofState.droppedPlayerIds.indexOf(String(item.playerId)) === -1) {
+                hofState.droppedPlayerIds.push(String(item.playerId));
+              }
+            } else {
+              item.outcome = "CARRYOVER_NEXT_YEAR";
+              nextCarryover.push(Object.assign({}, item, { yearsOnBallot: nextYrs, isCarryover: true }));
+            }
+          }
+        });
+
+        hofState.stage = body.setIdle ? "IDLE" : "RESULTS_PUBLISHED";
+        hofState.carryoverPool = nextCarryover;
+        hofState.lastResults = {
+          classYear: hofState.classYear,
+          closedAt: Date.now(),
+          totalManagersVoted: Object.keys(voteMap).length,
+          ballotResults: tally,
+          inductedCount: inductedThisYear.length
+        };
+        hofState.updatedAt = Date.now();
+        baseStateFunnel.espnData.hofState = hofState;
+
+        var inductNames = inductedThisYear.map(function(p) { return p.playerName + " (" + p.votePct + "%)"; }).join(", ");
+        appendServerActivityEvent(
+          baseStateFunnel,
+          "HOF_RESULTS",
+          "Class of " + hofState.classYear + " HOF Ballot Results Official",
+          inductedThisYear.length > 0
+            ? ("Inducted into the Gamecock Mafia Player HOF: " + inductNames + "!")
+            : ("No candidate reached the 7/10 (70%) supermajority for Class of " + hofState.classYear + "."),
+          { year: hofState.classYear }
+        );
+        dispatchOneSignalPush(baseStateFunnel, {
+          category: "HOF",
+          title: "🏆 Class of " + hofState.classYear + " HOF Results Revealed!",
+          message: inductedThisYear.length > 0
+            ? ("Welcome to The Vault: " + inductNames)
+            : "Vote percentages revealed in The Vault -> Player HOF."
+        });
+        baseStateFunnel.updatedAt = Date.now();
+        saveAndMirrorToSheets(sheets, baseStateFunnel, "CLOSE_HOF_BALLOT:" + hofState.classYear);
+        return jsonResponse({ ok: true, state: sanitizeStateForClient(baseStateFunnel) });
+      }
+    }
+
+    // ------------------------------------------------------------------------
+    // ACTION 1J: LEO'S SYNCED CENTRAL BANKER MODE (UPDATE_DUES_STATUS — SEC 10)
+    // Authenticated via Leo's personal Team PIN ("leo") OR Commissioner PIN
+    // ------------------------------------------------------------------------
+    if (action === "UPDATE_DUES_STATUS") {
+      var baseStateDues = stored || body.fallbackBaseState;
+      if (!baseStateDues || !Array.isArray(baseStateDues.teams)) {
+        return jsonResponse({ ok: false, error: "Initialize database first." });
+      }
+      var isCommishDues = Boolean(body.commishAuthHash && String(body.commishAuthHash).toLowerCase() === getExpectedCommishHash(stored));
+      var leoProfile = (baseStateDues.teamProfiles && baseStateDues.teamProfiles["leo"]) || {};
+      var providedLeoPinHash = body.teamPinHash ? String(body.teamPinHash).toLowerCase() : "";
+      var actorForDues = String(body.actorTeamId || "").toLowerCase();
+      var isLeoAuthenticated = false;
+      if (actorForDues === "leo") {
+        if (leoProfile.teamPinHash && /^[a-f0-9]{64}$/i.test(leoProfile.teamPinHash)) {
+          isLeoAuthenticated = (providedLeoPinHash === leoProfile.teamPinHash.toLowerCase());
+        } else {
+          isLeoAuthenticated = true;
+        }
+      }
+      if (!isCommishDues && !isLeoAuthenticated) {
+        return jsonResponse({ ok: false, error: "Unauthorized: Only Central Banker Leo (via Personal Team PIN) or the Commissioner can update the Dues Ledger." });
+      }
+
+      if (!baseStateDues.duesLedger || typeof baseStateDues.duesLedger !== "object") {
+        baseStateDues.duesLedger = {
+          seasonYear: Number(baseStateDues.baseUpcomingYear) || 2027,
+          buyInPerManager: 150,
+          totalPot: 1500,
+          isLockedFinal: false,
+          lockedAt: 0,
+          deadlineIso: "",
+          managers: {}
+        };
+      }
+      var ledger = baseStateDues.duesLedger;
+      if (!ledger.managers || typeof ledger.managers !== "object") ledger.managers = {};
+
+      if (body.seasonYear) ledger.seasonYear = Number(body.seasonYear) || ledger.seasonYear;
+      if (body.deadlineIso !== undefined) ledger.deadlineIso = String(body.deadlineIso || "").slice(0, 40);
+      if (body.isLockedFinal !== undefined) {
+        ledger.isLockedFinal = Boolean(body.isLockedFinal);
+        ledger.lockedAt = ledger.isLockedFinal ? (Number(ledger.lockedAt) || Date.now()) : 0;
+      }
+
+      if (body.managers && typeof body.managers === "object") {
+        Object.keys(body.managers).forEach(function(tid) {
+          var mIn = body.managers[tid] || {};
+          var prevM = ledger.managers[tid] || {};
+          ledger.managers[tid] = {
+            paid: mIn.paid !== undefined ? Boolean(mIn.paid) : Boolean(prevM.paid),
+            amountPaid: mIn.amountPaid !== undefined ? Number(mIn.amountPaid) : (mIn.paid ? 150 : 0),
+            note: String(mIn.note !== undefined ? mIn.note : (prevM.note || "")).trim().slice(0, 80),
+            dockedWins: Math.max(0, Number(mIn.dockedWins !== undefined ? mIn.dockedWins : (prevM.dockedWins || 0))),
+            updatedAt: Date.now(),
+            updatedBy: isCommishDues ? "commish" : "leo"
+          };
+        });
+      } else if (body.targetTeamId) {
+        var tTid = String(body.targetTeamId);
+        var prevTarget = ledger.managers[tTid] || {};
+        ledger.managers[tTid] = {
+          paid: body.paid !== undefined ? Boolean(body.paid) : Boolean(prevTarget.paid),
+          amountPaid: body.amountPaid !== undefined ? Number(body.amountPaid) : (body.paid ? 150 : 0),
+          note: String(body.note !== undefined ? body.note : (prevTarget.note || "")).trim().slice(0, 80),
+          dockedWins: Math.max(0, Number(body.dockedWins !== undefined ? body.dockedWins : (prevTarget.dockedWins || 0))),
+          updatedAt: Date.now(),
+          updatedBy: isCommishDues ? "commish" : "leo"
+        };
+      }
+
+      ledger.teams = Object.assign({}, ledger.teams || {}, ledger.managers || {});
+      var sYrKey = String(ledger.seasonYear || 2027);
+      ledger[sYrKey] = { teams: Object.assign({}, ledger.teams) };
+      ledger.updatedAt = Date.now();
+      baseStateDues.duesLedger = ledger;
+      baseStateDues.updatedAt = Date.now();
+      saveAndMirrorToSheets(sheets, baseStateDues, "UPDATE_DUES_STATUS:" + (isCommishDues ? "COMMISH" : "LEO"));
+      return jsonResponse({ ok: true, state: sanitizeStateForClient(baseStateDues) });
+    }
+
+    // ------------------------------------------------------------------------
+    // ACTION 1K: COMMISSIONER CUSTOM PUSH BLAST & ONESIGNAL CONFIG (SEC 5)
+    // ------------------------------------------------------------------------
+    if (action === "SEND_PUSH_BLAST" || action === "SAVE_ONESIGNAL_CONFIG") {
+      var baseStatePush = stored || body.fallbackBaseState;
+      if (!baseStatePush) {
+        return jsonResponse({ ok: false, error: "Initialize database first." });
+      }
+      var isCommishPush = Boolean(body.commishAuthHash && String(body.commishAuthHash).toLowerCase() === getExpectedCommishHash(stored));
+      if (!isCommishPush) {
+        return jsonResponse({ ok: false, error: "Only the Commissioner can configure OneSignal keys or send league push blasts." });
+      }
+
+      if (action === "SAVE_ONESIGNAL_CONFIG") {
+        if (!baseStatePush.pushConfig || typeof baseStatePush.pushConfig !== "object") {
+          baseStatePush.pushConfig = {};
+        }
+        if (body.oneSignalAppId !== undefined) {
+          baseStatePush.pushConfig.oneSignalAppId = String(body.oneSignalAppId || "").trim().slice(0, 80);
+          baseStatePush.oneSignalAppId = baseStatePush.pushConfig.oneSignalAppId;
+        }
+        if (body.oneSignalRestKey !== undefined && String(body.oneSignalRestKey).trim() !== "") {
+          baseStatePush.pushConfig.oneSignalRestKey = String(body.oneSignalRestKey).trim().slice(0, 160);
+          baseStatePush.oneSignalRestKey = baseStatePush.pushConfig.oneSignalRestKey;
+        }
+        try {
+          var sp = PropertiesService.getScriptProperties();
+          if (baseStatePush.pushConfig.oneSignalAppId) sp.setProperty("ONESIGNAL_APP_ID", baseStatePush.pushConfig.oneSignalAppId);
+          if (baseStatePush.pushConfig.oneSignalRestKey) sp.setProperty("ONESIGNAL_REST_KEY", baseStatePush.pushConfig.oneSignalRestKey);
+        } catch (ignoreSpErr) {}
+        baseStatePush.updatedAt = Date.now();
+        saveAndMirrorToSheets(sheets, baseStatePush, "SAVE_ONESIGNAL_CONFIG");
+        return jsonResponse({ ok: true, state: sanitizeStateForClient(baseStatePush) });
+      }
+
+      var audience = String(body.audience || "ALL").toUpperCase(); // ALL | UNLOCKED_KEEPERS | UNPAID_DUES
+      var targetIds = null;
+      if (audience === "UNLOCKED_KEEPERS") {
+        targetIds = [];
+        (baseStatePush.teams || []).forEach(function(t) {
+          var pf = (baseStatePush.teamProfiles && baseStatePush.teamProfiles[t.id]) || {};
+          var kCnt = Array.isArray(pf.keepers) ? pf.keepers.length : 0;
+          if (kCnt < 12 || !pf.keepersConfirmedAt) targetIds.push(t.id);
+        });
+      } else if (audience === "UNPAID_DUES") {
+        targetIds = [];
+        var dMgrs = (baseStatePush.duesLedger && baseStatePush.duesLedger.managers) || {};
+        (baseStatePush.teams || []).forEach(function(t) {
+          if (!dMgrs[t.id] || !dMgrs[t.id].paid) targetIds.push(t.id);
+        });
+      }
+
+      var blastTitle = String(body.title || "Gamecock Mafia Commissioner Alert").trim().slice(0, 90);
+      var blastMsg = String(body.message || "").trim().slice(0, 240);
+      if (!blastMsg) {
+        return jsonResponse({ ok: false, error: "Enter a message to send a League Alert." });
+      }
+      var pushResult = dispatchOneSignalPush(baseStatePush, {
+        category: "CUSTOM",
+        urgent: Boolean(body.bypassQuietHours),
+        targetTeamIds: targetIds,
+        title: blastTitle,
+        message: blastMsg
+      });
+      appendServerActivityEvent(
+        baseStatePush,
+        "COMMISH_ALERT",
+        blastTitle + " (" + audience + ")",
+        blastMsg,
+        { actorTeamId: "commish" }
+      );
+      baseStatePush.updatedAt = Date.now();
+      saveAndMirrorToSheets(sheets, baseStatePush, "SEND_PUSH_BLAST:" + audience);
+      return jsonResponse({ ok: true, pushResult: pushResult, state: sanitizeStateForClient(baseStatePush) });
+    }
+
+    // ------------------------------------------------------------------------
+    // ACTION 1L: 1-CLICK TIME MACHINE ROLLBACK (ADMIN_ROLLBACK — SEC 10)
+    // Silent restore across 30 saved snapshots (no push spam) + ADMIN_ROLLBACK log
+    // ------------------------------------------------------------------------
+    if (action === "ADMIN_ROLLBACK") {
+      var isCommishRb = Boolean(body.commishAuthHash && String(body.commishAuthHash).toLowerCase() === getExpectedCommishHash(stored));
+      if (!isCommishRb) {
+        return jsonResponse({ ok: false, error: "Invalid Commissioner PIN authorization for Time Machine Rollback." });
+      }
+      var targetRow = Number(body.rowNumber) || 5;
+      if (targetRow < 5 || targetRow > 35) {
+        return jsonResponse({ ok: false, error: "Snapshot row must be between 5 and 35." });
+      }
+      var restoredState = readSnapshotStateAtRow(sheets.stateSheet, targetRow);
+      if (!restoredState || !Array.isArray(restoredState.teams)) {
+        return jsonResponse({ ok: false, error: "Could not read valid state JSON from snapshot row " + targetRow + "." });
+      }
+      // Preserve current auth hashes & OneSignal keys
+      if (stored && stored.commishPinHash) restoredState.commishPinHash = stored.commishPinHash;
+      if (stored && stored.leaguePassphraseHash) restoredState.leaguePassphraseHash = stored.leaguePassphraseHash;
+      if (stored && stored.oneSignalRestKey) restoredState.oneSignalRestKey = stored.oneSignalRestKey;
+      if (stored && stored.pushConfig) restoredState.pushConfig = stored.pushConfig;
+
+      var snapMeta = sheets.stateSheet.getRange(targetRow, 1, 1, 3).getValues()[0] || [];
+      var snapLabel = String(snapMeta[2] || ("Row " + targetRow));
+      var snapIso = String(snapMeta[1] || "");
+      appendServerActivityEvent(
+        restoredState,
+        "ADMIN_ROLLBACK",
+        "Time Machine Rollback Executed",
+        "Commissioner restored league state to snapshot \"" + snapLabel + "\" (" + snapIso + ").",
+        { actorTeamId: "commish" }
+      );
+      restoredState.updatedAt = Date.now();
+      saveAndMirrorToSheets(sheets, restoredState, "ADMIN_ROLLBACK:ROW_" + targetRow);
+      return jsonResponse({ ok: true, state: sanitizeStateForClient(restoredState), snapshots: listSnapshotsFromSheet(sheets.stateSheet) });
+    }
+
+    // ------------------------------------------------------------------------
+    // ACTION 1M: 1-CLICK SEASON ROLLOVER WIZARD (SEASON_ROLLOVER — SEC 10)
+    // Archives completed season, advances 2-year pick window, resets Dues Ledger, opens HOF Stage 1
+    // ------------------------------------------------------------------------
+    if (action === "SEASON_ROLLOVER") {
+      var baseStateRoll = stored || body.fallbackBaseState;
+      if (!baseStateRoll || !Array.isArray(baseStateRoll.teams)) {
+        return jsonResponse({ ok: false, error: "Initialize database first." });
+      }
+      var isCommishRoll = Boolean(body.commishAuthHash && String(body.commishAuthHash).toLowerCase() === getExpectedCommishHash(stored));
+      if (!isCommishRoll) {
+        return jsonResponse({ ok: false, error: "Only the Commissioner can execute the Season Rollover Wizard." });
+      }
+      var prevUpcoming = Number(baseStateRoll.baseUpcomingYear) || 2027;
+      var nextUpcoming = Number(body.nextUpcomingYear) || (prevUpcoming + 1);
+      baseStateRoll.baseUpcomingYear = nextUpcoming;
+      baseStateRoll.activeYear = nextUpcoming;
+
+      // Reset Central Banker Dues Ledger for the new season
+      var resetMgrs = {};
+      (baseStateRoll.teams || []).forEach(function(t) {
+        resetMgrs[t.id] = { paid: false, amountPaid: 0, note: "", dockedWins: 0, updatedAt: Date.now() };
+      });
+      baseStateRoll.duesLedger = {
+        seasonYear: nextUpcoming,
+        buyInPerManager: 150,
+        totalPot: 1500,
+        isLockedFinal: false,
+        lockedAt: 0,
+        deadlineIso: "",
+        managers: resetMgrs,
+        updatedAt: Date.now()
+      };
+
+      // Open Stage 1 of Offseason Player HOF Funnel for the new class
+      if (!baseStateRoll.espnData || typeof baseStateRoll.espnData !== "object") baseStateRoll.espnData = {};
+      var prevHof = (baseStateRoll.espnData.hofState && typeof baseStateRoll.espnData.hofState === "object")
+        ? baseStateRoll.espnData.hofState
+        : { inductedPlayers: [], carryoverPool: [], droppedPlayerIds: [] };
+      baseStateRoll.espnData.hofState = {
+        stage: "IDLE",
+        scoutingOpen: true,
+        classYear: nextUpcoming,
+        candidates: Array.isArray(prevHof.carryoverPool) ? prevHof.carryoverPool.slice() : [],
+        ballot: [],
+        votesByManager: {},
+        inductedPlayers: Array.isArray(prevHof.inductedPlayers) ? prevHof.inductedPlayers : [],
+        carryoverPool: Array.isArray(prevHof.carryoverPool) ? prevHof.carryoverPool : [],
+        droppedPlayerIds: Array.isArray(prevHof.droppedPlayerIds) ? prevHof.droppedPlayerIds : [],
+        lastResults: prevHof.lastResults || null,
+        updatedAt: Date.now()
+      };
+
+      appendServerActivityEvent(
+        baseStateRoll,
+        "SEASON_ROLLOVER",
+        "Season Rollover Complete: Advanced to " + nextUpcoming + "–" + (nextUpcoming + 1) + " Window",
+        "Archived " + (prevUpcoming - 1) + " standings/awards, rolled draft pick window to " + nextUpcoming + "–" + (nextUpcoming + 1) + ", reset Central Banker Dues Ledger, and opened HOF Class of " + nextUpcoming + " Scouting.",
+        { year: nextUpcoming, actorTeamId: "commish" }
+      );
+      baseStateRoll.updatedAt = Date.now();
+      saveAndMirrorToSheets(sheets, baseStateRoll, "SEASON_ROLLOVER:" + nextUpcoming);
+      return jsonResponse({ ok: true, state: sanitizeStateForClient(baseStateRoll) });
     }
 
     // ------------------------------------------------------------------------
@@ -1170,7 +1915,7 @@ function doPost(e) {
       var isFullReset = syncReason.indexOf("RESET") === 0 || syncReason.indexOf("IMPORT") === 0;
       var baseSnapshotTs = Number(body.clientSnapshotUpdatedAt || newState.updatedAt || 0);
 
-      // Preserve concurrent manager teamProfile saves (e.g., keepers/avatar/PIN) if newer than incoming snapshot
+      // Preserve concurrent manager teamProfile saves (e.g., keepers/avatar/PIN/strategyTag/pushPrefs) if newer than incoming snapshot
       if (!isFullReset && stored && stored.teamProfiles && typeof stored.teamProfiles === "object") {
         if (!newState.teamProfiles || typeof newState.teamProfiles !== "object") newState.teamProfiles = {};
         Object.keys(stored.teamProfiles).forEach(function(tid) {
@@ -1179,9 +1924,13 @@ function doPost(e) {
           if (!sProf) return;
           if (!nProf || (Number(sProf.updatedAt) || 0) > (Number(nProf.updatedAt) || 0)) {
             newState.teamProfiles[tid] = sProf;
-          } else if (sProf.teamPinHash && !nProf.teamPinHash && nProf.teamPinVerifier === sProf.teamPinVerifier) {
-            // Preserve server-only teamPinHash when client sanitized copy didn't change PIN
-            nProf.teamPinHash = sProf.teamPinHash;
+          } else {
+            if (sProf.teamPinHash && !nProf.teamPinHash && nProf.teamPinVerifier === sProf.teamPinVerifier) {
+              nProf.teamPinHash = sProf.teamPinHash;
+            }
+            if (sProf.pushPrefs && !nProf.pushPrefs) nProf.pushPrefs = sProf.pushPrefs;
+            if (sProf.strategyTag && !nProf.strategyTag) nProf.strategyTag = sProf.strategyTag;
+            if (sProf.playerTags && (!nProf.playerTags || Object.keys(nProf.playerTags).length === 0)) nProf.playerTags = sProf.playerTags;
           }
         });
       }
@@ -1216,10 +1965,22 @@ function doPost(e) {
         });
       }
 
-      // Preserve concurrent playerHofBallots on espnData
-      if (!isFullReset && stored && stored.espnData && stored.espnData.playerHofBallots && typeof stored.espnData.playerHofBallots === "object") {
+      // Preserve concurrent playerHofBallots & hofState on espnData
+      if (!isFullReset && stored && stored.espnData && typeof stored.espnData === "object") {
         if (!newState.espnData || typeof newState.espnData !== "object") newState.espnData = {};
-        newState.espnData.playerHofBallots = Object.assign({}, stored.espnData.playerHofBallots, newState.espnData.playerHofBallots || {});
+        if (stored.espnData.playerHofBallots) {
+          newState.espnData.playerHofBallots = Object.assign({}, stored.espnData.playerHofBallots, newState.espnData.playerHofBallots || {});
+        }
+        if (stored.espnData.hofState && !newState.espnData.hofState) {
+          newState.espnData.hofState = stored.espnData.hofState;
+        }
+      }
+
+      // Preserve concurrent duesLedger updates by Leo if newer
+      if (!isFullReset && stored && stored.duesLedger && typeof stored.duesLedger === "object") {
+        if (!newState.duesLedger || (Number(stored.duesLedger.updatedAt) || 0) > (Number(newState.duesLedger.updatedAt) || 0)) {
+          newState.duesLedger = stored.duesLedger;
+        }
       }
 
       // Preserve concurrent activityLog entries created after baseSnapshotTs
@@ -1242,6 +2003,15 @@ function doPost(e) {
       if (!newState.leaguePassphraseHash && stored && stored.leaguePassphraseHash) {
         newState.leaguePassphraseHash = stored.leaguePassphraseHash;
       }
+      if (!newState.oneSignalRestKey && stored && stored.oneSignalRestKey) {
+        newState.oneSignalRestKey = stored.oneSignalRestKey;
+      }
+      if (stored && stored.pushConfig && stored.pushConfig.oneSignalRestKey) {
+        if (!newState.pushConfig || typeof newState.pushConfig !== "object") newState.pushConfig = {};
+        if (!newState.pushConfig.oneSignalRestKey) {
+          newState.pushConfig.oneSignalRestKey = stored.pushConfig.oneSignalRestKey;
+        }
+      }
       delete newState.cloudSyncUrl;
 
       newState.updatedAt = Date.now();
@@ -1258,30 +2028,28 @@ function doPost(e) {
 }
 
 /**
- * Writes canonical JSON (chunk-safe across columns if >44k chars) + rolling 30-snapshot history + human-readable Google Sheet tabs!
+ * Writes canonical JSON (chunk-safe across columns B2:M2 and D5:M35 if >44k chars) + rolling 30-snapshot history + 5 human-readable Google Sheet tabs!
  */
 function saveAndMirrorToSheets(sheets, state, actionLabel) {
   var nowIso = new Date().toISOString();
   var jsonStr = JSON.stringify(state);
 
-  // 1. Update LIVE_STATE_JSON (Chunk-safe if jsonStr > 44,000 chars)
+  // Split jsonStr into 44,000-character chunks (safe below 50,000-char Google Sheets cell limit)
   var primaryChunk = jsonStr.slice(0, CELL_CHUNK_SIZE);
-  sheets.stateSheet.getRange("B2:C2").setValues([[primaryChunk, nowIso]]);
-  if (jsonStr.length > CELL_CHUNK_SIZE) {
-    var overflowChunks = [];
-    for (var pos = CELL_CHUNK_SIZE; pos < jsonStr.length; pos += CELL_CHUNK_SIZE) {
-      overflowChunks.push(jsonStr.slice(pos, pos + CELL_CHUNK_SIZE));
-    }
-    while (overflowChunks.length < 10) overflowChunks.push("");
-    sheets.stateSheet.getRange(2, 4, 1, overflowChunks.length).setValues([overflowChunks]);
-  } else {
-    try {
-      sheets.stateSheet.getRange(2, 4, 1, 10).clearContent();
-    } catch (ignoreClearErr) {}
+  var overflowChunks = [];
+  for (var pos = CELL_CHUNK_SIZE; pos < jsonStr.length; pos += CELL_CHUNK_SIZE) {
+    overflowChunks.push(jsonStr.slice(pos, pos + CELL_CHUNK_SIZE));
   }
+  while (overflowChunks.length < 10) overflowChunks.push("");
 
+  // 1A. Update LIVE_STATE_JSON CURRENT_STATE row (B2 primary, C2 ISO, D2:M2 overflow chunks)
+  sheets.stateSheet.getRange("B2:C2").setValues([[primaryChunk, nowIso]]);
+  sheets.stateSheet.getRange(2, 4, 1, overflowChunks.length).setValues([overflowChunks]);
+
+  // 1B. Insert rolling 30-row Time Machine snapshot at Row 5 (A5:C5 metadata, D5 primary, E5:M5 overflow chunks)
   sheets.stateSheet.insertRowBefore(5);
-  sheets.stateSheet.getRange("A5:D5").setValues([[state.updatedAt || Date.now(), nowIso, safeSheetCell(actionLabel), primaryChunk]]);
+  var snapRowValues = [state.updatedAt || Date.now(), nowIso, safeSheetCell(actionLabel), primaryChunk].concat(overflowChunks);
+  sheets.stateSheet.getRange(5, 1, 1, snapRowValues.length).setValues([snapRowValues]);
   if (sheets.stateSheet.getLastRow() > 35) {
     sheets.stateSheet.deleteRows(36, sheets.stateSheet.getLastRow() - 35);
   }
@@ -1402,7 +2170,7 @@ function saveAndMirrorToSheets(sheets, state, actionLabel) {
           safeSheetCell(pl.pos || ""),
           safeSheetCell(pl.nflTeam || ""),
           safeSheetCell(pl.slot || "Bench"),
-          Number(pl.pts) || 0,
+          Number(pl.pts !== undefined ? pl.pts : pl.totalPts) || 0,
           safeSheetCell(isKeeper),
           safeSheetCell(tagStatus)
         ]);
@@ -1412,30 +2180,61 @@ function saveAndMirrorToSheets(sheets, state, actionLabel) {
     sheets.espnRostersSheet.getRange(1, 1, 1, rosterRows[0].length).setFontWeight("bold");
   }
 
-  // 5. Rebuild ESPN_HISTORY_BACKUP tab if espnData.seasonStandings is present
-  if (sheets.espnHistorySheet && state.espnData && state.espnData.seasonStandings) {
+  // 5. Rebuild ESPN_HISTORY_BACKUP tab with exact Wave 2 Sec 2C schema:
+  // Season Year, Franchise Slot, Manager Name, Regular Season W-L-T, Divisional W-L, PF, PA, Combined Expected Wins, Net Luck +/-, Max PF, Coaching Efficiency %, Final Finish, Champion?
+  if (sheets.espnHistorySheet && state.espnData && (state.espnData.seasonStandings || state.espnData.seasons)) {
     sheets.espnHistorySheet.clearContents();
     var histRows = [[
-      "Season Year", "Final Rank", "Manager ID", "ESPN Team Name", "Wins", "Losses", "Ties",
-      "Points For (PF)", "Points Against (PA)", "All-Play W", "All-Play L", "Champion?"
+      "Season Year", "Franchise Slot", "Manager Name", "Regular Season W-L-T", "Divisional W-L",
+      "PF", "PA", "Combined Expected Wins", "Net Luck +/-", "Max PF",
+      "Coaching Efficiency %", "Final Finish", "Champion?"
     ]];
     var standingsByYr = state.espnData.seasonStandings || {};
-    Object.keys(standingsByYr).sort().reverse().forEach(function(yr) {
-      var rows = Array.isArray(standingsByYr[yr]) ? standingsByYr[yr] : [];
+    var seasonsByYr = state.espnData.seasons || {};
+    var allYrs = Object.keys(Object.assign({}, standingsByYr, seasonsByYr)).sort().reverse();
+    allYrs.forEach(function(yr) {
+      var sObj = seasonsByYr[yr] || {};
+      var rows = Array.isArray(standingsByYr[yr]) ? standingsByYr[yr] : (Array.isArray(sObj.standings) ? sObj.standings : []);
       rows.forEach(function(r) {
+        var w = Number(r.wins) || 0;
+        var l = Number(r.losses) || 0;
+        var t = Number(r.ties) || 0;
+        var wltStr = w + "-" + l + (t > 0 ? ("-" + t) : "");
+        var divStr = (r.divWins !== undefined && r.divLosses !== undefined) ? (r.divWins + "-" + r.divLosses + (r.divTies ? "-" + r.divTies : "")) : (r.divisionRecord || "—");
+        var apW = Number(r.allPlayWins) || 0;
+        var apL = Number(r.allPlayLosses) || 0;
+        var regGames = w + l + t;
+        var apTotalGames = apW + apL;
+        // Scale All-Play to regular season games if ESPN included postseason weeks in allPlayWins
+        var apScale = (apTotalGames > 0 && regGames > 0 && apTotalGames > regGames * 9) ? ((regGames * 9) / apTotalGames) : 1;
+        var apExpWins = (apW * apScale) / 9;
+        var medWins = r.medianWins !== undefined ? Number(r.medianWins) : null;
+        var combExp = r.expectedWins !== undefined
+          ? Number(r.expectedWins)
+          : (medWins !== null ? (0.5 * apExpWins + 0.5 * medWins) : apExpWins);
+        var netLuck = r.netLuck !== undefined ? Number(r.netLuck) : (w + 0.5 * t - combExp);
+        var luckFormatted = (netLuck >= 0 ? "+" : "") + netLuck.toFixed(2);
+        var pfVal = Number(r.pointsFor !== undefined ? r.pointsFor : r.pf) || 0;
+        var paVal = Number(r.pointsAgainst !== undefined ? r.pointsAgainst : r.pa) || 0;
+        var maxPfVal = r.maxPf ? Number(r.maxPf).toFixed(1) : "—";
+        var effVal = r.coachingEfficiency ? (Number(r.coachingEfficiency).toFixed(1) + "%") : "—";
+        var mgrLabel = tName(r.managerId || r.teamId) || r.ownerName || r.teamName || "";
+        var isChampBool = Boolean(r.isChampion || r.isChamp || (sObj.champion && String(sObj.champion) === String(r.managerId || r.teamId)));
+
         histRows.push([
           Number(yr) || yr,
-          Number(r.finalStanding) || 0,
-          safeSheetCell(r.managerId || ""),
-          safeSheetCell(r.teamName || ""),
-          Number(r.wins) || 0,
-          Number(r.losses) || 0,
-          Number(r.ties) || 0,
-          Number(r.pointsFor) || 0,
-          Number(r.pointsAgainst) || 0,
-          Number(r.allPlayWins) || 0,
-          Number(r.allPlayLosses) || 0,
-          r.isChampion ? "CHAMPION 🏆" : ""
+          Number(r.espnTeamId) || "",
+          safeSheetCell(mgrLabel),
+          safeSheetCell(wltStr),
+          safeSheetCell(divStr),
+          pfVal,
+          paVal,
+          Number(combExp.toFixed(2)),
+          safeSheetCell(luckFormatted),
+          safeSheetCell(maxPfVal),
+          safeSheetCell(effVal),
+          Number(r.finalStanding || r.finalRank || r.rank) || 0,
+          isChampBool ? "CHAMPION 🏆" : ""
         ]);
       });
     });
@@ -1653,16 +2452,19 @@ function autoWeeklyEspnSync() {
       Logger.log("Free agent sync skipped: " + faSyncErr);
     }
 
-    // 3. Sync Weekly Matchups (All-Play, H2H Rivalries, Single-Week Records & Toilet Bowl)
+    // 3. Sync Weekly Matchups (All-Play, Weekly League Median, H2H Rivalries, Single-Week Records & Toilet Bowl)
     var regWeeks = Number(data.settings && data.settings.scheduleSettings && data.settings.scheduleSettings.matchupPeriodCount) || 14;
-    var playoffTeamCnt = Number(data.settings && data.settings.scheduleSettings && data.settings.scheduleSettings.playoffTeamCount) || 5;
+    var playoffTeamCnt = Number(data.settings && data.settings.scheduleSettings && data.settings.scheduleSettings.playoffTeamCount) || 6;
+    var annualFaabBudget = Number(data.settings && data.settings.acquisitionSettings && data.settings.acquisitionSettings.acquisitionBudget) || 600;
     var currentSp = Number(data.scoringPeriodId || (data.status && data.status.currentMatchupPeriod) || 0);
     var finalSp = Number((data.status && data.status.finalScoringPeriod) || 17);
 
     var allPlayBySlot = {};
+    var medianBySlot = {};
     var toiletStatsBySlot = {};
     data.teams.forEach(function(t) {
       allPlayBySlot[String(t.id)] = { w: 0, l: 0 };
+      medianBySlot[String(t.id)] = { w: 0, l: 0 };
       toiletStatsBySlot[String(t.id)] = { wins: 0, pts: 0 };
     });
 
@@ -1780,7 +2582,7 @@ function autoWeeklyEspnSync() {
     });
 
     Object.keys(scoresByWeek).forEach(function(wkKey) {
-      var list = scoresByWeek[wkKey];
+      var list = scoresByWeek[wkKey].slice();
       for (var i = 0; i < list.length; i++) {
         for (var j = 0; j < list.length; j++) {
           if (i === j) continue;
@@ -1788,32 +2590,51 @@ function autoWeeklyEspnSync() {
           else if (list[i].score < list[j].score) allPlayBySlot[list[i].slot].l += 1;
         }
       }
+      // Weekly League Median: Top 5 of 10 earn 1.0 median win, Bottom 5 earn 0.0
+      list.sort(function(a, b) { return b.score - a.score; });
+      for (var mIdx = 0; mIdx < list.length; mIdx++) {
+        var sl = list[mIdx].slot;
+        if (!medianBySlot[sl]) medianBySlot[sl] = { w: 0, l: 0 };
+        if (mIdx < 5) medianBySlot[sl].w += 1;
+        else medianBySlot[sl].l += 1;
+      }
     });
 
     // 4. Build Live Season Standings & Official Completed-Season Gate
     var maxGamesPlayed = 0;
+    var hasWeeklyScores = Object.keys(scoresByWeek).length > 0;
     var rawTeamRows = data.teams.map(function(t) {
       var slotKey = String(t.id);
       var mgrId = slotMap[slotKey] || "";
       var recOverall = (t.record && t.record.overall) || {};
+      var recDiv = (t.record && t.record.division) || {};
       var txCounter = t.transactionCounter || {};
       var acqCnt = Number(txCounter.acquisitions || 0);
       var dropCnt = Number(txCounter.drops || 0);
       var trdCnt = Number(txCounter.trades || 0);
       var irCnt = Number(txCounter.moveToIR || 0);
+      var faabSpent = Number(txCounter.acquisitionBudgetSpent || 0);
       var w = Number(recOverall.wins || 0);
       var l = Number(recOverall.losses || 0);
       var ties = Number(recOverall.ties || 0);
+      var divW = Number(recDiv.wins || 0);
+      var divL = Number(recDiv.losses || 0);
+      var divT = Number(recDiv.ties || 0);
       if (w + l + ties > maxGamesPlayed) maxGamesPlayed = w + l + ties;
       var pf = Math.round(Number(recOverall.pointsFor || 0) * 10) / 10;
       var pa = Math.round(Number(recOverall.pointsAgainst || 0) * 10) / 10;
       var seed = Number(t.playoffSeed || 0);
       var finalRank = Number(t.rankCalculatedFinal || 0);
       var ap = allPlayBySlot[slotKey] || { w: 0, l: 0 };
+      var med = medianBySlot[slotKey] || { w: 0, l: 0 };
+      var apExpWins = ap.w / 9;
+      var combExpWins = hasWeeklyScores ? (0.5 * apExpWins + 0.5 * med.w) : apExpWins;
+      var netLuck = (w + 0.5 * ties) - combExpWins;
       var tb = toiletStatsBySlot[slotKey] || { wins: 0, pts: 0 };
       var tNameFull = ((t.location || "") + " " + (t.nickname || "")).trim() || (t.name || ("Slot " + slotKey));
       return {
         espnTeamId: Number(t.id),
+        divisionId: Number(t.divisionId || 0),
         teamId: mgrId,
         managerId: mgrId,
         currentManagerId: mgrId,
@@ -1821,6 +2642,10 @@ function autoWeeklyEspnSync() {
         wins: w,
         losses: l,
         ties: ties,
+        divWins: divW,
+        divLosses: divL,
+        divTies: divT,
+        divisionRecord: divW + "-" + divL + (divT > 0 ? "-" + divT : ""),
         pf: pf,
         pa: pa,
         pointsFor: pf,
@@ -1831,13 +2656,19 @@ function autoWeeklyEspnSync() {
         finalStanding: finalRank || seed || 0,
         allPlayWins: ap.w,
         allPlayLosses: ap.l,
+        medianWins: med.w,
+        medianLosses: med.l,
+        expectedWins: Math.round(combExpWins * 100) / 100,
+        netLuck: Math.round(netLuck * 100) / 100,
         toiletWins: tb.wins,
         toiletPoints: Math.round(tb.pts * 10) / 10,
+        faabSpent: faabSpent,
+        faabBudget: annualFaabBudget,
         acquisitions: acqCnt,
         drops: dropCnt,
         espnTrades: trdCnt,
         moveToIR: irCnt,
-        hasTransactions: Boolean(acqCnt > 0 || dropCnt > 0 || trdCnt > 0),
+        hasTransactions: Boolean(acqCnt > 0 || dropCnt > 0 || trdCnt > 0 || faabSpent > 0),
         isChampion: false
       };
     });
@@ -1847,6 +2678,7 @@ function autoWeeklyEspnSync() {
       var rb = b.rank || 99;
       if (ra !== rb) return ra - rb;
       if (b.wins !== a.wins) return b.wins - a.wins;
+      if (b.divWins !== a.divWins) return b.divWins - a.divWins;
       return b.pf - a.pf;
     });
     rawTeamRows.forEach(function(r, idx) {
@@ -1889,6 +2721,7 @@ function autoWeeklyEspnSync() {
       year: seasonYr,
       seasonCompleted: isOfficiallyCompleted,
       playoffTeamCount: playoffTeamCnt,
+      faabBudget: annualFaabBudget,
       champion: champId || prevSeasonObj.champion || "",
       runnerUp: runnerUpId || prevSeasonObj.runnerUp || "",
       toiletBowlWinner: toiletWinnerId || prevSeasonObj.toiletBowlWinner || "",

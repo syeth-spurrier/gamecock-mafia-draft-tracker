@@ -1,5 +1,5 @@
 {
-  "version": "8.5",
+  "version": "10.0.0",
   "updatedAt": 0,
   "baseUpcomingYear": 2027,
   "leaguePassphraseVerifier": "eafd2c26f6979985a54ab2573dd6b5adf47275fb991ae6cdf1512a8b037cc385",
@@ -15,6 +15,268 @@
   "hallOfShame": [],
   "activityLog": [],
   "draftSchedule": {},
+  "duesLedger": {
+    "2027": {
+      "teams": {
+        "syeth": {
+          "paid": false,
+          "paidAt": 0,
+          "dockedWins": 0,
+          "note": ""
+        },
+        "corbyn": {
+          "paid": false,
+          "paidAt": 0,
+          "dockedWins": 0,
+          "note": ""
+        },
+        "chris": {
+          "paid": false,
+          "paidAt": 0,
+          "dockedWins": 0,
+          "note": ""
+        },
+        "boss": {
+          "paid": false,
+          "paidAt": 0,
+          "dockedWins": 0,
+          "note": ""
+        },
+        "geltz": {
+          "paid": false,
+          "paidAt": 0,
+          "dockedWins": 0,
+          "note": ""
+        },
+        "matt": {
+          "paid": false,
+          "paidAt": 0,
+          "dockedWins": 0,
+          "note": ""
+        },
+        "dylan": {
+          "paid": false,
+          "paidAt": 0,
+          "dockedWins": 0,
+          "note": ""
+        },
+        "leo": {
+          "paid": false,
+          "paidAt": 0,
+          "dockedWins": 0,
+          "note": ""
+        },
+        "mary": {
+          "paid": false,
+          "paidAt": 0,
+          "dockedWins": 0,
+          "note": ""
+        },
+        "josh": {
+          "paid": false,
+          "paidAt": 0,
+          "dockedWins": 0,
+          "note": ""
+        }
+      }
+    },
+    "season": 2027,
+    "seasonYear": 2027,
+    "bankerTeamId": "leo",
+    "entryFee": 150,
+    "potTotal": 1500,
+    "dueDateIso": "",
+    "graceDeadlineIso": 0,
+    "isLockedAndHidden": false,
+    "updatedAt": 0,
+    "teams": {
+      "syeth": {
+        "paid": false,
+        "paidAt": 0,
+        "dockedWins": 0,
+        "note": ""
+      },
+      "corbyn": {
+        "paid": false,
+        "paidAt": 0,
+        "dockedWins": 0,
+        "note": ""
+      },
+      "chris": {
+        "paid": false,
+        "paidAt": 0,
+        "dockedWins": 0,
+        "note": ""
+      },
+      "boss": {
+        "paid": false,
+        "paidAt": 0,
+        "dockedWins": 0,
+        "note": ""
+      },
+      "geltz": {
+        "paid": false,
+        "paidAt": 0,
+        "dockedWins": 0,
+        "note": ""
+      },
+      "matt": {
+        "paid": false,
+        "paidAt": 0,
+        "dockedWins": 0,
+        "note": ""
+      },
+      "dylan": {
+        "paid": false,
+        "paidAt": 0,
+        "dockedWins": 0,
+        "note": ""
+      },
+      "leo": {
+        "paid": false,
+        "paidAt": 0,
+        "dockedWins": 0,
+        "note": ""
+      },
+      "mary": {
+        "paid": false,
+        "paidAt": 0,
+        "dockedWins": 0,
+        "note": ""
+      },
+      "josh": {
+        "paid": false,
+        "paidAt": 0,
+        "dockedWins": 0,
+        "note": ""
+      }
+    },
+    "managers": {
+      "syeth": {
+        "paid": false,
+        "paidAt": 0,
+        "dockedWins": 0,
+        "note": ""
+      },
+      "corbyn": {
+        "paid": false,
+        "paidAt": 0,
+        "dockedWins": 0,
+        "note": ""
+      },
+      "chris": {
+        "paid": false,
+        "paidAt": 0,
+        "dockedWins": 0,
+        "note": ""
+      },
+      "boss": {
+        "paid": false,
+        "paidAt": 0,
+        "dockedWins": 0,
+        "note": ""
+      },
+      "geltz": {
+        "paid": false,
+        "paidAt": 0,
+        "dockedWins": 0,
+        "note": ""
+      },
+      "matt": {
+        "paid": false,
+        "paidAt": 0,
+        "dockedWins": 0,
+        "note": ""
+      },
+      "dylan": {
+        "paid": false,
+        "paidAt": 0,
+        "dockedWins": 0,
+        "note": ""
+      },
+      "leo": {
+        "paid": false,
+        "paidAt": 0,
+        "dockedWins": 0,
+        "note": ""
+      },
+      "mary": {
+        "paid": false,
+        "paidAt": 0,
+        "dockedWins": 0,
+        "note": ""
+      },
+      "josh": {
+        "paid": false,
+        "paidAt": 0,
+        "dockedWins": 0,
+        "note": ""
+      }
+    }
+  },
+  "hofState": {
+    "stage": "IDLE",
+    "classYear": 2027,
+    "maxClassSize": 3,
+    "candidatePool25": [],
+    "scoutingPool25": [],
+    "round1Nominations": {},
+    "round2Finalists": [],
+    "inductedClasses": {},
+    "nominees8": [],
+    "managerNominations": {},
+    "votes": {},
+    "inductedArchive": []
+  },
+  "faabData": {
+    "defaultBudget": 600,
+    "annualBudget": 600,
+    "seasons": {},
+    "records": {
+      "highestBids": [],
+      "mostSpentSeason": [],
+      "mostSavedSeason": []
+    }
+  },
+  "bylaws": {
+    "updatedAt": 0,
+    "sections": [
+      {
+        "id": "roster-starters",
+        "title": "1. Active Roster & 14-Starter Lineup Format",
+        "body": "26 active roster spots + 4 IR spots. Starting 14-man lineup: 1 QB, 2 RB, 2 WR, 1 TE, 2 FLEX (RB/WR/TE), 1 K, 1 D/ST, 1 DL, 1 LB, 1 DB, and 1 DP (Defensive Flex)."
+      },
+      {
+        "id": "keepers-draft",
+        "title": "2. 12 Invisible Keepers & 14-Round Post-Keeper Snake Draft",
+        "body": "Each franchise locks up to 12 keepers 72 hours prior to the draft. Positional Keeper Caps: Max 4 RBs, Max 4 WRs, and Max 3 of any single other position (QB, TE, DL, LB, DB, K, D/ST). Keepers occupy ESPN Rounds 1–12 invisibly; the live draft board spans App Rounds 1–14 (ESPN Rounds 13–26)."
+      },
+      {
+        "id": "lock-window",
+        "title": "3. 72-Hour Pre-Draft Lock Window & Pick-Only Trading",
+        "body": "During the 72-hour window between Keeper Lock and Draft Night, player trades are frozen. Draft-pick-only trades remain legal until the draft begins. Full player + pick trading reopens once the draft is finalized."
+      },
+      {
+        "id": "playoffs-tiebreakers",
+        "title": "4. 6-Team Playoff Bracket, Byes & Official Tiebreakers",
+        "body": "6 teams qualify for the championship playoffs (Seeds 1 & 2 earn First-Round Byes). Official Seeding Tiebreaker Order: (1) Overall Win-Loss-Tie Record -> (2) Divisional Record (if applicable) -> (3) Total Points For (PF) -> (4) Head-to-Head (H2H) Record."
+      },
+      {
+        "id": "draft-order-curse",
+        "title": "5. Draft Order Rules & Toilet Bowl / Phallic Feaster",
+        "body": "Slots 1–5 (Non-Playoff Teams) are ordered by Reverse Regular Season Standings (10th place picks 1.01; 6th place picks 1.05). Slots 6–10 (Playoff Teams) are ordered by Reverse Postseason Finish (League Champion picks 1.10; Runner-Up picks 1.09). The Toilet Bowl loser is crowned the Phallic Feaster (league champion renames their team)."
+      },
+      {
+        "id": "dues-faab",
+        "title": "6. $150 Entry Fee, Win-Docking & $600 FAAB Budget",
+        "body": "Annual league dues are $150 per manager, tracked by Leo (Central Banker). Dues must be paid within 1 month after the draft; unpaid teams are docked 1 Win per week overdue. Each team receives a $600 annual FAAB waiver budget."
+      }
+    ]
+  },
+  "oneSignalConfig": {
+    "appId": "",
+    "enabled": true
+  },
   "espnData": {
     "leagueId": "30215",
     "leagueName": "Gamecock Mafia",
@@ -3437,6 +3699,13 @@
       "avatarImageDataUrl": "",
       "upstateKittyCursed": false,
       "flairBadge": "",
+      "strategyTag": "",
+      "pushPrefs": {
+        "trades": true,
+        "votes": true,
+        "guardrails": true,
+        "broadcasts": true
+      },
       "tradeBlockNote": "",
       "lookingFor": "",
       "needsChips": [],
@@ -3457,6 +3726,13 @@
       "avatarImageDataUrl": "",
       "upstateKittyCursed": false,
       "flairBadge": "",
+      "strategyTag": "",
+      "pushPrefs": {
+        "trades": true,
+        "votes": true,
+        "guardrails": true,
+        "broadcasts": true
+      },
       "tradeBlockNote": "",
       "lookingFor": "",
       "needsChips": [],
@@ -3477,6 +3753,13 @@
       "avatarImageDataUrl": "",
       "upstateKittyCursed": false,
       "flairBadge": "",
+      "strategyTag": "",
+      "pushPrefs": {
+        "trades": true,
+        "votes": true,
+        "guardrails": true,
+        "broadcasts": true
+      },
       "tradeBlockNote": "",
       "lookingFor": "",
       "needsChips": [],
@@ -3497,6 +3780,13 @@
       "avatarImageDataUrl": "",
       "upstateKittyCursed": false,
       "flairBadge": "",
+      "strategyTag": "",
+      "pushPrefs": {
+        "trades": true,
+        "votes": true,
+        "guardrails": true,
+        "broadcasts": true
+      },
       "tradeBlockNote": "",
       "lookingFor": "",
       "needsChips": [],
@@ -3517,6 +3807,13 @@
       "avatarImageDataUrl": "",
       "upstateKittyCursed": false,
       "flairBadge": "",
+      "strategyTag": "",
+      "pushPrefs": {
+        "trades": true,
+        "votes": true,
+        "guardrails": true,
+        "broadcasts": true
+      },
       "tradeBlockNote": "",
       "lookingFor": "",
       "needsChips": [],
@@ -3537,6 +3834,13 @@
       "avatarImageDataUrl": "",
       "upstateKittyCursed": false,
       "flairBadge": "",
+      "strategyTag": "",
+      "pushPrefs": {
+        "trades": true,
+        "votes": true,
+        "guardrails": true,
+        "broadcasts": true
+      },
       "tradeBlockNote": "",
       "lookingFor": "",
       "needsChips": [],
@@ -3557,6 +3861,13 @@
       "avatarImageDataUrl": "",
       "upstateKittyCursed": false,
       "flairBadge": "",
+      "strategyTag": "",
+      "pushPrefs": {
+        "trades": true,
+        "votes": true,
+        "guardrails": true,
+        "broadcasts": true
+      },
       "tradeBlockNote": "",
       "lookingFor": "",
       "needsChips": [],
@@ -3577,6 +3888,13 @@
       "avatarImageDataUrl": "",
       "upstateKittyCursed": false,
       "flairBadge": "",
+      "strategyTag": "",
+      "pushPrefs": {
+        "trades": true,
+        "votes": true,
+        "guardrails": true,
+        "broadcasts": true
+      },
       "tradeBlockNote": "",
       "lookingFor": "",
       "needsChips": [],
@@ -3597,6 +3915,13 @@
       "avatarImageDataUrl": "",
       "upstateKittyCursed": false,
       "flairBadge": "",
+      "strategyTag": "",
+      "pushPrefs": {
+        "trades": true,
+        "votes": true,
+        "guardrails": true,
+        "broadcasts": true
+      },
       "tradeBlockNote": "",
       "lookingFor": "",
       "needsChips": [],
@@ -3617,6 +3942,13 @@
       "avatarImageDataUrl": "",
       "upstateKittyCursed": false,
       "flairBadge": "",
+      "strategyTag": "",
+      "pushPrefs": {
+        "trades": true,
+        "votes": true,
+        "guardrails": true,
+        "broadcasts": true
+      },
       "tradeBlockNote": "",
       "lookingFor": "",
       "needsChips": [],

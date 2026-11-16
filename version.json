@@ -1,5 +1,6 @@
 {
-  "version": "9.0.0",
-  "releasedAt": "2026-11-16T02:15:00Z",
-  "notes": "v9.0.0: Self-Learning Pick Valuation Engine (Exponential Decay + Pre-Lock Bracket Tiers + Damped Moving Average), Self-Service Conditional & Pool Resolution with Audit Notes, Individual NFL Player Hall of Fame & 7/10 Supermajority Ballot, Positional Top 10 & Free Agent Hub, Positional Record Book (Started vs. All Players), De-Cluttered Roster & Trade Machine, Unified Sticky Scouting Header, and 7-Theme CSS Variable Isolation"
+  "version": "10.0.0",
+  "releasedAt": "2026-11-16T05:30:00Z",
+  "notes": "v10.0.0 (Wave 2): 5-Tab Modern Navigation Architecture, Single-Slot Priority Banner, 4-Stage Individual Player Hall of Fame (25-Pool -> 10-Ballot -> 3/10 Finals -> 7/10 Inducted), Playoff & Bye Odds Simulator, 3-Pillar Power Rankings, FAAB Analytics & 6 Custom Badges ($600 Budget), Central Banker Dues Ledger ($150 Entry, Leo & Commish Access), Interactive League Bylaws, 72-Hour Pre-Draft Lock Hub, 14-Round Post-Keeper Live Draft (ESPN Rounds 13-26), Optional +3rd Team Trade Builder, Waiver Replacement Value Adjustment, 1-Year Hindsight Trade Receipts, Time Machine & Season Rollover Wizard, and OneSignal Web Push Notifications"
 }
+

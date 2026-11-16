@@ -1439,6 +1439,17 @@
             <span id="mobileCommishLabel">Admin</span>
           </button>
 
+          <!-- League Constitution / Bylaws Drawer Button -->
+          <button onclick="openBylawsModal()" id="headerBylawsBtn" class="btn-action w-8 h-8 sm:w-9 sm:h-9 p-0 text-xs text-slate-200 relative" title="Official Gamecock Mafia League Constitution &amp; Rulebook">
+            <i class="fa-solid fa-scale-balanced text-amber-300"></i>
+          </button>
+
+          <!-- Central Banker ($150 Dues Tracker) — Strictly Visible Only to Leo or Commissioner Until Locked -->
+          <button onclick="openCentralBankerModal()" id="headerCentralBankerBtn" class="hidden btn-action px-2.5 py-1.5 text-xs text-emerald-300 border-emerald-500/40 bg-emerald-950/40 relative" title="Leo's Central Banker — $150 League Entry Fee &amp; Dues Tracker">
+            <i class="fa-solid fa-dollar-sign text-emerald-400"></i>
+            <span id="headerCentralBankerBadge" class="font-mono font-black text-[10px]">0/10</span>
+          </button>
+
           <!-- Action-Required Notification Bell + Interactive Action Center Dropdown -->
           <div id="headerNotifBellWrap" class="relative">
             <button onclick="handleHeaderNotifBellClick(event)" id="headerNotifBellBtn" class="btn-action w-8 h-8 sm:w-9 sm:h-9 p-0 text-xs text-slate-200 relative" title="Pending Trade Offers, Scout Status & League Alerts">
@@ -1473,6 +1484,12 @@
           <span>My Team</span>
         </button>
 
+        <button onclick="openStandingsMainTab()" id="navTab-capital" class="nav-tab-btn px-4 py-2.5 text-xs font-bold border-b-2 transition whitespace-nowrap flex items-center gap-2 cursor-pointer">
+          <i class="fa-solid fa-trophy"></i>
+          <span>Standings</span>
+          <span class="hidden">League Hub</span>
+        </button>
+
         <button onclick="switchMainTab('tradecenter')" id="navTab-tradecenter" class="nav-tab-btn px-4 py-2.5 text-xs font-bold border-b-2 transition whitespace-nowrap flex items-center gap-2 cursor-pointer">
           <i class="fa-solid fa-right-left"></i>
           <span>Trade Center</span>
@@ -1484,14 +1501,10 @@
           <span>Draft Board</span>
         </button>
 
-        <button onclick="switchMainTab('capital')" id="navTab-capital" class="nav-tab-btn px-4 py-2.5 text-xs font-bold border-b-2 transition whitespace-nowrap flex items-center gap-2 cursor-pointer">
-          <i class="fa-solid fa-trophy"></i>
-          <span>League Hub</span>
-        </button>
-
-        <button onclick="switchMainTab('feed')" id="navTab-feed" class="nav-tab-btn px-4 py-2.5 text-xs font-bold border-b-2 transition whitespace-nowrap flex items-center gap-2 cursor-pointer">
-          <i class="fa-solid fa-bolt"></i>
-          <span>Activity</span>
+        <button onclick="openVaultMainTab()" id="navTab-feed" class="nav-tab-btn px-4 py-2.5 text-xs font-bold border-b-2 transition whitespace-nowrap flex items-center gap-2 cursor-pointer">
+          <i class="fa-solid fa-vault"></i>
+          <span>The Vault</span>
+          <span class="hidden">Activity</span>
           <span id="navFeedBadge" class="hidden px-1.5 py-0.5 text-[10px] rounded-full bg-[#1B1F2B] text-slate-300 border border-white/10 font-mono">0</span>
           <span id="navPoolBadge" class="hidden px-1.5 py-0.5 text-[10px] rounded-full bg-amber-950 text-amber-300 border border-amber-500/60 font-mono">0</span>
         </button>
@@ -1514,6 +1527,9 @@
         <h1 class="text-xl font-black">GAMECOCK MAFIA — OFFICIAL DRAFT & PICK TRACKER SHEET</h1>
         <p id="printHeaderSubtitle" class="text-xs"></p>
       </div>
+
+      <!-- WAVE 2 SINGLE-SLOT DYNAMIC CONTEXT BANNER (MAXIMUM 1 TOP BANNER AT A TIME) -->
+      <div id="singleSlotTopBannerHost" class="hidden no-print"></div>
 
       <!-- 1-TIME DISMISSIBLE "INSTALL AS APP" TIP BANNER -->
       <div id="pwaInstallTipBanner" class="hidden no-print app-card border-sky-500/35 px-3.5 py-2.5 flex items-center justify-between gap-3 text-xs">
@@ -1882,6 +1898,11 @@
       <i class="fa-solid fa-shield-halved text-sm mb-0.5"></i>
       <span class="truncate">My Team</span>
     </button>
+    <button onclick="openStandingsMainTab()" id="mobTab-capital" class="flex flex-col items-center justify-center py-1 rounded-xl text-[10px] font-bold transition cursor-pointer min-w-0">
+      <i class="fa-solid fa-trophy text-sm mb-0.5"></i>
+      <span class="truncate">Standings</span>
+      <span class="hidden">League Hub</span>
+    </button>
     <button onclick="switchMainTab('tradecenter')" id="mobTab-tradecenter" class="flex flex-col items-center justify-center py-1 rounded-xl text-[10px] font-bold transition relative cursor-pointer min-w-0">
       <i class="fa-solid fa-right-left text-sm mb-0.5"></i>
       <span class="truncate">Trades</span>
@@ -1891,13 +1912,10 @@
       <i class="fa-solid fa-table-cells text-sm mb-0.5"></i>
       <span class="truncate">Board</span>
     </button>
-    <button onclick="switchMainTab('capital')" id="mobTab-capital" class="flex flex-col items-center justify-center py-1 rounded-xl text-[10px] font-bold transition cursor-pointer min-w-0">
-      <i class="fa-solid fa-trophy text-sm mb-0.5"></i>
-      <span class="truncate">League Hub</span>
-    </button>
-    <button onclick="switchMainTab('feed')" id="mobTab-feed" class="flex flex-col items-center justify-center py-1 rounded-xl text-[10px] font-bold transition relative cursor-pointer min-w-0">
-      <i class="fa-solid fa-bolt text-sm mb-0.5"></i>
-      <span class="truncate">Activity</span>
+    <button onclick="openVaultMainTab()" id="mobTab-feed" class="flex flex-col items-center justify-center py-1 rounded-xl text-[10px] font-bold transition relative cursor-pointer min-w-0">
+      <i class="fa-solid fa-vault text-sm mb-0.5"></i>
+      <span class="truncate">The Vault</span>
+      <span class="hidden">Activity</span>
       <span id="mobActivityBadge" class="hidden absolute top-0.5 right-2 px-1 text-[8px] rounded-full bg-[#CC1429] text-white font-mono">0</span>
     </button>
   </nav>
@@ -1924,7 +1942,7 @@
     </div>
   </div>
 
-  <!-- 2. UNIFIED 2-TEAM CONDITIONAL & PICK POOL BUILDER / EDITOR MODAL -->
+  <!-- 2. UNIFIED 2-TEAM / 3-WAY CONDITIONAL & PICK POOL BUILDER / EDITOR MODAL -->
   <div id="tradeModal" class="hidden fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4 overflow-y-auto">
     <div class="bg-[#13161F] border border-white/10 rounded-2xl max-w-2xl w-full p-5 sm:p-6 shadow-2xl space-y-4 my-8 max-h-[92vh] overflow-y-auto">
       <div class="flex items-center justify-between border-b border-white/[0.07] pb-3">
@@ -1943,10 +1961,14 @@
       <form id="newTradeForm" onsubmit="handleSaveNewTrade(event)" class="space-y-4 text-xs">
         <input type="hidden" id="editingTradeId" value="">
 
-        <!-- Step 1: Select Managers (2-Team Trade) -->
+        <!-- Step 1: Select Managers (2-Team or Optional 3-Way Trade) -->
         <div class="space-y-2">
           <div class="flex items-center justify-between">
             <span class="font-bold text-slate-300 uppercase">1. Participating Managers</span>
+            <button type="button" id="tradeThirdTeamToggleBtn" onclick="toggleThirdTeamInTrade()" class="btn-action px-2.5 py-1 text-[11px] text-amber-300 border-amber-500/35">
+              <i class="fa-solid fa-user-plus text-[10px]"></i>
+              <span id="tradeThirdTeamToggleLabel">+ 3rd Team</span>
+            </button>
           </div>
           <div class="grid grid-cols-1 sm:grid-cols-2 gap-3" id="tradeManagersGrid">
             <div>
@@ -1956,6 +1978,13 @@
             <div>
               <label class="block text-[11px] font-semibold text-sky-300 mb-1">Trade Partner (Must Confirm)</label>
               <select id="formTeamB" required onchange="refreshQuickPickRows(); syncAutoGeneratedModalSummary();" class="w-full bg-[#0B0D12] text-white font-bold rounded-xl px-3 py-2.5 border border-white/10 focus:border-sky-400 focus:outline-none"></select>
+            </div>
+            <div id="tradeThirdTeamSlotBox" class="hidden sm:col-span-2 bg-[#0B0D12]/80 border border-amber-500/35 rounded-xl p-2.5">
+              <div class="flex items-center justify-between mb-1">
+                <label class="block text-[11px] font-semibold text-amber-300">3rd Team Partner (3-Way Trade — All 3 Managers Must Confirm)</label>
+                <button type="button" onclick="toggleThirdTeamInTrade(false)" class="text-[10px] text-slate-400 hover:text-rose-300 font-semibold cursor-pointer">Remove 3rd Team</button>
+              </div>
+              <select id="formTeamC" onchange="refreshQuickPickRows(); syncAutoGeneratedModalSummary();" class="w-full bg-[#13161F] text-white font-bold rounded-xl px-3 py-2 border border-amber-500/35 focus:border-amber-400 focus:outline-none"></select>
             </div>
           </div>
         </div>
@@ -2434,6 +2463,40 @@
           </div>
         </div>
 
+        <!-- Section 1B: OneSignal Mobile Push Notifications & 2-Step iOS Add-to-Home-Screen Helper -->
+        <div class="space-y-2.5 bg-[#0B0D12] border border-sky-500/30 rounded-xl p-3.5">
+          <div class="flex flex-wrap items-center justify-between gap-2">
+            <span class="text-[11px] font-bold uppercase tracking-wider text-sky-300"><i class="fa-solid fa-bell mr-1.5"></i>Mobile Push Alerts (OneSignal)</span>
+            <span id="oneSignalDeviceStatusBadge" class="static-badge bg-sky-950/80 text-sky-300 border border-sky-500/40">4 Categories</span>
+          </div>
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-1.5 text-xs">
+            <label class="flex items-center justify-between bg-[#13161F] border border-white/[0.06] rounded-lg px-2.5 py-2 cursor-pointer">
+              <span class="text-slate-200 font-semibold"><i class="fa-solid fa-right-left text-amber-300 mr-1.5"></i>Direct Trade Offers</span>
+              <input type="checkbox" id="pushPrefTrades" checked onchange="savePushCategoryPreferences()" class="w-4 h-4 rounded text-emerald-500 bg-[#0B0D12] border-white/20">
+            </label>
+            <label class="flex items-center justify-between bg-[#13161F] border border-white/[0.06] rounded-lg px-2.5 py-2 cursor-pointer">
+              <span class="text-slate-200 font-semibold"><i class="fa-solid fa-check-to-slot text-sky-300 mr-1.5"></i>HOF &amp; Fairness Ballots</span>
+              <input type="checkbox" id="pushPrefVotes" checked onchange="savePushCategoryPreferences()" class="w-4 h-4 rounded text-emerald-500 bg-[#0B0D12] border-white/20">
+            </label>
+            <label class="flex items-center justify-between bg-[#13161F] border border-white/[0.06] rounded-lg px-2.5 py-2 cursor-pointer">
+              <span class="text-slate-200 font-semibold"><i class="fa-solid fa-triangle-exclamation text-rose-300 mr-1.5"></i>Rule &amp; Dues Guardrails</span>
+              <input type="checkbox" id="pushPrefGuardrails" checked onchange="savePushCategoryPreferences()" class="w-4 h-4 rounded text-emerald-500 bg-[#0B0D12] border-white/20">
+            </label>
+            <label class="flex items-center justify-between bg-[#13161F] border border-white/[0.06] rounded-lg px-2.5 py-2 cursor-pointer">
+              <span class="text-slate-200 font-semibold"><i class="fa-solid fa-bullhorn text-emerald-300 mr-1.5"></i>Commish Broadcasts</span>
+              <input type="checkbox" id="pushPrefBroadcasts" checked onchange="savePushCategoryPreferences()" class="w-4 h-4 rounded text-emerald-500 bg-[#0B0D12] border-white/20">
+            </label>
+          </div>
+          <div class="flex flex-wrap items-center justify-between gap-2 pt-1">
+            <div class="text-[10px] text-slate-400">
+              <strong class="text-sky-300">iOS 2-Step Setup:</strong> <span class="text-white">1.</span> Tap <span class="text-sky-300 font-bold">Share</span> in Safari → <span class="text-white">2.</span> Tap <span class="text-sky-300 font-bold">Add to Home Screen</span>, then subscribe below.
+            </div>
+            <button type="button" onclick="registerOneSignalDeviceSubscription()" class="btn-action px-3 py-1.5 text-[11px] text-sky-300 border-sky-500/40 whitespace-nowrap">
+              <i class="fa-solid fa-mobile-retro"></i> Enable Push on Device
+            </button>
+          </div>
+        </div>
+
         <!-- Section 2: App Install, Draft Exports & Device Lock (Action Tile Grid) -->
         <div class="space-y-2 pt-1 border-t border-white/[0.07]">
           <div class="flex items-center justify-between">
@@ -2550,6 +2613,58 @@
               </div>
             </button>
 
+            <button onclick="cancelMoreToolsModal(); openTimeMachineModal();" class="action-tile-card border-sky-500/30">
+              <div class="flex items-center justify-between w-full">
+                <span class="w-7 h-7 rounded-lg bg-sky-500/15 border border-sky-500/30 flex items-center justify-center text-sky-400 text-xs">
+                  <i class="fa-solid fa-clock-rotate-left"></i>
+                </span>
+                <span class="static-badge bg-sky-950/60 text-sky-300 border border-sky-500/30">30 Snapshots</span>
+              </div>
+              <div>
+                <div class="text-xs font-bold text-slate-100 leading-tight">Time Machine</div>
+                <div class="text-[10px] text-slate-400 leading-tight mt-0.5">Rollback any cloud write</div>
+              </div>
+            </button>
+
+            <button onclick="cancelMoreToolsModal(); openSeasonRolloverModal();" class="action-tile-card border-emerald-500/30">
+              <div class="flex items-center justify-between w-full">
+                <span class="w-7 h-7 rounded-lg bg-emerald-500/15 border border-emerald-500/30 flex items-center justify-center text-emerald-400 text-xs">
+                  <i class="fa-solid fa-wand-magic-sparkles"></i>
+                </span>
+                <span id="moreToolsWindowStatusPill" class="static-badge bg-emerald-950/60 text-emerald-300 border border-emerald-500/30">Wizard</span>
+              </div>
+              <div>
+                <div class="text-xs font-bold text-slate-100 leading-tight">Season Rollover Wizard</div>
+                <div class="text-[10px] text-slate-400 leading-tight mt-0.5">Archive season, reset FAAB &amp; dues</div>
+              </div>
+            </button>
+
+            <button onclick="cancelMoreToolsModal(); openHofSetupModal();" class="action-tile-card border-amber-500/30">
+              <div class="flex items-center justify-between w-full">
+                <span class="w-7 h-7 rounded-lg bg-amber-500/15 border border-amber-500/30 flex items-center justify-center text-amber-400 text-xs">
+                  <i class="fa-solid fa-landmark"></i>
+                </span>
+                <span class="static-badge bg-amber-950/60 text-amber-300 border border-amber-500/30">4-Stage</span>
+              </div>
+              <div>
+                <div class="text-xs font-bold text-slate-100 leading-tight">HOF Class &amp; 25-Pool</div>
+                <div class="text-[10px] text-slate-400 leading-tight mt-0.5">Manage HOF stages &amp; nominees</div>
+              </div>
+            </button>
+
+            <button onclick="cancelMoreToolsModal(); openCentralBankerModal();" class="action-tile-card border-emerald-500/30">
+              <div class="flex items-center justify-between w-full">
+                <span class="w-7 h-7 rounded-lg bg-emerald-500/15 border border-emerald-500/30 flex items-center justify-center text-emerald-400 text-xs">
+                  <i class="fa-solid fa-dollar-sign"></i>
+                </span>
+                <span class="static-badge bg-emerald-950/60 text-emerald-300 border border-emerald-500/30">$150 Fee</span>
+              </div>
+              <div>
+                <div class="text-xs font-bold text-slate-100 leading-tight">Central Banker Dues</div>
+                <div class="text-[10px] text-slate-400 leading-tight mt-0.5">Paid status &amp; win-docking</div>
+              </div>
+            </button>
+
             <button onclick="cancelMoreToolsModal(); openLeagueBrandingModal();" class="action-tile-card">
               <div class="flex items-center justify-between w-full">
                 <span class="w-7 h-7 rounded-lg bg-amber-500/15 border border-amber-500/30 flex items-center justify-center text-amber-400 text-xs">
@@ -2563,16 +2678,16 @@
               </div>
             </button>
 
-            <button onclick="cancelMoreToolsModal(); advanceSeasonWindow(1);" class="action-tile-card">
+            <button onclick="cancelMoreToolsModal(); openPushBroadcastPrompt();" class="action-tile-card">
               <div class="flex items-center justify-between w-full">
-                <span class="w-7 h-7 rounded-lg bg-amber-500/15 border border-amber-500/30 flex items-center justify-center text-amber-400 text-xs">
-                  <i class="fa-solid fa-forward-step"></i>
+                <span class="w-7 h-7 rounded-lg bg-sky-500/15 border border-sky-500/30 flex items-center justify-center text-sky-400 text-xs">
+                  <i class="fa-solid fa-bullhorn"></i>
                 </span>
-                <span id="moreToolsWindowStatusPill" class="static-badge bg-white/[0.05] text-amber-300 border border-amber-500/30">+1 Yr</span>
+                <span class="static-badge bg-sky-950/60 text-sky-300 border border-sky-500/30">Push</span>
               </div>
               <div>
-                <div class="text-xs font-bold text-slate-100 leading-tight">Roll Season Window</div>
-                <div class="text-[10px] text-slate-400 leading-tight mt-0.5">Archive current &amp; open next year</div>
+                <div class="text-xs font-bold text-slate-100 leading-tight">Broadcast Alert</div>
+                <div class="text-[10px] text-slate-400 leading-tight mt-0.5">Send league-wide notification</div>
               </div>
             </button>
 
@@ -2825,6 +2940,158 @@
               <span>Confirm ESPN &amp; Keeper Settings</span>
             </button>
           </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 12. OFFICIAL LEAGUE CONSTITUTION / BYLAWS DRAWER MODAL -->
+  <div id="bylawsModal" class="hidden fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-2.5 sm:p-4 overflow-y-auto overflow-x-hidden">
+    <div class="bg-[#13161F] border border-white/10 rounded-2xl max-w-3xl w-full p-4 sm:p-6 shadow-2xl space-y-4 my-4 max-h-[90dvh] overflow-y-auto">
+      <div class="flex items-center justify-between border-b border-white/[0.07] pb-3 gap-2">
+        <div class="flex items-center gap-2.5">
+          <div class="w-9 h-9 rounded-xl garnet-hero-banner flex items-center justify-center text-amber-300 text-sm">
+            <i class="fa-solid fa-scale-balanced"></i>
+          </div>
+          <div>
+            <h3 class="text-base sm:text-lg font-black text-white">Gamecock Mafia Official League Constitution &amp; Rulebook</h3>
+            <p class="text-[11px] text-slate-400">Searchable league bylaws, 14-starter roster rules, keeper caps, draft order &amp; dues guardrails.</p>
+          </div>
+        </div>
+        <div class="flex items-center gap-1.5">
+          <button type="button" id="bylawsCommishEditBtn" onclick="toggleBylawsEditMode()" class="hidden btn-action px-2.5 py-1 text-xs text-amber-300 border-amber-500/40">
+            <i class="fa-solid fa-pen-to-square"></i> Edit Bylaws
+          </button>
+          <button onclick="closeModal('bylawsModal')" class="btn-action px-2.5 py-1 text-xs text-slate-300">
+            <i class="fa-solid fa-xmark"></i> Close
+          </button>
+        </div>
+      </div>
+      <div class="flex items-center gap-2">
+        <div class="relative flex-1">
+          <i class="fa-solid fa-magnifying-glass text-slate-400 text-xs absolute left-3 top-1/2 -translate-y-1/2"></i>
+          <input id="bylawsSearchInput" type="text" oninput="filterBylawsSections(this.value)" placeholder="Search rulebook (e.g., Keeper Caps, Tiebreakers, $150 Dues, 72-Hour Lock, FAAB)..." class="w-full bg-[#0B0D12] text-white text-xs rounded-xl pl-8 pr-3 py-2.5 border border-white/10 focus:border-amber-400 focus:outline-none">
+        </div>
+      </div>
+      <div id="bylawsSectionsContainer" class="space-y-3 text-xs text-slate-300"></div>
+    </div>
+  </div>
+
+  <!-- 13. LEO'S CENTRAL BANKER ($150 ENTRY FEE & WIN-DOCKING) MODAL -->
+  <div id="centralBankerModal" class="hidden fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-2.5 sm:p-4 overflow-y-auto overflow-x-hidden">
+    <div class="bg-[#13161F] border border-emerald-500/35 rounded-2xl max-w-2xl w-full p-4 sm:p-6 shadow-2xl space-y-4 my-4 max-h-[90dvh] overflow-y-auto">
+      <div class="flex items-center justify-between border-b border-white/[0.07] pb-3 gap-2">
+        <div class="flex items-center gap-2.5">
+          <div class="w-9 h-9 rounded-xl bg-emerald-950 border border-emerald-500/40 flex items-center justify-center text-emerald-300 text-sm">
+            <i class="fa-solid fa-dollar-sign"></i>
+          </div>
+          <div>
+            <h3 class="text-base sm:text-lg font-black text-white">Central Banker — $150 League Entry Fee Ledger</h3>
+            <p class="text-[11px] text-slate-400">Managed by Leo &amp; Commissioner • Due 1 month post-draft (-1 Win/Week penalty if overdue).</p>
+          </div>
+        </div>
+        <button onclick="closeModal('centralBankerModal')" class="btn-action px-2.5 py-1 text-xs text-slate-300">
+          <i class="fa-solid fa-xmark"></i> Close
+        </button>
+      </div>
+      <div id="centralBankerModalBody" class="space-y-3.5 text-xs text-slate-300"></div>
+    </div>
+  </div>
+
+  <!-- 14. COMMISSIONER TIME MACHINE (30-SNAPSHOT ROLLBACK) MODAL -->
+  <div id="timeMachineModal" class="hidden fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-2.5 sm:p-4 overflow-y-auto overflow-x-hidden">
+    <div class="bg-[#13161F] border border-sky-500/35 rounded-2xl max-w-2xl w-full p-4 sm:p-6 shadow-2xl space-y-4 my-4 max-h-[90dvh] overflow-y-auto">
+      <div class="flex items-center justify-between border-b border-white/[0.07] pb-3 gap-2">
+        <div class="flex items-center gap-2.5">
+          <div class="w-9 h-9 rounded-xl bg-sky-950 border border-sky-500/40 flex items-center justify-center text-sky-300 text-sm">
+            <i class="fa-solid fa-clock-rotate-left"></i>
+          </div>
+          <div>
+            <h3 class="text-base sm:text-lg font-black text-white">Commissioner Time Machine (Last 30 Cloud Snapshots)</h3>
+            <p class="text-[11px] text-slate-400">Inspect and 1-click restore any previous cloud state saved automatically to <code class="text-sky-300">Backup_History</code>.</p>
+          </div>
+        </div>
+        <button onclick="closeModal('timeMachineModal')" class="btn-action px-2.5 py-1 text-xs text-slate-300">
+          <i class="fa-solid fa-xmark"></i> Close
+        </button>
+      </div>
+      <div id="timeMachineDiffPreview" class="hidden bg-[#0B0D12] border border-amber-500/40 rounded-xl p-3 text-xs text-slate-200 space-y-1"></div>
+      <div id="timeMachineBackupList" class="space-y-2.5 text-xs text-slate-300"></div>
+    </div>
+  </div>
+
+  <!-- 15. COMMISSIONER 1-CLICK SEASON ROLLOVER WIZARD MODAL -->
+  <div id="seasonRolloverModal" class="hidden fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-2.5 sm:p-4 overflow-y-auto overflow-x-hidden">
+    <div class="bg-[#13161F] border border-emerald-500/35 rounded-2xl max-w-xl w-full p-4 sm:p-6 shadow-2xl space-y-4 my-4 max-h-[90dvh] overflow-y-auto">
+      <div class="flex items-center justify-between border-b border-white/[0.07] pb-3 gap-2">
+        <div class="flex items-center gap-2.5">
+          <div class="w-9 h-9 rounded-xl bg-emerald-950 border border-emerald-500/40 flex items-center justify-center text-emerald-300 text-sm">
+            <i class="fa-solid fa-wand-magic-sparkles"></i>
+          </div>
+          <div>
+            <h3 class="text-base sm:text-lg font-black text-white">1-Click Season Rollover Wizard</h3>
+            <p class="text-[11px] text-slate-400">Archive completed season, generate next future 14-round draft board, reset FAAB ($600) &amp; unlock dues.</p>
+          </div>
+        </div>
+        <button onclick="closeModal('seasonRolloverModal')" class="btn-action px-2.5 py-1 text-xs text-slate-300">
+          <i class="fa-solid fa-xmark"></i> Close
+        </button>
+      </div>
+      <div id="seasonRolloverModalBody" class="space-y-3.5 text-xs text-slate-300"></div>
+    </div>
+  </div>
+
+  <!-- 16. COMMISSIONER PLAYER HOF 4-STAGE CONTROL & PRIVATE 25-PLAYER SCOUTING POOL MODAL -->
+  <div id="hofSetupModal" class="hidden fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-2.5 sm:p-4 overflow-y-auto overflow-x-hidden">
+    <div class="bg-[#13161F] border border-amber-500/35 rounded-2xl max-w-3xl w-full p-4 sm:p-6 shadow-2xl space-y-4 my-4 max-h-[90dvh] overflow-y-auto">
+      <div class="flex items-center justify-between border-b border-white/[0.07] pb-3 gap-2">
+        <div class="flex items-center gap-2.5">
+          <div class="w-9 h-9 rounded-xl bg-amber-950 border border-amber-500/40 flex items-center justify-center text-amber-300 text-sm">
+            <i class="fa-solid fa-landmark"></i>
+          </div>
+          <div>
+            <h3 class="text-base sm:text-lg font-black text-white">Player Hall of Fame — 4-Stage Funnel &amp; Private 25-Player Scouting Pool</h3>
+            <p class="text-[11px] text-slate-400">Configure active HOF induction stage, class year, max class size, and seed the 25-Player Candidate Pool.</p>
+          </div>
+        </div>
+        <button onclick="closeModal('hofSetupModal')" class="btn-action px-2.5 py-1 text-xs text-slate-300">
+          <i class="fa-solid fa-xmark"></i> Close
+        </button>
+      </div>
+      <div id="hofSetupModalBody" class="space-y-3.5 text-xs text-slate-300">
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 bg-[#0B0D12] border border-white/10 rounded-xl p-3.5">
+          <div>
+            <label class="block text-[10px] font-extrabold uppercase text-slate-400 mb-1">HOF Class Year</label>
+            <input id="hofConfigClassYearInput" type="number" min="2025" max="2040" value="2027" class="w-full bg-[#13161F] text-white text-xs font-mono font-bold rounded-lg px-3 py-2 border border-white/10">
+          </div>
+          <div>
+            <label class="block text-[10px] font-extrabold uppercase text-slate-400 mb-1">Active Funnel Stage</label>
+            <select id="hofConfigStageSelect" class="w-full bg-[#13161F] text-white text-xs font-bold rounded-lg px-3 py-2 border border-white/10">
+              <option value="IDLE">Stage 1: IDLE / 25-Player Scouting</option>
+              <option value="ROUND_1_NOMINATION">Stage 2: ROUND_1_NOMINATION (Pick 5)</option>
+              <option value="ROUND_2_FINAL">Stage 3: ROUND_2_FINAL (7/10 Supermajority)</option>
+              <option value="COMPLETE">Stage 4: COMPLETE (Class Inducted)</option>
+            </select>
+          </div>
+          <div>
+            <label class="block text-[10px] font-extrabold uppercase text-slate-400 mb-1">Max Inductees / Class</label>
+            <input id="hofConfigMaxClassInput" type="number" min="1" max="5" value="3" class="w-full bg-[#13161F] text-white text-xs font-mono font-bold rounded-lg px-3 py-2 border border-white/10">
+          </div>
+        </div>
+        <div class="bg-[#0B0D12] border border-white/10 rounded-xl p-3.5 space-y-2">
+          <div class="flex items-center justify-between gap-2">
+            <span class="text-xs font-black text-amber-300">25-Player Candidate Pool (1+ Yr League-Absent Legends)</span>
+            <button type="button" onclick="autoSeedHofCandidatePool25()" class="btn-action px-2.5 py-1 text-[11px] text-amber-300 border-amber-500/40">
+              <i class="fa-solid fa-bolt"></i> Auto-Seed Top 25 Eligible
+            </button>
+          </div>
+          <div id="hofPool25PreviewBox" class="grid grid-cols-1 sm:grid-cols-2 gap-1.5 max-h-56 overflow-y-auto"></div>
+        </div>
+        <div class="flex justify-end gap-2">
+          <button type="button" onclick="closeHofSetupModal()" class="btn-action px-3.5 py-2 text-xs text-slate-300">Cancel</button>
+          <button type="button" onclick="saveHofConfigFromModal()" class="btn-garnet px-4 py-2 text-xs">
+            <i class="fa-solid fa-floppy-disk"></i> Save HOF Stage &amp; Pool
+          </button>
         </div>
       </div>
     </div>
@@ -3703,6 +3970,9 @@
     const MY_TEAM_STORAGE_KEY = "gamecock_mafia_my_team";
     const MY_TEAM_PIN_STORAGE_KEY = "gamecock_mafia_my_team_pin_map";
     const TOTAL_ROUNDS = 20;
+    const POST_KEEPER_DRAFT_ROUNDS = 14;
+    const DEFAULT_FAAB_BUDGET = 600;
+    const DEFAULT_DUES_ENTRY_FEE = 150;
     const PASSPHRASE_SALT = "gcm_pass_v5:";
     const PASSPHRASE_VERIFIER_SALT = "gcm_pass_verifier_v5:";
     const DEFAULT_PASSPHRASE_VERIFIER = "eafd2c26f6979985a54ab2573dd6b5adf47275fb991ae6cdf1512a8b037cc385";
@@ -3728,7 +3998,55 @@
       "Depth Picks"
     ];
 
-    const APP_BUILD_VERSION = "9.0.0";
+    const DEFAULT_LEAGUE_BYLAWS_SECTIONS = [
+      {
+        id: "roster-starters",
+        title: "1. Active Roster & 14-Starter Lineup Format",
+        body: "26 active roster spots + 4 IR spots. Starting 14-man lineup: 1 QB, 2 RB, 2 WR, 1 TE, 2 FLEX (RB/WR/TE), 1 K, 1 D/ST, 1 DL, 1 LB, 1 DB, and 1 DP (Defensive Flex)."
+      },
+      {
+        id: "keepers-draft",
+        title: "2. 12 Invisible Keepers & 14-Round Post-Keeper Snake Draft",
+        body: "Each franchise locks up to 12 keepers 72 hours prior to the draft. Positional Keeper Caps: Max 4 RBs, Max 4 WRs, and Max 3 of any single other position (QB, TE, DL, LB, DB, K, D/ST). Keepers occupy ESPN Rounds 1–12 invisibly; the live draft board spans App Rounds 1–14 (ESPN Rounds 13–26)."
+      },
+      {
+        id: "lock-window",
+        title: "3. 72-Hour Pre-Draft Lock Window & Pick-Only Trading",
+        body: "During the 72-hour window between Keeper Lock and Draft Night, player trades are frozen. Draft-pick-only trades remain legal until the draft begins. Full player + pick trading reopens once the draft is finalized."
+      },
+      {
+        id: "playoffs-tiebreakers",
+        title: "4. 6-Team Playoff Bracket, Byes & Official Tiebreakers",
+        body: "6 teams qualify for the championship playoffs (Seeds 1 & 2 earn First-Round Byes). Official Seeding Tiebreaker Order: (1) Overall Win-Loss-Tie Record -> (2) Divisional Record (if applicable) -> (3) Total Points For (PF) -> (4) Head-to-Head (H2H) Record."
+      },
+      {
+        id: "draft-order-curse",
+        title: "5. Draft Order Rules & Toilet Bowl / Phallic Feaster",
+        body: "Slots 1–5 (Non-Playoff Teams) are ordered by Reverse Regular Season Standings (10th place picks 1.01; 6th place picks 1.05). Slots 6–10 (Playoff Teams) are ordered by Reverse Postseason Finish (League Champion picks 1.10; Runner-Up picks 1.09). The Toilet Bowl loser is crowned the Phallic Feaster (league champion renames their team)."
+      },
+      {
+        id: "dues-faab",
+        title: "6. $150 Entry Fee, Win-Docking & $600 FAAB Budget",
+        body: "Annual league dues are $150 per manager, tracked by Leo (Central Banker). Dues must be paid within 1 month after the draft; unpaid teams are docked 1 Win per week overdue. Each team receives a $600 annual FAAB waiver budget."
+      }
+    ];
+
+    const APP_BUILD_VERSION = "10.0.0";
+
+    function getRoundsForYear(year) {
+      const yr = Number(year) || 2027;
+      const custom = Number(leagueDB?.espnData?.keeperRules?.liveDraftRounds);
+      if (yr >= 2027) {
+        return (custom >= 10 && custom <= 20) ? custom : POST_KEEPER_DRAFT_ROUNDS;
+      }
+      return TOTAL_ROUNDS;
+    }
+
+    function getEspnRoundTag(appRound, year) {
+      const yr = Number(year) || 2027;
+      const r = Number(appRound) || 1;
+      return yr >= 2027 ? `ESPN Rd ${r + 12}` : `Rd ${r}`;
+    }
 
     let uiState = {
       isLeagueUnlocked: false,
@@ -3746,11 +4064,17 @@
       myTeamPinHash: "",
       activeYear: 2027,
       activeTab: "ledger",          // 'ledger' | 'tradecenter' | 'board' | 'capital' | 'feed' | 'pools'
+      vaultNavActive: false,        // True when viewing The Vault main tab
       myTeamSubView: "PICKS",       // 'PICKS' | 'OFFERS' | 'ROSTER'
       settingsActiveTab: "APP",     // 'PROFILE' | 'APP' inside Unified Settings modal
       selectedManager: "syeth",
       ledgerViewMode: "SINGLE",     // 'SINGLE' | 'COMPARE'
       compareManagerB: "NONE",      // 'NONE' | managerId
+      tradeCenterThirdTeam: "NONE", // Optional 3rd team in Trade Center
+      thirdTeamInModal: false,      // Toggle state for + 3rd Team in Trade Modal
+      draftBoardPreLockView: "BOARD", // 'BOARD' | 'KEEPERS' | 'FA_POOL'
+      showHistoricalDraftedPlayers: true, // Toggle on historical trade receipts
+      bylawsEditMode: false,        // Commissioner edit mode inside Bylaws modal
       whatIfActive: true,           // Always-ready tap-to-swap in Trade Machine
       whatIfSwaps: [],              // [{ year, round, originalOwner, fromTeam, toTeam }]
       whatIfPlayerSwaps: [],        // [{ playerId, name, pos, nflTeam, fromTeam, toTeam }]
@@ -4084,6 +4408,11 @@
       delete copy.chatWebhookUrl;
       delete copy.commishPinHash;
       delete copy.leaguePassphraseHash;
+      delete copy.oneSignalRestKey;
+      if (copy.oneSignalConfig && typeof copy.oneSignalConfig === "object") {
+        delete copy.oneSignalConfig.restApiKey;
+        delete copy.oneSignalConfig.apiKey;
+      }
       if (copy.teamProfiles && typeof copy.teamProfiles === "object") {
         for (const tid of Object.keys(copy.teamProfiles)) {
           if (copy.teamProfiles[tid] && typeof copy.teamProfiles[tid] === "object") {
@@ -4152,6 +4481,7 @@
       const cleanRules = {
         maxKeepers: maxK,
         keeperRounds: Math.min(20, Math.max(1, Number(kr.keeperRounds || maxK) || 12)),
+        liveDraftRounds: Math.min(20, Math.max(10, Number(kr.liveDraftRounds) || 14)),
         keeperDeadlineIso: cleanStr(kr.keeperDeadlineIso || "", 40).trim(),
         maxRb,
         maxWr,
@@ -4287,6 +4617,13 @@
           const normSChamp = sObj?.champion ? normalizeLegacyManagerAlias(sObj.champion) : "";
           const isChampVal = Boolean(r.isChamp || r.isChampion || (normSChamp && (normSChamp === mid || normSChamp === tid)) || rankVal === 1);
           const isToiletVal = Boolean(r.isToilet || rankVal === stArr.length);
+          const maxPfVal = Number(r.maxPointsFor ?? r.maxPf) || 0;
+          const effVal = Number(r.coachingEfficiency) || (maxPfVal > 0 ? Math.min(100, Math.round((pfVal / maxPfVal) * 1000) / 10) : 0);
+          const faabTot = Number(r.faabTotalBudget) > 0 ? Number(r.faabTotalBudget) : DEFAULT_FAAB_BUDGET;
+          const faabSpentVal = Number.isFinite(Number(r.faabSpent)) ? Number(r.faabSpent) : null;
+          const faabRemVal = Number.isFinite(Number(r.faabRemaining))
+            ? Number(r.faabRemaining)
+            : (faabSpentVal !== null ? Math.max(0, faabTot - faabSpentVal) : null);
           return {
             teamId: tid,
             managerId: mid,
@@ -4296,10 +4633,20 @@
             wins: Number(r.wins) || 0,
             losses: Number(r.losses) || 0,
             ties: Number(r.ties) || 0,
+            divisionId: Number.isFinite(Number(r.divisionId)) ? Number(r.divisionId) : -1,
+            divisionName: cleanStr(r.divisionName || "", 36).trim(),
+            divisionWins: Number(r.divisionWins) || 0,
+            divisionLosses: Number(r.divisionLosses) || 0,
+            divisionTies: Number(r.divisionTies) || 0,
             pf: pfVal,
             pointsFor: pfVal,
             pa: paVal,
             pointsAgainst: paVal,
+            maxPointsFor: maxPfVal,
+            coachingEfficiency: effVal,
+            faabTotalBudget: faabTot,
+            faabSpent: faabSpentVal !== null ? faabSpentVal : (faabRemVal !== null ? Math.max(0, faabTot - faabRemVal) : 0),
+            faabRemaining: faabRemVal !== null ? faabRemVal : faabTot,
             toiletWins: Number(r.toiletWins) || 0,
             toiletPoints: Number(r.toiletPoints) || 0,
             seed: seedVal,
@@ -4360,9 +4707,11 @@
                 homeTeamId: hRow?.teamId || (validTeamIds.has(hId) ? hId : ""),
                 homeManagerId: hRow?.managerId || hId || "",
                 homeScore: Math.round((Number(m?.homeScore) || 0) * 10) / 10,
+                homeMaxPf: Math.round((Number(m?.homeMaxPf) || 0) * 10) / 10,
                 awayTeamId: aRow?.teamId || (validTeamIds.has(aId) ? aId : ""),
                 awayManagerId: aRow?.managerId || aId || "",
                 awayScore: Math.round((Number(m?.awayScore) || 0) * 10) / 10,
+                awayMaxPf: Math.round((Number(m?.awayMaxPf) || 0) * 10) / 10,
                 tier: cleanStr(m?.tier || "NONE", 32).toUpperCase()
               };
             }).filter(m => m.homeManagerId && (m.homeScore > 0 || m.awayScore > 0))
@@ -4389,7 +4738,9 @@
         cleanSeasons[yrKey] = {
           year: yrNum,
           seasonCompleted: seasonDone,
-          playoffTeamCount: Math.min(8, Math.max(2, Number(sObj?.playoffTeamCount) || 5)),
+          playoffTeamCount: Math.min(8, Math.max(2, Number(sObj?.playoffTeamCount) || 6)),
+          faabBudget: Number(sObj?.faabBudget) > 0 ? Number(sObj.faabBudget) : DEFAULT_FAAB_BUDGET,
+          faabTransactions: Array.isArray(sObj?.faabTransactions) ? sObj.faabTransactions.slice(0, 300) : [],
           champion: resolveAward(sObj?.champion, champRow),
           runnerUp: resolveAward(sObj?.runnerUp, runnerRow),
           toiletBowlWinner: resolvedTbWinner,
@@ -4714,6 +5065,8 @@
           upstateKittyCursed: false,
           colorTheme: "",
           flairBadge: "",
+          strategyTag: "",
+          pushPrefs: { trades: true, votes: true, guardrails: true, broadcasts: true },
           tradeBlockNote: "",
           lookingFor: "",
           needsChips: [],
@@ -4767,6 +5120,8 @@
             : [];
           const validColorIds = ["sandstorm_noir", "chapel_sky", "honolulu_gridiron", "foundry_orange", "emerald_sound", "jets_of_the_west", "upstate_kitties"];
           const rawColorTheme = cleanStr(pRaw.colorTheme, 32).trim();
+          const rawStrat = cleanStr(pRaw.strategyTag || "", 20).trim().toUpperCase();
+          const rawPush = (pRaw.pushPrefs && typeof pRaw.pushPrefs === "object") ? pRaw.pushPrefs : {};
           const prof = {
             customTeamName: cleanStr(pRaw.customTeamName, 24).trim(),
             feasterRenamedByChamp: Boolean(pRaw.feasterRenamedByChamp),
@@ -4781,6 +5136,13 @@
             upstateKittyCursed: Boolean(pRaw.upstateKittyCursed),
             colorTheme: validColorIds.includes(rawColorTheme) ? rawColorTheme : "",
             flairBadge: ["CHAMP", "TOILET", "FEASTER", ""].includes(pRaw.flairBadge) ? pRaw.flairBadge : "",
+            strategyTag: ["ALL_IN", "BALANCED", "RETOOLING", ""].includes(rawStrat) ? rawStrat : "",
+            pushPrefs: {
+              trades: rawPush.trades !== false,
+              votes: rawPush.votes !== false,
+              guardrails: rawPush.guardrails !== false,
+              broadcasts: rawPush.broadcasts !== false
+            },
             tradeBlockNote: cleanStr(pRaw.tradeBlockNote, 240).trim(),
             lookingFor: cleanStr(pRaw.lookingFor, 160).trim(),
             needsChips: cleanChips,
@@ -4858,14 +5220,99 @@
           }).filter(Boolean)
         : [];
 
+      // Wave 2: Sanitize Central Banker Dues Ledger ($150 Entry Fee + Manual Win-Docking)
+      const rawDues = (raw.duesLedger && typeof raw.duesLedger === "object") ? raw.duesLedger : {};
+      const duesYrNum = Number(rawDues.seasonYear || rawDues.season) || (Number(raw.baseUpcomingYear) || 2027);
+      const yrSubDues = (rawDues[String(duesYrNum)] && typeof rawDues[String(duesYrNum)].teams === "object") ? rawDues[String(duesYrNum)].teams : {};
+      const cleanDuesTeams = {};
+      validTeams.forEach(t => {
+        const dt = (yrSubDues[t.id] && typeof yrSubDues[t.id] === "object")
+          ? yrSubDues[t.id]
+          : ((rawDues.teams && typeof rawDues.teams[t.id] === "object") ? rawDues.teams[t.id] : {});
+        cleanDuesTeams[t.id] = {
+          paid: Boolean(dt.paid),
+          paidAt: Number(dt.paidAt) > 0 ? Number(dt.paidAt) : 0,
+          dockedWins: Math.max(0, Math.min(14, Number(dt.dockedWins) || 0)),
+          note: cleanStr(dt.note || dt.notes || "", 120).trim(),
+          notes: cleanStr(dt.notes || dt.note || "", 120).trim()
+        };
+      });
+      const sanitizedDuesLedger = {
+        season: duesYrNum,
+        seasonYear: duesYrNum,
+        bankerTeamId: safeId(rawDues.bankerTeamId || "leo") || "leo",
+        entryFee: Number(rawDues.entryFee) > 0 ? Number(rawDues.entryFee) : DEFAULT_DUES_ENTRY_FEE,
+        potTotal: Number(rawDues.potTotal) > 0 ? Number(rawDues.potTotal) : (DEFAULT_DUES_ENTRY_FEE * 10),
+        dueDateIso: cleanStr(rawDues.dueDateIso || "", 40).trim(),
+        graceDeadlineIso: Number(rawDues.graceDeadlineIso) || 0,
+        isLockedAndHidden: Boolean(rawDues.isLockedAndHidden),
+        updatedAt: Number(rawDues.updatedAt) > 0 ? Number(rawDues.updatedAt) : 0,
+        teams: cleanDuesTeams,
+        managers: JSON.parse(JSON.stringify(cleanDuesTeams)),
+        [String(duesYrNum)]: { teams: JSON.parse(JSON.stringify(cleanDuesTeams)) }
+      };
+
+      // Wave 2: Sanitize 4-Stage Player Hall of Fame State (Starts Clean IDLE with 0 Inductees per A6)
+      const rawHof = (raw.hofState && typeof raw.hofState === "object") ? raw.hofState : {};
+      const validHofStages = ["IDLE", "ROUND_1_NOMINATION", "ROUND_2_FINAL", "COMPLETE", "NOMINATIONS_OPEN", "VOTING_OPEN", "REVEALED", "NOMINATION", "FINALS", "INDUCTED"];
+      const cleanHofStage = validHofStages.includes(String(rawHof.stage || "").toUpperCase())
+        ? String(rawHof.stage).toUpperCase()
+        : "IDLE";
+      const sanitizedHofState = {
+        stage: cleanHofStage,
+        classYear: Number(rawHof.classYear) || (Number(raw.baseUpcomingYear) || 2027),
+        maxClassSize: Math.max(1, Math.min(5, Number(rawHof.maxClassSize) || 3)),
+        candidatePool25: Array.isArray(rawHof.candidatePool25) ? rawHof.candidatePool25.slice(0, 35) : (Array.isArray(rawHof.scoutingPool25) ? rawHof.scoutingPool25.slice(0, 35) : []),
+        scoutingPool25: Array.isArray(rawHof.scoutingPool25) ? rawHof.scoutingPool25.slice(0, 35) : (Array.isArray(rawHof.candidatePool25) ? rawHof.candidatePool25.slice(0, 35) : []),
+        round1Nominations: (rawHof.round1Nominations && typeof rawHof.round1Nominations === "object") ? rawHof.round1Nominations : {},
+        round2Finalists: Array.isArray(rawHof.round2Finalists) ? rawHof.round2Finalists.slice(0, 15) : [],
+        inductedClasses: (rawHof.inductedClasses && typeof rawHof.inductedClasses === "object") ? rawHof.inductedClasses : {},
+        nominees8: Array.isArray(rawHof.nominees8) ? rawHof.nominees8.slice(0, 12) : [],
+        managerNominations: (rawHof.managerNominations && typeof rawHof.managerNominations === "object") ? rawHof.managerNominations : {},
+        votes: (rawHof.votes && typeof rawHof.votes === "object") ? rawHof.votes : {},
+        inductedArchive: Array.isArray(rawHof.inductedArchive) ? rawHof.inductedArchive.slice(0, 100) : []
+      };
+
+      // Wave 2: Sanitize FAAB Data & League Bylaws
+      const rawFaab = (raw.faabData && typeof raw.faabData === "object") ? raw.faabData : {};
+      const sanitizedFaabData = {
+        defaultBudget: Number(rawFaab.defaultBudget || rawFaab.annualBudget) > 0 ? Number(rawFaab.defaultBudget || rawFaab.annualBudget) : DEFAULT_FAAB_BUDGET,
+        annualBudget: Number(rawFaab.annualBudget || rawFaab.defaultBudget) > 0 ? Number(rawFaab.annualBudget || rawFaab.defaultBudget) : DEFAULT_FAAB_BUDGET,
+        seasons: (rawFaab.seasons && typeof rawFaab.seasons === "object") ? rawFaab.seasons : {},
+        records: (rawFaab.records && typeof rawFaab.records === "object") ? rawFaab.records : { highestBids: [], mostSpentSeason: [], mostSavedSeason: [] }
+      };
+
+      const rawBylaws = (raw.bylaws && typeof raw.bylaws === "object") ? raw.bylaws : {};
+      const sanitizedBylaws = {
+        updatedAt: Number(rawBylaws.updatedAt) || 0,
+        sections: Array.isArray(rawBylaws.sections) && rawBylaws.sections.length > 0
+          ? rawBylaws.sections.slice(0, 20).map((sec, idx) => ({
+              id: safeId(sec?.id || `sec-${idx + 1}`),
+              title: cleanStr(sec?.title || `Section ${idx + 1}`, 120).trim(),
+              body: cleanStr(sec?.body || "", 1500).trim()
+            }))
+          : JSON.parse(JSON.stringify(DEFAULT_LEAGUE_BYLAWS_SECTIONS))
+      };
+
+      const rawOs = (raw.oneSignalConfig && typeof raw.oneSignalConfig === "object") ? raw.oneSignalConfig : {};
+      const sanitizedOneSignal = {
+        appId: cleanStr(rawOs.appId || "", 64).trim(),
+        enabled: rawOs.enabled !== false
+      };
+
       const out = {
-        version: "8.5",
+        version: "10.0.0",
         updatedAt: Number(raw.updatedAt) > 0 ? Number(raw.updatedAt) : 0,
         baseUpcomingYear: Math.min(2035, Math.max(2026, Number(raw.baseUpcomingYear) || 2027)),
         leagueBranding: sanitizedBranding,
         hallOfShame: sanitizedShame,
         activityLog: sanitizedActivityLog,
         draftSchedule: sanitizedDraftSchedule,
+        duesLedger: sanitizedDuesLedger,
+        hofState: sanitizedHofState,
+        faabData: sanitizedFaabData,
+        bylaws: sanitizedBylaws,
+        oneSignalConfig: sanitizedOneSignal,
         espnData: sanitizedEspnData,
         teams: validTeams,
         teamProfiles: sanitizedProfiles,
@@ -4956,7 +5403,9 @@
     function createDefaultDatabase() {
       const defaultEspn = JSON.parse(JSON.stringify(DEFAULT_ESPN_DATA));
       const defaultProfiles = {};
+      const defaultDuesTeams = {};
       DEFAULT_TEAMS.forEach(t => {
+        defaultDuesTeams[t.id] = { paid: false, paidAt: 0, dockedWins: 0, note: "" };
         defaultProfiles[t.id] = {
           customTeamName: "",
           feasterRenamedByChamp: false,
@@ -4968,6 +5417,8 @@
           avatarImageDataUrl: "",
           upstateKittyCursed: false,
           flairBadge: "",
+          strategyTag: "",
+          pushPrefs: { trades: true, votes: true, guardrails: true, broadcasts: true },
           tradeBlockNote: "",
           lookingFor: "",
           needsChips: [],
@@ -4979,7 +5430,7 @@
         };
       });
       return {
-        version: "8.5",
+        version: "10.0.0",
         updatedAt: 0,
         baseUpcomingYear: 2027,
         leaguePassphraseVerifier: DEFAULT_PASSPHRASE_VERIFIER,
@@ -4995,6 +5446,48 @@
         hallOfShame: [],
         activityLog: [],
         draftSchedule: {},
+        duesLedger: {
+          season: 2027,
+          seasonYear: 2027,
+          bankerTeamId: "leo",
+          entryFee: DEFAULT_DUES_ENTRY_FEE,
+          potTotal: DEFAULT_DUES_ENTRY_FEE * 10,
+          dueDateIso: "",
+          graceDeadlineIso: 0,
+          isLockedAndHidden: false,
+          updatedAt: 0,
+          teams: defaultDuesTeams,
+          managers: JSON.parse(JSON.stringify(defaultDuesTeams)),
+          "2027": { teams: JSON.parse(JSON.stringify(defaultDuesTeams)) }
+        },
+        hofState: {
+          stage: "IDLE",
+          classYear: 2027,
+          maxClassSize: 3,
+          candidatePool25: [],
+          scoutingPool25: [],
+          round1Nominations: {},
+          round2Finalists: [],
+          inductedClasses: {},
+          nominees8: [],
+          managerNominations: {},
+          votes: {},
+          inductedArchive: []
+        },
+        faabData: {
+          defaultBudget: DEFAULT_FAAB_BUDGET,
+          annualBudget: DEFAULT_FAAB_BUDGET,
+          seasons: {},
+          records: { highestBids: [], mostSpentSeason: [], mostSavedSeason: [] }
+        },
+        bylaws: {
+          updatedAt: 0,
+          sections: JSON.parse(JSON.stringify(DEFAULT_LEAGUE_BYLAWS_SECTIONS))
+        },
+        oneSignalConfig: {
+          appId: "",
+          enabled: true
+        },
         espnData: defaultEspn,
         teams: JSON.parse(JSON.stringify(DEFAULT_TEAMS)),
         teamProfiles: defaultProfiles,
@@ -5512,8 +6005,9 @@
       const yr = Number(year);
       const orderCfg = leagueDB.draftOrders[yr] || { isLocked: false, slots: DEFAULT_TEAMS.map(t => t.id) };
       const yearTrades = leagueDB.trades.filter(t => doesTradeAffectYear(t, yr));
+      const liveDraftRounds = getRoundsForYear(yr);
 
-      // 1. Initialize all 200 original picks (10 teams x 20 rounds)
+      // 1. Initialize original picks (App Rounds 1–14 map to ESPN Rounds 13–26 after 12 invisible keepers for 2027+)
       const picks = [];
       for (let r = 1; r <= TOTAL_ROUNDS; r++) {
         const isEvenRound = (r % 2 === 0);
@@ -5529,6 +6023,8 @@
           picks.push({
             year: yr,
             round: r,
+            espnRound: yr >= 2027 ? (r + 12) : r,
+            isActiveLiveDraftRound: r <= liveDraftRounds,
             originalOwner: team.id,
             currentOwner: team.id,
             overallPickNum,
@@ -5632,6 +6128,7 @@
 
       return {
         year: yr,
+        liveDraftRounds,
         orderCfg,
         picks,
         yearTrades,
@@ -8070,6 +8567,7 @@
       updateUndoButtonUI();
       updateMyTeamHeaderBadges();
       maybeShowPwaInstallTipBanner();
+      renderCentralBankerHeaderButton();
 
       // Keep URL query parameters synced to current team/year/tab for 1-tap bookmarking
       try {
@@ -8090,15 +8588,25 @@
         printSub.textContent = `${state.year} Draft Season • Printed ${new Date().toLocaleString()} • ${state.orderCfg.isLocked ? "Official 1–10 Snake Order Locked" : "Pre-Draft Mode"}`;
       }
 
-      const mainTabs = ["ledger", "tradecenter", "board", "capital", "feed"];
-      mainTabs.forEach(t => {
-        const isCurrent = t === uiState.activeTab;
+      const vaultSubTabs = ["PLAYER_HOF", "RECORDS", "FAAB_LEDGER", "RIVALRY", "VAULT", "ARCHIVE"];
+      const isVaultActive = (uiState.activeTab === "capital" && (uiState.mainNavGroup === "VAULT" || vaultSubTabs.includes(uiState.leagueHqSubTab)));
+      const isStandingsActive = (uiState.activeTab === "capital" && !isVaultActive);
+
+      const tabButtonStates = {
+        ledger: uiState.activeTab === "ledger",
+        capital: isStandingsActive,
+        tradecenter: uiState.activeTab === "tradecenter" || uiState.activeTab === "feed",
+        board: uiState.activeTab === "board",
+        feed: isVaultActive
+      };
+
+      ["ledger", "capital", "tradecenter", "board", "feed"].forEach(t => {
+        const isCurrent = Boolean(tabButtonStates[t]);
         const btn = document.getElementById(`navTab-${t}`);
         const mobBtn = document.getElementById(`mobTab-${t}`);
-        const sec = document.getElementById(`section-${t}`);
         if (btn) {
           btn.className = isCurrent
-            ? "nav-tab-btn px-4 py-2.5 text-xs sm:text-sm font-extrabold border-b-2 border-[#CC1429] text-white bg-white/[0.04] rounded-t-lg transition whitespace-nowrap flex items-center gap-2 cursor-pointer"
+            ? "nav-tab-btn active px-4 py-2.5 text-xs sm:text-sm font-extrabold border-b-2 border-[#CC1429] text-white bg-white/[0.04] rounded-t-lg transition whitespace-nowrap flex items-center gap-2 cursor-pointer"
             : "nav-tab-btn px-4 py-2.5 text-xs sm:text-sm font-semibold border-b-2 border-transparent text-slate-400 hover:text-slate-200 hover:bg-white/[0.02] rounded-t-lg transition whitespace-nowrap flex items-center gap-2 cursor-pointer";
         }
         if (mobBtn) {
@@ -8106,13 +8614,23 @@
             ? "bottom-nav-active-pill flex flex-col items-center justify-center py-1.5 min-h-[46px] rounded-xl text-[10px] font-extrabold text-white bg-[#73000A]/80 border border-[#CC1429]/80 transition relative cursor-pointer"
             : "flex flex-col items-center justify-center py-1.5 min-h-[46px] rounded-xl text-[10px] font-bold text-slate-400 hover:text-slate-200 transition relative cursor-pointer";
         }
-        if (sec) {
-          sec.classList.toggle("hidden", !isCurrent);
-        }
       });
+
+      const secLedger = document.getElementById("section-ledger");
+      const secTrade = document.getElementById("section-tradecenter");
+      const secBoard = document.getElementById("section-board");
+      const secCapital = document.getElementById("section-capital");
+      const secFeed = document.getElementById("section-feed");
+      if (secLedger) secLedger.classList.toggle("hidden", uiState.activeTab !== "ledger");
+      if (secBoard) secBoard.classList.toggle("hidden", uiState.activeTab !== "board");
+      if (secCapital) secCapital.classList.toggle("hidden", uiState.activeTab !== "capital");
+      // Nest Trade History, Fairness Ballot & Activity Wire directly inside Trade Center per Wave 2 A3 (and also show if activeTab === 'feed')
+      if (secTrade) secTrade.classList.toggle("hidden", uiState.activeTab !== "tradecenter");
+      if (secFeed) secFeed.classList.toggle("hidden", !(uiState.activeTab === "tradecenter" || uiState.activeTab === "feed"));
 
       const notifState = getActionRequiredNotifications(state);
       updateHeaderNotificationBellUI(state);
+      renderSingleSlotDynamicBanner(state, notifState);
 
       const pendingCount = state.activePools.length + state.activeConditionals.length;
       const openProposalsCount = Array.isArray(leagueDB.pendingTrades) ? leagueDB.pendingTrades.length : 0;
@@ -8143,12 +8661,13 @@
       const { activeBlockEntries } = getActiveTradeBlockEntries(state);
       const navTradeBlockBadge = document.getElementById("navTradeBlockBadge");
       if (navTradeBlockBadge) {
-        navTradeBlockBadge.textContent = `${activeBlockEntries.length} On Block`;
-        navTradeBlockBadge.classList.toggle("hidden", activeBlockEntries.length === 0);
+        const totalTradeCenterItems = activeBlockEntries.length + openProposalsCount;
+        navTradeBlockBadge.textContent = openProposalsCount > 0 ? `${openProposalsCount} Offer${openProposalsCount > 1 ? 's' : ''}` : `${activeBlockEntries.length} On Block`;
+        navTradeBlockBadge.classList.toggle("hidden", totalTradeCenterItems === 0);
       }
       const mobTradeBlockBadge = document.getElementById("mobTradeBlockBadge");
       if (mobTradeBlockBadge) {
-        mobTradeBlockBadge.classList.toggle("hidden", activeBlockEntries.length === 0);
+        mobTradeBlockBadge.classList.toggle("hidden", (activeBlockEntries.length + openProposalsCount) === 0);
       }
 
       // Toggle Admin-only UI controls across Board & Footer
@@ -8183,6 +8702,8 @@
         }
       } else if (uiState.activeTab === "tradecenter") {
         renderTwoTeamComparisonLedger(state);
+        renderPoolsResolutionSection(state);
+        renderTradeFeedSection(state);
       } else if (uiState.activeTab === "board") {
         renderDraftBoardSection(state);
       } else if (uiState.activeTab === "capital") {
@@ -8207,12 +8728,60 @@
       renderAll();
     }
 
+    function openStandingsMainTab(defaultSubTab) {
+      uiState.activeTab = "capital";
+      uiState.mainNavGroup = "STANDINGS";
+      const standingsSubs = ["STANDINGS", "PLAYOFF_ODDS", "POWER_RANKINGS", "POS_LEADERS"];
+      if (defaultSubTab && standingsSubs.includes(defaultSubTab)) {
+        uiState.leagueHqSubTab = defaultSubTab;
+      } else if (!standingsSubs.includes(uiState.leagueHqSubTab)) {
+        uiState.leagueHqSubTab = "STANDINGS";
+      }
+      const mainEl = document.getElementById("appMainShell");
+      if (mainEl) mainEl.scrollTop = 0;
+      renderAll();
+    }
+
+    function openVaultMainTab(defaultSubTab) {
+      uiState.activeTab = "capital";
+      uiState.mainNavGroup = "VAULT";
+      const vaultSubs = ["PLAYER_HOF", "RECORDS", "FAAB_LEDGER", "RIVALRY", "VAULT", "ARCHIVE"];
+      if (defaultSubTab && vaultSubs.includes(defaultSubTab)) {
+        uiState.leagueHqSubTab = defaultSubTab;
+      } else if (!vaultSubs.includes(uiState.leagueHqSubTab)) {
+        uiState.leagueHqSubTab = "PLAYER_HOF";
+      }
+      const mainEl = document.getElementById("appMainShell");
+      if (mainEl) mainEl.scrollTop = 0;
+      renderAll();
+    }
+
+    function openTradeCenterSubMode(mode) {
+      const m = String(mode || "BUILDER").toUpperCase();
+      if (m === "HISTORY" || m === "FEED" || m === "WIRE" || m === "FAIRNESS") {
+        uiState.activeTab = "feed";
+        if (m === "WIRE") uiState.activitySubTab = "WIRE";
+        else if (m === "FAIRNESS") uiState.activitySubTab = "FAIRNESS";
+      } else {
+        uiState.activeTab = "tradecenter";
+      }
+      const mainEl = document.getElementById("appMainShell");
+      if (mainEl) mainEl.scrollTop = 0;
+      renderAll();
+    }
+
     function switchMainTab(tab) {
-      const targetTab = tab === "pools" ? "feed" : tab;
+      const targetTab = tab === "pools" ? "feed" : (tab === "vault" ? "capital" : tab);
       const isReTap = uiState.activeTab === targetTab;
       if (tab === "pools") {
         uiState.activeTab = "feed";
         uiState.activitySubTab = "PENDING_FINAL";
+      } else if (tab === "vault") {
+        openVaultMainTab();
+        return;
+      } else if (tab === "capital") {
+        uiState.activeTab = "capital";
+        if (!uiState.mainNavGroup) uiState.mainNavGroup = "STANDINGS";
       } else {
         uiState.activeTab = tab;
       }
@@ -8893,6 +9462,24 @@
       showToast(`Updated ${getTeamName(targetTeamId)}'s Trade Block headline!`, "success");
     }
 
+    async function setTeamStrategyTag(teamId, strategyVal) {
+      const tid = safeId(teamId);
+      if (!uiState.isCommish && tid !== uiState.myTeam) {
+        showToast("You can only change the strategy mode for your own franchise.", "error");
+        return;
+      }
+      const valid = ["ALL_IN", "BALANCED", "RETOOLING"];
+      const nextTag = valid.includes(String(strategyVal || "").toUpperCase()) ? String(strategyVal).toUpperCase() : "BALANCED";
+      const prof = getTeamProfile(tid);
+      prof.strategyTag = nextTag;
+      prof.updatedAt = Date.now();
+      leagueDB.updatedAt = Date.now();
+      saveDatabase(false);
+      renderAll();
+      showToast(`Set ${getTeamName(tid)} strategy mode to ${nextTag.replace("_", "-")}!`, "success");
+      await pushTeamProfileToCloud(tid);
+    }
+
     function renderTeamWarRoomSection(state) {
       const box = document.getElementById("teamWarRoomContainer");
       const settingsProfileHost = document.getElementById("settingsProfileEditorHost");
@@ -9037,6 +9624,34 @@
         }
 
         const totalOtbForTeam = heroOtbPlayers.length + heroOtbPicks.length;
+        const inspectedRoster = Array.isArray(inspectedProf.roster) && inspectedProf.roster.length > 0
+          ? inspectedProf.roster
+          : ((leagueDB?.espnData?.rosters && Array.isArray(leagueDB.espnData.rosters[inspectedTeamId])) ? leagueDB.espnData.rosters[inspectedTeamId] : []);
+        const keeperCaliberCount = inspectedRoster.filter(p => {
+          const rk = Number((String(p.posRank || "").match(/(\d+)/) || [])[1]) || 99;
+          return rk <= 18 || (Array.isArray(inspectedProf.keepers) && inspectedProf.keepers.includes(p.id));
+        }).length;
+        const hasKeeperCrunch = keeperCaliberCount > 12 || kStats.totalKeepers >= 12;
+        const curStrategy = String(inspectedProf.strategyTag || "BALANCED").toUpperCase();
+
+        const strategyControlHtml = (!isScoutingOpponent || uiState.isCommish)
+          ? `<div class="inline-flex items-center gap-1 bg-[#0B0D12]/90 border border-white/10 rounded-lg px-2 py-0.5 text-[10px]">
+               <span class="font-extrabold uppercase text-slate-400">Mode:</span>
+               <select onchange="setTeamStrategyTag('${safeId(inspectedTeamId)}', this.value)" aria-label="Team Strategy Tag" class="bg-transparent text-amber-300 font-extrabold focus:outline-none cursor-pointer">
+                 <option value="ALL_IN" class="bg-[#0B0D12]" ${curStrategy === 'ALL_IN' ? 'selected' : ''}>🔥 All-In Contender</option>
+                 <option value="BALANCED" class="bg-[#0B0D12]" ${curStrategy === 'BALANCED' ? 'selected' : ''}>⚖️ Balanced</option>
+                 <option value="RETOOLING" class="bg-[#0B0D12]" ${curStrategy === 'RETOOLING' ? 'selected' : ''}>🏗️ Retooling / Picks</option>
+               </select>
+             </div>`
+          : `<span class="px-2 py-1 rounded-lg bg-[#0B0D12]/90 border border-white/10 text-[10px] font-extrabold text-amber-300">${curStrategy === 'ALL_IN' ? '🔥 All-In Contender' : curStrategy === 'RETOOLING' ? '🏗️ Retooling' : '⚖️ Balanced'}</span>`;
+
+        const keeperCrunchHtml = hasKeeperCrunch
+          ? `<span class="px-2 py-1 rounded-lg bg-amber-950/90 border border-amber-400/70 text-amber-200 font-mono font-bold text-[10px] inline-flex items-center gap-1" title="Keeper Crunch: ${keeperCaliberCount} keeper-caliber assets for 12 Keeper slots — prime 2-for-1 consolidation candidate!">
+               <i class="fa-solid fa-triangle-exclamation text-amber-400"></i>
+               <span>Keeper Crunch (${keeperCaliberCount}/12 Stars)</span>
+             </span>`
+          : "";
+
         const commandStripHtml = `
           <div id="warRoomCommandStrip" class="mt-2 pt-2 border-t border-white/10 flex flex-wrap items-center gap-1.5 text-[11px]">
             <button type="button" onclick="setMyTeamSubView('PICKS')" class="px-2.5 py-1 rounded-lg bg-[#0B0D12]/90 hover:bg-[#0B0D12] border border-white/10 hover:border-amber-400/50 text-white font-mono font-bold inline-flex items-center gap-1.5 transition cursor-pointer">
@@ -9055,6 +9670,8 @@
               <i class="fa-solid fa-table-cells text-[10px] text-amber-400"></i>
               <span>Lead: ${escapeHtml(leadPickDisplay)}</span>
             </button>
+            ${strategyControlHtml}
+            ${keeperCrunchHtml}
           </div>
         `;
 
@@ -9658,16 +10275,22 @@
         CAPITAL: "STANDINGS",
         TOP10_FA: "POS_LEADERS",
         HOF: "PLAYER_HOF",
-        CAREER: "VAULT"
+        CAREER: "VAULT",
+        FAAB: "FAAB_LEDGER",
+        ODDS: "PLAYOFF_ODDS",
+        POWER: "POWER_RANKINGS"
       };
       const normalized = aliasMap[String(subTab || "").toUpperCase()] || String(subTab || "").toUpperCase();
-      const valid = ["STANDINGS", "POS_LEADERS", "RECORDS", "PLAYER_HOF", "VAULT", "RIVALRY", "ARCHIVE"];
+      const valid = ["STANDINGS", "PLAYOFF_ODDS", "POWER_RANKINGS", "POS_LEADERS", "RECORDS", "PLAYER_HOF", "FAAB_LEDGER", "VAULT", "RIVALRY", "ARCHIVE"];
       uiState.leagueHqSubTab = valid.includes(normalized) ? normalized : "STANDINGS";
+      const vaultSubs = ["PLAYER_HOF", "RECORDS", "FAAB_LEDGER", "RIVALRY", "VAULT", "ARCHIVE"];
+      uiState.mainNavGroup = vaultSubs.includes(uiState.leagueHqSubTab) ? "VAULT" : "STANDINGS";
       renderAll();
     }
 
     function openLeagueArchiveTab() {
       uiState.activeTab = "capital";
+      uiState.mainNavGroup = "VAULT";
       uiState.leagueHqSubTab = "ARCHIVE";
       const mainEl = document.getElementById("appMainShell");
       if (mainEl) mainEl.scrollTop = 0;
@@ -10351,20 +10974,29 @@
 
     function buildLeagueHqSubNavHtml() {
       const cur = uiState.leagueHqSubTab || "STANDINGS";
-      const tabs = [
+      const vaultSubs = ["PLAYER_HOF", "RECORDS", "FAAB_LEDGER", "RIVALRY", "VAULT", "ARCHIVE"];
+      const isVaultMode = uiState.mainNavGroup === "VAULT" || vaultSubs.includes(cur);
+      const standingsTabs = [
         { id: "STANDINGS", icon: "fa-football", label: "Standings" },
-        { id: "POS_LEADERS", icon: "fa-ranking-star", label: "Top 10 & FA" },
-        { id: "RECORDS", icon: "fa-book", label: "Records" },
+        { id: "PLAYOFF_ODDS", icon: "fa-chart-line", label: "Playoff Odds" },
+        { id: "POWER_RANKINGS", icon: "fa-bolt", label: "Power Rankings" },
+        { id: "POS_LEADERS", icon: "fa-ranking-star", label: "Top 10 & FA" }
+      ];
+      const vaultTabs = [
         { id: "PLAYER_HOF", icon: "fa-building-columns", label: "Player HOF" },
-        { id: "VAULT", icon: "fa-trophy", label: "Career" },
+        { id: "RECORDS", icon: "fa-book", label: "Records" },
+        { id: "FAAB_LEDGER", icon: "fa-coins", label: "FAAB & Waivers" },
         { id: "RIVALRY", icon: "fa-people-arrows", label: "Rivalries" },
+        { id: "VAULT", icon: "fa-trophy", label: "Career" },
         { id: "ARCHIVE", icon: "fa-clock-rotate-left", label: "Archive" }
       ];
+      const primaryTabs = isVaultMode ? vaultTabs : standingsTabs;
+      const secondaryTabs = isVaultMode ? standingsTabs : vaultTabs;
       const activeId = (cur === "CAPITAL" || cur === "STANDINGS") ? "STANDINGS" : cur;
       return `
         <div class="sticky-subnav-bar app-card p-2 sm:p-2.5 flex items-center justify-between gap-2">
           <div class="segmented-bar overflow-x-auto no-scrollbar max-w-full flex-nowrap">
-            ${tabs.map(t => `
+            ${primaryTabs.map(t => `
               <button
                 type="button"
                 id="leagueHqTab-${t.id}"
@@ -10375,17 +11007,33 @@
                 <span>${t.label}</span>
               </button>
             `).join("")}
+            <span class="hidden">
+              ${secondaryTabs.map(t => `
+                <button type="button" id="leagueHqTab-${t.id}" onclick="setLeagueHqSubTab('${t.id}')">${t.label}</button>
+              `).join("")}
+            </span>
             <button type="button" id="leagueHqTab-CAPITAL" onclick="setLeagueHqSubTab('STANDINGS')" class="hidden">Back to Overview</button>
           </div>
-          <button
-            type="button"
-            onclick="toggleMobileTableAdvancedStats()"
-            class="sm:hidden btn-action px-2 py-1 text-[10px] ${uiState.showMobileTableAdvanced ? 'text-amber-300 border-amber-400/60' : 'text-slate-300'} flex-shrink-0"
-            title="Toggle Advanced Table Columns on Mobile"
-          >
-            <i class="fa-solid fa-table-columns text-[10px]"></i>
-            <span>${uiState.showMobileTableAdvanced ? 'Core' : '+Stats'}</span>
-          </button>
+          <div class="flex items-center gap-1.5 flex-shrink-0">
+            <button
+              type="button"
+              onclick="${isVaultMode ? "openStandingsMainTab('STANDINGS')" : "openVaultMainTab('PLAYER_HOF')"}"
+              class="hidden sm:inline-flex btn-action px-2.5 py-1 text-[10px] text-slate-300"
+              title="${isVaultMode ? 'Switch to Standings, Odds & Power Rankings' : 'Switch to The Vault (HOF, Records, FAAB, Rivalries)'}"
+            >
+              <i class="fa-solid ${isVaultMode ? 'fa-ranking-star text-emerald-400' : 'fa-building-columns text-amber-400'} text-[10px]"></i>
+              <span>${isVaultMode ? 'Standings' : 'The Vault'}</span>
+            </button>
+            <button
+              type="button"
+              onclick="toggleMobileTableAdvancedStats()"
+              class="sm:hidden btn-action px-2 py-1 text-[10px] ${uiState.showMobileTableAdvanced ? 'text-amber-300 border-amber-400/60' : 'text-slate-300'} flex-shrink-0"
+              title="Toggle Advanced Table Columns on Mobile"
+            >
+              <i class="fa-solid fa-table-columns text-[10px]"></i>
+              <span>${uiState.showMobileTableAdvanced ? 'Core' : '+Stats'}</span>
+            </button>
+          </div>
         </div>
       `;
     }
@@ -10454,6 +11102,7 @@
            </div>`
         : "";
 
+      const duesTeams = (leagueDB?.duesLedger && leagueDB.duesLedger.teams) || {};
       const rowsHtml = (sObj.standings || []).map((st, idx) => {
         const ownerId = yrOverrides[st.teamId] || st.managerId || st.teamId;
         const ownerName = escapeHtml(getHistoricalManagerDisplayName(ownerId));
@@ -10464,6 +11113,16 @@
         const allPlayTotal = (st.allPlayWins || 0) + (st.allPlayLosses || 0);
         const expectedWins = allPlayTotal > 0 ? ((st.allPlayWins / allPlayTotal) * (st.wins + st.losses)).toFixed(1) : st.wins;
         const luckDelta = (st.wins - Number(expectedWins)).toFixed(1);
+        const divW = Number(st.divisionWins ?? st.divWins) || 0;
+        const divL = Number(st.divisionLosses ?? st.divLosses) || 0;
+        const divT = Number(st.divisionTies ?? st.divTies) || 0;
+        const divStr = (divW + divL + divT) > 0 ? `${divW}-${divL}${divT ? '-' + divT : ''}` : "—";
+        const rawMaxPf = Number(st.maxPointsFor ?? st.maxPf) || 0;
+        const maxPfVal = rawMaxPf > 0 ? rawMaxPf : (pfVal > 0 ? Number((pfVal / 0.885).toFixed(1)) : 0);
+        const rawEff = Number(st.coachingEfficiency) || 0;
+        const effVal = rawEff > 0 ? rawEff : (maxPfVal > 0 ? Math.min(100, Number(((pfVal / maxPfVal) * 100).toFixed(1))) : 0);
+        const dockedWins = selectedYr >= 2025 ? (Number(duesTeams[st.teamId]?.dockedWins) || 0) : 0;
+        const effectiveWins = Math.max(0, (Number(st.wins) || 0) - dockedWins);
         const hasMoves = Boolean(st.hasTransactions || Number(st.acquisitions) > 0 || Number(st.espnTrades) > 0);
         const movesLabel = hasMoves
           ? `${Number(st.acquisitions) || 0} Add${Number(st.espnTrades) > 0 ? ` / ${Number(st.espnTrades)} Trd` : ''}`
@@ -10494,17 +11153,20 @@
                   <div class="flex items-center gap-1.5">
                     <span>${ownerName}</span>
                     ${ownerId !== st.teamId ? `<span class="text-[10px] text-amber-300 font-mono">(${escapeHtml(getOriginalManagerName(st.teamId))} Slot)</span>` : ''}
+                    ${dockedWins > 0 ? `<span class="px-1.5 py-0.5 rounded bg-rose-950 text-rose-300 border border-rose-500/50 font-mono text-[9px]" title="Docked ${dockedWins} win(s) for unpaid league dues">-${dockedWins}W Dues</span>` : ''}
                   </div>
                   ${st.teamName ? `<div class="text-[10px] text-slate-400 font-normal truncate max-w-[125px] sm:max-w-none">${escapeHtml(st.teamName)}</div>` : ''}
                 </div>
               </div>
             </td>
-            <td class="py-2.5 px-2.5 sm:px-3 font-mono font-bold text-center text-white">${st.wins}-${st.losses}${st.ties ? '-' + st.ties : ''}</td>
+            <td class="py-2.5 px-2.5 sm:px-3 font-mono font-bold text-center text-white">${effectiveWins}-${st.losses}${st.ties ? '-' + st.ties : ''}</td>
+            <td class="py-2.5 px-2.5 sm:px-3 font-mono text-center text-slate-300 mobile-adv-col">${divStr}</td>
             <td class="py-2.5 px-2.5 sm:px-3 font-mono font-bold text-center text-emerald-300">${pfVal.toFixed(1)} <span class="text-[10px] text-slate-500">(${pfPerGame}/g)</span></td>
             <td class="py-2.5 px-2.5 sm:px-3 font-mono text-center text-slate-300 mobile-adv-col">${paVal.toFixed(1)}</td>
             <td class="py-2.5 px-2.5 sm:px-3 font-mono font-bold text-center mobile-adv-col ${Number(ptDiff) >= 0 ? 'text-emerald-400' : 'text-rose-400'}">${Number(ptDiff) >= 0 ? '+' + ptDiff : ptDiff}</td>
             <td class="py-2.5 px-2.5 sm:px-3 font-mono text-center text-sky-300 mobile-adv-col">${st.allPlayWins || 0}-${st.allPlayLosses || 0}</td>
             <td class="py-2.5 px-2.5 sm:px-3 font-mono text-center mobile-adv-col ${Number(luckDelta) >= 0 ? 'text-emerald-400' : 'text-rose-400'}">${Number(luckDelta) >= 0 ? '+' + luckDelta : luckDelta} W</td>
+            <td class="py-2.5 px-2.5 sm:px-3 font-mono text-center text-amber-200 mobile-adv-col" title="${rawMaxPf > 0 ? 'Synced ESPN Max Optimal PF' : 'Estimated Optimal PF'}">${maxPfVal > 0 ? `${maxPfVal.toFixed(1)} (${effVal.toFixed(0)}%)` : '—'}</td>
             <td class="py-2.5 px-2.5 sm:px-3 font-mono text-center text-slate-300 mobile-adv-col">${escapeHtml(movesLabel)}</td>
             <td class="py-2.5 px-2.5 sm:px-3 font-mono text-center text-amber-300 mobile-adv-col">#${st.playoffSeed || (idx + 1)}</td>
           </tr>
@@ -10589,11 +11251,13 @@
                   <th class="py-2.5 px-2.5 sm:px-3 text-center">Finish</th>
                   <th class="py-2.5 px-2.5 sm:px-3 sticky-mgr-col">Manager / ESPN Team</th>
                   <th class="py-2.5 px-2.5 sm:px-3 text-center">Record</th>
+                  <th class="py-2.5 px-2.5 sm:px-3 text-center mobile-adv-col">Div W-L</th>
                   <th class="py-2.5 px-2.5 sm:px-3 text-center">Points For (PF)</th>
                   <th class="py-2.5 px-2.5 sm:px-3 text-center mobile-adv-col">PA</th>
                   <th class="py-2.5 px-2.5 sm:px-3 text-center mobile-adv-col">Diff (+/-)</th>
                   <th class="py-2.5 px-2.5 sm:px-3 text-center mobile-adv-col">All-Play W-L</th>
                   <th class="py-2.5 px-2.5 sm:px-3 text-center mobile-adv-col">Schedule Luck</th>
+                  <th class="py-2.5 px-2.5 sm:px-3 text-center mobile-adv-col">Max PF (Eff %)</th>
                   <th class="py-2.5 px-2.5 sm:px-3 text-center mobile-adv-col">Moves</th>
                   <th class="py-2.5 px-2.5 sm:px-3 text-center mobile-adv-col">Seed</th>
                 </tr>
@@ -11771,8 +12435,13 @@
         `;
       }).join("");
 
+      const hofFunnelHtml = typeof buildFourStagePlayerHofBannerHtml === "function"
+        ? buildFourStagePlayerHofBannerHtml(allCandidates)
+        : "";
+
       return `
         <div id="playerHallOfFameSection" class="space-y-4">
+          ${hofFunnelHtml}
           <div class="app-card overflow-hidden p-4 sm:p-5 space-y-4">
             <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-3 border-b border-white/10 pb-3.5">
               <div>
@@ -12198,10 +12867,16 @@
       const navHtml = buildLeagueHqSubNavHtml();
       const sampleBannerHtml = curSub === "ARCHIVE" ? "" : buildEspnSampleDataNoticeHtml(curSub);
       let bodyHtml = "";
-      if (curSub === "POS_LEADERS") {
+      if (curSub === "PLAYOFF_ODDS") {
+        bodyHtml = buildPlayoffOddsHtml(state);
+      } else if (curSub === "POWER_RANKINGS") {
+        bodyHtml = buildPowerRankingsHtml(state);
+      } else if (curSub === "POS_LEADERS") {
         bodyHtml = buildPositionalTop10AndFreeAgentsHtml();
       } else if (curSub === "PLAYER_HOF") {
         bodyHtml = buildPlayerHallOfFameHtml();
+      } else if (curSub === "FAAB_LEDGER") {
+        bodyHtml = buildFaabLedgerHtml();
       } else if (curSub === "VAULT") {
         bodyHtml = buildAllTimeVaultHtml();
       } else if (curSub === "RIVALRY") {
@@ -12214,6 +12889,1437 @@
         bodyHtml = `<div class="space-y-4">${buildEspnStandingsHtml()}${buildLeagueCapitalTableHtml(state, false)}${buildLeagueHubStackedCardsHtml()}</div>`;
       }
       container.innerHTML = `<div class="space-y-3.5">${navHtml}${sampleBannerHtml}${bodyHtml}</div>`;
+    }
+
+    /* -----------------------------------------------------------
+       WAVE 2: STANDINGS ANALYTICS (PLAYOFF ODDS, LUCK/EFFICIENCY, 3-PILLAR POWER RANKINGS)
+       ----------------------------------------------------------- */
+    function computeSeasonPlayoffOdds(selectedYr) {
+      const ed = leagueDB?.espnData || DEFAULT_ESPN_DATA;
+      const seasonsObj = ed.seasons || {};
+      const sObj = seasonsObj[String(selectedYr)] || { year: selectedYr, standings: [] };
+      const standings = Array.isArray(sObj.standings) ? sObj.standings : [];
+      const regSeasonWeeks = Number((ed.leagueSettings && ed.leagueSettings.regularSeasonWeeks) || 14);
+      const playoffTeamsCount = Number((ed.leagueSettings && ed.leagueSettings.playoffTeams) || 6);
+      const duesTeams = (leagueDB?.duesLedger && leagueDB.duesLedger.teams) || {};
+
+      if (standings.length === 0) return { rows: [], isCompleted: false, maxGp: 0, regSeasonWeeks };
+
+      const maxGp = standings.reduce((mx, st) => Math.max(mx, (Number(st.wins) || 0) + (Number(st.losses) || 0) + (Number(st.ties) || 0)), 0);
+      const remGames = Math.max(0, regSeasonWeeks - maxGp);
+      const isCompleted = isSeasonOfficiallyCompleted(selectedYr, sObj) || remGames === 0;
+      const avgPfPerGame = standings.reduce((acc, st) => {
+        const gp = Math.max(1, (Number(st.wins) || 0) + (Number(st.losses) || 0) + (Number(st.ties) || 0));
+        return acc + ((Number(st.pointsFor ?? st.pf) || 0) / gp);
+      }, 0) / Math.max(1, standings.length);
+
+      // Prepare baseline metrics per team
+      const baseTeams = standings.map((st, idx) => {
+        const docked = selectedYr >= 2025 ? (Number(duesTeams[st.teamId]?.dockedWins) || 0) : 0;
+        const wins = Math.max(0, (Number(st.wins) || 0) - docked);
+        const losses = Number(st.losses) || 0;
+        const ties = Number(st.ties) || 0;
+        const gp = Math.max(1, wins + losses + ties);
+        const pf = Number(st.pointsFor ?? st.pf) || 0;
+        const pa = Number(st.pointsAgainst ?? st.pa) || 0;
+        const ppg = pf / gp;
+        const apW = Number(st.allPlayWins) || 0;
+        const apL = Number(st.allPlayLosses) || 0;
+        const apPct = (apW + apL) > 0 ? (apW / (apW + apL)) : Math.min(0.85, Math.max(0.15, 0.5 + ((ppg - avgPfPerGame) / Math.max(25, avgPfPerGame))));
+        const expWins = apPct * (wins + losses);
+        const luckDelta = wins - expWins;
+        const rawMaxPf = Number(st.maxPointsFor ?? st.maxPf) || 0;
+        const maxPf = rawMaxPf > 0 ? rawMaxPf : Number((pf / 0.885).toFixed(1));
+        const effPct = Number(st.coachingEfficiency) > 0 ? Number(st.coachingEfficiency) : (maxPf > 0 ? Math.min(100, Number(((pf / maxPf) * 100).toFixed(1))) : 88.5);
+        const divId = Number(st.divisionId ?? (idx % 2));
+        return {
+          teamId: st.teamId,
+          managerId: st.managerId || st.teamId,
+          teamName: st.teamName || "",
+          rank: idx + 1,
+          wins,
+          losses,
+          ties,
+          docked,
+          pf,
+          pa,
+          ppg,
+          apW,
+          apL,
+          apPct,
+          expWins,
+          luckDelta,
+          maxPf,
+          effPct,
+           isEstimatedMaxPf: !(rawMaxPf > 0),
+          divId,
+          divWins: Number(st.divisionWins) || 0,
+          divLosses: Number(st.divisionLosses) || 0
+        };
+      });
+
+      // Deterministic pseudo-RNG seeded by season year + total PF so odds don't jitter on every re-render
+      let seed = (Number(selectedYr) * 9301 + Math.round(baseTeams.reduce((s, t) => s + t.pf, 0))) % 233280;
+      const nextRand = () => {
+        seed = (seed * 9301 + 49297) % 233280;
+        return seed / 233280;
+      };
+
+      const SIM_RUNS = isCompleted ? 1 : 1200;
+      const counts = {};
+      baseTeams.forEach(t => {
+        counts[t.teamId] = { playoff: 0, bye: 0, divWin: 0, champ: 0, lastPlace: 0, projWinsSum: 0 };
+      });
+
+      for (let iter = 0; iter < SIM_RUNS; iter++) {
+        const simRows = baseTeams.map(t => {
+          let simW = t.wins;
+          let simPf = t.pf;
+          const winProb = Math.min(0.88, Math.max(0.12, 0.55 * t.apPct + 0.45 * (t.wins / Math.max(1, t.wins + t.losses))));
+          for (let g = 0; g < remGames; g++) {
+            if (nextRand() < winProb) simW += 1;
+            simPf += t.ppg * (0.85 + nextRand() * 0.30);
+          }
+          counts[t.teamId].projWinsSum += simW;
+          return { ...t, simW, simPf };
+        });
+
+        // Identify top winner in each division (2 divisions -> Top 2 Seeds & First-Round Byes)
+        const divGroups = {};
+        simRows.forEach(r => {
+          const dk = String(r.divId);
+          if (!divGroups[dk]) divGroups[dk] = [];
+          divGroups[dk].push(r);
+        });
+        const divWinners = [];
+        Object.values(divGroups).forEach(grp => {
+          grp.sort((a, b) => (b.simW - a.simW) || (b.simPf - a.simPf));
+          if (grp[0]) {
+            counts[grp[0].teamId].divWin += 1;
+            divWinners.push(grp[0]);
+          }
+        });
+        divWinners.sort((a, b) => (b.simW - a.simW) || (b.simPf - a.simPf));
+        const byeIds = new Set(divWinners.slice(0, 2).map(d => d.teamId));
+        byeIds.forEach(id => { counts[id].bye += 1; counts[id].playoff += 1; });
+
+        const wildcards = simRows.filter(r => !byeIds.has(r.teamId)).sort((a, b) => (b.simW - a.simW) || (b.simPf - a.simPf));
+        const wcSpots = Math.max(0, playoffTeamsCount - byeIds.size);
+        const playoffField = [...divWinners.slice(0, 2), ...wildcards.slice(0, wcSpots)];
+        wildcards.slice(0, wcSpots).forEach(w => { counts[w.teamId].playoff += 1; });
+
+        // Last place / Phallic Feaster risk (#10)
+        const overallSorted = [...simRows].sort((a, b) => (b.simW - a.simW) || (b.simPf - a.simPf));
+        const lastTeam = overallSorted[overallSorted.length - 1];
+        if (lastTeam) counts[lastTeam.teamId].lastPlace += 1;
+
+        // Championship simulation weighted by power among playoff qualifiers
+        if (isCompleted) {
+          const outcomes = getSeasonFinalStandingsOutcomes(selectedYr);
+          const cId = outcomes.champId || (overallSorted[0] && overallSorted[0].teamId);
+          if (cId && counts[cId]) counts[cId].champ += 1;
+        } else if (playoffField.length > 0) {
+          const weights = playoffField.map((p, idx) => Math.max(1, (p.ppg || 100) * (idx < 2 ? 1.35 : 1.0)));
+          const totalW = weights.reduce((a, b) => a + b, 0);
+          let pick = nextRand() * totalW;
+          let chosen = playoffField[0];
+          for (let i = 0; i < playoffField.length; i++) {
+            pick -= weights[i];
+            if (pick <= 0) { chosen = playoffField[i]; break; }
+          }
+          counts[chosen.teamId].champ += 1;
+        }
+      }
+
+      // Compute 7th-place benchmark for Magic Number
+      const sortedByWins = [...baseTeams].sort((a, b) => (b.wins - a.wins) || (b.pf - a.pf));
+      const seventhTeamWins = sortedByWins[playoffTeamsCount] ? sortedByWins[playoffTeamsCount].wins : 6;
+
+      const rows = baseTeams.map(t => {
+        const c = counts[t.teamId];
+        const playoffPct = Number(((c.playoff / SIM_RUNS) * 100).toFixed(1));
+        const byePct = Number(((c.bye / SIM_RUNS) * 100).toFixed(1));
+        const divWinPct = Number(((c.divWin / SIM_RUNS) * 100).toFixed(1));
+        const champPct = Number(((c.champ / SIM_RUNS) * 100).toFixed(1));
+        const feasterPct = Number(((c.lastPlace / SIM_RUNS) * 100).toFixed(1));
+        const projWins = Number((c.projWinsSum / SIM_RUNS).toFixed(1));
+        const projLosses = Number(Math.max(0, regSeasonWeeks - projWins).toFixed(1));
+        const magicNum = isCompleted
+          ? (playoffPct >= 99 ? "CLINCHED" : "ELIM")
+          : (playoffPct >= 99.5 ? "CLINCHED" : (playoffPct <= 0.5 ? "ELIM" : Math.max(1, (regSeasonWeeks + 1) - t.wins - (regSeasonWeeks - seventhTeamWins))));
+        return {
+          ...t,
+          projWins,
+          projLosses,
+          playoffPct,
+          byePct,
+          divWinPct,
+          champPct,
+          feasterPct,
+          magicNum
+        };
+      }).sort((a, b) => (b.playoffPct - a.playoffPct) || (b.projWins - a.projWins) || (b.pf - a.pf));
+
+      return { rows, isCompleted, maxGp, regSeasonWeeks, remGames };
+    }
+
+    function buildPlayoffOddsHtml(state) {
+      const ed = leagueDB?.espnData || DEFAULT_ESPN_DATA;
+      const seasonsObj = ed.seasons || {};
+      const years = Object.keys(seasonsObj).map(Number).sort((a, b) => b - a);
+      const selectedYr = years.includes(Number(uiState.leagueHqSeasonYear)) ? Number(uiState.leagueHqSeasonYear) : (years[0] || 2026);
+      const sim = computeSeasonPlayoffOdds(selectedYr);
+      const rows = sim.rows || [];
+
+      const luckSorted = [...rows].sort((a, b) => b.luckDelta - a.luckDelta);
+      const luckiest = luckSorted[0];
+      const unluckiest = luckSorted[luckSorted.length - 1];
+      const effLeader = [...rows].sort((a, b) => b.effPct - a.effPct)[0];
+
+      return `
+        <div id="playoffOddsSection" class="space-y-4">
+          <div class="app-card overflow-hidden p-4 sm:p-5 space-y-4">
+            <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-3 border-b border-white/10 pb-3.5">
+              <div>
+                <div class="flex flex-wrap items-center gap-2">
+                  <span class="static-badge bg-emerald-950 text-emerald-300 border border-emerald-500/60">
+                    <i class="fa-solid fa-chart-line"></i> Monte Carlo Playoff Simulator
+                  </span>
+                  <span class="static-badge bg-[#13161F] text-sky-300 border border-sky-500/40">
+                    6-Team Playoffs • Top 2 Div Winners Earn Byes
+                  </span>
+                  <h2 class="text-base sm:text-lg font-black text-white">${selectedYr} Playoff Odds, Schedule Luck &amp; Coaching Efficiency</h2>
+                </div>
+                <p class="text-xs text-slate-400 mt-0.5">1,200-iteration Monte Carlo simulation combining actual record, All-Play strength, division standings, and remaining schedule (${sim.remGames} reg-season wks left).</p>
+              </div>
+              <div class="segmented-bar overflow-x-auto no-scrollbar max-w-full flex-nowrap">
+                ${years.map(y => `
+                  <button type="button" onclick="setLeagueHqSeasonYear(${y})" class="segmented-pill font-mono ${y === selectedYr ? 'active' : ''}">${y}</button>
+                `).join("")}
+              </div>
+            </div>
+
+            <!-- 3 Callout Cards: Luckiest, Unluckiest, Best Lineup Efficiency -->
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
+              ${luckiest ? `
+                <div class="bg-[#0B0D12] border border-emerald-500/35 rounded-xl p-3 flex items-center justify-between gap-2">
+                  <div>
+                    <div class="text-[10px] font-extrabold uppercase text-emerald-400">🍀 Schedule Luck Leader</div>
+                    <div class="text-sm font-black text-white mt-0.5">${escapeHtml(getHistoricalManagerDisplayName(luckiest.managerId))}</div>
+                    <div class="text-[11px] text-slate-400 font-mono">Actual ${luckiest.wins}-${luckiest.losses} vs. ${luckiest.expWins.toFixed(1)} Exp W (All-Play ${luckiest.apW}-${luckiest.apL})</div>
+                  </div>
+                  <span class="font-mono font-black text-sm text-emerald-300">${luckiest.luckDelta >= 0 ? '+' : ''}${luckiest.luckDelta.toFixed(1)} W</span>
+                </div>
+              ` : ''}
+              ${unluckiest ? `
+                <div class="bg-[#0B0D12] border border-rose-500/35 rounded-xl p-3 flex items-center justify-between gap-2">
+                  <div>
+                    <div class="text-[10px] font-extrabold uppercase text-rose-400">⚡ Tough-Beat Schedule</div>
+                    <div class="text-sm font-black text-white mt-0.5">${escapeHtml(getHistoricalManagerDisplayName(unluckiest.managerId))}</div>
+                    <div class="text-[11px] text-slate-400 font-mono">Actual ${unluckiest.wins}-${unluckiest.losses} vs. ${unluckiest.expWins.toFixed(1)} Exp W (All-Play ${unluckiest.apW}-${unluckiest.apL})</div>
+                  </div>
+                  <span class="font-mono font-black text-sm text-rose-300">${unluckiest.luckDelta >= 0 ? '+' : ''}${unluckiest.luckDelta.toFixed(1)} W</span>
+                </div>
+              ` : ''}
+              ${effLeader ? `
+                <div class="bg-[#0B0D12] border border-amber-500/35 rounded-xl p-3 flex items-center justify-between gap-2">
+                  <div>
+                    <div class="text-[10px] font-extrabold uppercase text-amber-400">🧠 Coaching Efficiency #1</div>
+                    <div class="text-sm font-black text-white mt-0.5">${escapeHtml(getHistoricalManagerDisplayName(effLeader.managerId))}</div>
+                    <div class="text-[11px] text-slate-400 font-mono">${effLeader.pf.toFixed(1)} PF / ${effLeader.maxPf.toFixed(1)} Max PF${effLeader.isEstimatedMaxPf ? ' (Est.)' : ''}</div>
+                  </div>
+                  <span class="font-mono font-black text-sm text-amber-300">${effLeader.effPct.toFixed(1)}%</span>
+                </div>
+              ` : ''}
+            </div>
+
+            <div class="overflow-x-auto rounded-xl border border-white/10">
+              <table class="w-full text-left border-collapse">
+                <thead>
+                  <tr class="border-b border-white/10 text-[10px] font-extrabold uppercase tracking-wider text-slate-400 bg-[#0B0D12]">
+                    <th class="py-2.5 px-3 text-center">#</th>
+                    <th class="py-2.5 px-3">Manager</th>
+                    <th class="py-2.5 px-3 text-center">Current W-L</th>
+                    <th class="py-2.5 px-3 text-center">Proj Record</th>
+                    <th class="py-2.5 px-3 text-center">Playoff %</th>
+                    <th class="py-2.5 px-3 text-center">Div / Bye %</th>
+                    <th class="py-2.5 px-3 text-center">Title %</th>
+                    <th class="py-2.5 px-3 text-center">🍆 Feaster Risk</th>
+                    <th class="py-2.5 px-3 text-center">Magic #</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  ${rows.map((r, idx) => `
+                    <tr class="border-b border-white/[0.06] hover:bg-white/[0.03] transition text-xs ${idx < 6 ? 'bg-emerald-950/10' : ''}">
+                      <td class="py-2.5 px-3 font-mono font-black text-center ${idx < 2 ? 'text-amber-300' : idx < 6 ? 'text-emerald-300' : 'text-slate-400'}">#${idx + 1}</td>
+                      <td class="py-2.5 px-3 font-black text-white">
+                        <div class="flex items-center gap-2">
+                          ${renderTeamAvatarHtml(r.teamId, "w-6 h-6 text-[10px]", "rounded-md")}
+                          <div>
+                            <div>${escapeHtml(getHistoricalManagerDisplayName(r.managerId))}</div>
+                            <div class="text-[10px] font-mono text-slate-400">All-Play ${r.apW}-${r.apL} • Eff ${r.effPct.toFixed(0)}%</div>
+                          </div>
+                        </div>
+                      </td>
+                      <td class="py-2.5 px-3 font-mono font-bold text-center text-white">${r.wins}-${r.losses}${r.ties ? '-' + r.ties : ''}</td>
+                      <td class="py-2.5 px-3 font-mono text-center text-sky-300">${r.projWins.toFixed(1)}-${r.projLosses.toFixed(1)}</td>
+                      <td class="py-2.5 px-3 font-mono font-black text-center ${r.playoffPct >= 75 ? 'text-emerald-300' : r.playoffPct >= 40 ? 'text-amber-300' : 'text-rose-300'}">${r.playoffPct.toFixed(1)}%</td>
+                      <td class="py-2.5 px-3 font-mono text-center text-amber-200">${r.byePct.toFixed(1)}%</td>
+                      <td class="py-2.5 px-3 font-mono font-bold text-center text-amber-300">${r.champPct.toFixed(1)}%</td>
+                      <td class="py-2.5 px-3 font-mono text-center ${r.feasterPct >= 25 ? 'text-fuchsia-300 font-bold' : 'text-slate-400'}">${r.feasterPct.toFixed(1)}%</td>
+                      <td class="py-2.5 px-3 font-mono text-center">
+                        <span class="px-2 py-0.5 rounded text-[10px] font-bold ${r.magicNum === 'CLINCHED' ? 'bg-emerald-950 text-emerald-300 border border-emerald-500/50' : r.magicNum === 'ELIM' ? 'bg-rose-950 text-rose-300 border border-rose-500/50' : 'bg-[#13161F] text-slate-200 border border-white/15'}">${r.magicNum}</span>
+                      </td>
+                    </tr>
+                  `).join("")}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      `;
+    }
+
+    function computeThreePillarPowerRankings(selectedYr, state) {
+      const ed = leagueDB?.espnData || DEFAULT_ESPN_DATA;
+      const seasonsObj = ed.seasons || {};
+      const sObj = seasonsObj[String(selectedYr)] || { year: selectedYr, standings: [] };
+      const teams = leagueDB?.teams || DEFAULT_TEAMS;
+      const faabTeams = (leagueDB?.faabData && leagueDB.faabData.seasons && leagueDB.faabData.seasons[String(selectedYr)] && leagueDB.faabData.seasons[String(selectedYr)].teams) || {};
+
+      // Raw component metrics per team
+      const rawRows = teams.map((tm, idx) => {
+        const prof = getTeamProfile(tm.id);
+        const roster = Array.isArray(prof.roster) ? prof.roster : [];
+        const sortedVals = roster.map(p => getPlayerTradeChartValue(p, prof)).sort((a, b) => b - a);
+        const top12Val = sortedVals.slice(0, 12).reduce((a, b) => a + b, 0);
+        const depthVal = sortedVals.slice(12, 22).reduce((a, b) => a + b, 0) * 0.35;
+        const rosterRaw = top12Val + depthVal;
+
+        const st = (sObj.standings || []).find(s => s.teamId === tm.id || s.managerId === tm.id) || {};
+        const wins = Number(st.wins) || 0;
+        const losses = Number(st.losses) || 0;
+        const pf = Number(st.pointsFor ?? st.pf) || 0;
+        const apW = Number(st.allPlayWins) || 0;
+        const apL = Number(st.allPlayLosses) || 0;
+        const winPct = (wins + losses) > 0 ? wins / (wins + losses) : 0.5;
+        const apPct = (apW + apL) > 0 ? apW / (apW + apL) : winPct;
+        const perfRaw = (apPct * 55) + (winPct * 30) + (pf / 200);
+
+        const capMetrics = getManagerCapitalMetrics(tm.id, state);
+        const r1to5Count = state.picks.filter(p => p.round <= 5 && p.currentOwner === tm.id).length;
+        const faabRem = Number(faabTeams[tm.id]?.remaining ?? st.faabRemaining ?? DEFAULT_FAAB_BUDGET);
+        const capitalRaw = (r1to5Count * 18) + (capMetrics.effectivePickCount * 2.5) + ((faabRem / DEFAULT_FAAB_BUDGET) * 15);
+
+        return {
+          teamId: tm.id,
+          name: getTeamName(tm.id),
+          strategyTag: prof.strategyTag || "BALANCED",
+          rosterRaw,
+          perfRaw,
+          capitalRaw,
+          wins,
+          losses,
+          pf,
+          apW,
+          apL,
+          r1to5Count,
+          effectivePicks: capMetrics.effectivePickCount,
+          faabRem,
+          standingsRank: Number(st.finalRank ?? st.rank) || (idx + 1)
+        };
+      });
+
+      const maxRoster = Math.max(1, ...rawRows.map(r => r.rosterRaw));
+      const maxPerf = Math.max(1, ...rawRows.map(r => r.perfRaw));
+      const maxCap = Math.max(1, ...rawRows.map(r => r.capitalRaw));
+
+      return rawRows.map(r => {
+        // 3-Pillar Power Score: 45% Roster Strength + 35% Season Performance + 20% Future Pick Capital & FAAB
+        const rosterScore45 = Number(((r.rosterRaw / maxRoster) * 45).toFixed(1));
+        const perfScore35 = Number(((r.perfRaw / maxPerf) * 35).toFixed(1));
+        const capitalScore20 = Number(((r.capitalRaw / maxCap) * 20).toFixed(1));
+        const powerScore = Number((rosterScore45 + perfScore35 + capitalScore20).toFixed(1));
+        return {
+          ...r,
+          rosterScore45,
+          perfScore35,
+          capitalScore20,
+          powerScore
+        };
+      }).sort((a, b) => b.powerScore - a.powerScore);
+    }
+
+    function buildPowerRankingsHtml(state) {
+      const ed = leagueDB?.espnData || DEFAULT_ESPN_DATA;
+      const seasonsObj = ed.seasons || {};
+      const years = Object.keys(seasonsObj).map(Number).sort((a, b) => b - a);
+      const selectedYr = years.includes(Number(uiState.leagueHqSeasonYear)) ? Number(uiState.leagueHqSeasonYear) : (years[0] || 2026);
+      const rows = computeThreePillarPowerRankings(selectedYr, state);
+
+      const stratBadge = (tag) => {
+        if (tag === "ALL_IN") return `<span class="px-1.5 py-0.5 rounded text-[9px] font-extrabold bg-rose-950 text-rose-300 border border-rose-500/50">🔥 ALL-IN</span>`;
+        if (tag === "RETOOLING") return `<span class="px-1.5 py-0.5 rounded text-[9px] font-extrabold bg-sky-950 text-sky-300 border border-sky-500/50">🏗️ RETOOLING</span>`;
+        return `<span class="px-1.5 py-0.5 rounded text-[9px] font-extrabold bg-emerald-950 text-emerald-300 border border-emerald-500/50">⚖️ BALANCED</span>`;
+      };
+
+      return `
+        <div id="powerRankingsSection" class="space-y-4">
+          <div class="app-card overflow-hidden p-4 sm:p-5 space-y-4">
+            <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-3 border-b border-white/10 pb-3.5">
+              <div>
+                <div class="flex flex-wrap items-center gap-2">
+                  <span class="static-badge bg-[#73000A] text-white border border-[#CC1429]">
+                    <i class="fa-solid fa-bolt text-amber-300"></i> 3-Pillar Power Index
+                  </span>
+                  <h2 class="text-base sm:text-lg font-black text-white">Gamecock Mafia Power Rankings (${selectedYr} Season + ${state.year} Capital)</h2>
+                </div>
+                <p class="text-xs text-slate-400 mt-0.5">Weighted composite: <strong class="text-emerald-300">45% Roster &amp; Keeper Strength</strong> • <strong class="text-amber-300">35% Season Performance &amp; All-Play</strong> • <strong class="text-sky-300">20% Future Pick Capital &amp; FAAB</strong>.</p>
+              </div>
+            </div>
+
+            <div class="overflow-x-auto rounded-xl border border-white/10">
+              <table class="w-full text-left border-collapse">
+                <thead>
+                  <tr class="border-b border-white/10 text-[10px] font-extrabold uppercase tracking-wider text-slate-400 bg-[#0B0D12]">
+                    <th class="py-2.5 px-3 text-center">Power #</th>
+                    <th class="py-2.5 px-3">Franchise &amp; Strategy</th>
+                    <th class="py-2.5 px-3 text-center">Power Score</th>
+                    <th class="py-2.5 px-3 text-center">Roster (45%)</th>
+                    <th class="py-2.5 px-3 text-center">Season (35%)</th>
+                    <th class="py-2.5 px-3 text-center">Capital (20%)</th>
+                    <th class="py-2.5 px-3 text-center">vs. Standings</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  ${rows.map((r, idx) => {
+                    const pRank = idx + 1;
+                    const delta = r.standingsRank - pRank;
+                    return `
+                      <tr class="border-b border-white/[0.06] hover:bg-white/[0.03] transition text-xs">
+                        <td class="py-2.5 px-3 font-mono font-black text-center ${pRank <= 3 ? 'text-amber-300' : 'text-slate-300'}">#${pRank}</td>
+                        <td class="py-2.5 px-3 font-black text-white">
+                          <div class="flex items-center gap-2">
+                            ${renderTeamAvatarHtml(r.teamId, "w-6 h-6 text-[10px]", "rounded-md")}
+                            <div>
+                              <div class="flex items-center gap-1.5">
+                                <span>${escapeHtml(r.name)}</span>
+                                ${stratBadge(r.strategyTag)}
+                              </div>
+                              <div class="text-[10px] font-mono text-slate-400">${r.wins}-${r.losses} • ${r.pf.toFixed(1)} PF • ${r.r1to5Count} Rds 1–5 Picks</div>
+                            </div>
+                          </div>
+                        </td>
+                        <td class="py-2.5 px-3 font-mono font-black text-sm text-center text-white">${r.powerScore.toFixed(1)}</td>
+                        <td class="py-2.5 px-3 font-mono text-center text-emerald-300">${r.rosterScore45.toFixed(1)}</td>
+                        <td class="py-2.5 px-3 font-mono text-center text-amber-300">${r.perfScore35.toFixed(1)}</td>
+                        <td class="py-2.5 px-3 font-mono text-center text-sky-300">${r.capitalScore20.toFixed(1)}</td>
+                        <td class="py-2.5 px-3 font-mono text-center ${delta > 0 ? 'text-emerald-400' : delta < 0 ? 'text-rose-400' : 'text-slate-400'}">
+                          ${delta > 0 ? `▲ +${delta}` : delta < 0 ? `▼ ${delta}` : '—'}
+                        </td>
+                      </tr>
+                    `;
+                  }).join("")}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      `;
+    }
+
+    /* -----------------------------------------------------------
+       WAVE 2: FAAB & WAIVER WIRE LEDGER + 6 CUSTOM BADGES (THE VAULT)
+       ----------------------------------------------------------- */
+    function buildFaabLedgerHtml() {
+      const ed = leagueDB?.espnData || DEFAULT_ESPN_DATA;
+      const seasonsObj = ed.seasons || {};
+      const years = Object.keys(seasonsObj).map(Number).sort((a, b) => b - a);
+      const selectedYr = years.includes(Number(uiState.leagueHqSeasonYear)) ? Number(uiState.leagueHqSeasonYear) : (years[0] || 2026);
+      const sObj = seasonsObj[String(selectedYr)] || { year: selectedYr, standings: [] };
+      const faabSeason = (leagueDB?.faabData && leagueDB.faabData.seasons && leagueDB.faabData.seasons[String(selectedYr)]) || { budget: DEFAULT_FAAB_BUDGET, teams: {} };
+      const seasonBudget = Number(faabSeason.budget) || DEFAULT_FAAB_BUDGET;
+      const teams = leagueDB?.teams || DEFAULT_TEAMS;
+
+      const rows = teams.map(tm => {
+        const st = (sObj.standings || []).find(s => s.teamId === tm.id || s.managerId === tm.id) || {};
+        const fTeam = (faabSeason.teams && faabSeason.teams[tm.id]) || {};
+        const totalBudget = Number(fTeam.budget ?? st.faabTotalBudget) || seasonBudget;
+        const spent = fTeam.spent !== undefined ? Number(fTeam.spent) : (Number(st.faabSpent) || 0);
+        const remaining = fTeam.remaining !== undefined ? Number(fTeam.remaining) : Math.max(0, totalBudget - spent);
+        const moves = Number(fTeam.moves ?? st.acquisitions) || 0;
+        const zeroDollarAdds = Number(fTeam.zeroDollarAdds) || 0;
+        const maxSingleBid = Number(fTeam.maxSingleBid) || 0;
+        const maxBidPlayer = String(fTeam.maxBidPlayer || "");
+        const pf = Number(st.pointsFor ?? st.pf) || 0;
+        return {
+          teamId: tm.id,
+          name: getTeamName(tm.id),
+          totalBudget,
+          spent,
+          remaining,
+          moves,
+          zeroDollarAdds,
+          maxSingleBid,
+          maxBidPlayer,
+          pf
+        };
+      }).sort((a, b) => (b.remaining - a.remaining) || (b.moves - a.moves));
+
+      // Compute the 6 Custom Gamecock Mafia FAAB & Waiver Wire Badges (Sec 4B)
+      const byMoves = [...rows].sort((a, b) => b.moves - a.moves);
+      const bySpent = [...rows].sort((a, b) => b.spent - a.spent);
+      const bySaved = [...rows].sort((a, b) => (b.remaining - a.remaining) || (a.spent - b.spent));
+      const byMaxBid = [...rows].sort((a, b) => (b.maxSingleBid - a.maxSingleBid) || (b.spent - a.spent));
+      const byEfficiency = [...rows].sort((a, b) => ((b.pf / Math.max(1, b.spent + 25)) - (a.pf / Math.max(1, a.spent + 25))));
+      const byBuster = [...rows].sort((a, b) => ((b.spent / Math.max(1, b.pf)) - (a.spent / Math.max(1, a.pf))));
+
+      const customBadges = [
+        {
+          id: "THE_FATTY",
+          emoji: "🍔",
+          title: "The Fatty",
+          subtitle: "Highest FAAB Spend / Gluttonous Waiver Appetite",
+          winner: bySpent[0],
+          metric: bySpent[0] ? `$${bySpent[0].spent} Spent ($${bySpent[0].remaining} Left)` : "—"
+        },
+        {
+          id: "THE_JEW",
+          emoji: "🪙",
+          title: "The Jew",
+          subtitle: "Most FAAB Hoarded + $0 Free-Agent Snipes",
+          winner: bySaved[0],
+          metric: bySaved[0] ? `$${bySaved[0].remaining} Remaining (${bySaved[0].zeroDollarAdds} $0 Adds)` : "—"
+        },
+        {
+          id: "JIZZED_HIS_PANTS",
+          emoji: "💦",
+          title: "Jizzed His Pants",
+          subtitle: "Biggest Single-Player FAAB Splurge Bid",
+          winner: byMaxBid[0],
+          metric: byMaxBid[0] && byMaxBid[0].maxSingleBid > 0
+            ? `$${byMaxBid[0].maxSingleBid} Bid${byMaxBid[0].maxBidPlayer ? ' (' + byMaxBid[0].maxBidPlayer + ')' : ''}`
+            : (bySpent[0] ? `$${bySpent[0].spent} Total Bid Volume` : "—")
+        },
+        {
+          id: "RAINBOW_PARROT",
+          emoji: "🦜",
+          title: "Rainbow Parrot",
+          subtitle: "Hyper-Active Roster Churn & Add/Drop Carousel",
+          winner: byMoves[0],
+          metric: byMoves[0] ? `${byMoves[0].moves} Roster Acquisitions` : "—"
+        },
+        {
+          id: "BIG_BUSTER",
+          emoji: "💣",
+          title: "Big Buster",
+          subtitle: "Highest FAAB Burn Relative to Scoring Output",
+          winner: byBuster[0],
+          metric: byBuster[0] ? `$${byBuster[0].spent} Spent • ${byBuster[0].pf.toFixed(0)} PF` : "—"
+        },
+        {
+          id: "WAIVER_WIRE_SHARK",
+          emoji: "🦈",
+          title: "Waiver Wire Shark",
+          subtitle: "Best Points-Per-FAAB-Dollar Waiver ROI",
+          winner: byEfficiency[0],
+          metric: byEfficiency[0] ? `${byEfficiency[0].pf.toFixed(0)} PF on $${byEfficiency[0].spent} Spent` : "—"
+        }
+      ];
+
+      return `
+        <div id="faabLedgerSection" class="space-y-4">
+          <div class="app-card overflow-hidden p-4 sm:p-5 space-y-4">
+            <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-3 border-b border-white/10 pb-3.5">
+              <div>
+                <div class="flex flex-wrap items-center gap-2">
+                  <span class="static-badge bg-amber-950 text-amber-300 border border-amber-500/60">
+                    <i class="fa-solid fa-coins"></i> $${seasonBudget} Annual FAAB Ledger
+                  </span>
+                  <h2 class="text-base sm:text-lg font-black text-white">${selectedYr} FAAB Budget, Waiver Efficiency &amp; League Badges</h2>
+                </div>
+                <p class="text-xs text-slate-400 mt-0.5">Annual <strong class="text-amber-300">$${seasonBudget} FAAB budget</strong> per franchise (auto-synced from ESPN <code class="font-mono">acquisitionBudget</code> &amp; <code class="font-mono">mTransactions2</code>).</p>
+              </div>
+              <div class="segmented-bar overflow-x-auto no-scrollbar max-w-full flex-nowrap">
+                ${years.map(y => `
+                  <button type="button" onclick="setLeagueHqSeasonYear(${y})" class="segmented-pill font-mono ${y === selectedYr ? 'active' : ''}">${y}</button>
+                `).join("")}
+              </div>
+            </div>
+
+            <!-- 6 Custom FAAB & Waiver Wire Badges -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+              ${customBadges.map(b => `
+                <div class="bg-[#0B0D12] border border-white/10 rounded-xl p-3 flex items-start justify-between gap-2.5">
+                  <div class="min-w-0">
+                    <div class="flex items-center gap-1.5">
+                      <span class="text-base text-white">${b.emoji}</span>
+                      <span class="text-xs font-black text-amber-300">${escapeHtml(b.title)}</span>
+                    </div>
+                    <div class="text-[10px] text-slate-400 mt-0.5">${escapeHtml(b.subtitle)}</div>
+                    <div class="text-xs font-black text-white mt-1.5">${b.winner ? escapeHtml(b.winner.name) : 'TBD'}</div>
+                    <div class="text-[11px] font-mono text-emerald-300">${escapeHtml(b.metric)}</div>
+                  </div>
+                  ${b.winner ? renderTeamAvatarHtml(b.winner.teamId, "w-7 h-7 text-[10px] flex-shrink-0", "rounded-lg") : ''}
+                </div>
+              `).join("")}
+            </div>
+
+            <!-- Franchise FAAB Remaining & Waiver Table -->
+            <div class="overflow-x-auto rounded-xl border border-white/10">
+              <table class="w-full text-left border-collapse">
+                <thead>
+                  <tr class="border-b border-white/10 text-[10px] font-extrabold uppercase tracking-wider text-slate-400 bg-[#0B0D12]">
+                    <th class="py-2.5 px-3">Manager</th>
+                    <th class="py-2.5 px-3 text-center">Remaining FAAB</th>
+                    <th class="py-2.5 px-3 text-center">Spent</th>
+                    <th class="py-2.5 px-3 text-center">Total Moves</th>
+                    <th class="py-2.5 px-3 text-center">Top Bid</th>
+                    ${uiState.isCommish ? `<th class="py-2.5 px-3 text-right">Admin Edit</th>` : ''}
+                  </tr>
+                </thead>
+                <tbody>
+                  ${rows.map(r => {
+                    const pctLeft = Math.min(100, Math.round((r.remaining / Math.max(1, r.totalBudget)) * 100));
+                    return `
+                      <tr class="border-b border-white/[0.06] hover:bg-white/[0.03] transition text-xs">
+                        <td class="py-2.5 px-3 font-black text-white">
+                          <div class="flex items-center gap-2">
+                            ${renderTeamAvatarHtml(r.teamId, "w-6 h-6 text-[10px]", "rounded-md")}
+                            <span>${escapeHtml(r.name)}</span>
+                          </div>
+                        </td>
+                        <td class="py-2.5 px-3 font-mono font-black text-center text-emerald-300">
+                          $${r.remaining} <span class="text-[10px] text-slate-400 font-normal">(${pctLeft}%)</span>
+                        </td>
+                        <td class="py-2.5 px-3 font-mono font-bold text-center text-amber-300">$${r.spent}</td>
+                        <td class="py-2.5 px-3 font-mono text-center text-slate-200">${r.moves}</td>
+                        <td class="py-2.5 px-3 font-mono text-center text-sky-300">${r.maxSingleBid > 0 ? `$${r.maxSingleBid}${r.maxBidPlayer ? ' (' + escapeHtml(r.maxBidPlayer) + ')' : ''}` : '—'}</td>
+                        ${uiState.isCommish ? `
+                          <td class="py-2.5 px-3 text-right">
+                            <button type="button" onclick="promptCommishEditTeamFaab('${safeId(r.teamId)}', ${selectedYr})" class="btn-action px-2 py-1 text-[10px] text-amber-300">
+                              <i class="fa-solid fa-pen text-[9px]"></i> Edit FAAB
+                            </button>
+                          </td>
+                        ` : ''}
+                      </tr>
+                    `;
+                  }).join("")}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      `;
+    }
+
+    function promptCommishEditTeamFaab(teamId, seasonYr) {
+      if (!uiState.isCommish) return;
+      const yrStr = String(seasonYr || uiState.leagueHqSeasonYear || 2026);
+      if (!leagueDB.faabData) leagueDB.faabData = { annualBudget: DEFAULT_FAAB_BUDGET, seasons: {}, records: { highestBids: [], mostSpentSeason: [], mostSavedSeason: [] } };
+      if (!leagueDB.faabData.seasons[yrStr]) leagueDB.faabData.seasons[yrStr] = { budget: DEFAULT_FAAB_BUDGET, teams: {} };
+      const cur = leagueDB.faabData.seasons[yrStr].teams[teamId] || { budget: DEFAULT_FAAB_BUDGET, spent: 0, remaining: DEFAULT_FAAB_BUDGET, moves: 0, maxSingleBid: 0, maxBidPlayer: "" };
+      const spentInput = window.prompt(`Enter ${yrStr} FAAB Spent ($) for ${getTeamName(teamId)} (out of $${DEFAULT_FAAB_BUDGET}):`, String(cur.spent || 0));
+      if (spentInput === null) return;
+      const spent = Math.max(0, Math.min(DEFAULT_FAAB_BUDGET, Number(spentInput) || 0));
+      const maxBidInput = window.prompt(`Optional: Highest single-player FAAB bid ($) by ${getTeamName(teamId)}:`, String(cur.maxSingleBid || 0));
+      const maxSingleBid = maxBidInput !== null ? Math.max(0, Number(maxBidInput) || 0) : (cur.maxSingleBid || 0);
+      leagueDB.faabData.seasons[yrStr].teams[teamId] = {
+        ...cur,
+        budget: DEFAULT_FAAB_BUDGET,
+        spent,
+        remaining: Math.max(0, DEFAULT_FAAB_BUDGET - spent),
+        maxSingleBid
+      };
+      saveState("EDIT_FAAB");
+      renderAll();
+      showToast(`Updated ${getTeamName(teamId)}'s ${yrStr} FAAB ledger ($${spent} spent / $${DEFAULT_FAAB_BUDGET - spent} left).`, "success");
+    }
+
+    function saveState(reason = "WAVE2_UPDATE") {
+      if (leagueDB) leagueDB.updatedAt = Date.now();
+      saveDatabase(false, reason);
+      if (uiState.isCommish && typeof pushAdminStateToCloud === "function") {
+        pushAdminStateToCloud(reason).catch(() => {});
+      }
+    }
+
+    /* -----------------------------------------------------------
+       WAVE 2: 4-STAGE PLAYER HALL OF FAME FUNNEL (THE VAULT)
+       ----------------------------------------------------------- */
+    function buildFourStagePlayerHofBannerHtml(allCandidates) {
+      const hs = leagueDB?.hofState || { classYear: 2027, stage: "IDLE", maxClassSize: 3, candidatePool25: [], round1Nominations: {}, round2Finalists: [], inductedClasses: {} };
+      const myTeamId = safeId((uiState.isCommish ? uiState.selectedManager : uiState.myTeam) || "syeth");
+      const myR1Picks = Array.isArray(hs.round1Nominations && hs.round1Nominations[myTeamId]) ? hs.round1Nominations[myTeamId] : [];
+      const stages = [
+        { id: "IDLE", step: "Stage 1", label: "25-Player Candidate Pool", desc: "1+ Yr League-Absent Legends" },
+        { id: "ROUND_1_NOMINATION", step: "Stage 2", label: "Round 1 Nomination Vote", desc: "Each Manager Picks Up to 5" },
+        { id: "ROUND_2_FINAL", step: "Stage 3", label: "Round 2 Final 7/10 Ballot", desc: "70% Supermajority Required" },
+        { id: "COMPLETE", step: "Stage 4", label: `Class of ${hs.classYear} Inducted`, desc: `Max ${hs.maxClassSize} Inductees / Yr` }
+      ];
+
+      // Tally Round 1 nominations across all 10 managers
+      const r1Tallies = {};
+      Object.values(hs.round1Nominations || {}).forEach(arr => {
+        if (Array.isArray(arr)) {
+          arr.forEach(pk => { r1Tallies[pk] = (r1Tallies[pk] || 0) + 1; });
+        }
+      });
+
+      const poolCandidates = (Array.isArray(hs.candidatePool25) && hs.candidatePool25.length > 0)
+        ? allCandidates.filter(c => hs.candidatePool25.includes(c.key)).slice(0, 25)
+        : allCandidates.filter(c => c.isBallotEligible).slice(0, 25);
+
+      return `
+        <div id="fourStageHofFunnelCard" class="app-card p-4 sm:p-5 border border-amber-500/35 space-y-3.5">
+          <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2.5 border-b border-white/10 pb-3">
+            <div>
+              <div class="flex flex-wrap items-center gap-2">
+                <span class="static-badge bg-amber-950 text-amber-300 border border-amber-500/60">
+                  <i class="fa-solid fa-landmark"></i> Class of ${hs.classYear} HOF Funnel
+                </span>
+                <span class="static-badge bg-[#13161F] text-sky-300 border border-sky-500/40">
+                  Stage: ${escapeHtml(hs.stage)} • Cap: ${hs.maxClassSize} Inductees
+                </span>
+              </div>
+              <p class="text-xs text-slate-400 mt-1">4-Stage Induction Funnel: <strong class="text-white">25-Player Pool</strong> → <strong class="text-sky-300">Round 1 Nomination (Pick up to 5)</strong> → <strong class="text-emerald-300">Round 2 Final 7/10 Ballot</strong> → <strong class="text-amber-300">Permanent HOF Plaque</strong>.</p>
+            </div>
+            <div class="flex flex-wrap items-center gap-2">
+              ${uiState.isCommish ? `
+                <button type="button" onclick="openHofSetupModal()" class="btn-garnet px-3 py-1.5 text-xs">
+                  <i class="fa-solid fa-sliders"></i>
+                  <span>Configure HOF Stage</span>
+                </button>
+              ` : ''}
+            </div>
+          </div>
+
+          <div class="grid grid-cols-2 lg:grid-cols-4 gap-2">
+            ${stages.map(st => {
+              const isCur = hs.stage === st.id;
+              return `
+                <div class="rounded-xl p-2.5 border ${isCur ? 'bg-amber-950/35 border-amber-400 text-white' : 'bg-[#0B0D12] border-white/10 text-slate-400'}">
+                  <div class="text-[10px] font-mono font-extrabold uppercase ${isCur ? 'text-amber-300' : 'text-slate-500'}">${st.step}${isCur ? ' • ACTIVE' : ''}</div>
+                  <div class="text-xs font-black text-white mt-0.5">${escapeHtml(st.label)}</div>
+                  <div class="text-[10px] text-slate-400">${escapeHtml(st.desc)}</div>
+                </div>
+              `;
+            }).join("")}
+          </div>
+
+          ${hs.stage === "ROUND_1_NOMINATION" ? `
+            <div class="bg-[#0B0D12] border border-sky-500/40 rounded-xl p-3 space-y-2.5">
+              <div class="flex flex-wrap items-center justify-between gap-2">
+                <div class="text-xs font-black text-sky-200">
+                  <i class="fa-solid fa-list-check mr-1.5 text-sky-400"></i>Round 1 Nomination Ballot (${escapeHtml(getTeamName(myTeamId))}: ${myR1Picks.length} / 5 Selected)
+                </div>
+                <span class="text-[11px] text-slate-400">Tap up to 5 players from the 25-Player Pool to advance them to Round 2</span>
+              </div>
+              <div class="flex flex-wrap gap-1.5">
+                ${poolCandidates.map(c => {
+                  const picked = myR1Picks.includes(c.key);
+                  const count = r1Tallies[c.key] || 0;
+                  return `
+                    <button
+                      type="button"
+                      onclick="toggleHofR1NominationVote('${safeId(c.key)}')"
+                      class="px-2.5 py-1 rounded-lg text-[11px] font-bold border transition cursor-pointer ${picked ? 'bg-sky-700 text-white border-sky-300' : 'bg-[#13161F] text-slate-200 border-white/10 hover:border-sky-400/50'}"
+                    >
+                      ${picked ? '✓ ' : ''}${escapeHtml(c.name)} <span class="text-[10px] font-mono opacity-80">(${escapeHtml(c.pos)} • ${count}v)</span>
+                    </button>
+                  `;
+                }).join("")}
+              </div>
+            </div>
+          ` : ''}
+        </div>
+      `;
+    }
+
+    async function toggleHofR1NominationVote(playerKey) {
+      if (!leagueDB.hofState) return;
+      const myTeamId = safeId((uiState.isCommish ? uiState.selectedManager : uiState.myTeam) || "syeth");
+      if (!leagueDB.hofState.round1Nominations || typeof leagueDB.hofState.round1Nominations !== "object") {
+        leagueDB.hofState.round1Nominations = {};
+      }
+      const cur = Array.isArray(leagueDB.hofState.round1Nominations[myTeamId]) ? [...leagueDB.hofState.round1Nominations[myTeamId]] : [];
+      const idx = cur.indexOf(playerKey);
+      if (idx >= 0) {
+        cur.splice(idx, 1);
+      } else {
+        if (cur.length >= 5) {
+          showToast("You can nominate at most 5 players in Round 1.", "error");
+          return;
+        }
+        cur.push(playerKey);
+      }
+      leagueDB.hofState.round1Nominations[myTeamId] = cur;
+      saveState("HOF_R1_VOTE");
+      renderAll();
+    }
+    const toggleHofNominationVote = toggleHofR1NominationVote;
+
+    function openHofSetupModal() {
+      const modal = document.getElementById("hofSetupModal");
+      if (!modal) return;
+      const hs = leagueDB?.hofState || { classYear: 2027, stage: "IDLE", maxClassSize: 3, candidatePool25: [] };
+      const yrIn = document.getElementById("hofConfigClassYearInput");
+      const stIn = document.getElementById("hofConfigStageSelect");
+      const maxIn = document.getElementById("hofConfigMaxClassInput");
+      if (yrIn) yrIn.value = hs.classYear || 2027;
+      if (stIn) stIn.value = hs.stage || "IDLE";
+      if (maxIn) maxIn.value = hs.maxClassSize || 3;
+      renderHofPoolPreviewInModal();
+      modal.classList.remove("hidden");
+      modal.classList.add("flex");
+    }
+
+    function closeHofSetupModal() {
+      const modal = document.getElementById("hofSetupModal");
+      if (!modal) return;
+      modal.classList.add("hidden");
+      modal.classList.remove("flex");
+    }
+
+    function renderHofPoolPreviewInModal() {
+      const box = document.getElementById("hofPool25PreviewBox");
+      if (!box) return;
+      const all = computePlayerHallOfFameCandidates();
+      const poolKeys = Array.isArray(leagueDB?.hofState?.candidatePool25) && leagueDB.hofState.candidatePool25.length > 0
+        ? leagueDB.hofState.candidatePool25
+        : all.filter(c => c.isBallotEligible).slice(0, 25).map(c => c.key);
+      box.innerHTML = poolKeys.map((k, i) => {
+        const found = all.find(c => c.key === k);
+        const label = found ? `${i + 1}. ${found.name} (${found.pos} • ${found.legacyScore.toFixed(1)})` : `${i + 1}. ${k}`;
+        return `<span class="px-2 py-1 rounded bg-[#13161F] border border-white/10 text-[11px] text-slate-200 font-mono truncate">${escapeHtml(label)}</span>`;
+      }).join("");
+    }
+
+    function autoSeedHofCandidatePool25() {
+      if (!uiState.isCommish) return;
+      const all = computePlayerHallOfFameCandidates();
+      const eligible25 = all.filter(c => c.isBallotEligible).slice(0, 25).map(c => c.key);
+      if (!leagueDB.hofState) leagueDB.hofState = { classYear: 2027, stage: "IDLE", maxClassSize: 3, candidatePool25: [], round1Nominations: {}, round2Finalists: [], inductedClasses: {} };
+      leagueDB.hofState.candidatePool25 = eligible25;
+      saveState("HOF_SEED_POOL25");
+      renderHofPoolPreviewInModal();
+      showToast(`Seeded ${eligible25.length} eligible 1+ yr absent players into the 25-Player Pool.`, "success");
+    }
+
+    function saveHofConfigFromModal() {
+      if (!uiState.isCommish) return;
+      if (!leagueDB.hofState) leagueDB.hofState = { classYear: 2027, stage: "IDLE", maxClassSize: 3, candidatePool25: [], round1Nominations: {}, round2Finalists: [], inductedClasses: {} };
+      const yrIn = document.getElementById("hofConfigClassYearInput");
+      const stIn = document.getElementById("hofConfigStageSelect");
+      const maxIn = document.getElementById("hofConfigMaxClassInput");
+      leagueDB.hofState.classYear = Math.max(2025, Math.min(2040, Number(yrIn?.value) || 2027));
+      leagueDB.hofState.stage = String(stIn?.value || "IDLE");
+      leagueDB.hofState.maxClassSize = Math.max(1, Math.min(5, Number(maxIn?.value) || 3));
+      saveState("HOF_SAVE_CONFIG");
+      closeHofSetupModal();
+      renderAll();
+      showToast(`Saved Player HOF Class of ${leagueDB.hofState.classYear} stage (${leagueDB.hofState.stage}).`, "success");
+    }
+
+    /* -----------------------------------------------------------
+       WAVE 2: CENTRAL BANKER DUES & PAYOUT TRACKER (LEO + COMMISH ONLY)
+       ----------------------------------------------------------- */
+    function isCentralBankerOrCommish() {
+      const bankerId = safeId(leagueDB?.duesLedger?.bankerTeamId || "leo") || "leo";
+      return Boolean(uiState.isCommish || uiState.myTeam === bankerId);
+    }
+    const canAccessCentralBanker = isCentralBankerOrCommish;
+
+    function renderCentralBankerHeaderButton() {
+      const btn = document.getElementById("headerCentralBankerBtn");
+      const dot = document.getElementById("headerCentralBankerAlertDot");
+      if (!btn) return;
+      const canSee = isCentralBankerOrCommish();
+      btn.classList.toggle("hidden", !canSee);
+      btn.classList.toggle("inline-flex", canSee);
+      if (dot && canSee) {
+        const dl = leagueDB?.duesLedger || {};
+        const unpaidCount = Object.values(dl.teams || {}).filter(t => !t.paid).length;
+        dot.classList.toggle("hidden", unpaidCount === 0);
+      }
+    }
+
+    function openCentralBankerModal() {
+      if (!isCentralBankerOrCommish()) {
+        showToast("Central Banker Ledger is restricted to Leo (Central Banker) and the Commissioner.", "error");
+        return;
+      }
+      renderCentralBankerModal();
+      const modal = document.getElementById("centralBankerModal");
+      if (modal) {
+        modal.classList.remove("hidden");
+        modal.classList.add("flex");
+      }
+    }
+
+    function closeCentralBankerModal() {
+      const modal = document.getElementById("centralBankerModal");
+      if (!modal) return;
+      modal.classList.add("hidden");
+      modal.classList.remove("flex");
+    }
+
+    function renderCentralBankerModal() {
+      const body = document.getElementById("centralBankerModalBody");
+      if (!body) return;
+      const dl = leagueDB?.duesLedger || {};
+      const entryFee = Number(dl.entryFee) || DEFAULT_DUES_ENTRY_FEE;
+      const potTotal = Number(dl.potTotal) || (entryFee * 10);
+      const formattedPot = "$" + potTotal.toLocaleString("en-US");
+      const payouts = dl.payouts || { firstPlace: 1000, secondPlace: 350, thirdPlace: 150, regularSeasonPoints: 0 };
+      const teamsMap = dl.teams || {};
+      const teams = leagueDB?.teams || DEFAULT_TEAMS;
+      const paidCount = teams.filter(t => Boolean(teamsMap[t.id]?.paid)).length;
+      const collected = paidCount * entryFee;
+
+      const deadlineTs = Number(dl.graceDeadlineIso) || 0;
+      const isPastGrace = deadlineTs > 0 && Date.now() > deadlineTs;
+
+      body.innerHTML = `
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+          <div class="bg-[#0B0D12] border border-emerald-500/40 rounded-xl p-3">
+            <div class="text-[10px] font-extrabold uppercase text-emerald-400">Collected Pot (${dl.seasonYear || 2026})</div>
+            <div class="text-lg font-mono font-black text-white mt-0.5">$${collected} <span class="text-xs text-slate-400">/ ${formattedPot} ($${potTotal})</span></div>
+            <div class="text-[11px] text-slate-400">${paidCount} of 10 Franchises Paid ($${entryFee}/team)</div>
+          </div>
+          <div class="bg-[#0B0D12] border border-amber-500/40 rounded-xl p-3">
+            <div class="text-[10px] font-extrabold uppercase text-amber-400">Championship Payouts</div>
+            <div class="text-xs font-mono font-bold text-white mt-1">🥇 1st: $${payouts.firstPlace} • 🥈 2nd: $${payouts.secondPlace} • 🥉 3rd: $${payouts.thirdPlace}</div>
+            <div class="text-[10px] text-slate-400 mt-0.5">Central Banker: ${escapeHtml(getTeamName(dl.bankerTeamId || 'leo'))}</div>
+          </div>
+          <div class="bg-[#0B0D12] border ${isPastGrace && paidCount < 10 ? 'border-rose-500/60 bg-rose-950/20' : 'border-white/10'} rounded-xl p-3">
+            <div class="text-[10px] font-extrabold uppercase ${isPastGrace && paidCount < 10 ? 'text-rose-300' : 'text-sky-300'}">1-Month Post-Draft Rule</div>
+            <div class="text-xs font-bold text-white mt-0.5">${paidCount === 10 ? '✅ All 10 Teams Cleared' : `${10 - paidCount} Team(s) Unpaid`}</div>
+            <div class="text-[10px] text-slate-400">Unpaid teams 1 mo post-draft are docked 1 win/wk until settled.</div>
+          </div>
+        </div>
+
+        <div class="overflow-x-auto rounded-xl border border-white/10">
+          <table class="w-full text-left border-collapse">
+            <thead>
+              <tr class="border-b border-white/10 text-[10px] font-extrabold uppercase tracking-wider text-slate-400 bg-[#0B0D12]">
+                <th class="py-2.5 px-3">Manager</th>
+                <th class="py-2.5 px-3 text-center">Dues Status ($${entryFee})</th>
+                <th class="py-2.5 px-3 text-center">Docked Wins Penalty</th>
+                <th class="py-2.5 px-3 text-right">Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              ${teams.map(t => {
+                const row = teamsMap[t.id] || { paid: false, dockedWins: 0 };
+                return `
+                  <tr class="border-b border-white/[0.06] text-xs">
+                    <td class="py-2.5 px-3 font-black text-white">
+                      <div class="flex items-center gap-2">
+                        ${renderTeamAvatarHtml(t.id, "w-6 h-6 text-[10px]", "rounded-md")}
+                        <span>${escapeHtml(getTeamName(t.id))}</span>
+                      </div>
+                    </td>
+                    <td class="py-2.5 px-3 text-center">
+                      <span class="px-2 py-0.5 rounded-full text-[10px] font-extrabold ${row.paid ? 'bg-emerald-950 text-emerald-300 border border-emerald-500/50' : 'bg-rose-950 text-rose-300 border border-rose-500/50'}">
+                        ${row.paid ? 'PAID ✓' : 'UNPAID'}
+                      </span>
+                    </td>
+                    <td class="py-2.5 px-3 font-mono font-bold text-center ${row.dockedWins > 0 ? 'text-rose-300' : 'text-slate-400'}">
+                      ${row.dockedWins > 0 ? `-${row.dockedWins} Win(s)` : '0'}
+                    </td>
+                    <td class="py-2.5 px-3 text-right">
+                      <div class="inline-flex items-center gap-1.5">
+                        <button type="button" onclick="toggleManagerDuesPaid('${safeId(t.id)}')" class="btn-action px-2.5 py-1 text-[10px] ${row.paid ? 'text-slate-300' : 'text-emerald-300 border-emerald-500/50'}">
+                          ${row.paid ? 'Mark Unpaid' : 'Mark Paid'}
+                        </button>
+                        <button type="button" onclick="adjustManagerDockedWins('${safeId(t.id)}', 1)" class="btn-action px-2 py-1 text-[10px] text-rose-300" title="Dock 1 Win for overdue dues">
+                          -1W
+                        </button>
+                        ${row.dockedWins > 0 ? `
+                          <button type="button" onclick="adjustManagerDockedWins('${safeId(t.id)}', -1)" class="btn-action px-2 py-1 text-[10px] text-sky-300" title="Restore 1 docked win">
+                            +1W
+                          </button>
+                        ` : ''}
+                      </div>
+                    </td>
+                  </tr>
+                `;
+              }).join("")}
+            </tbody>
+          </table>
+        </div>
+      `;
+    }
+
+    async function syncDuesLedgerUpdateToCloud(targetTeamId, rowObj, seasonYearOpt) {
+      const customUrl = getActiveCloudSyncUrl();
+      if (!customUrl) return;
+      try {
+        await fetch(customUrl, {
+          method: "POST",
+          redirect: "follow",
+          headers: { "Content-Type": "text/plain;charset=utf-8" },
+          body: JSON.stringify({
+            action: "UPDATE_DUES_STATUS",
+            passHash: uiState.verifiedPassHash || leagueDB?.leaguePassphraseHash || "",
+            commishAuthHash: uiState.commishSessionHash || leagueDB?.commishPinHash || "",
+            actorTeamId: uiState.myTeam || "leo",
+            seasonYear: Number(seasonYearOpt) || Number(leagueDB?.duesLedger?.seasonYear) || 2027,
+            targetTeamId,
+            paid: Boolean(rowObj.paid),
+            dockedWins: Number(rowObj.dockedWins) || 0,
+            fallbackBaseState: sanitizeStateForPublicExport(leagueDB)
+          })
+        });
+      } catch (e) {}
+    }
+
+    async function toggleManagerDuesPaid(teamId, seasonYr) {
+      if (!isCentralBankerOrCommish()) return;
+      const tid = safeId(teamId);
+      const yrKey = String(seasonYr || leagueDB?.duesLedger?.seasonYear || 2027);
+      if (!leagueDB.duesLedger) leagueDB.duesLedger = { seasonYear: Number(yrKey), entryFee: DEFAULT_DUES_ENTRY_FEE, potTotal: DEFAULT_DUES_ENTRY_FEE * 10, teams: {} };
+      if (!leagueDB.duesLedger.teams) leagueDB.duesLedger.teams = {};
+      const cur = leagueDB.duesLedger.teams[tid] || { paid: false, paidAt: 0, dockedWins: 0, notes: "" };
+      cur.paid = !cur.paid;
+      cur.paidAt = cur.paid ? Date.now() : 0;
+      leagueDB.duesLedger.teams[tid] = cur;
+      if (!leagueDB.duesLedger.managers) leagueDB.duesLedger.managers = {};
+      leagueDB.duesLedger.managers[tid] = { ...cur };
+      if (!leagueDB.duesLedger[yrKey]) leagueDB.duesLedger[yrKey] = { teams: {} };
+      if (!leagueDB.duesLedger[yrKey].teams) leagueDB.duesLedger[yrKey].teams = {};
+      leagueDB.duesLedger[yrKey].teams[tid] = { ...cur };
+      saveDatabase(false, "DUES_LEDGER_UPDATE");
+      renderCentralBankerModal();
+      renderAll();
+      showToast(`${getTeamName(tid)} marked as ${cur.paid ? 'PAID' : 'UNPAID'}.`, "success");
+      await syncDuesLedgerUpdateToCloud(tid, cur, yrKey);
+    }
+    const toggleCentralBankerDuesStatus = toggleManagerDuesPaid;
+
+    async function adjustManagerDockedWins(teamId, delta, seasonYr) {
+      if (!isCentralBankerOrCommish()) return;
+      const tid = safeId(teamId);
+      const yrKey = String(seasonYr || leagueDB?.duesLedger?.seasonYear || 2027);
+      if (!leagueDB.duesLedger) leagueDB.duesLedger = { seasonYear: Number(yrKey), entryFee: DEFAULT_DUES_ENTRY_FEE, potTotal: DEFAULT_DUES_ENTRY_FEE * 10, teams: {} };
+      if (!leagueDB.duesLedger.teams) leagueDB.duesLedger.teams = {};
+      const cur = leagueDB.duesLedger.teams[tid] || { paid: false, paidAt: 0, dockedWins: 0, notes: "" };
+      cur.dockedWins = Math.max(0, Math.min(14, (Number(cur.dockedWins) || 0) + Number(delta)));
+      leagueDB.duesLedger.teams[tid] = cur;
+      if (!leagueDB.duesLedger.managers) leagueDB.duesLedger.managers = {};
+      leagueDB.duesLedger.managers[tid] = { ...cur };
+      if (!leagueDB.duesLedger[yrKey]) leagueDB.duesLedger[yrKey] = { teams: {} };
+      if (!leagueDB.duesLedger[yrKey].teams) leagueDB.duesLedger[yrKey].teams = {};
+      leagueDB.duesLedger[yrKey].teams[tid] = { ...cur };
+      saveDatabase(false, "DUES_DOCKED_WINS");
+      renderCentralBankerModal();
+      renderAll();
+      showToast(`${getTeamName(tid)} docked wins set to ${cur.dockedWins}.`, "info");
+      await syncDuesLedgerUpdateToCloud(tid, cur, yrKey);
+    }
+    const adjustCentralBankerDockedWins = adjustManagerDockedWins;
+
+    /* -----------------------------------------------------------
+       WAVE 2: LEAGUE BYLAWS & CONSTITUTION MODAL
+       ----------------------------------------------------------- */
+    function openBylawsModal() {
+      uiState.bylawsEditMode = false;
+      renderBylawsModal("");
+      const modal = document.getElementById("bylawsModal");
+      if (modal) {
+        modal.classList.remove("hidden");
+        modal.classList.add("flex");
+      }
+      const editBtn = document.getElementById("bylawsCommishEditBtn");
+      if (editBtn) editBtn.classList.toggle("hidden", !uiState.isCommish);
+    }
+
+    function closeBylawsModal() {
+      const modal = document.getElementById("bylawsModal");
+      if (!modal) return;
+      modal.classList.add("hidden");
+      modal.classList.remove("flex");
+    }
+
+    function filterBylawsSections(searchQuery) {
+      const inp = document.getElementById("bylawsSearchInput");
+      if (inp && searchQuery !== undefined && inp.value !== searchQuery) {
+        inp.value = searchQuery;
+      }
+      renderBylawsModal(searchQuery !== undefined ? searchQuery : (inp ? inp.value : ""));
+    }
+
+    function renderBylawsModal(searchQuery) {
+      const body = document.getElementById("bylawsSectionsContainer") || document.getElementById("bylawsModalBody");
+      if (!body) return;
+      const q = String(searchQuery || "").trim().toLowerCase();
+      const sections = Array.isArray(leagueDB?.bylaws?.sections) && leagueDB.bylaws.sections.length > 0
+        ? leagueDB.bylaws.sections
+        : DEFAULT_LEAGUE_BYLAWS_SECTIONS;
+
+      const filtered = q
+        ? sections.filter(s => s.title.toLowerCase().includes(q) || s.body.toLowerCase().includes(q))
+        : sections;
+
+      if (uiState.bylawsEditMode && uiState.isCommish) {
+        body.innerHTML = `
+          <div class="space-y-3">
+            ${sections.map((s, idx) => `
+              <div class="bg-[#0B0D12] border border-white/15 rounded-xl p-3 space-y-2">
+                <input id="bylawTitleInput-${idx}" type="text" value="${escapeHtml(s.title)}" class="w-full bg-[#13161F] text-white text-xs font-black rounded-lg px-3 py-1.5 border border-white/15">
+                <textarea id="bylawBodyInput-${idx}" rows="3" class="w-full bg-[#13161F] text-slate-200 text-xs rounded-lg px-3 py-2 border border-white/15">${escapeHtml(s.body)}</textarea>
+              </div>
+            `).join("")}
+            <div class="flex justify-end gap-2">
+              <button type="button" onclick="saveBylawsEdits()" class="btn-garnet px-4 py-2 text-xs">
+                <i class="fa-solid fa-floppy-disk"></i> Save Constitution Changes
+              </button>
+            </div>
+          </div>
+        `;
+        return;
+      }
+
+      body.innerHTML = filtered.map(s => `
+        <div class="bg-[#0B0D12] border border-white/10 rounded-xl p-3.5 space-y-1">
+          <div class="text-xs sm:text-sm font-black text-amber-300">${escapeHtml(s.title)}</div>
+          <p class="text-xs text-slate-300 leading-relaxed">${escapeHtml(s.body)}</p>
+        </div>
+      `).join("") || `<div class="text-center text-xs text-slate-400 py-6">No bylaws sections match "${escapeHtml(q)}".</div>`;
+    }
+
+    function toggleBylawsEditMode() {
+      if (!uiState.isCommish) return;
+      uiState.bylawsEditMode = !uiState.bylawsEditMode;
+      renderBylawsModal(document.getElementById("bylawsSearchInput")?.value || "");
+    }
+
+    function saveBylawsEdits() {
+      if (!uiState.isCommish) return;
+      const cur = Array.isArray(leagueDB?.bylaws?.sections) ? leagueDB.bylaws.sections : DEFAULT_LEAGUE_BYLAWS_SECTIONS;
+      const next = cur.map((s, idx) => ({
+        id: s.id || `sec_${idx + 1}`,
+        title: String(document.getElementById(`bylawTitleInput-${idx}`)?.value || s.title).trim().slice(0, 120),
+        body: String(document.getElementById(`bylawBodyInput-${idx}`)?.value || s.body).trim().slice(0, 3000)
+      }));
+      leagueDB.bylaws = { updatedAt: Date.now(), sections: next };
+      uiState.bylawsEditMode = false;
+      saveState("SAVE_BYLAWS");
+      renderBylawsModal("");
+      showToast("League Bylaws & Constitution updated and synced!", "success");
+    }
+
+    /* -----------------------------------------------------------
+       WAVE 2: SINGLE-SLOT DYNAMIC CONTEXTUAL TOP BANNER (MAX 48PX)
+       ----------------------------------------------------------- */
+    function renderSingleSlotDynamicBanner(state, notifState) {
+      const host = document.getElementById("singleSlotTopBannerHost");
+      if (!host) return;
+      const dl = leagueDB?.duesLedger || {};
+      const unpaidOverdue = (Number(dl.graceDeadlineIso) > 0 && Date.now() > Number(dl.graceDeadlineIso))
+        ? Object.entries(dl.teams || {}).filter(([, v]) => !v.paid).map(([k]) => getTeamName(k))
+        : [];
+      const hs = leagueDB?.hofState || { stage: "IDLE", classYear: 2027 };
+
+      let html = "";
+      // Priority 1: Action-Required Trade Offer or Rule Guardrail Alert
+      if (notifState && notifState.awaitingMeProposals && notifState.awaitingMeProposals.length > 0) {
+        const offer = notifState.awaitingMeProposals[0];
+        html = `
+          <div class="h-11 max-h-12 px-3.5 rounded-xl bg-amber-950/85 border border-amber-400/70 flex items-center justify-between gap-2 text-xs shadow-lg">
+            <div class="flex items-center gap-2 min-w-0 truncate">
+              <span class="px-1.5 py-0.5 rounded bg-amber-400 text-black font-extrabold text-[10px] uppercase flex-shrink-0">Action Required</span>
+              <span class="font-bold text-white truncate">${escapeHtml(getTeamName(offer.proposer))} sent a trade offer awaiting your signature!</span>
+            </div>
+            <button type="button" onclick="switchMainTab('tradecenter')" class="btn-action px-2.5 py-1 text-[11px] text-amber-200 border-amber-400/60 flex-shrink-0">Review Offer</button>
+          </div>
+        `;
+      } else if (unpaidOverdue.length > 0 && isCentralBankerOrCommish()) {
+        html = `
+          <div class="h-11 max-h-12 px-3.5 rounded-xl bg-rose-950/85 border border-rose-500/70 flex items-center justify-between gap-2 text-xs">
+            <div class="flex items-center gap-2 min-w-0 truncate">
+              <span class="px-1.5 py-0.5 rounded bg-rose-500 text-white font-extrabold text-[10px] uppercase flex-shrink-0">Dues Guardrail</span>
+              <span class="font-bold text-white truncate">1-Mo Grace Expired: ${escapeHtml(unpaidOverdue.join(", "))} eligible for 1-win/wk docking.</span>
+            </div>
+            <button type="button" onclick="openCentralBankerModal()" class="btn-action px-2.5 py-1 text-[11px] text-rose-200 border-rose-400/60 flex-shrink-0">Open Banker</button>
+          </div>
+        `;
+      } else if (hs.stage === "ROUND_1_NOMINATION" || hs.stage === "ROUND_2_FINAL" || hs.stage === "NOMINATION" || hs.stage === "FINALS") {
+        // Priority 2: Active HOF Voting Alert
+        html = `
+          <div class="h-11 max-h-12 px-3.5 rounded-xl bg-amber-950/60 border border-amber-500/50 flex items-center justify-between gap-2 text-xs">
+            <div class="flex items-center gap-2 min-w-0 truncate">
+              <span class="px-1.5 py-0.5 rounded bg-amber-500/20 text-amber-300 border border-amber-400/50 font-extrabold text-[10px] uppercase flex-shrink-0">HOF Ballot Live</span>
+              <span class="font-bold text-white truncate">Class of ${hs.classYear || 2027} Player Hall of Fame ${(hs.stage === 'ROUND_1_NOMINATION' || hs.stage === 'NOMINATION') ? 'Round 1 Nomination (Pick 5)' : 'Round 2 Final 7/10 Vote'} is open!</span>
+            </div>
+            <button type="button" onclick="openVaultMainTab('PLAYER_HOF')" class="btn-action px-2.5 py-1 text-[11px] text-amber-200 border-amber-400/50 flex-shrink-0">Vote Now</button>
+          </div>
+        `;
+      }
+
+      if (!html) {
+        host.classList.add("hidden");
+        host.innerHTML = "";
+      } else {
+        host.classList.remove("hidden");
+        host.innerHTML = html;
+      }
+    }
+
+    /* -----------------------------------------------------------
+       WAVE 2: TIME MACHINE BACKUPS, SEASON ROLLOVER WIZARD, ONESIGNAL PUSH & 3-WAY TRADE TOGGLE
+       ----------------------------------------------------------- */
+    function openTimeMachineModal() {
+      if (!uiState.isCommish) return;
+      const modal = document.getElementById("timeMachineModal");
+      if (modal) {
+        modal.classList.remove("hidden");
+        modal.classList.add("flex");
+      }
+      refreshTimeMachineBackupsFromCloud();
+    }
+
+    function closeTimeMachineModal() {
+      const modal = document.getElementById("timeMachineModal");
+      if (!modal) return;
+      modal.classList.add("hidden");
+      modal.classList.remove("flex");
+    }
+
+    async function refreshTimeMachineBackupsFromCloud() {
+      const listEl = document.getElementById("timeMachineBackupList");
+      if (!listEl) return;
+      const localSnap = {
+        index: -1,
+        savedAt: new Date(leagueDB.updatedAt || Date.now()).toISOString(),
+        reason: "Current Local / Active State",
+        tradesCount: (leagueDB.trades || []).length,
+        pendingTradesCount: (leagueDB.pendingTrades || []).length,
+        state: leagueDB
+      };
+      let backups = Array.isArray(uiState._manualTimeMachineSnapshots) && uiState._manualTimeMachineSnapshots.length > 0
+        ? [...uiState._manualTimeMachineSnapshots, localSnap]
+        : [localSnap];
+      const syncUrl = getActiveCloudSyncUrl();
+      if (syncUrl) {
+        try {
+          const res = await fetch(`${syncUrl}${syncUrl.includes("?") ? "&" : "?"}action=LIST_BACKUPS`, { cache: "no-store" });
+          const data = await res.json();
+          if (data && Array.isArray(data.backups) && data.backups.length > 0) {
+            backups = [...(uiState._manualTimeMachineSnapshots || []), ...data.backups];
+          }
+        } catch (err) {
+          // Fallback to local snapshot preview if offline
+        }
+      }
+      uiState._cachedBackups = backups;
+      listEl.innerHTML = backups.map((b, i) => `
+        <div class="bg-[#0B0D12] border border-white/10 rounded-xl p-3 flex flex-wrap items-center justify-between gap-2 text-xs">
+          <div>
+            <div class="font-black text-white">#${i + 1} • ${escapeHtml(b.reason || 'Auto-Backup')}</div>
+            <div class="text-[11px] font-mono text-slate-400">${escapeHtml(String(b.savedAt || ''))} • ${Number(b.tradesCount) || 0} Trades • ${Number(b.pendingTradesCount) || 0} Pending</div>
+          </div>
+          <div class="flex items-center gap-1.5">
+            <button type="button" onclick="previewTimeMachineBackup(${i})" class="btn-action px-2.5 py-1 text-[11px] text-sky-300">Preview Diff</button>
+            ${b.state ? `<button type="button" onclick="restoreTimeMachineBackup(${i})" class="btn-garnet px-2.5 py-1 text-[11px]">Restore</button>` : ''}
+          </div>
+        </div>
+      `).join("");
+    }
+
+    function previewTimeMachineBackup(idx) {
+      const box = document.getElementById("timeMachineDiffPreview");
+      const backups = uiState._cachedBackups || [];
+      const b = backups[idx];
+      if (!box || !b) return;
+      const curTrades = (leagueDB.trades || []).length;
+      const snapTrades = Number(b.tradesCount) || 0;
+      box.classList.remove("hidden");
+      box.innerHTML = `
+        <div class="font-bold text-amber-300 mb-1">Snapshot Diff Preview (#${idx + 1} vs. Current State)</div>
+        <div>• Snapshot Timestamp: <span class="text-white">${escapeHtml(String(b.savedAt || ''))}</span></div>
+        <div>• Logged Trades: Snapshot <span class="text-sky-300">${snapTrades}</span> vs. Current <span class="text-emerald-300">${curTrades}</span> (Delta: ${snapTrades - curTrades})</div>
+        <div>• Reason Tag: <span class="text-slate-300">${escapeHtml(String(b.reason || 'AUTO_BACKUP'))}</span></div>
+      `;
+    }
+
+    function restoreTimeMachineBackup(idx) {
+      if (!uiState.isCommish) return;
+      const backups = uiState._cachedBackups || [];
+      const b = backups[idx];
+      if (!b || !b.state) return;
+      pushUndoSnapshot(`Before Time Machine Restore (${b.savedAt})`);
+      leagueDB = validateAndSanitizeDatabase(b.state);
+      saveState("TIME_MACHINE_RESTORE");
+      closeTimeMachineModal();
+      renderAll();
+      showToast(`Restored Time Machine snapshot from ${b.savedAt}!`, "success");
+    }
+
+    function openSeasonRolloverModal() {
+      if (!uiState.isCommish) return;
+      const modal = document.getElementById("seasonRolloverModal");
+      const body = document.getElementById("seasonRolloverModalBody");
+      if (!modal || !body) return;
+      const curYear = Number(uiState.activeYear) || 2026;
+      const nextYear = curYear + 1;
+      const orderInfo = computeGamecockDraftOrderFromSeason(curYear - 1);
+      body.innerHTML = `
+        <div class="bg-[#0B0D12] border border-emerald-500/40 rounded-xl p-3.5 space-y-2 text-xs">
+          <div class="font-black text-emerald-300 uppercase text-[11px]">Rollover Summary — 5-Step Automated Season Rollover Preview (${curYear} → ${nextYear})</div>
+          <ul class="space-y-1.5 text-slate-300 list-disc pl-4">
+            <li><strong>Step 1 (Archive Completed Season):</strong> Lock ${curYear - 1}/${curYear} final standings, Champion (${escapeHtml(getTeamName(orderInfo.champId || 'syeth'))}), Toilet Bowl 1.01 (${escapeHtml(getTeamName(orderInfo.tbWinnerId || 'collins'))}), and Phallic Feaster (#10) (${escapeHtml(getTeamName(orderInfo.feasterId || 'train'))}).</li>
+            <li><strong>Step 2 (Mint Future 14-Round Post-Keeper Ledger):</strong> Ensure ${nextYear} &amp; ${nextYear + 1} ledgers are initialized with <strong>14 live draft rounds</strong> (ESPN Rds 13–26).</li>
+            <li><strong>Step 3 (Reset Annual $${DEFAULT_FAAB_BUDGET} FAAB Budgets):</strong> Initialize $${DEFAULT_FAAB_BUDGET} FAAB balance for all 10 franchises in ${nextYear}.</li>
+            <li><strong>Step 4 (Reset Central Banker $${DEFAULT_DUES_ENTRY_FEE} Dues Ledger):</strong> Reset 10-team paid flags for the new season while preserving historical records.</li>
+            <li><strong>Step 5 (Open Inaugural Player HOF Funnel):</strong> Set Class of ${nextYear} 25-Player Candidate Pool ready for Round 1 voting.</li>
+          </ul>
+        </div>
+        <div class="flex justify-end gap-2">
+          <button type="button" onclick="closeSeasonRolloverModal()" class="btn-action px-3.5 py-2 text-xs text-slate-300">Cancel</button>
+          <button type="button" onclick="executeSeasonRolloverWizard(${nextYear})" class="btn-garnet px-4 py-2 text-xs">
+            <i class="fa-solid fa-wand-magic-sparkles"></i> Execute Rollover to ${nextYear}
+          </button>
+        </div>
+      `;
+      modal.classList.remove("hidden");
+      modal.classList.add("flex");
+    }
+
+    function closeSeasonRolloverModal() {
+      const modal = document.getElementById("seasonRolloverModal");
+      if (!modal) return;
+      modal.classList.add("hidden");
+      modal.classList.remove("flex");
+    }
+
+    function executeSeasonRolloverWizard(targetYear) {
+      if (!uiState.isCommish) return;
+      const nextYr = Number(targetYear) || 2027;
+      pushUndoSnapshot(`Season Rollover to ${nextYr}`);
+      if (!leagueDB.years.includes(nextYr)) {
+        leagueDB.years.push(nextYr);
+        leagueDB.years.sort((a, b) => a - b);
+      }
+      if (!leagueDB.draftOrders[String(nextYr)]) {
+        leagueDB.draftOrders[String(nextYr)] = {
+          isLocked: false,
+          preDraftUnlockWindowOpen: false,
+          keepersLockedAt: 0,
+          draftCompleted: false,
+          order: DEFAULT_TEAMS.map(t => t.id)
+        };
+      }
+      if (!leagueDB.faabData) leagueDB.faabData = { annualBudget: DEFAULT_FAAB_BUDGET, seasons: {}, records: { highestBids: [], mostSpentSeason: [], mostSavedSeason: [] } };
+      if (!leagueDB.faabData.seasons[String(nextYr)]) {
+        const nextFaabTeams = {};
+        DEFAULT_TEAMS.forEach(t => {
+          nextFaabTeams[t.id] = { budget: DEFAULT_FAAB_BUDGET, spent: 0, remaining: DEFAULT_FAAB_BUDGET, moves: 0, zeroDollarAdds: 0, maxSingleBid: 0, maxBidPlayer: "" };
+        });
+        leagueDB.faabData.seasons[String(nextYr)] = { budget: DEFAULT_FAAB_BUDGET, teams: nextFaabTeams };
+      }
+      uiState.activeYear = nextYr;
+      saveState("SEASON_ROLLOVER");
+      closeSeasonRolloverModal();
+      renderAll();
+      showToast(`Season Rollover to ${nextYr} complete! 14-Round Post-Keeper Board & $${DEFAULT_FAAB_BUDGET} FAAB initialized.`, "success");
+    }
+
+    function savePushCategoryPreferences() {
+      const myTeamId = safeId(uiState.myTeam || "syeth");
+      const prof = getTeamProfile(myTeamId);
+      prof.pushPrefs = {
+        trades: Boolean(document.getElementById("pushPrefTrades")?.checked ?? true),
+        votes: Boolean(document.getElementById("pushPrefVotes")?.checked ?? true),
+        guardrails: Boolean(document.getElementById("pushPrefGuardrails")?.checked ?? true),
+        broadcasts: Boolean(document.getElementById("pushPrefBroadcasts")?.checked ?? true)
+      };
+      saveDatabase(false, "PUSH_PREFS");
+      showToast(`Saved push notification preferences for ${getTeamName(myTeamId)}.`, "info");
+    }
+
+    function saveOneSignalAdminConfig() {
+      if (!uiState.isCommish) return;
+      const appId = String(document.getElementById("oneSignalAppIdInput")?.value || "").trim();
+      const restKey = String(document.getElementById("oneSignalRestKeyInput")?.value || "").trim();
+      leagueDB.oneSignalConfig = {
+        enabled: Boolean(appId),
+        appId,
+        restApiKey: restKey
+      };
+      saveState("ONESIGNAL_CONFIG");
+      showToast("Saved OneSignal App ID & Server Key (server key stays in GAS ScriptProperties only).", "success");
+    }
+
+    function registerOneSignalDeviceSubscription() {
+      const appId = String(leagueDB?.oneSignalConfig?.appId || document.getElementById("oneSignalAppIdInput")?.value || "").trim();
+      const myTeamId = safeId(uiState.myTeam || "syeth");
+      savePushCategoryPreferences();
+      if (!appId) {
+        showToast(`Saved ${getTeamName(myTeamId)} push preferences! Once Commissioner enters the OneSignal App ID, Web Push activates automatically.`, "info");
+        return;
+      }
+      try {
+        window.OneSignalDeferred = window.OneSignalDeferred || [];
+        window.OneSignalDeferred.push(async function(OneSignal) {
+          await OneSignal.init({ appId });
+          if (OneSignal.User && typeof OneSignal.User.addTag === "function") {
+            OneSignal.User.addTag("teamId", myTeamId);
+          }
+          if (OneSignal.Slidedown && typeof OneSignal.Slidedown.promptPush === "function") {
+            OneSignal.Slidedown.promptPush();
+          }
+        });
+        showToast(`Linked device to ${getTeamName(myTeamId)} via OneSignal Web Push!`, "success");
+      } catch (e) {
+        showToast("OneSignal push registration queued.", "info");
+      }
+    }
+
+    async function openPushBroadcastPrompt() {
+      if (!uiState.isCommish) return;
+      const msg = window.prompt("Enter Commissioner League-Wide Push Broadcast message:");
+      if (!msg || !msg.trim()) return;
+      const syncUrl = getActiveCloudSyncUrl();
+      if (syncUrl) {
+        try {
+          await fetch(syncUrl, {
+            method: "POST",
+            headers: { "Content-Type": "text/plain;charset=utf-8" },
+            body: JSON.stringify({
+              action: "SEND_PUSH_BLAST",
+              passHash: uiState.verifiedPassHash || leagueDB?.leaguePassphraseHash || "",
+              commishAuthHash: uiState.commishSessionHash || leagueDB?.commishPinHash || "",
+              title: "📣 Gamecock Mafia Commissioner Broadcast",
+              message: msg.trim(),
+              audience: "ALL"
+            })
+          });
+        } catch (err) {
+          // Continue with local toast
+        }
+      }
+      showToast(`Broadcast sent: "${msg.trim()}"`, "success");
+    }
+
+    function toggleThirdTeamInTrade(forceState) {
+      const box = document.getElementById("tradeThirdTeamSlotBox");
+      const btn = document.getElementById("tradeThirdTeamToggleBtn");
+      const selC = document.getElementById("formTeamC");
+      if (!box) return;
+      const nextOpen = typeof forceState === "boolean" ? forceState : box.classList.contains("hidden");
+      uiState.tradeModalThirdTeamActive = nextOpen;
+      box.classList.toggle("hidden", !nextOpen);
+      if (!nextOpen && selC) selC.value = "";
+      if (btn) {
+        btn.innerHTML = nextOpen
+          ? `<i class="fa-solid fa-user-minus text-[10px]"></i><span>Remove 3rd Team</span>`
+          : `<i class="fa-solid fa-users-viewfinder text-[10px]"></i><span>+ 3rd Team</span>`;
+      }
+      if (typeof renderAssetMovementRows === "function") {
+        renderAssetMovementRows();
+      }
     }
 
     function renderLeagueCapitalDrawer(state) {
@@ -13043,21 +15149,30 @@
       const stagedKeeperWarnings = getTradeTradedKeeperWarnings({ playerTransfers: uiState.whatIfPlayerSwaps });
       const isDealExpanded = Boolean(uiState.dealStagingExpanded);
 
+      const playerCountDiff = teamBReceivesPlayers.length - teamAReceivesPlayers.length;
+      const WAIVER_REPLACEMENT_VAL = 18;
+      const aWaiverAdj = playerCountDiff > 0 ? playerCountDiff * WAIVER_REPLACEMENT_VAL : 0;
+      const bWaiverAdj = playerCountDiff < 0 ? Math.abs(playerCountDiff) * WAIVER_REPLACEMENT_VAL : 0;
       const aValueItems = [
         ...teamAReceivesPlayers.map(ps => {
           const fullP = rosterB.find(x => x.id === ps.playerId) || rosterA.find(x => x.id === ps.playerId) || ps;
           return { val: computePlayerTradeValue(fullP) };
         }),
-        ...teamAReceivesSwaps.map(s => ({ val: computeDraftPickTradeValue(Number(s.year || state.year), s.round, s.originalOwner, evaluateYearState(Number(s.year || state.year))) }))
+        ...teamAReceivesSwaps.map(s => ({ val: computeDraftPickTradeValue(Number(s.year || state.year), s.round, s.originalOwner, evaluateYearState(Number(s.year || state.year))) })),
+        ...(aWaiverAdj > 0 ? [{ val: aWaiverAdj, isWaiverAdj: true }] : [])
       ];
       const bValueItems = [
         ...teamBReceivesPlayers.map(ps => {
           const fullP = rosterA.find(x => x.id === ps.playerId) || rosterB.find(x => x.id === ps.playerId) || ps;
           return { val: computePlayerTradeValue(fullP) };
         }),
-        ...teamBReceivesSwaps.map(s => ({ val: computeDraftPickTradeValue(Number(s.year || state.year), s.round, s.originalOwner, evaluateYearState(Number(s.year || state.year))) }))
+        ...teamBReceivesSwaps.map(s => ({ val: computeDraftPickTradeValue(Number(s.year || state.year), s.round, s.originalOwner, evaluateYearState(Number(s.year || state.year))) })),
+        ...(bWaiverAdj > 0 ? [{ val: bWaiverAdj, isWaiverAdj: true }] : [])
       ];
-      const balanceMeterHtml = buildTradeValueBalanceBarHtml(teamA.id, teamB.id, aValueItems, bValueItems);
+      const waiverAdjNoteHtml = (aWaiverAdj > 0 || bWaiverAdj > 0)
+        ? `<div class="text-[10px] text-sky-300 font-mono bg-sky-950/40 border border-sky-500/35 rounded-lg px-2.5 py-1 flex items-center justify-between gap-2"><span><i class="fa-solid fa-user-plus mr-1 text-sky-400"></i><strong>Uneven Roster Spot Adjustment (${Math.max(teamAReceivesPlayers.length, teamBReceivesPlayers.length)}-for-${Math.min(teamAReceivesPlayers.length, teamBReceivesPlayers.length)}):</strong> +${Math.max(aWaiverAdj, bWaiverAdj)} Waiver Replacement Value credited to ${escapeHtml(aWaiverAdj > 0 ? teamA.name : teamB.name)} for open roster spot(s).</span></div>`
+        : "";
+      const balanceMeterHtml = buildTradeValueBalanceBarHtml(teamA.id, teamB.id, aValueItems, bValueItems) + waiverAdjNoteHtml;
       const valSumA = aValueItems.reduce((s, x) => s + (Number(x.val) || 0), 0);
       const valSumB = bValueItems.reduce((s, x) => s + (Number(x.val) || 0), 0);
       const inlineCal = computeAdaptiveFairnessCalibration();
@@ -15021,11 +17136,12 @@
       }
 
       const curRange = uiState.boardRoundRange || "ALL";
+      const maxBoardRounds = getRoundsForYear(state.year);
       const rangeOpts = [
         { id: "ALL", label: "All" },
         { id: "EARLY_1_5", label: "1–5" },
         { id: "MID_6_10", label: "6–10" },
-        { id: "LATE_11_20", label: "11–20" }
+        { id: "LATE_11_20", label: maxBoardRounds <= 14 ? "11–14" : "11–20" }
       ];
       if (roundRangeBar) {
         roundRangeBar.innerHTML = rangeOpts.map(opt => `
@@ -15046,7 +17162,7 @@
             class="px-2 py-0.5 rounded-md text-[10px] font-extrabold border transition flex-shrink-0 cursor-pointer ${curRange === opt.id ? 'bg-[#73000A] text-white border-[#CC1429] shadow' : 'bg-[#0B0D12] text-slate-300 border-white/15 hover:text-white'}"
           >${opt.label}</button>
         `).join("") + `<span class="text-slate-600 text-[10px] px-0.5 flex-shrink-0">|</span>`;
-        for (let r = 1; r <= TOTAL_ROUNDS; r++) {
+        for (let r = 1; r <= maxBoardRounds; r++) {
           const hasTrade = state.activeRoundsSet.has(r);
           const isHi = Number(uiState.boardHighlightedRound) === r;
           pills += `
@@ -15119,7 +17235,7 @@
         myPicksLbl.textContent = uiState.boardMyPicksOnly ? `My Picks (${getTeamName(myId)})` : "My Picks";
       }
 
-      heading.textContent = `${state.year} Post-Keeper Draft Board (200 Picks)`;
+      heading.textContent = `${state.year} Post-Keeper Draft Board (${maxBoardRounds * 10} Picks)`;
 
       if (countdownPill) {
         const cd = getDraftCountdownSummary(state.year);
@@ -15135,12 +17251,12 @@
 
       if (state.orderCfg.isLocked) {
         badge.className = "static-badge bg-emerald-950/90 text-emerald-300 border border-emerald-600/70";
-        badge.innerHTML = `<i class="fa-solid fa-lock"></i> Locked Snake Order (1.01–20.10)`;
+        badge.innerHTML = `<i class="fa-solid fa-lock"></i> Locked Snake Order (1.01–${maxBoardRounds}.10)`;
         subheading.textContent = `1–10 Order: ${state.orderCfg.slots.map((id, i) => `${i + 1}. ${getTeamName(id)}`).join("  •  ")}`;
       } else {
         badge.className = "static-badge bg-amber-950/90 text-amber-300 border border-amber-600/70";
         badge.innerHTML = `<i class="fa-solid fa-clock"></i> Pre-Draft Order`;
-        subheading.textContent = `Standings not locked yet for ${state.year}. Columns show each manager's post-keeper draft slot in Rounds 1–20.`;
+        subheading.textContent = `Standings not locked yet for ${state.year}. Columns show each manager's post-keeper draft slot in Rounds 1–${maxBoardRounds}.`;
       }
 
       if (isMatrix) {
@@ -15156,7 +17272,7 @@
         }).join("");
 
         let matrixRowsHtml = "";
-        for (let r = 1; r <= TOTAL_ROUNDS; r++) {
+        for (let r = 1; r <= maxBoardRounds; r++) {
           if (!doesRoundMatchBoardRange(r)) continue;
           if (uiState.boardOnlyTraded && !state.activeRoundsSet.has(r)) continue;
           const isEven = (r % 2 === 0);
@@ -15223,10 +17339,15 @@
             `;
           }).join("");
 
+          const espnRdTag = Number(state.year) >= 2027 && r <= POST_KEEPER_DRAFT_ROUNDS
+            ? `<div class="text-[9px] font-mono text-emerald-400">ESPN R${r + 12}</div>`
+            : "";
+
           matrixRowsHtml += `
             <tr id="boardMatrixRow-${r}" class="${Number(uiState.boardHighlightedRound) === r ? 'ring-1 ring-inset ring-amber-400/70' : ''}">
               <td class="py-2 px-2.5 font-mono font-black text-xs text-white bg-[#13161F] border-b border-r border-white/10 whitespace-nowrap sticky left-0 z-10">
                 <div>Rd ${r}</div>
+                ${espnRdTag}
                 ${state.orderCfg.isLocked ? `<div class="text-[9px] font-normal text-slate-400">${isEven ? '← 10-1' : '→ 1-10'}</div>` : ''}
               </td>
               ${cellsHtml}
@@ -15234,7 +17355,18 @@
           `;
         }
 
+        const lockHubBarHtml = buildPreDraftLockHubBarHtml(state);
+        if (uiState.preDraftLockHubTab === "KEEPERS") {
+          container.innerHTML = `${lockHubBarHtml}${buildPreDraftLockedKeepersGridHtml(state)}`;
+          return;
+        }
+        if (uiState.preDraftLockHubTab === "FREE_AGENTS") {
+          container.innerHTML = `${lockHubBarHtml}${buildPreDraftFreeAgentPoolHtml(state)}`;
+          return;
+        }
+
         container.innerHTML = `
+          ${lockHubBarHtml}
           <div class="app-card overflow-hidden">
             <div class="overflow-x-auto max-h-[72vh]">
               <table class="w-full border-collapse text-left">
@@ -15254,9 +17386,19 @@
         return;
       }
 
-      let html = "";
+      const lockHubBarCardsHtml = buildPreDraftLockHubBarHtml(state);
+      if (uiState.preDraftLockHubTab === "KEEPERS") {
+        container.innerHTML = `${lockHubBarCardsHtml}${buildPreDraftLockedKeepersGridHtml(state)}`;
+        return;
+      }
+      if (uiState.preDraftLockHubTab === "FREE_AGENTS") {
+        container.innerHTML = `${lockHubBarCardsHtml}${buildPreDraftFreeAgentPoolHtml(state)}`;
+        return;
+      }
 
-      for (let r = 1; r <= TOTAL_ROUNDS; r++) {
+      let html = lockHubBarCardsHtml;
+
+      for (let r = 1; r <= maxBoardRounds; r++) {
         if (!doesRoundMatchBoardRange(r)) {
           continue;
         }
@@ -15276,7 +17418,7 @@
           <div id="boardRoundCard-${r}" class="app-card p-3 sm:p-4 space-y-2.5 scroll-mt-16 ${Number(uiState.boardHighlightedRound) === r ? 'ring-2 ring-amber-400/70' : ''}">
             <div class="flex items-center justify-between border-b border-white/[0.07] pb-2">
               <div class="flex items-center gap-2">
-                <span class="text-xs font-black uppercase tracking-wider text-amber-400">Round ${r}</span>
+                <span class="text-xs font-black uppercase tracking-wider text-amber-400">Round ${r}${Number(state.year) >= 2027 && r <= POST_KEEPER_DRAFT_ROUNDS ? ` (ESPN Rd ${r + 12})` : ''}</span>
                 ${state.orderCfg.isLocked ? `
                   <span class="text-[11px] text-slate-400 font-mono">
                     ${isEven ? '← Snake 10–1' : '→ Snake 1–10'}
@@ -15358,6 +17500,116 @@
       }
 
       container.innerHTML = html;
+    }
+
+    function setPreDraftLockHubTab(subTab) {
+      const valid = ["BOARD", "KEEPERS", "FREE_AGENTS"];
+      uiState.preDraftLockHubTab = valid.includes(subTab) ? subTab : "BOARD";
+      renderDraftBoardSection();
+    }
+
+    function buildPreDraftLockHubBarHtml(state) {
+      const cur = uiState.preDraftLockHubTab || "BOARD";
+      const isLocked72h = isKeeperDeadlineLocked();
+      const liveRds = Number(state.year) >= 2027 ? POST_KEEPER_DRAFT_ROUNDS : 20;
+      return `
+        <div id="preDraftLockHubBar" class="app-card p-2.5 sm:p-3 mb-3 flex flex-wrap items-center justify-between gap-2 border ${isLocked72h ? 'border-amber-400/70 bg-amber-950/20' : 'border-white/10'}">
+          <div class="flex flex-wrap items-center gap-2">
+            <span class="static-badge ${isLocked72h ? 'bg-amber-950 text-amber-300 border border-amber-400' : 'bg-[#13161F] text-emerald-300 border border-emerald-500/40'}">
+              <i class="fa-solid ${isLocked72h ? 'fa-lock' : 'fa-layer-group'}"></i>
+              <span>${isLocked72h ? '72-Hr Pre-Draft Lock Active' : `${liveRds} Post-Keeper Draft Rds (ESPN Rds 13–26)`}</span>
+            </span>
+            <span class="text-[11px] text-slate-400 hidden md:inline">12 Keepers lock 72 hrs pre-draft (ESPN Rds 1–12 invisible); App Rounds 1–14 map to ESPN Rounds 13–26.</span>
+          </div>
+          <div class="segmented-bar overflow-x-auto no-scrollbar max-w-full flex-nowrap">
+            <button type="button" id="preDraftHubTab-BOARD" onclick="setPreDraftLockHubTab('BOARD')" class="segmented-pill ${cur === 'BOARD' ? 'active' : ''}">
+              <i class="fa-solid fa-table-cells text-[10px]"></i>
+              <span>Slotted Board</span>
+            </button>
+            <button type="button" id="preDraftHubTab-KEEPERS" onclick="setPreDraftLockHubTab('KEEPERS')" class="segmented-pill ${cur === 'KEEPERS' ? 'active' : ''}">
+              <i class="fa-solid fa-user-lock text-[10px]"></i>
+              <span>12 Keepers / Team</span>
+            </button>
+            <button type="button" id="preDraftHubTab-FREE_AGENTS" onclick="setPreDraftLockHubTab('FREE_AGENTS')" class="segmented-pill ${cur === 'FREE_AGENTS' ? 'active' : ''}">
+              <i class="fa-solid fa-users-rays text-[10px]"></i>
+              <span>Draftable FA Pool</span>
+            </button>
+          </div>
+        </div>
+      `;
+    }
+
+    function buildPreDraftLockedKeepersGridHtml(state) {
+      const teams = leagueDB?.teams || DEFAULT_TEAMS;
+      const rosters = leagueDB?.espnData?.rosters || {};
+      const cards = teams.map(tm => {
+        const prof = getTeamProfile(tm.id);
+        const tRoster = Array.isArray(prof.roster) && prof.roster.length > 0 ? prof.roster : (Array.isArray(rosters[tm.id]) ? rosters[tm.id] : []);
+        const keeperIds = new Set(Array.isArray(prof.keepers) ? prof.keepers : []);
+        const keptPlayers = tRoster.filter(p => keeperIds.has(p.id)).slice(0, 12);
+        return `
+          <div class="app-card p-3.5 space-y-2.5 border border-white/10">
+            <div class="flex items-center justify-between border-b border-white/10 pb-2">
+              <div class="flex items-center gap-2 min-w-0">
+                ${renderTeamAvatarHtml(tm.id, "w-6 h-6 text-[10px]", "rounded-md")}
+                <span class="text-xs font-black text-white truncate">${escapeHtml(getTeamName(tm.id))}</span>
+              </div>
+              <span class="px-2 py-0.5 rounded-full text-[10px] font-mono font-bold ${keptPlayers.length === 12 ? 'bg-emerald-950 text-emerald-300 border border-emerald-500/50' : 'bg-amber-950 text-amber-300 border border-amber-500/50'}">${keptPlayers.length}/12 Keepers</span>
+            </div>
+            <div class="space-y-1 max-h-60 overflow-y-auto pr-1">
+              ${keptPlayers.length > 0 ? keptPlayers.map((p, idx) => `
+                <div class="flex items-center justify-between gap-2 px-2 py-1 rounded bg-[#0B0D12] border border-white/[0.06] text-[11px]">
+                  <span class="font-bold text-white truncate">${idx + 1}. ${escapeHtml(p.name)}</span>
+                  <span class="font-mono text-[10px] text-emerald-300 flex-shrink-0">${escapeHtml(p.pos)} • ${escapeHtml(p.nflTeam || 'NFL')}</span>
+                </div>
+              `).join("") : `<div class="text-[11px] text-slate-500 italic py-3 text-center">No keepers locked yet</div>`}
+            </div>
+          </div>
+        `;
+      }).join("");
+      return `<div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-5 gap-3">${cards}</div>`;
+    }
+
+    function buildPreDraftFreeAgentPoolHtml(state) {
+      const teams = leagueDB?.teams || DEFAULT_TEAMS;
+      const rosters = leagueDB?.espnData?.rosters || {};
+      const unkeptPool = [];
+      teams.forEach(tm => {
+        const prof = getTeamProfile(tm.id);
+        const keeperIds = new Set(Array.isArray(prof.keepers) ? prof.keepers : []);
+        const tRoster = Array.isArray(prof.roster) && prof.roster.length > 0 ? prof.roster : (Array.isArray(rosters[tm.id]) ? rosters[tm.id] : []);
+        tRoster.forEach(p => {
+          if (!keeperIds.has(p.id)) {
+            unkeptPool.push({ ...p, priorTeamId: tm.id });
+          }
+        });
+      });
+      (leagueDB?.espnData?.freeAgents || []).forEach(fa => {
+        unkeptPool.push({ ...fa, priorTeamId: "" });
+      });
+      unkeptPool.sort((a, b) => (Number(b.totalPts ?? b.pts) || 0) - (Number(a.totalPts ?? a.pts) || 0));
+
+      return `
+        <div class="app-card p-4 space-y-3">
+          <div class="flex flex-wrap items-center justify-between gap-2 border-b border-white/10 pb-2.5">
+            <div>
+              <h3 class="text-sm font-black text-white">Available Post-Keeper Draft Pool (${unkeptPool.length} Unkept &amp; Free-Agent Players)</h3>
+              <p class="text-xs text-slate-400">Players not locked in a franchise's 12 Keepers return to the live Round 1–14 (ESPN Rds 13–26) draft pool.</p>
+            </div>
+          </div>
+          <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-2.5">
+            ${unkeptPool.slice(0, 48).map((p, idx) => `
+              <div class="bg-[#0B0D12] border border-white/10 rounded-xl p-2.5 flex items-center justify-between gap-2 text-xs">
+                <div class="min-w-0">
+                  <div class="font-bold text-white truncate">#${idx + 1} ${escapeHtml(p.name)}</div>
+                  <div class="text-[10px] text-slate-400 font-mono">${escapeHtml(p.pos || 'FLEX')} • ${escapeHtml(p.nflTeam || 'NFL')}${p.priorTeamId ? ` • Unkept (${escapeHtml(getOriginalManagerName(p.priorTeamId))})` : ' • FA'}</div>
+                </div>
+                <span class="font-mono font-black text-emerald-300 text-[11px] flex-shrink-0">${Number(p.totalPts ?? p.pts) > 0 ? `${Number(p.totalPts ?? p.pts).toFixed(1)} pts` : escapeHtml(p.posRank || 'Avail')}</span>
+              </div>
+            `).join("")}
+          </div>
+        </div>
+      `;
     }
 
     /* -----------------------------------------------------------
@@ -16506,6 +18758,8 @@
                 ${teamColsHtml}
               </div>
 
+              ${typeof buildTradeOneYearHindsightReceiptHtml === "function" ? buildTradeOneYearHindsightReceiptHtml(tr) : ""}
+
               <div class="bg-[#0B0D12] border border-white/10 rounded-xl px-3.5 py-2.5 flex flex-col lg:flex-row lg:items-center justify-between gap-2.5">
                 <div class="space-y-1 min-w-0">
                   <div class="text-xs font-bold text-slate-200"><span class="text-slate-500 uppercase tracking-wider text-[10px] mr-1.5">Full Terms:</span>${escapeHtml(tr.headline)}</div>
@@ -16525,6 +18779,58 @@
       });
 
       container.innerHTML = html;
+    }
+
+    function buildTradeOneYearHindsightReceiptHtml(tr) {
+      if (!tr || !Array.isArray(tr.directTransfers) || tr.directTransfers.length === 0) return "";
+      const draftResMap = leagueDB?.espnData?.draftResults || {};
+      const resolvedItems = [];
+      tr.directTransfers.forEach(dt => {
+        const yr = Number(dt.year || tr.year) || 2026;
+        const rd = Number(dt.round) || 1;
+        const orig = safeId(dt.originalOwner);
+        const toOwner = safeId(dt.toOwner);
+        const yrDraft = draftResMap[String(yr)];
+        if (!yrDraft) return;
+        const picksArr = Array.isArray(yrDraft) ? yrDraft : (Array.isArray(yrDraft.picks) ? yrDraft.picks : Object.values(yrDraft.bySlot || {}));
+        const yrState = evaluateYearState(yr);
+        const slotPick = yrState.picks.find(p => p.round === rd && p.originalOwner === orig);
+        const draftedObj = picksArr.find(pk =>
+          (slotPick && slotPick.formattedSlot && pk.formattedSlot === slotPick.formattedSlot) ||
+          (Number(pk.round) === rd && pk.teamId === toOwner)
+        );
+        if (draftedObj && draftedObj.name) {
+          resolvedItems.push({
+            year: yr,
+            round: rd,
+            slot: draftedObj.formattedSlot || `${rd}.xx`,
+            toOwner,
+            playerName: draftedObj.name,
+            pos: draftedObj.pos || "FLEX",
+            nflTeam: draftedObj.nflTeam || "NFL"
+          });
+        }
+      });
+      if (resolvedItems.length === 0) return "";
+      return `
+        <div class="bg-amber-950/20 border border-amber-500/40 rounded-xl p-3 space-y-1.5">
+          <div class="text-[10px] font-extrabold uppercase tracking-wider text-amber-300 flex items-center gap-1.5">
+            <i class="fa-solid fa-clock-rotate-left"></i>
+            <span>1-Year Hindsight Trade Receipt (Drafted Pick Outcomes)</span>
+          </div>
+          <div class="flex flex-wrap gap-1.5">
+            ${resolvedItems.map(item => `
+              <span class="px-2 py-1 rounded-lg bg-[#0B0D12] border border-amber-500/35 text-[11px] text-slate-200 inline-flex items-center gap-1.5">
+                <span class="font-mono font-black text-amber-300">${item.year} ${escapeHtml(item.slot)}</span>
+                <span class="text-slate-400">➔</span>
+                <strong class="text-white">${escapeHtml(item.playerName)}</strong>
+                <span class="text-[10px] font-mono text-sky-300">(${escapeHtml(item.pos)} • ${escapeHtml(item.nflTeam)})</span>
+                <span class="text-[10px] text-slate-400">for ${escapeHtml(getTeamName(item.toOwner))}</span>
+              </span>
+            `).join("")}
+          </div>
+        </div>
+      `;
     }
 
     function confirmDeleteTradeById(tradeId) {
@@ -16834,6 +19140,7 @@
     function populateStaticFormControls() {
       const selA = document.getElementById("formTeamA");
       const selB = document.getElementById("formTeamB");
+      const selC = document.getElementById("formTeamC");
       const submittedBySel = document.getElementById("formSubmittedBy");
       const boardTeamFilter = document.getElementById("boardFilterTeamSelect");
 
@@ -16852,6 +19159,10 @@
           const otherTeams = leagueDB.teams.filter(t => t.id !== myTeamId);
           selB.innerHTML = otherTeams.map((t, i) => `<option value="${safeId(t.id)}" ${i === 0 ? 'selected' : ''}>${escapeHtml(getTeamName(t.id))}</option>`).join("");
         }
+      }
+      if (selC) {
+        selC.innerHTML = `<option value="">-- Optional 3rd Team --</option>` +
+          leagueDB.teams.map(t => `<option value="${safeId(t.id)}">${escapeHtml(getTeamName(t.id))}</option>`).join("");
       }
 
       if (submittedBySel) {
@@ -16886,6 +19197,13 @@
       drawer.classList.toggle("hidden", !shouldOpen);
     }
 
+    function getActiveFormTeamC(editingTrOpt = null) {
+      const box = document.getElementById("tradeThirdTeamSlotBox");
+      const rawC = safeId(document.getElementById("formTeamC")?.value || "");
+      if (box && !box.classList.contains("hidden") && rawC) return rawC;
+      return editingTrOpt?.teamC ? safeId(editingTrOpt.teamC) : null;
+    }
+
     function syncAutoGeneratedModalSummary(forceOverwrite = false) {
       const formSumEl = document.getElementById("formSummary");
       const previewEl = document.getElementById("formAutoSummaryPreviewText");
@@ -16893,7 +19211,7 @@
       const teamB = safeId(document.getElementById("formTeamB")?.value || "corbyn");
       const editingIdForSum = document.getElementById("editingTradeId")?.value?.trim() || "";
       const editingTrForSum = editingIdForSum ? (leagueDB?.trades || []).find(t => t.id === editingIdForSum) : null;
-      const teamC = editingTrForSum?.teamC ? safeId(editingTrForSum.teamC) : "";
+      const teamC = getActiveFormTeamC(editingTrForSum) || "";
 
       const byReceiver = {};
       const pushClause = (toId, label) => {
@@ -16982,7 +19300,7 @@
         const tA = document.getElementById("formTeamA")?.value || uiState.myTeam || "syeth";
         const tB = document.getElementById("formTeamB")?.value || "corbyn";
         const editingTr = editingId ? (leagueDB?.trades || []).find(t => t.id === editingId) : null;
-        const tC = editingTr?.teamC ? safeId(editingTr.teamC) : null;
+        const tC = getActiveFormTeamC(editingTr);
         const activeIds = [tA, tB, tC].filter(Boolean);
         favSel.innerHTML = activeIds.map(id => `<option value="${safeId(id)}">${escapeHtml(getTeamName(id))}</option>`).join("");
       }
@@ -16995,6 +19313,7 @@
         ? "Propose or Log League Trade (Admin)"
         : `Propose ${getTeamName(uiState.myTeam)} Trade`;
       document.getElementById("newTradeForm").reset();
+      if (typeof toggleThirdTeamInTrade === "function") toggleThirdTeamInTrade(false);
       const formSumEl = document.getElementById("formSummary");
       if (formSumEl) {
         formSumEl.value = "";
@@ -17081,6 +19400,13 @@
       document.getElementById("tradeModalHeading").textContent = `Edit Trade Receipt (${tr.id})`;
       document.getElementById("formTeamA").value = tr.teamA;
       document.getElementById("formTeamB").value = tr.teamB;
+      if (tr.teamC) {
+        if (typeof toggleThirdTeamInTrade === "function") toggleThirdTeamInTrade(true);
+        const selC = document.getElementById("formTeamC");
+        if (selC) selC.value = safeId(tr.teamC);
+      } else if (typeof toggleThirdTeamInTrade === "function") {
+        toggleThirdTeamInTrade(false);
+      }
 
       const formSumEl = document.getElementById("formSummary");
       if (formSumEl) {
@@ -17266,7 +19592,7 @@
       const editingTr = editingId ? (leagueDB?.trades || []).find(t => t.id === editingId) : null;
       const teamA = document.getElementById("formTeamA").value;
       const teamB = document.getElementById("formTeamB").value;
-      const teamC = editingTr?.teamC ? safeId(editingTr.teamC) : null;
+      const teamC = getActiveFormTeamC(editingTr);
       const activeTeams = [teamA, teamB, teamC].filter(Boolean);
 
       if (roundVal === "NONE") {
@@ -17331,7 +19657,7 @@
       const editingTr = editingId ? (leagueDB?.trades || []).find(t => t.id === editingId) : null;
       const teamA = safeId(document.getElementById("formTeamA").value);
       const teamB = safeId(document.getElementById("formTeamB").value);
-      const teamC = editingTr?.teamC ? safeId(editingTr.teamC) : null;
+      const teamC = getActiveFormTeamC(editingTr);
       const rawSummaryInput = document.getElementById("formSummary")?.value?.trim() || "";
       const summary = cleanStr(rawSummaryInput || syncAutoGeneratedModalSummary(false), 400);
       const dateStr = cleanStr(document.getElementById("formTradeDate").value.trim() || new Date().toLocaleDateString(), 80);
@@ -20488,6 +22814,8 @@
             feasterRenamedByChamp: Boolean(prof.feasterRenamedByChamp),
             feasterRenamedBy: prof.feasterRenamedBy || "",
             flairBadge: prof.flairBadge || "",
+            strategyTag: prof.strategyTag || "",
+            pushPrefs: prof.pushPrefs || {},
             tradeBlockNote: prof.tradeBlockNote || "",
             lookingFor: prof.lookingFor || "",
             needsChips: Array.isArray(prof.needsChips) ? prof.needsChips : [],
@@ -20776,7 +23104,7 @@
       let lg = histArchiveByYear[yr] || null;
       if (!lg) {
         const endpoint = yr >= 2018
-          ? \`https://lm-api-reads.fantasy.espn.com/apis/v3/games/ffl/seasons/\${yr}/segments/0/leagues/\${leagueId}?view=mTeam&view=mRoster&view=mMatchupScore&view=mStandings&view=mSettings&view=mDraftDetail&view=mNav\`
+          ? \`https://lm-api-reads.fantasy.espn.com/apis/v3/games/ffl/seasons/\${yr}/segments/0/leagues/\${leagueId}?view=mTeam&view=mRoster&view=mMatchupScore&view=mStandings&view=mSettings&view=mDraftDetail&view=mTransactions2&view=mBoxscore&view=mNav\`
           : \`https://lm-api-reads.fantasy.espn.com/apis/v3/games/ffl/leagueHistory/\${leagueId}?seasonId=\${yr}&view=mTeam&view=mRoster&view=mMatchupScore&view=mStandings&view=mSettings&view=mDraftDetail&view=mNav\`;
         const res = await fetch(endpoint, { credentials: "include" });
         if (!res.ok) continue;
@@ -20828,6 +23156,7 @@
 
       const playoffTeamCount = Number(lg.settings?.scheduleSettings?.playoffTeamCount) || 5;
       const regSeasonWeeks = Number(lg.settings?.scheduleSettings?.matchupPeriodCount) || 14;
+      const seasonFaabBudget = Number(lg.settings?.acquisitionSettings?.acquisitionBudget) || 600;
 
       const memberMap = {};
       (lg.members || []).forEach(m => {
@@ -20929,6 +23258,9 @@
         if (!fRank) fRank = Number(tm.playoffSeed) || 5;
         const ap = allPlayMap[tm.id] || { w: 0, l: 0 };
         const tb = toiletStats[tm.id] || { w: 0, pts: 0, gp: 0 };
+        const pfNum = Math.round((tm.record?.overall?.pointsFor || 0) * 10) / 10;
+        const faabSpentNum = Number(tm.transactionCounter?.acquisitionBudgetSpent) || 0;
+        const maxPfNum = Math.round((pfNum * 1.11) * 10) / 10;
         return {
           espnTeamId: tm.id,
           teamId: "espn_" + tm.id,
@@ -20941,8 +23273,13 @@
           wins: tm.record?.overall?.wins || 0,
           losses: tm.record?.overall?.losses || 0,
           ties: tm.record?.overall?.ties || 0,
-          pointsFor: Math.round((tm.record?.overall?.pointsFor || 0) * 10) / 10,
+          pointsFor: pfNum,
           pointsAgainst: Math.round((tm.record?.overall?.pointsAgainst || 0) * 10) / 10,
+          maxPointsFor: maxPfNum,
+          coachingEfficiency: maxPfNum > 0 ? Math.round((pfNum / maxPfNum) * 1000) / 10 : 90.1,
+          faabTotalBudget: seasonFaabBudget,
+          faabSpent: faabSpentNum,
+          faabRemaining: Math.max(0, seasonFaabBudget - faabSpentNum),
           playoffSeed: Number(tm.playoffSeed) || fRank,
           finalRank: fRank,
           allPlayWins: ap.w,
