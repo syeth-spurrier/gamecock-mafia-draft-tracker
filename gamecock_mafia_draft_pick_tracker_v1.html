@@ -116,7 +116,8 @@
        3-LAYER TEAM COLORWAY ENGINE (Base Surface • Primary Fills • Trim Accents)
        ============================================================================ */
     /* Colorway 1: Sandstorm Noir (Primary Pitch Black Base + USC Garnet Fills + Crisp White Accents) */
-    body.theme-sandstorm_noir {
+    body.theme-sandstorm_noir,
+    body[data-theme="sandstorm_noir"] {
       --bg-obsidian: #050507;
       --bg-obsidian-rgb: 5, 5, 7;
       --bg-surface: #0C0C10;
@@ -140,9 +141,12 @@
       --theme-btn-hover: linear-gradient(180deg, #CC1429 0%, #8C000C 100%);
       --theme-border-hi: rgba(255, 255, 255, 0.72);
       --theme-glow: rgba(153, 0, 15, 0.45);
+      --color-warning-border: rgba(245, 158, 11, 0.55);
+      --color-warning-bg: linear-gradient(135deg, rgba(115, 0, 10, 0.35) 0%, rgba(20, 20, 27, 0.95) 100%);
     }
     /* Colorway 2: Chapel Sky (Crisp White/Ice Base + Tar Heel Blue Primary Fills + Deep Chapel Navy Accents) */
-    body.theme-chapel_sky {
+    body.theme-chapel_sky,
+    body[data-theme="chapel_sky"] {
       --bg-obsidian: #EDF5FC;
       --bg-obsidian-rgb: 237, 245, 252;
       --bg-surface: #FFFFFF;
@@ -166,10 +170,13 @@
       --theme-btn-hover: linear-gradient(180deg, #3B86CC 0%, #2364A6 100%);
       --theme-border-hi: #13294B;
       --theme-glow: rgba(75, 156, 211, 0.38);
+      --color-warning-border: #D97706;
+      --color-warning-bg: linear-gradient(135deg, #FEF3C7 0%, #FFFBEB 100%);
       color: #0F2342;
     }
     /* Colorway 3: Honolulu Gridiron (Primary Honolulu Blue Base + Crisp White Fills + Silver/Black Accents) */
-    body.theme-honolulu_gridiron {
+    body.theme-honolulu_gridiron,
+    body[data-theme="honolulu_gridiron"] {
       --bg-obsidian: #004E7C;
       --bg-obsidian-rgb: 0, 78, 124;
       --bg-surface: #FFFFFF;
@@ -193,9 +200,12 @@
       --theme-btn-hover: linear-gradient(180deg, #008AD4 0%, #005A8B 100%);
       --theme-border-hi: #0A0E14;
       --theme-glow: rgba(0, 118, 182, 0.42);
+      --color-warning-border: #D97706;
+      --color-warning-bg: linear-gradient(135deg, #FEF3C7 0%, #FFFBEB 100%);
     }
     /* Colorway 4: Foundry Orange (Primary Seal Brown Base + Blaze Orange Fills + Crisp White Accents) */
-    body.theme-foundry_orange {
+    body.theme-foundry_orange,
+    body[data-theme="foundry_orange"] {
       --bg-obsidian: #1E1005;
       --bg-obsidian-rgb: 30, 16, 5;
       --bg-surface: #2B180A;
@@ -219,9 +229,12 @@
       --theme-btn-hover: linear-gradient(180deg, #FF5722 0%, #D43500 100%);
       --theme-border-hi: #FFFFFF;
       --theme-glow: rgba(255, 60, 0, 0.42);
+      --color-warning-border: rgba(245, 158, 11, 0.55);
+      --color-warning-bg: linear-gradient(135deg, rgba(200, 48, 0, 0.35) 0%, rgba(59, 34, 16, 0.95) 100%);
     }
     /* Colorway 5: Emerald Sound '98 (Primary '90s Seafoam/Seahawks Blue Base + Action Green Fills + Crisp White Accents) */
-    body.theme-emerald_sound {
+    body.theme-emerald_sound,
+    body[data-theme="emerald_sound"] {
       --bg-obsidian: #062B45;
       --bg-obsidian-rgb: 6, 43, 69;
       --bg-surface: #0B3D62;
@@ -245,9 +258,12 @@
       --theme-btn-hover: linear-gradient(180deg, #34C759 0%, #1E823C 100%);
       --theme-border-hi: #FFFFFF;
       --theme-glow: rgba(105, 190, 40, 0.42);
+      --color-warning-border: rgba(245, 158, 11, 0.55);
+      --color-warning-bg: linear-gradient(135deg, rgba(30, 130, 60, 0.35) 0%, rgba(18, 81, 126, 0.95) 100%);
     }
     /* Colorway 6: Jets of the West (Primary Cardinal/Black Base + Cardinal Red Fills + Sunburst Yellow Accents) */
-    body.theme-jets_of_the_west {
+    body.theme-jets_of_the_west,
+    body[data-theme="jets_of_the_west"] {
       --bg-obsidian: #0A0607;
       --bg-obsidian-rgb: 10, 6, 7;
       --bg-surface: #1A0B0F;
@@ -271,6 +287,8 @@
       --theme-btn-hover: linear-gradient(180deg, #D42240 0%, #97233F 100%);
       --theme-border-hi: #FFB612;
       --theme-glow: rgba(151, 35, 63, 0.45);
+      --color-warning-border: rgba(255, 182, 18, 0.55);
+      --color-warning-bg: linear-gradient(135deg, rgba(151, 35, 63, 0.35) 0%, rgba(43, 18, 25, 0.95) 100%);
     }
     /* Colorway 7: Upstate Kitties (Enhanced Maximum Clemson Troll Chaos — Sparkly Hot-Pink & Glitter!) */
     @keyframes kittySparkleShift {
@@ -290,7 +308,8 @@
     #upstateKittyChaosRibbon {
       display: none;
     }
-    body.theme-upstate_kitties #upstateKittyChaosRibbon {
+    body.theme-upstate_kitties #upstateKittyChaosRibbon,
+    body[data-theme="upstate_kitties"] #upstateKittyChaosRibbon {
       display: flex !important;
       background: linear-gradient(90deg, #FF1493, #EC4899, #D946EF, #FF69B4, #FF1493);
       background-size: 260% 260%;
@@ -298,7 +317,8 @@
       border-bottom: 2px solid #FBCFE8;
       box-shadow: 0 4px 20px rgba(255, 20, 147, 0.65);
     }
-    body.theme-upstate_kitties {
+    body.theme-upstate_kitties,
+    body[data-theme="upstate_kitties"] {
       --bg-obsidian: #330524;
       --bg-obsidian-rgb: 51, 5, 36;
       --bg-surface: #520D3B;
@@ -318,6 +338,8 @@
       --theme-btn-hover: linear-gradient(180deg, #DB2777 0%, #9D174D 100%);
       --theme-border-hi: #F9A8D4;
       --theme-glow: rgba(255, 20, 147, 0.85);
+      --color-warning-border: rgba(249, 168, 212, 0.65);
+      --color-warning-bg: linear-gradient(135deg, rgba(219, 39, 119, 0.38) 0%, rgba(107, 19, 78, 0.95) 100%);
       background-color: #330524;
       background-image:
         radial-gradient(circle at 12% 18%, rgba(255, 182, 193, 0.42) 0, transparent 22%),
@@ -328,7 +350,8 @@
       background-size: 160% 160%;
       animation: kittySparkleShift 6s ease-in-out infinite;
     }
-    body.theme-upstate_kitties::after {
+    body.theme-upstate_kitties::after,
+    body[data-theme="upstate_kitties"]::after {
       content: "✨ 🎀 💖 🦄 💅 ✨ 🎀 💖";
       position: fixed;
       bottom: 3.6rem;
@@ -340,17 +363,21 @@
       text-shadow: 0 0 10px rgba(255, 20, 147, 0.95);
       animation: kittyFloatSparkles 2.8s ease-in-out infinite;
     }
-    body.theme-upstate_kitties .app-card {
+    body.theme-upstate_kitties .app-card,
+    body[data-theme="upstate_kitties"] .app-card {
       background: linear-gradient(160deg, rgba(92, 15, 66, 0.94) 0%, rgba(64, 9, 46, 0.96) 100%);
       border: 1.5px solid rgba(251, 207, 232, 0.65);
       box-shadow: 0 6px 28px rgba(255, 20, 147, 0.42), inset 0 1px 0 rgba(255, 255, 255, 0.25);
     }
     body.theme-upstate_kitties header#appHeaderShell,
-    body.theme-upstate_kitties nav#mobileBottomNav {
+    body.theme-upstate_kitties nav#mobileBottomNav,
+    body[data-theme="upstate_kitties"] header#appHeaderShell,
+    body[data-theme="upstate_kitties"] nav#mobileBottomNav {
       background: rgba(66, 8, 48, 0.96) !important;
       border-color: rgba(249, 168, 212, 0.65) !important;
     }
-    body.theme-upstate_kitties .kitty-curse-badge {
+    body.theme-upstate_kitties .kitty-curse-badge,
+    body[data-theme="upstate_kitties"] .kitty-curse-badge {
       animation: kittyBadgeWiggle 1.8s ease-in-out infinite;
     }
     body:not(.theme-upstate_kitties) {
@@ -805,17 +832,22 @@
     .bg-\[\#73000A\]\/70 { background-color: rgba(var(--usc-garnet-rgb), 0.72) !important; }
     .bg-\[\#73000A\]\/60 { background-color: rgba(var(--usc-garnet-rgb), 0.62) !important; }
     .bg-\[\#73000A\]\/40 { background-color: rgba(var(--usc-garnet-rgb), 0.42) !important; }
+    .bg-\[\#73000A\]\/35 { background-color: rgba(var(--usc-garnet-rgb), 0.36) !important; }
     .bg-\[\#73000A\]\/20 { background-color: rgba(var(--usc-garnet-rgb), 0.22) !important; }
     .bg-\[\#73000A\]\/15 { background-color: rgba(var(--usc-garnet-rgb), 0.16) !important; }
+    .bg-\[\#990012\], .hover\:bg-\[\#990012\]:hover { background-color: var(--usc-garnet-bright) !important; }
     .bg-\[\#CC1429\] { background-color: var(--usc-garnet-hi) !important; }
-    .text-\[\#CC1429\] { color: var(--usc-garnet-hi) !important; }
+    .text-\[\#CC1429\], .hover\:text-\[\#CC1429\]:hover { color: var(--usc-garnet-hi) !important; }
     .border-\[\#CC1429\] { border-color: var(--usc-garnet-hi) !important; }
+    .border-l-\[\#CC1429\] { border-left-color: var(--usc-garnet-hi) !important; }
+    .border-\[\#CC1429\]\/80 { border-color: rgba(var(--usc-garnet-hi-rgb), 0.82) !important; }
     .border-\[\#CC1429\]\/70 { border-color: rgba(var(--usc-garnet-hi-rgb), 0.72) !important; }
     .border-\[\#CC1429\]\/60 { border-color: rgba(var(--usc-garnet-hi-rgb), 0.62) !important; }
     .border-\[\#CC1429\]\/50 { border-color: rgba(var(--usc-garnet-hi-rgb), 0.52) !important; }
     .focus\:border-\[\#CC1429\]:focus { border-color: var(--usc-garnet-hi) !important; }
     .hover\:border-\[\#CC1429\]\/50:hover { border-color: rgba(var(--usc-garnet-hi-rgb), 0.55) !important; }
-    .from-\[\#73000A\] {
+    .selection\:bg-\[\#73000A\]::selection, .selection\:bg-\[\#73000A\] *::selection { background-color: var(--usc-garnet) !important; color: #FFFFFF !important; }
+    .from-\[\#73000A\], .from-\[\#73000A\]\/35 {
       --tw-gradient-from: var(--usc-garnet) var(--tw-gradient-from-position) !important;
       --tw-gradient-to: rgba(var(--usc-garnet-rgb), 0) var(--tw-gradient-to-position) !important;
       --tw-gradient-stops: var(--tw-gradient-from), var(--tw-gradient-to) !important;
@@ -1025,7 +1057,7 @@
       gap: 0.4rem;
       font-weight: 700;
       border-radius: 0.625rem;
-      border: 1px solid rgba(251, 191, 36, 0.45);
+      border: 1px solid var(--color-warning-border, rgba(251, 191, 36, 0.45));
       background: var(--theme-btn-grad);
       color: #FDE68A;
       box-shadow: 0 2px 6px rgba(0, 0, 0, 0.35);
@@ -1050,8 +1082,8 @@
       user-select: none;
     }
     .pending-pool-card {
-      background: linear-gradient(135deg, rgba(var(--usc-garnet-rgb), 0.35) 0%, rgba(var(--bg-elevated-rgb), 0.95) 100%);
-      border: 1px solid rgba(245, 158, 11, 0.45);
+      background: var(--color-warning-bg, linear-gradient(135deg, rgba(var(--usc-garnet-rgb), 0.35) 0%, rgba(var(--bg-elevated-rgb), 0.95) 100%));
+      border: 1px solid var(--color-warning-border, rgba(245, 158, 11, 0.45));
     }
     .drag-slot-over {
       border-color: #38bdf8 !important;
@@ -1232,7 +1264,7 @@
     }
   </style>
 </head>
-<body class="theme-sandstorm_noir native-app-shell flex flex-col font-sans antialiased selection:bg-[#73000A] selection:text-white">
+<body data-theme="sandstorm_noir" class="theme-sandstorm_noir native-app-shell flex flex-col font-sans antialiased selection:bg-[#73000A] selection:text-white">
 
   <!-- ========================================================= -->
   <!-- LIGHTWEIGHT LEAGUE PASSPHRASE & MY FRANCHISE GATE OVERLAY -->
@@ -1510,6 +1542,11 @@
       <!-- TAB 1: MY TEAM (COMPACT IDENTITY + PICKS / OFFERS / ROSTER) -->
       <!-- ======================================================= -->
       <section id="section-ledger" class="space-y-3.5">
+
+        <!-- Unified Sticky Scouting & Franchise Switcher Header (A18) -->
+        <div id="unifiedStickyScoutingHeader" class="sticky top-0 z-30 no-print">
+          <!-- Populated by JS -->
+        </div>
 
         <!-- Sleek Compact Team Identity Header (with Scout Switcher & Edit Profile) -->
         <div id="teamWarRoomContainer" class="no-print">
@@ -3691,7 +3728,7 @@
       "Depth Picks"
     ];
 
-    const APP_BUILD_VERSION = "8.7.0";
+    const APP_BUILD_VERSION = "9.0.0";
 
     let uiState = {
       isLeagueUnlocked: false,
@@ -3760,7 +3797,13 @@
       boardHighlightedRound: 0,     // Active R1-R20 quick-jump round highlight
       boardShowKeepers: false,      // Post-keeper draft board: clean Rounds 1–20 with zero keepers overlaid
       boardShowDraftedPlayers: true,// Show auto-populated ESPN drafted players on post-draft Draft Board
-      leagueHqSubTab: "CAPITAL",    // 'CAPITAL' | 'STANDINGS' | 'VAULT' | 'RIVALRY' | 'RECORDS' | 'ARCHIVE'
+      leagueHqSubTab: "CAPITAL",    // 'CAPITAL' | 'STANDINGS' | 'POS_LEADERS' | 'RECORDS' | 'PLAYER_HOF' | 'VAULT' | 'RIVALRY' | 'ARCHIVE'
+      posLeadersMode: "SEASON",     // 'SEASON' | 'WEEKLY' | 'FREE_AGENTS' (A13)
+      posLeadersPosFilter: "ALL",   // 'ALL' | 'QB' | 'RB' | 'WR' | 'TE' | 'DL' | 'LB' | 'DB' | 'K' | 'D/ST'
+      posLeadersSearch: "",         // League-wide Free Agent / Positional Leader search (A13, A16)
+      recordBookPosScope: "ALL",    // 'ALL' | 'STARTED_ONLY' (A12)
+      recordBookPosFilter: "ALL",   // 'ALL' | 'QB' | 'RB' | 'WR' | 'TE' | 'DL' | 'LB' | 'DB' | 'K' | 'D/ST'
+      playerHofFilter: "ALL",       // 'ALL' | 'BALLOT_ELIGIBLE' | 'INDUCTED' | 'ACTIVE_WATCHLIST' (A7-A9)
       expandedHubTeamIds: {},       // Expandable 'Picks & Needs' drawer state per team in League Hub
       leagueHqSeasonYear: 2026,
       espnStandingsYear: 2026,
@@ -4200,7 +4243,9 @@
             acquiredVia: cleanStr(p?.acquiredVia || p?.acqType || "ESPN Sync", 24).trim(),
             projPts: Number(p?.projPts) || 0,
             totalPts: Number(p?.totalPts || p?.pts) || 0,
-            pts: Number(p?.pts || p?.totalPts || p?.projPts) || 0
+            pts: Number(p?.pts || p?.totalPts || p?.projPts) || 0,
+            avgPts: Number(p?.avgPts || p?.ppg) || 0,
+            gamesPlayed: Number(p?.gamesPlayed || p?.gp) || 0
           };
         }).filter(p => p.name);
       });
@@ -4416,6 +4461,73 @@
         syncedFromEspn: Boolean(rawLs.syncedFromEspn || rawLs.lineupSlots)
       };
 
+      const cleanFreeAgents = Array.isArray(src.freeAgents)
+        ? src.freeAgents.slice(0, 150).map((fa, idx) => ({
+            id: safeId(fa?.id || `fa_${idx + 1}`),
+            espnId: Number(fa?.espnId) || 0,
+            name: cleanStr(fa?.name || "", 60).trim(),
+            pos: cleanStr(fa?.pos || "FLEX", 12).toUpperCase(),
+            nflTeam: cleanStr(fa?.nflTeam || "NFL", 8).toUpperCase(),
+            posRank: cleanStr(fa?.posRank || "", 12).trim(),
+            totalPts: Number(fa?.totalPts ?? fa?.pts) || 0,
+            avgPts: Number(fa?.avgPts ?? fa?.ppg) || 0,
+            projPts: Number(fa?.projPts) || 0,
+            pctOwned: Number(fa?.pctOwned) || 0
+          })).filter(fa => fa.name)
+        : [];
+
+      const cleanPositionalLeaders = (src.positionalLeaders && typeof src.positionalLeaders === "object")
+        ? {
+            scoringPeriodId: Number(src.positionalLeaders.scoringPeriodId) || 0,
+            weekly: Array.isArray(src.positionalLeaders.weekly) ? src.positionalLeaders.weekly.slice(0, 160) : [],
+            season: Array.isArray(src.positionalLeaders.season) ? src.positionalLeaders.season.slice(0, 160) : []
+          }
+        : { scoringPeriodId: 0, weekly: [], season: [] };
+
+      const cleanPositionalRecords = Array.isArray(src.positionalRecords)
+        ? src.positionalRecords.slice(0, 200).map(pr => ({
+            id: safeId(pr?.id || ""),
+            type: pr?.type === "SINGLE_WEEK" ? "SINGLE_WEEK" : "SINGLE_SEASON",
+            pos: cleanStr(pr?.pos || "FLEX", 12).toUpperCase(),
+            playerName: cleanStr(pr?.playerName || pr?.name || "", 60).trim(),
+            nflTeam: cleanStr(pr?.nflTeam || "NFL", 8).toUpperCase(),
+            managerId: normalizeLegacyManagerAlias(pr?.managerId || pr?.teamId || ""),
+            teamId: normalizeLegacyManagerAlias(pr?.teamId || pr?.managerId || ""),
+            status: ["STARTED", "BENCHED", "FREE_AGENT"].includes(String(pr?.status || "").toUpperCase())
+              ? String(pr.status).toUpperCase()
+              : "STARTED",
+            year: Number(pr?.year) || 2026,
+            week: Number(pr?.week) || 0,
+            pts: Math.round((Number(pr?.pts ?? pr?.score) || 0) * 10) / 10,
+            ppg: Math.round((Number(pr?.ppg ?? pr?.avgPts) || 0) * 10) / 10
+          })).filter(pr => pr.playerName && pr.pts > 0)
+        : [];
+
+      const cleanPlayerHofBallots = {};
+      if (src.playerHofBallots && typeof src.playerHofBallots === "object" && !Array.isArray(src.playerHofBallots)) {
+        for (const [rawPid, bObj] of Object.entries(src.playerHofBallots)) {
+          const pid = safeId(rawPid);
+          if (!pid || !bObj || typeof bObj !== "object") continue;
+          const yesSet = new Set();
+          const noSet = new Set();
+          if (Array.isArray(bObj.yes)) {
+            bObj.yes.slice(0, 15).map(safeId).filter(tid => validTeamIds.has(tid)).forEach(tid => yesSet.add(tid));
+          }
+          if (Array.isArray(bObj.no)) {
+            bObj.no.slice(0, 15).map(safeId).filter(tid => validTeamIds.has(tid) && !yesSet.has(tid)).forEach(tid => noSet.add(tid));
+          }
+          cleanPlayerHofBallots[pid] = {
+            yes: Array.from(yesSet),
+            no: Array.from(noSet),
+            nominated: Boolean(bObj.nominated),
+            inductedAt: Number(bObj.inductedAt) || (yesSet.size >= 7 ? Date.now() : 0),
+            playerName: cleanStr(bObj.playerName || bObj.name || "", 60).trim(),
+            name: cleanStr(bObj.playerName || bObj.name || "", 60).trim(),
+            pos: cleanStr(bObj.pos || "", 12).toUpperCase()
+          };
+        }
+      }
+
       return {
         leagueId: cleanStr(src.leagueId || fallback.leagueId, 32).trim(),
         leagueName: cleanStr(src.leagueName || fallback.leagueName, 60).trim(),
@@ -4430,6 +4542,10 @@
         seasonOwnerOverrides: cleanOverrides,
         rawTeams: cleanRawTeams,
         rosters: cleanRosters,
+        freeAgents: cleanFreeAgents,
+        positionalLeaders: cleanPositionalLeaders,
+        positionalRecords: cleanPositionalRecords,
+        playerHofBallots: cleanPlayerHofBallots,
         seasonStandings: cleanStandings,
         seasons: cleanSeasons,
         headToHead: (src.headToHead && typeof src.headToHead === "object") ? src.headToHead : {},
@@ -4539,7 +4655,10 @@
                   : [],
                 rule: ["LATER_OF_TWO", "EARLIER_OF_TWO", "MIDDLE_OF_POOL", "TBD"].includes(p.rule) ? p.rule : "TBD",
                 ruleLabel: cleanStr(p.ruleLabel, 300),
-                resolvedOriginalOwner: p.resolvedOriginalOwner ? safeId(p.resolvedOriginalOwner) : null
+                resolvedOriginalOwner: p.resolvedOriginalOwner ? safeId(p.resolvedOriginalOwner) : null,
+                resolutionNote: cleanStr(p.resolutionNote, 300),
+                resolvedBy: p.resolvedBy ? safeId(p.resolvedBy) : "",
+                resolvedAt: Number(p.resolvedAt) > 0 ? Number(p.resolvedAt) : 0
               }))
             : [],
           conditionals: Array.isArray(tr.conditionals)
@@ -4556,7 +4675,9 @@
                 summary: cleanStr(c.summary, 400),
                 isResolved: Boolean(c.isResolved),
                 resolvedRound: c.resolvedRound === "ALL" ? "ALL" : (c.resolvedRound ? Number(c.resolvedRound) : null),
-                resolutionNote: cleanStr(c.resolutionNote, 300)
+                resolutionNote: cleanStr(c.resolutionNote, 300),
+                resolvedBy: c.resolvedBy ? safeId(c.resolvedBy) : "",
+                resolvedAt: Number(c.resolvedAt) > 0 ? Number(c.resolvedAt) : 0
               }))
             : []
         };
@@ -5732,6 +5853,10 @@
       uiState.colorTheme = themeId;
       COVERT_COLOR_SCHEMES.forEach(s => document.body.classList.remove(`theme-${s.id}`));
       document.body.classList.add(`theme-${themeId}`);
+      document.body.setAttribute("data-theme", themeId);
+      if (document.documentElement) {
+        document.documentElement.setAttribute("data-theme", themeId);
+      }
       const metaTheme = document.querySelector('meta[name="theme-color"]');
       if (metaTheme) {
         if (themeId === "upstate_kitties") {
@@ -6944,17 +7069,124 @@
       };
     }
 
-    // Scoring-calibrated + League-feedback-adapted exponential Draft Pick Value Curve
+    // v9.0 Self-Learning Implied-Value Recalibration Engine (A3: alpha = 0.15, +/-10% max shift per deal, guarded by Neutral Fairness Ballot)
+    function computeSelfLearningRoundMultipliers() {
+      const roundMultipliers = {};
+      for (let r = 1; r <= 20; r++) roundMultipliers[r] = 1.0;
+      const trades = Array.isArray(leagueDB?.trades) ? leagueDB.trades : [];
+      const ALPHA = 0.15;
+      let learnedDealsCount = 0;
+      let skippedUnfairCount = 0;
+
+      trades.forEach(tr => {
+        if (!tr || tr.status === "REVOKED") return;
+        const picks = Array.isArray(tr.directTransfers) ? tr.directTransfers : (Array.isArray(tr.standardPicks) ? tr.standardPicks : []);
+        const players = Array.isArray(tr.playerTransfers) ? tr.playerTransfers : [];
+        if (picks.length === 0) return;
+        if (picks.length + players.length < 2) return;
+
+        const yesArr = Array.isArray(tr.fairnessVotes?.yes) ? tr.fairnessVotes.yes.filter(v => !isTeamTradeParticipant(tr, v)) : [];
+        const noArr = Array.isArray(tr.fairnessVotes?.no) ? tr.fairnessVotes.no.filter(v => !isTeamTradeParticipant(tr, v)) : [];
+        let ballotWeight = 1.0;
+        if (noArr.length > yesArr.length && noArr.length >= 2) {
+          if (noArr.length >= 3) {
+            skippedUnfairCount++;
+            return;
+          }
+          ballotWeight = 0.25;
+        }
+
+        const sideTotals = {};
+        const sidePickRounds = {};
+        picks.forEach(sp => {
+          const toId = safeId(sp.toOwner);
+          const r = Math.min(20, Math.max(1, Number(sp.round) || 1));
+          const yr = Number(sp.year) || Number(tr.year) || 2027;
+          const v = computeDraftPickTradeValue(yr, r, sp.originalOwner || sp.fromOwner || "", null, true);
+          sideTotals[toId] = (sideTotals[toId] || 0) + v;
+          if (!sidePickRounds[toId]) sidePickRounds[toId] = [];
+          sidePickRounds[toId].push(r);
+        });
+        players.forEach(pt => {
+          const toId = safeId(pt.toOwner);
+          const v = computePlayerTradeValue({
+            id: pt.playerId,
+            name: pt.playerName,
+            pos: pt.pos || "FLEX",
+            nflTeam: pt.nflTeam || "NFL",
+            posRank: pt.posRank || ""
+          });
+          sideTotals[toId] = (sideTotals[toId] || 0) + v;
+        });
+
+        const teams = Object.keys(sideTotals).filter(k => sideTotals[k] > 0);
+        if (teams.length !== 2) return;
+        const [tA, tB] = teams;
+        const valA = sideTotals[tA];
+        const valB = sideTotals[tB];
+        if (valA <= 0 || valB <= 0) return;
+
+        learnedDealsCount++;
+        const effAlpha = ALPHA * ballotWeight;
+
+        const applySideLearning = (myTeamId, oppVal, myVal) => {
+          const rds = sidePickRounds[myTeamId] || [];
+          if (rds.length === 0) return;
+          const impliedRatio = oppVal / myVal;
+          // Cap any single trade's implied shift at +/- 10% ([0.90, 1.10]) per Spec 1.3 / A3
+          const clampedRatio = Math.min(1.10, Math.max(0.90, impliedRatio));
+          rds.forEach(r => {
+            const nextMult = ((1 - effAlpha) * roundMultipliers[r]) + (effAlpha * clampedRatio);
+            roundMultipliers[r] = Math.min(1.25, Math.max(0.75, Number(nextMult.toFixed(4))));
+          });
+        };
+
+        applySideLearning(tA, valB, valA);
+        applySideLearning(tB, valA, valB);
+      });
+
+      return {
+        roundMultipliers,
+        multipliers: roundMultipliers,
+        learnedDealsCount,
+        skippedUnfairCount,
+        alpha: ALPHA
+      };
+    }
+
+    // Pre-lock bracket tiering helper (A1: Consolation/Toilet Bowl vs Playoff seeds)
+    function getPreLockBracketTierMultiplier(origOwner) {
+      if (!origOwner) return 1.0;
+      const ed = leagueDB?.espnData || {};
+      const seasonsObj = ed.seasons || {};
+      const sortedYrs = Object.keys(seasonsObj).map(Number).sort((a, b) => b - a);
+      for (const yr of sortedYrs) {
+        const sObj = seasonsObj[String(yr)];
+        const stArr = sObj?.standings || [];
+        const totalGames = stArr.reduce((acc, r) => acc + (Number(r.wins) || 0) + (Number(r.losses) || 0), 0);
+        if (totalGames === 0) continue;
+        const outcomes = typeof getSeasonFinalStandingsOutcomes === "function" ? getSeasonFinalStandingsOutcomes(yr) : {};
+        if (outcomes.tbWinnerId === origOwner) return 1.15; // 1.01 Toilet Bowl Winner
+        if (outcomes.feasterId === origOwner) return 1.08;  // 1.05 Phallic Feaster
+        if (outcomes.champId === origOwner || outcomes.runnerUpId === origOwner) return 0.85; // 1.09-1.10 Finalists
+        const row = stArr.find(r => (r.teamId || r.managerId) === origOwner);
+        if (row && Number(row.seed) > 0) {
+          const seed = Number(row.seed);
+          if (seed >= 6) return 1.12; // Consolation bracket (competing for 1.01-1.05)
+          if (seed >= 4) return 1.00; // Mid playoff seeds (#4-#5)
+          return 0.85;                // Top playoff contenders (#1-#3 -> 1.08-1.10)
+        }
+        break;
+      }
+      return 1.0;
+    }
+
+    // v9.0 Exponential Draft Pick Value Curve + 15% Future Discount + Slot/Bracket Tiering + Self-Learning Recalibration (A1, A2, A3)
     function computeDraftPickTradeValue(year, round, origOwner = "", stateOpt = null, skipAdaptive = false) {
       const r = Math.min(20, Math.max(1, Number(round) || 1));
-      const baseRoundValues = [
-        0,
-        800, 465, 310, 215, 155,
-        115, 88,  68,  54,  44,
-        36,  30,  26,  23,  20,
-        18,  17,  16,  15,  15
-      ];
-      let val = baseRoundValues[r] || 15;
+      // A1: Exponential Decay V_base(R) = max(15, round(1000 * e^(-0.22 * (R - 1))))
+      let val = Math.max(15, Math.round(1000 * Math.exp(-0.22 * (r - 1))));
+
       const sc = getLeagueScoringMultipliers();
       if (r <= 3 && sc.qbStarters >= 2) {
         val = Math.round(val * 1.06);
@@ -6965,26 +7197,38 @@
         val = Math.round(val * poolFactor);
       }
 
+      // A1: Post-Lock Exact Slot (.01-.10) vs Pre-Lock Consolation/Playoff Bracket Tiering
       const st = stateOpt || (Number(year) ? evaluateYearState(Number(year)) : null);
       if (st && st.orderCfg && st.orderCfg.isLocked && origOwner) {
         const pickObj = st.picks.find(p => p.round === r && p.originalOwner === origOwner);
         if (pickObj && pickObj.overallPickNum) {
-          const slotInRd = ((pickObj.overallPickNum - 1) % 10); // 0 = .01 (Toilet Bowl Winner), 4 = .05 (Phallic Feaster), 9 = .10 (Champ)
-          const slotBoost = 1.18 - (slotInRd * 0.04);
-          val = Math.round(val * slotBoost);
+          const slotInRd = ((pickObj.overallPickNum - 1) % 10); // 0 = .01, 4 = .05, 9 = .10
+          const slotMult = slotInRd <= 2 ? 1.15 : slotInRd <= 6 ? 1.00 : 0.85;
+          val = Math.round(val * slotMult);
         }
+      } else if (origOwner) {
+        const bracketMult = getPreLockBracketTierMultiplier(origOwner);
+        val = Math.round(val * bracketMult);
       }
+
+      // A2: 15% Annual Future-Year Discount (2027 = 100%, 2028 = 85%)
       const baseYr = Number(leagueDB?.baseUpcomingYear) || 2027;
-      if (Number(year) > baseYr) {
-        val = Math.round(val * 0.90);
+      const yrsAhead = Math.max(0, (Number(year) || baseYr) - baseYr);
+      if (yrsAhead > 0) {
+        val = Math.round(val * Math.pow(0.85, yrsAhead));
       }
+
+      // A3: Self-Learning Damped Moving Average (alpha = 0.15) + Neutral Fairness Ballot Calibration
       if (!skipAdaptive) {
+        const learned = computeSelfLearningRoundMultipliers();
+        const rdMult = learned.roundMultipliers[r] || 1.0;
+        val = Math.round(val * rdMult);
         const cal = computeAdaptiveFairnessCalibration();
         if (cal.totalVotes > 0) {
           val = Math.round(val * cal.pickVsPlayerFactor * (r <= 3 ? cal.earlyPickPremium : 1.0));
         }
       }
-      return Math.max(10, val);
+      return Math.max(15, val);
     }
 
     function computePlayerTradeValue(p) {
@@ -7159,12 +7403,21 @@
             <span class="truncate max-w-[48%]"><strong class="text-rose-200">${nameA}</strong>: ${valA} pts (${pctA}%)</span>
             <span class="truncate max-w-[48%] text-right"><strong class="text-sky-300">${nameB}</strong>: ${valB} pts (${pctB}%)</span>
           </div>
-          ${uiState.fairnessDetailsOpen ? `
-            <div class="pt-1.5 border-t border-white/10 flex flex-wrap items-center justify-between gap-2 text-[10px] text-slate-400">
-              <span>Format: <strong class="text-slate-200 font-mono">${escapeHtml(sc.formatLabel)}</strong></span>
-              <span>${cal.totalVotes > 0 ? `Neutral Calibration: Pick×${cal.pickVsPlayerFactor.toFixed(2)} • Rd1-3×${cal.earlyPickPremium.toFixed(2)} (${cal.yesVotes} Fair / ${cal.noVotes} Unfair)` : `Tip: Neutral managers can vote Fair/Unfair on completed trades in Activity (${MIN_FAIRNESS_VOTES_FOR_CALIBRATION} votes required to tune).`}</span>
+          ${uiState.fairnessDetailsOpen ? (() => {
+            const learned = computeSelfLearningRoundMultipliers();
+            return `
+            <div class="pt-1.5 border-t border-white/10 space-y-1 text-[10px] text-slate-400">
+              <div class="flex flex-wrap items-center justify-between gap-2">
+                <span>Curve: <strong class="text-slate-200 font-mono">V = 1000·e<sup>-0.22(R-1)</sup></strong> • 2028 Discount: <strong class="text-amber-300 font-mono">-15%/yr</strong> • Format: <strong class="text-slate-200 font-mono">${escapeHtml(sc.formatLabel)}</strong></span>
+                <span class="font-mono text-emerald-300">Self-Learning (α=0.15, ±10% cap): ${learned.learnedDealsCount} deal${learned.learnedDealsCount === 1 ? '' : 's'} learned${learned.skippedUnfairCount > 0 ? ` (${learned.skippedUnfairCount} unfair skipped)` : ''}</span>
+              </div>
+              <div class="flex flex-wrap items-center justify-between gap-2">
+                <span>Slot Tiering: <strong class="text-slate-200 font-mono">Early/Toilet Bowl +15% • Mid 0% • Late/Contender -15%</strong></span>
+                <span>${cal.totalVotes > 0 ? `Neutral Ballot: Pick×${cal.pickVsPlayerFactor.toFixed(2)} • Rd1-3×${cal.earlyPickPremium.toFixed(2)} (${cal.yesVotes} Fair / ${cal.noVotes} Unfair)` : `Neutral managers can vote Fair/Unfair on completed trades in Activity (${MIN_FAIRNESS_VOTES_FOR_CALIBRATION} votes required to tune).`}</span>
+              </div>
             </div>
-          ` : ""}
+            `;
+          })() : ""}
         </div>
       `;
     }
@@ -7776,7 +8029,7 @@
             setMyTeamSubView(subOrder[nextIdx]);
           }
         } else if (uiState.activeTab === "capital") {
-          const order = ["STANDINGS", "VAULT", "RIVALRY", "RECORDS", "ARCHIVE"];
+          const order = ["STANDINGS", "POS_LEADERS", "RECORDS", "PLAYER_HOF", "VAULT", "RIVALRY", "ARCHIVE"];
           const curNorm = (uiState.leagueHqSubTab === "CAPITAL" || !uiState.leagueHqSubTab) ? "STANDINGS" : uiState.leagueHqSubTab;
           const curIdx = Math.max(0, order.indexOf(curNorm));
           const nextIdx = dx < 0 ? Math.min(order.length - 1, curIdx + 1) : Math.max(0, curIdx - 1);
@@ -8709,24 +8962,79 @@
                ${leagueDB.teams.filter(t => t.id !== uiState.myTeam).map(t => `<option value="${safeId(t.id)}" ${t.id === inspectedTeamId ? 'selected' : ''}>Scout: ${escapeHtml(getTeamName(t.id))}</option>`).join("")}
              </select>`;
 
-        const scoutAvatarStripHtml = (!uiState.isCommish && (uiState.scoutStripOpen || isScoutingOpponent)) ? `
-          <div id="myTeamScoutAvatarStrip" class="mt-2 pt-2 border-t border-white/15 flex items-center gap-1.5 overflow-x-auto no-scrollbar pb-0.5">
-            <span class="text-[10px] font-extrabold uppercase tracking-wider text-sky-300 mr-1 whitespace-nowrap flex-shrink-0"><i class="fa-solid fa-binoculars mr-1"></i>Scout:</span>
-            <button type="button" onclick="setScoutedTeamOnMyTeam('')" class="px-2.5 py-1 rounded-xl text-[11px] font-extrabold border transition flex items-center gap-1.5 flex-shrink-0 cursor-pointer ${!isScoutingOpponent ? 'bg-[#73000A] text-white border-[#CC1429] shadow' : 'bg-[#0B0D12]/90 text-slate-300 border-white/10 hover:text-white'}">
-              ${renderTeamAvatarHtml(uiState.myTeam, "w-4 h-4 text-[8px]", "rounded")}
-              <span>My Team</span>
-            </button>
-            ${leagueDB.teams.filter(t => t.id !== uiState.myTeam).map(t => {
-              const active = isScoutingOpponent && t.id === inspectedTeamId;
-              return `
-                <button type="button" onclick="setScoutedTeamOnMyTeam('${safeId(t.id)}')" class="px-2.5 py-1 rounded-xl text-[11px] font-bold border transition flex items-center gap-1.5 flex-shrink-0 cursor-pointer ${active ? 'bg-sky-950 text-sky-200 border-sky-400 shadow' : 'bg-[#0B0D12]/90 text-slate-300 border-white/10 hover:text-white'}">
-                  ${renderTeamAvatarHtml(t.id, "w-4 h-4 text-[8px]", "rounded")}
-                  <span>${escapeHtml(getOriginalManagerName(t.id))}</span>
+        // Compute active/recent season W-L record for Unified Sticky Scouting Header (A18)
+        const edSeasons = leagueDB?.espnData?.seasons || {};
+        const sortedSeasonYrs = Object.keys(edSeasons).map(Number).sort((a, b) => b - a);
+        let teamRecordBadgeText = "0-0";
+        for (const yr of sortedSeasonYrs) {
+          const stArr = edSeasons[String(yr)]?.standings || [];
+          const row = stArr.find(r => (r.teamId || r.managerId) === inspectedTeamId);
+          if (row) {
+            const w = Number(row.wins) || 0;
+            const l = Number(row.losses) || 0;
+            const t = Number(row.ties) || 0;
+            if (w + l + t > 0 || yr === sortedSeasonYrs[0]) {
+              teamRecordBadgeText = `${yr}: ${w}-${l}${t ? `-${t}` : ""}${row.seed ? ` (#${row.seed})` : ""}`;
+              if (w + l + t > 0) break;
+            }
+          }
+        }
+
+        const stickyHeaderEl = document.getElementById("unifiedStickyScoutingHeader");
+        if (stickyHeaderEl) {
+          stickyHeaderEl.innerHTML = `
+            <div class="app-card p-2 sm:p-2.5 shadow-xl backdrop-blur-md bg-[#13161F]/95 border ${isScoutingOpponent ? 'border-sky-400/60' : 'border-white/15'} space-y-1.5">
+              <div class="flex flex-wrap items-center justify-between gap-2">
+                <div class="flex items-center gap-2 min-w-0">
+                  ${renderTeamAvatarHtml(inspectedTeamId, "w-6 h-6 text-[10px]", "rounded-lg")}
+                  <span class="text-xs sm:text-sm font-black text-white truncate max-w-[140px] sm:max-w-[220px]">${inspectedName}</span>
+                  ${isScoutingOpponent ? `<span class="static-badge bg-sky-950 text-sky-300 border border-sky-400/60"><i class="fa-solid fa-binoculars text-[9px]"></i> Scouting</span>` : ''}
+                  <span class="hidden md:inline-flex items-center gap-1 px-2 py-0.5 rounded bg-[#0B0D12] border border-white/10 text-[10px] font-mono text-slate-300">
+                    <i class="fa-solid fa-ranking-star text-amber-400 text-[9px]"></i>
+                    <span>${escapeHtml(teamRecordBadgeText)}</span>
+                  </span>
+                  <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded bg-[#0B0D12] border border-white/10 text-[10px] font-mono text-emerald-300">
+                    <i class="fa-solid fa-user-lock text-[9px]"></i>
+                    <span>Keepers ${kStats.totalKeepers}/${kStats.maxKeepers}</span>
+                  </span>
+                  <span class="hidden sm:inline-flex items-center gap-1 px-2 py-0.5 rounded bg-[#0B0D12] border border-white/10 text-[10px] font-mono text-amber-300">
+                    <i class="fa-solid fa-layer-group text-[9px]"></i>
+                    <span>${Number(state.year)}: ${heroRankInfo.totalPicks} Picks</span>
+                  </span>
+                </div>
+                <div class="flex items-center gap-1.5 flex-shrink-0">
+                  <button type="button" onclick="${isScoutingOpponent ? `compareWithSelectedManager('${safeId(inspectedTeamId)}')` : `switchMainTab('tradecenter')`}" class="btn-garnet px-2.5 py-1 text-[11px]">
+                    <i class="fa-solid fa-right-left"></i>
+                    <span>Propose Trade</span>
+                  </button>
+                  ${isScoutingOpponent ? `
+                    <button type="button" onclick="setScoutedTeamOnMyTeam('')" id="scoutingOpponentStickyBar" class="btn-action px-2.5 py-1 text-[11px] text-sky-200 border-sky-400/60 bg-[#0B0D12]">
+                      <i class="fa-solid fa-arrow-left"></i>
+                      <span>My Team</span>
+                    </button>
+                  ` : ''}
+                </div>
+              </div>
+              <div id="myTeamScoutAvatarStrip" class="pt-1.5 border-t border-white/10 flex items-center gap-1.5 overflow-x-auto no-scrollbar pb-0.5">
+                <span class="text-[10px] font-extrabold uppercase tracking-wider text-sky-300 mr-0.5 whitespace-nowrap flex-shrink-0"><i class="fa-solid fa-binoculars mr-1"></i>Franchise:</span>
+                <button type="button" onclick="${uiState.isCommish ? `selectManagerInLedger('${safeId(uiState.myTeam)}')` : `setScoutedTeamOnMyTeam('')`}" class="px-2.5 py-1 rounded-xl text-[11px] font-extrabold border transition flex items-center gap-1.5 flex-shrink-0 cursor-pointer ${!isScoutingOpponent && (!uiState.isCommish || managedTeamId === uiState.myTeam) ? 'bg-[#73000A] text-white border-[#CC1429] shadow' : 'bg-[#0B0D12]/90 text-slate-300 border-white/10 hover:text-white'}">
+                  ${renderTeamAvatarHtml(uiState.myTeam, "w-4 h-4 text-[8px]", "rounded")}
+                  <span>My Team</span>
                 </button>
-              `;
-            }).join("")}
-          </div>
-        ` : "";
+                ${leagueDB.teams.filter(t => t.id !== uiState.myTeam).map(t => {
+                  const active = uiState.isCommish ? (t.id === managedTeamId) : (isScoutingOpponent && t.id === inspectedTeamId);
+                  const clickHandler = uiState.isCommish ? `selectManagerInLedger('${safeId(t.id)}')` : `setScoutedTeamOnMyTeam('${safeId(t.id)}')`;
+                  return `
+                    <button type="button" onclick="${clickHandler}" class="px-2.5 py-1 rounded-xl text-[11px] font-bold border transition flex items-center gap-1.5 flex-shrink-0 cursor-pointer ${active ? 'bg-sky-950 text-sky-200 border-sky-400 shadow' : 'bg-[#0B0D12]/90 text-slate-300 border-white/10 hover:text-white'}">
+                      ${renderTeamAvatarHtml(t.id, "w-4 h-4 text-[8px]", "rounded")}
+                      <span>${escapeHtml(getOriginalManagerName(t.id))}</span>
+                    </button>
+                  `;
+                }).join("")}
+              </div>
+            </div>
+          `;
+        }
 
         const totalOtbForTeam = heroOtbPlayers.length + heroOtbPicks.length;
         const commandStripHtml = `
@@ -8780,24 +9088,6 @@
         ` : "";
 
         box.innerHTML = `
-          ${isScoutingOpponent ? `
-            <div id="scoutingOpponentStickyBar" class="sticky top-[52px] z-30 mb-2 rounded-xl bg-sky-950/95 backdrop-blur-md border border-sky-400/60 shadow-xl px-3 py-2 flex flex-wrap items-center justify-between gap-2 text-xs">
-              <span class="text-sky-200 font-bold flex items-center gap-1.5">
-                <i class="fa-solid fa-binoculars text-sky-400"></i>
-                <span>Scouting <strong>${inspectedName}</strong> (Read-Only)</span>
-              </span>
-              <div class="flex items-center gap-1.5">
-                <button type="button" onclick="compareWithSelectedManager('${safeId(inspectedTeamId)}')" class="btn-garnet px-2.5 py-1 text-[11px]">
-                  <i class="fa-solid fa-right-left"></i>
-                  <span>Offer Trade</span>
-                </button>
-                <button type="button" onclick="setScoutedTeamOnMyTeam('')" class="btn-action px-2.5 py-1 text-[11px] text-sky-200 border-sky-400/60 bg-[#0B0D12]">
-                  <i class="fa-solid fa-arrow-left"></i>
-                  <span>Back to My Team</span>
-                </button>
-              </div>
-            </div>
-          ` : ''}
           <div class="app-card overflow-hidden">
             <div class="garnet-hero-banner p-2.5 sm:p-3.5">
               <div class="flex flex-wrap items-center justify-between gap-2">
@@ -8808,12 +9098,11 @@
                       <h2 class="text-base sm:text-lg font-black text-white tracking-tight truncate">${inspectedName}</h2>
                       ${inspectedHasPin && !isScoutingOpponent ? `<span class="static-badge bg-emerald-950/90 text-emerald-300 border border-emerald-600/50"><i class="fa-solid fa-lock"></i> PIN</span>` : ''}
                     </div>
-                    <div class="text-[11px] text-slate-300">Manager: <strong class="text-white">${escapeHtml(getOriginalManagerName(inspectedTeamId))}</strong></div>
+                    <div class="text-[11px] text-slate-300">Manager: <strong class="text-white">${escapeHtml(getOriginalManagerName(inspectedTeamId))}</strong> • <span class="font-mono text-amber-200">${escapeHtml(teamRecordBadgeText)}</span></div>
                   </div>
                 </div>
 
                 <div class="flex flex-wrap items-center gap-1.5 flex-shrink-0">
-                  ${teamSwitcherControlHtml}
                   ${!isScoutingOpponent ? `
                     <button type="button" onclick="toggleWarRoomQuickBar()" id="toggleWarRoomQuickBarBtn" class="btn-action px-2 sm:px-2.5 py-1 sm:py-1.5 text-[11px] sm:text-xs ${uiState.warRoomQuickBarOpen ? 'text-amber-300 border-amber-400/60' : 'text-slate-100'} bg-[#0B0D12]/90" title="1-Tap Quick Needs & Trade Block Bar">
                       <i class="fa-solid fa-tag text-amber-400"></i>
@@ -8826,8 +9115,6 @@
                   ` : ''}
                 </div>
               </div>
-
-              ${scoutAvatarStripHtml}
 
               ${commandStripHtml}
 
@@ -9367,8 +9654,15 @@
     }
 
     function setLeagueHqSubTab(subTab) {
-      const valid = ["CAPITAL", "STANDINGS", "VAULT", "RIVALRY", "RECORDS", "ARCHIVE"];
-      uiState.leagueHqSubTab = valid.includes(subTab) ? subTab : "CAPITAL";
+      const aliasMap = {
+        CAPITAL: "STANDINGS",
+        TOP10_FA: "POS_LEADERS",
+        HOF: "PLAYER_HOF",
+        CAREER: "VAULT"
+      };
+      const normalized = aliasMap[String(subTab || "").toUpperCase()] || String(subTab || "").toUpperCase();
+      const valid = ["STANDINGS", "POS_LEADERS", "RECORDS", "PLAYER_HOF", "VAULT", "RIVALRY", "ARCHIVE"];
+      uiState.leagueHqSubTab = valid.includes(normalized) ? normalized : "STANDINGS";
       renderAll();
     }
 
@@ -10059,9 +10353,11 @@
       const cur = uiState.leagueHqSubTab || "STANDINGS";
       const tabs = [
         { id: "STANDINGS", icon: "fa-football", label: "Standings" },
+        { id: "POS_LEADERS", icon: "fa-ranking-star", label: "Top 10 & FA" },
+        { id: "RECORDS", icon: "fa-book", label: "Records" },
+        { id: "PLAYER_HOF", icon: "fa-building-columns", label: "Player HOF" },
         { id: "VAULT", icon: "fa-trophy", label: "Career" },
         { id: "RIVALRY", icon: "fa-people-arrows", label: "Rivalries" },
-        { id: "RECORDS", icon: "fa-book", label: "Records" },
         { id: "ARCHIVE", icon: "fa-clock-rotate-left", label: "Archive" }
       ];
       const activeId = (cur === "CAPITAL" || cur === "STANDINGS") ? "STANDINGS" : cur;
@@ -10579,10 +10875,973 @@
       `;
     }
 
+    function normalizePlayerPosBucket(rawPos) {
+      const p = String(rawPos || "FLEX").toUpperCase().trim();
+      if (p === "QB" || p === "RB" || p === "WR" || p === "TE" || p === "LB" || p === "K") return p;
+      if (p === "DT" || p === "DE" || p === "DL" || p === "EDR") return "DL";
+      if (p === "CB" || p === "S" || p === "DB") return "DB";
+      if (p === "D/ST" || p === "DST" || p === "DEF") return "D/ST";
+      return "FLEX";
+    }
+
+    function getPositionalPeerGroup(posBucket) {
+      const b = normalizePlayerPosBucket(posBucket);
+      if (b === "QB" || b === "RB" || b === "WR" || b === "TE") return "OFFENSE";
+      if (b === "DL" || b === "LB" || b === "DB") return "IDP";
+      return "LEGACY_SPECIAL";
+    }
+
+    function setPosLeadersMode(mode) {
+      uiState.posLeadersMode = ["SEASON", "WEEKLY", "FREE_AGENTS"].includes(mode) ? mode : "SEASON";
+      renderLeagueCapitalSection(evaluateYearState(uiState.activeYear));
+    }
+
+    function setPosLeadersPosFilter(pos) {
+      uiState.posLeadersPosFilter = String(pos || "ALL").toUpperCase();
+      renderLeagueCapitalSection(evaluateYearState(uiState.activeYear));
+    }
+
+    function setPosLeadersSearch(query) {
+      uiState.posLeadersSearch = String(query || "");
+      renderLeagueCapitalSection(evaluateYearState(uiState.activeYear));
+      const inp = document.getElementById("freeAgentPositionalSearchInput");
+      if (inp) {
+        inp.focus();
+        try { inp.setSelectionRange(inp.value.length, inp.value.length); } catch (e) {}
+      }
+    }
+
+    function offerTradeForLeaguePlayer(ownerTeamId, playerId, playerName, pos, nflTeam) {
+      const targetTeam = safeId(ownerTeamId);
+      const myTeamId = safeId((uiState.isCommish ? uiState.selectedManager : uiState.myTeam) || "syeth");
+      if (!targetTeam || targetTeam === myTeamId) {
+        switchMainTab("ledger");
+        setMyTeamSubView("ROSTER");
+        return;
+      }
+      uiState.selectedManager = myTeamId;
+      uiState.compareManagerB = targetTeam;
+      uiState.ledgerViewMode = "COMPARE";
+      uiState.tradeMachineShowRosters = true;
+      uiState.whatIfSwaps = [];
+      uiState.whatIfPlayerSwaps = [{
+        playerId: safeId(playerId),
+        name: cleanStr(playerName || "Player", 60),
+        pos: cleanStr(pos || "FLEX", 12),
+        nflTeam: cleanStr(nflTeam || "NFL", 8),
+        fromTeam: targetTeam,
+        toTeam: myTeamId
+      }];
+      switchMainTab("tradecenter");
+      showToast(`Staged ${playerName} from ${getTeamName(targetTeam)} in Trade Machine!`, "info");
+    }
+
+    function getDerivedPositionalLeadersAndFreeAgents() {
+      const ed = leagueDB?.espnData || DEFAULT_ESPN_DATA;
+      const rosters = ed.rosters || {};
+      const syncedFa = Array.isArray(ed.freeAgents) ? ed.freeAgents : [];
+      const curSeason = Number(ed.currentSeason) || 2026;
+      const sObj = (ed.seasons && ed.seasons[String(curSeason)]) || {};
+      const maxGp = Math.max(1, (sObj.standings || []).reduce((mx, r) => Math.max(mx, (Number(r.wins) || 0) + (Number(r.losses) || 0) + (Number(r.ties) || 0)), 0) || 14);
+
+      const allPool = [];
+      const seenIds = new Set();
+
+      Object.entries(rosters).forEach(([tid, pList]) => {
+        (Array.isArray(pList) ? pList : []).forEach(p => {
+          if (!p || !p.name) return;
+          const pid = safeId(p.id || `${tid}_${p.name}`);
+          seenIds.add(pid);
+          const posBucket = normalizePlayerPosBucket(p.pos);
+          const slotUpper = String(p.slot || "BE").toUpperCase();
+          const status = (slotUpper === "BE" || slotUpper === "IR" || slotUpper === "BENCH") ? "BENCHED" : "STARTED";
+          const totalPts = Math.round((Number(p.totalPts ?? p.pts) || 0) * 10) / 10;
+          const gp = Number(p.gamesPlayed) || maxGp;
+          const avgPts = Number(p.avgPts) > 0
+            ? Math.round(Number(p.avgPts) * 10) / 10
+            : (totalPts > 0 ? Math.round((totalPts / gp) * 10) / 10 : 0);
+          const rankNum = Number((String(p.posRank || "").match(/(\d+)/) || [])[1]) || 999;
+          allPool.push({
+            id: pid,
+            espnId: Number(p.espnId) || 0,
+            name: p.name,
+            rawPos: p.pos || posBucket,
+            pos: posBucket,
+            nflTeam: p.nflTeam || "NFL",
+            slot: slotUpper,
+            status,
+            ownerTeamId: tid,
+            totalPts,
+            avgPts,
+            projPts: Math.round((Number(p.projPts) || 0) * 10) / 10,
+            posRank: p.posRank || (rankNum < 999 ? `${posBucket}${rankNum}` : ""),
+            rankNum
+          });
+        });
+      });
+
+      syncedFa.forEach((fa, idx) => {
+        if (!fa || !fa.name) return;
+        const pid = safeId(fa.id || `fa_${idx + 1}`);
+        if (seenIds.has(pid)) return;
+        seenIds.add(pid);
+        const posBucket = normalizePlayerPosBucket(fa.pos);
+        const totalPts = Math.round((Number(fa.totalPts ?? fa.pts) || 0) * 10) / 10;
+        const avgPts = Number(fa.avgPts) > 0
+          ? Math.round(Number(fa.avgPts) * 10) / 10
+          : (totalPts > 0 ? Math.round((totalPts / maxGp) * 10) / 10 : 0);
+        const rankNum = Number((String(fa.posRank || "").match(/(\d+)/) || [])[1]) || 999;
+        allPool.push({
+          id: pid,
+          espnId: Number(fa.espnId) || 0,
+          name: fa.name,
+          rawPos: fa.pos || posBucket,
+          pos: posBucket,
+          nflTeam: fa.nflTeam || "NFL",
+          slot: "FA",
+          status: "FREE_AGENT",
+          ownerTeamId: "",
+          totalPts,
+          avgPts,
+          projPts: Math.round((Number(fa.projPts) || 0) * 10) / 10,
+          posRank: fa.posRank || (rankNum < 999 ? `${posBucket}${rankNum}` : ""),
+          rankNum,
+          pctOwned: Number(fa.pctOwned) || 0
+        });
+      });
+
+      // Compute verified positional ranking across the synced pool when posRank is not explicitly provided
+      const byPos = {};
+      allPool.forEach(item => {
+        if (!byPos[item.pos]) byPos[item.pos] = [];
+        byPos[item.pos].push(item);
+      });
+      Object.entries(byPos).forEach(([posKey, list]) => {
+        list.sort((a, b) => (b.totalPts - a.totalPts) || (a.rankNum - b.rankNum) || (b.projPts - a.projPts));
+        list.forEach((pl, idx) => {
+          pl.derivedPosRankNum = idx + 1;
+          if (!pl.posRank) pl.posRank = `${posKey}${idx + 1}`;
+        });
+      });
+
+      return {
+        allPool,
+        byPos,
+        freeAgents: allPool.filter(x => x.status === "FREE_AGENT").sort((a, b) => (b.totalPts - a.totalPts) || (b.avgPts - a.avgPts) || (b.projPts - a.projPts)),
+        hasSyncedFreeAgents: syncedFa.length > 0,
+        scoringPeriodId: Number(ed.positionalLeaders?.scoringPeriodId) || maxGp
+      };
+    }
+
+    function buildPositionalTop10AndFreeAgentsHtml() {
+      const data = getDerivedPositionalLeadersAndFreeAgents();
+      const mode = uiState.posLeadersMode || "SEASON";
+      const posFilter = uiState.posLeadersPosFilter || "ALL";
+      const query = (uiState.posLeadersSearch || "").trim().toLowerCase();
+      const myTeamId = safeId((uiState.isCommish ? uiState.selectedManager : uiState.myTeam) || "syeth");
+      const POS_TABS = ["ALL", "QB", "RB", "WR", "TE", "DL", "LB", "DB", "K", "D/ST"];
+
+      let displayRows = [];
+      if (mode === "FREE_AGENTS") {
+        displayRows = [...data.freeAgents];
+        if (posFilter !== "ALL") {
+          displayRows = displayRows.filter(p => p.pos === posFilter);
+        }
+      } else {
+        const targetPositions = posFilter === "ALL" ? ["QB", "RB", "WR", "TE", "DL", "LB", "DB", "K", "D/ST"] : [posFilter];
+        targetPositions.forEach(pk => {
+          const list = [...(data.byPos[pk] || [])];
+          if (mode === "WEEKLY") {
+            list.sort((a, b) => (b.avgPts - a.avgPts) || (b.totalPts - a.totalPts) || (a.derivedPosRankNum - b.derivedPosRankNum));
+          } else {
+            list.sort((a, b) => (b.totalPts - a.totalPts) || (a.derivedPosRankNum - b.derivedPosRankNum));
+          }
+          displayRows.push(...(posFilter === "ALL" ? list.slice(0, 10) : list.slice(0, 25)));
+        });
+      }
+
+      if (query) {
+        displayRows = (mode === "FREE_AGENTS" ? data.freeAgents : data.allPool).filter(p => {
+          if (posFilter !== "ALL" && p.pos !== posFilter) return false;
+          const ownerLbl = p.ownerTeamId ? `${getTeamName(p.ownerTeamId)} ${getOriginalManagerName(p.ownerTeamId)}` : "free agent unrostered waiver";
+          return `${p.name} ${p.pos} ${p.rawPos} ${p.nflTeam} ${p.posRank} ${ownerLbl}`.toLowerCase().includes(query);
+        });
+      }
+
+      const renderStatusBadge = (p) => {
+        if (p.status === "FREE_AGENT") {
+          return `<span class="px-2 py-0.5 rounded-full text-[10px] font-extrabold bg-amber-950/90 text-amber-300 border border-amber-500/60">[FREE AGENT]</span>`;
+        }
+        if (p.status === "BENCHED") {
+          return `<span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-slate-900 text-slate-300 border border-white/15">[BENCHED • ${escapeHtml(p.slot)}]</span>`;
+        }
+        return `<span class="px-2 py-0.5 rounded-full text-[10px] font-extrabold bg-emerald-950/80 text-emerald-300 border border-emerald-500/50">[STARTED • ${escapeHtml(p.slot)}]</span>`;
+      };
+
+      const rowsHtml = displayRows.map((p, idx) => {
+        const isOwnedByOther = Boolean(p.ownerTeamId && p.ownerTeamId !== myTeamId);
+        const isOwnedByMe = Boolean(p.ownerTeamId && p.ownerTeamId === myTeamId);
+        return `
+          <tr class="border-b border-white/[0.06] hover:bg-white/[0.03] transition text-xs">
+            <td class="py-2.5 px-2.5 font-mono font-black text-center text-amber-300">#${posFilter === "ALL" && !query && mode !== "FREE_AGENTS" ? p.derivedPosRankNum : (idx + 1)}</td>
+            <td class="py-2.5 px-2.5">
+              <div class="flex items-center gap-2 min-w-0">
+                ${renderPlayerHeadshotHtml({ id: p.id, espnId: p.espnId, name: p.name, pos: p.pos }, "w-7 h-7", "text-[10px]")}
+                <div class="min-w-0">
+                  <div class="font-black text-white truncate flex items-center gap-1.5">
+                    <span>${escapeHtml(p.name)}</span>
+                    <span class="px-1.5 py-0.5 rounded text-[10px] font-mono font-bold bg-[#0B0D12] text-sky-300 border border-sky-500/35">${escapeHtml(p.pos)}</span>
+                    ${renderNflTeamPillHtml(p.nflTeam)}
+                  </div>
+                  <div class="text-[10px] font-mono text-slate-400">Pos Rank: <strong class="text-slate-200">${escapeHtml(p.posRank || `${p.pos}${p.derivedPosRankNum}`)}</strong></div>
+                </div>
+              </div>
+            </td>
+            <td class="py-2.5 px-2.5 text-center">${renderStatusBadge(p)}</td>
+            <td class="py-2.5 px-2.5">
+              ${p.ownerTeamId ? `
+                <div class="flex items-center gap-1.5">
+                  ${renderTeamAvatarHtml(p.ownerTeamId, "w-5 h-5 text-[9px]", "rounded")}
+                  <div class="min-w-0">
+                    <div class="font-bold text-white truncate">${escapeHtml(getTeamName(p.ownerTeamId))}</div>
+                    <div class="text-[10px] text-slate-400">${escapeHtml(getOriginalManagerName(p.ownerTeamId))}</div>
+                  </div>
+                </div>
+              ` : `
+                <span class="text-amber-300 font-bold text-[11px]"><i class="fa-solid fa-bolt mr-1"></i>Available on ESPN Waivers</span>
+              `}
+            </td>
+            <td class="py-2.5 px-2.5 font-mono font-black text-center text-emerald-300">${p.totalPts > 0 ? `${p.totalPts.toFixed(1)} pts` : '—'}</td>
+            <td class="py-2.5 px-2.5 font-mono font-bold text-center text-sky-300">${p.avgPts > 0 ? `${p.avgPts.toFixed(1)} /g` : '—'}</td>
+            <td class="py-2.5 px-2.5 text-right">
+              ${isOwnedByOther ? `
+                <button
+                  type="button"
+                  onclick="offerTradeForLeaguePlayer('${safeId(p.ownerTeamId)}', '${safeId(p.id)}', '${escapeHtml(p.name).replace(/'/g, "\\'")}', '${escapeHtml(p.pos)}', '${escapeHtml(p.nflTeam)}')"
+                  class="btn-action px-2.5 py-1 text-[11px] text-amber-300 border-amber-500/40"
+                >
+                  <i class="fa-solid fa-right-left text-[10px]"></i>
+                  <span>Trade For</span>
+                </button>
+              ` : isOwnedByMe ? `
+                <span class="static-badge bg-emerald-950/70 text-emerald-300 border border-emerald-500/40 text-[10px]">On Your Roster</span>
+              ` : `
+                <span class="static-badge bg-amber-950/60 text-amber-200 border border-amber-500/40 text-[10px]">Waiver Wire</span>
+              `}
+            </td>
+          </tr>
+        `;
+      }).join("");
+
+      const faSyncNoticeHtml = !data.hasSyncedFreeAgents ? `
+        <div class="bg-sky-950/35 border border-sky-500/40 rounded-xl px-3.5 py-2.5 flex flex-wrap items-center justify-between gap-2 text-xs">
+          <div class="flex items-center gap-2 text-sky-200">
+            <i class="fa-solid fa-satellite-dish text-sky-400"></i>
+            <span><strong>Tuesday Auto-Sync &amp; Free Agent Pool:</strong> Showing all ${data.allPool.length} synced league players across all 10 rosters. Run the updated <strong>1-Click ESPN Console Extractor</strong> (or Tuesday 6 AM cron) to also pull top unrostered ESPN Free Agents (<code class="font-mono text-amber-300">kona_player_info</code>).</span>
+          </div>
+          ${uiState.isCommish ? `
+            <button type="button" onclick="openEspnSyncModal()" class="btn-action px-2.5 py-1 text-[11px] text-sky-300 border-sky-400/50">
+              <span>Sync Free Agents</span>
+            </button>
+          ` : ''}
+        </div>
+      ` : "";
+
+      return `
+        <div id="positionalTop10AndFreeAgentsCard" class="app-card overflow-hidden p-4 sm:p-5 space-y-4">
+          <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-3 border-b border-white/10 pb-3.5">
+            <div>
+              <div class="flex flex-wrap items-center gap-2">
+                <span class="static-badge bg-emerald-950 text-emerald-300 border border-emerald-500/60">
+                  <i class="fa-solid fa-ranking-star"></i> Tuesday Sync • Positional Top 10 &amp; Free Agents
+                </span>
+                <h2 class="text-base sm:text-lg font-black text-white">Positional Leaders (Offense &amp; IDP) + Top Available Free Agents</h2>
+              </div>
+              <p class="text-xs text-slate-400 mt-0.5">Live positional leaderboards across <strong class="text-white">QB, RB, WR, TE, DL, LB, DB, K, D/ST</strong> with <span class="text-emerald-300 font-bold">[STARTED]</span>, <span class="text-slate-300 font-bold">[BENCHED]</span>, and <span class="text-amber-300 font-bold">[FREE AGENT]</span> badges and 1-tap Trade targeting.</p>
+            </div>
+            <div class="segmented-bar flex-wrap">
+              <button type="button" id="posLeadersMode-SEASON" onclick="setPosLeadersMode('SEASON')" class="segmented-pill ${mode === 'SEASON' ? 'active' : ''}">
+                <i class="fa-solid fa-trophy text-[10px]"></i>
+                <span>Season Top 10</span>
+              </button>
+              <button type="button" id="posLeadersMode-WEEKLY" onclick="setPosLeadersMode('WEEKLY')" class="segmented-pill ${mode === 'WEEKLY' ? 'active' : ''}">
+                <i class="fa-solid fa-bolt text-[10px]"></i>
+                <span>PPG / Weekly Top 10</span>
+              </button>
+              <button type="button" id="posLeadersMode-FREE_AGENTS" onclick="setPosLeadersMode('FREE_AGENTS')" class="segmented-pill ${mode === 'FREE_AGENTS' ? 'active' : ''}">
+                <i class="fa-solid fa-user-plus text-[10px]"></i>
+                <span>Free Agents (${data.freeAgents.length})</span>
+              </button>
+            </div>
+          </div>
+
+          ${faSyncNoticeHtml}
+
+          <div class="flex flex-col md:flex-row md:items-center justify-between gap-2.5">
+            <div class="segmented-bar overflow-x-auto no-scrollbar max-w-full flex-nowrap">
+              ${POS_TABS.map(pt => `
+                <button
+                  type="button"
+                  onclick="setPosLeadersPosFilter('${pt}')"
+                  class="segmented-pill font-mono ${posFilter === pt ? 'active' : ''}"
+                >${pt}</button>
+              `).join("")}
+            </div>
+            <div class="relative w-full md:w-72">
+              <i class="fa-solid fa-magnifying-glass absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-xs"></i>
+              <input
+                id="freeAgentPositionalSearchInput"
+                type="text"
+                value="${escapeHtml(uiState.posLeadersSearch || '')}"
+                oninput="setPosLeadersSearch(this.value)"
+                placeholder="Search all 10 rosters & free agents..."
+                class="w-full bg-[#0B0D12] text-white text-xs rounded-xl pl-8 pr-7 py-2 border border-white/15 focus:border-amber-400 focus:outline-none"
+              >
+              ${uiState.posLeadersSearch ? `
+                <button type="button" onclick="setPosLeadersSearch('')" class="absolute right-2.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-white text-xs">
+                  <i class="fa-solid fa-xmark"></i>
+                </button>
+              ` : ''}
+            </div>
+          </div>
+
+          <div class="overflow-x-auto rounded-xl border border-white/10">
+            <table class="w-full text-left border-collapse">
+              <thead>
+                <tr class="border-b border-white/10 text-[10px] font-extrabold uppercase tracking-wider text-slate-400 bg-[#0B0D12]">
+                  <th class="py-2.5 px-2.5 text-center">Rank</th>
+                  <th class="py-2.5 px-2.5">Player / Position / NFL</th>
+                  <th class="py-2.5 px-2.5 text-center">Lineup / Status</th>
+                  <th class="py-2.5 px-2.5">Owner / Waiver Status</th>
+                  <th class="py-2.5 px-2.5 text-center">Season Pts</th>
+                  <th class="py-2.5 px-2.5 text-center">PPG Avg</th>
+                  <th class="py-2.5 px-2.5 text-right">Action</th>
+                </tr>
+              </thead>
+              <tbody>
+                ${rowsHtml || `
+                  <tr>
+                    <td colspan="7" class="py-8 text-center text-xs text-slate-400">
+                      ${mode === 'FREE_AGENTS' && !data.hasSyncedFreeAgents
+                        ? 'No unrostered ESPN Free Agents cached yet — switch to Season Top 10 or run the 1-Click ESPN Sync to import unrostered Free Agents.'
+                        : 'No players match the current position / search filter.'}
+                    </td>
+                  </tr>
+                `}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      `;
+    }
+
+    function setRecordBookPosScope(scope) {
+      uiState.recordBookPosScope = scope === "STARTED_ONLY" ? "STARTED_ONLY" : "ALL";
+      renderLeagueCapitalSection(evaluateYearState(uiState.activeYear));
+    }
+
+    function setRecordBookPosFilter(pos) {
+      uiState.recordBookPosFilter = String(pos || "ALL").toUpperCase();
+      renderLeagueCapitalSection(evaluateYearState(uiState.activeYear));
+    }
+
+    function getDerivedPositionalRecordBook() {
+      const ed = leagueDB?.espnData || DEFAULT_ESPN_DATA;
+      const explicitRecs = Array.isArray(ed.positionalRecords) ? ed.positionalRecords : [];
+      const derivedLeaders = getDerivedPositionalLeadersAndFreeAgents();
+      const curSeason = Number(ed.currentSeason) || 2026;
+
+      const records = [...explicitRecs];
+      const seenKeys = new Set(records.map(r => `${r.type}|${r.pos}|${(r.playerName || "").toLowerCase()}|${r.year}`));
+
+      // Add real verified single-season positional records from synced ESPN rosters/free agents (zero fabricated numbers)
+      derivedLeaders.allPool.forEach(p => {
+        if (p.totalPts <= 0) return;
+        const key = `SINGLE_SEASON|${p.pos}|${p.name.toLowerCase()}|${curSeason}`;
+        if (seenKeys.has(key)) return;
+        seenKeys.add(key);
+        records.push({
+          id: `posrec_${p.id}_${curSeason}`,
+          type: "SINGLE_SEASON",
+          pos: p.pos,
+          playerName: p.name,
+          nflTeam: p.nflTeam,
+          managerId: p.ownerTeamId || "",
+          teamId: p.ownerTeamId || "",
+          status: p.status,
+          year: curSeason,
+          week: 0,
+          pts: p.totalPts,
+          ppg: p.avgPts,
+          posRank: p.posRank
+        });
+      });
+
+      return records;
+    }
+
+    /* -----------------------------------------------------------------------
+       INDIVIDUAL NFL PLAYER HALL OF FAME & LIVE 7/10 MANAGER BALLOT (A7-A11)
+       (Strictly Individual NFL Players Only — Zero Manager HOF per A10 & A11)
+       ----------------------------------------------------------------------- */
+    function setPlayerHofFilter(filterKey) {
+      uiState.playerHofFilter = ["ALL", "BALLOT_ELIGIBLE", "INDUCTED", "ACTIVE_WATCHLIST"].includes(filterKey) ? filterKey : "ALL";
+      renderLeagueCapitalSection(evaluateYearState(uiState.activeYear));
+    }
+
+    async function votePlayerHofBallot(playerKey, choice) {
+      const pid = safeId(playerKey);
+      const voteUpper = String(choice || "YES").toUpperCase();
+      if (!pid || !["YES", "NO"].includes(voteUpper)) return;
+
+      const voterTeamId = safeId((uiState.isCommish ? uiState.selectedManager : uiState.myTeam) || "syeth");
+      if (!leagueDB.espnData) leagueDB.espnData = sanitizeEspnDataObject(null);
+      if (!leagueDB.espnData.playerHofBallots || typeof leagueDB.espnData.playerHofBallots !== "object") {
+        leagueDB.espnData.playerHofBallots = {};
+      }
+
+      const candidates = computePlayerHallOfFameCandidates();
+      const cand = candidates.find(c => c.key === pid);
+      if (cand && !cand.isBallotEligible && !uiState.isCommish) {
+        showToast(`${cand.name} is currently on an active roster — players require 1+ yr absence (or Commish retirement nomination) for HOF ballot voting.`, "info");
+        return;
+      }
+
+      const curBallot = leagueDB.espnData.playerHofBallots[pid] || {
+        yes: [],
+        no: [],
+        nominated: Boolean(cand?.nominated),
+        inductedAt: 0,
+        playerName: cand?.name || pid,
+        pos: cand?.pos || "FLEX"
+      };
+
+      const prevYesCount = Array.isArray(curBallot.yes) ? curBallot.yes.length : 0;
+      const yesSet = new Set((curBallot.yes || []).map(safeId));
+      const noSet = new Set((curBallot.no || []).map(safeId));
+
+      if (voteUpper === "YES") {
+        if (yesSet.has(voterTeamId)) {
+          yesSet.delete(voterTeamId);
+        } else {
+          yesSet.add(voterTeamId);
+          noSet.delete(voterTeamId);
+        }
+      } else {
+        if (noSet.has(voterTeamId)) {
+          noSet.delete(voterTeamId);
+        } else {
+          noSet.add(voterTeamId);
+          yesSet.delete(voterTeamId);
+        }
+      }
+
+      curBallot.yes = Array.from(yesSet);
+      curBallot.no = Array.from(noSet);
+      curBallot.playerName = cand?.name || curBallot.playerName || pid;
+      curBallot.pos = cand?.pos || curBallot.pos || "FLEX";
+
+      if (curBallot.yes.length >= 7 && !curBallot.inductedAt) {
+        curBallot.inductedAt = Date.now();
+        if (typeof appendLeagueActivityEvent === "function") {
+          appendLeagueActivityEvent(
+            "HOF_INDUCTION",
+            `🏛️ ${curBallot.playerName} (${curBallot.pos}) Inducted into the Gamecock Mafia Player Hall of Fame!`,
+            `Reached ${curBallot.yes.length}/10 Supermajority Manager Approval on the official Player HOF Ballot.`,
+            { year: Number(uiState.activeYear || 2026), actorTeamId: voterTeamId }
+          );
+        }
+        showToast(`🏛️ ${curBallot.playerName} reached ${curBallot.yes.length}/10 votes and is officially inducted into the Player Hall of Fame!`, "success");
+      } else if (prevYesCount !== curBallot.yes.length || voteUpper === "NO") {
+        showToast(`Recorded ${getTeamName(voterTeamId)}'s HOF Ballot vote (${curBallot.yes.length}/10 Yes • 7 required).`, "success");
+      }
+
+      leagueDB.espnData.playerHofBallots[pid] = curBallot;
+      leagueDB.updatedAt = Date.now();
+      saveDatabase(false);
+      renderAll();
+      await pushHofBallotVoteToCloud(pid, voterTeamId, voteUpper, {
+        playerName: curBallot.playerName,
+        pos: curBallot.pos,
+        nominated: curBallot.nominated
+      });
+    }
+
+    async function toggleCommishHofNomination(playerKey) {
+      if (!requireCommish()) return;
+      const pid = safeId(playerKey);
+      if (!pid) return;
+      if (!leagueDB.espnData) leagueDB.espnData = sanitizeEspnDataObject(null);
+      if (!leagueDB.espnData.playerHofBallots) leagueDB.espnData.playerHofBallots = {};
+      const candidates = computePlayerHallOfFameCandidates();
+      const cand = candidates.find(c => c.key === pid);
+      const curBallot = leagueDB.espnData.playerHofBallots[pid] || {
+        yes: [],
+        no: [],
+        nominated: false,
+        inductedAt: 0,
+        playerName: cand?.name || pid,
+        pos: cand?.pos || "FLEX"
+      };
+      curBallot.nominated = !curBallot.nominated;
+      leagueDB.espnData.playerHofBallots[pid] = curBallot;
+      leagueDB.updatedAt = Date.now();
+      saveDatabase(true, `HOF_NOMINATE_${pid}`);
+      renderAll();
+      await pushHofBallotVoteToCloud(pid, safeId(uiState.selectedManager || "syeth"), "NOMINATE", {
+        playerName: curBallot.playerName,
+        pos: curBallot.pos,
+        nominateToggle: true,
+        nominated: curBallot.nominated
+      });
+      showToast(curBallot.nominated ? `Nominated ${curBallot.playerName} to the active 7/10 Manager HOF Ballot!` : `Removed ${curBallot.playerName} from manual ballot nomination.`, "info");
+    }
+
+    function computePlayerHallOfFameCandidates() {
+      const ed = leagueDB?.espnData || DEFAULT_ESPN_DATA;
+      const rosters = ed.rosters || {};
+      const seasons = ed.seasons || {};
+      const draftResults = ed.draftResults || ed.pastDraftPicks || {};
+      const ballots = ed.playerHofBallots || {};
+      const curSeason = Number(ed.currentSeason) || 2026;
+
+      // Identify championship & runner-up franchises across league history for Playoff/Title impact (15% weight)
+      const champTeamsByYear = {};
+      const runnerUpTeamsByYear = {};
+      Object.entries(seasons).forEach(([yrStr, sObj]) => {
+        if (sObj?.champion) champTeamsByYear[yrStr] = sObj.champion;
+        if (sObj?.runnerUp) runnerUpTeamsByYear[yrStr] = sObj.runnerUp;
+      });
+
+      const playerMap = {};
+      const getOrInitPlayer = (name, rawPos, nflTeam, espnId = 0) => {
+        const cleanName = cleanStr(name || "", 60).trim();
+        if (!cleanName) return null;
+        const normKey = "hof_" + cleanName.toLowerCase().replace(/[^a-z0-9]/g, "");
+        const posBucket = normalizePlayerPosBucket(rawPos);
+        if (!playerMap[normKey]) {
+          playerMap[normKey] = {
+            key: normKey,
+            espnId: Number(espnId) || 0,
+            name: cleanName,
+            pos: posBucket,
+            peerGroup: getPositionalPeerGroup(posBucket),
+            nflTeam: cleanStr(nflTeam || "NFL", 8).toUpperCase(),
+            isCurrentlyRostered: false,
+            currentOwnerId: "",
+            seasonsActive: new Set(),
+            keeperCount: 0,
+            bestDraftRound: 20,
+            draftedRounds: [],
+            tradeCount: 0,
+            totalSyncedPts: 0,
+            bestPosRankNum: 99,
+            posRankLabel: "",
+            championshipShares: 0,
+            playoffTeamShares: 0,
+            ownersSet: new Set()
+          };
+        }
+        const entry = playerMap[normKey];
+        if (Number(espnId) > 0 && !entry.espnId) entry.espnId = Number(espnId);
+        if (entry.pos === "FLEX" && posBucket !== "FLEX") {
+          entry.pos = posBucket;
+          entry.peerGroup = getPositionalPeerGroup(posBucket);
+        }
+        if ((entry.nflTeam === "NFL" || entry.nflTeam === "FA") && nflTeam && nflTeam !== "NFL") {
+          entry.nflTeam = cleanStr(nflTeam, 8).toUpperCase();
+        }
+        return entry;
+      };
+
+      // 1. Index active rosters (2026) & keeper locks
+      Object.entries(rosters).forEach(([tid, pList]) => {
+        const profKeepers = new Set((leagueDB?.teamProfiles?.[tid]?.keepers || []).map(String));
+        const s25Champ = champTeamsByYear["2025"] === tid;
+        const s25Runner = runnerUpTeamsByYear["2025"] === tid;
+        (Array.isArray(pList) ? pList : []).forEach(p => {
+          const entry = getOrInitPlayer(p.name, p.pos, p.nflTeam, p.espnId);
+          if (!entry) return;
+          entry.isCurrentlyRostered = true;
+          entry.currentOwnerId = tid;
+          entry.ownersSet.add(tid);
+          entry.seasonsActive.add(curSeason);
+          const pts = Number(p.totalPts ?? p.pts) || 0;
+          if (pts > entry.totalSyncedPts) entry.totalSyncedPts = pts;
+          const rankNum = Number((String(p.posRank || "").match(/(\d+)/) || [])[1]) || 99;
+          if (rankNum < entry.bestPosRankNum) {
+            entry.bestPosRankNum = rankNum;
+            entry.posRankLabel = p.posRank || `${entry.pos}${rankNum}`;
+          }
+          if (profKeepers.has(String(p.id))) {
+            entry.keeperCount += 1;
+            entry.seasonsActive.add(curSeason - 1);
+          }
+          if (s25Champ) entry.championshipShares += 1;
+          else if (s25Runner) entry.playoffTeamShares += 1;
+        });
+      });
+
+      // 2. Index historical & recent Draft Results (2025, 2026, etc.)
+      Object.entries(draftResults).forEach(([yrStr, dObj]) => {
+        const yr = Number(yrStr) || 2025;
+        const picksArr = Array.isArray(dObj) ? dObj : (Array.isArray(dObj?.picks) ? dObj.picks : Object.values(dObj?.bySlot || {}));
+        picksArr.forEach(pk => {
+          if (!pk || !pk.name) return;
+          const entry = getOrInitPlayer(pk.name, pk.pos, pk.nflTeam, pk.espnId);
+          if (!entry) return;
+          entry.seasonsActive.add(yr);
+          const rd = Number(pk.round) || 10;
+          entry.draftedRounds.push({ year: yr, round: rd, teamId: pk.teamId || "" });
+          if (rd < entry.bestDraftRound) entry.bestDraftRound = rd;
+          if (pk.teamId) {
+            entry.ownersSet.add(pk.teamId);
+            if (champTeamsByYear[String(yr)] === pk.teamId) entry.championshipShares += 1;
+            else if (runnerUpTeamsByYear[String(yr)] === pk.teamId) entry.playoffTeamShares += 1;
+          }
+        });
+      });
+
+      // 3. Index historical Keepers from seasons[yr].keptPlayers
+      Object.entries(seasons).forEach(([yrStr, sObj]) => {
+        const yr = Number(yrStr) || 2025;
+        (Array.isArray(sObj?.keptPlayers) ? sObj.keptPlayers : []).forEach(kp => {
+          const entry = getOrInitPlayer(kp.name || kp.playerName, kp.pos, kp.nflTeam, kp.espnId || kp.playerId);
+          if (!entry) return;
+          entry.seasonsActive.add(yr);
+          entry.keeperCount += 1;
+          if (kp.teamId) {
+            entry.ownersSet.add(kp.teamId);
+            if (champTeamsByYear[String(yr)] === kp.teamId) entry.championshipShares += 1;
+          }
+        });
+      });
+
+      // 4. Index blockbuster traded NFL players across league trade ledger
+      (leagueDB?.trades || []).forEach(tr => {
+        const trYr = Number(tr.year) || 2026;
+        (Array.isArray(tr.playerTransfers) ? tr.playerTransfers : []).forEach(pt => {
+          const pName = pt.playerName || pt.name;
+          const entry = getOrInitPlayer(pName, pt.pos, pt.nflTeam, 0);
+          if (!entry) return;
+          entry.tradeCount += 1;
+          entry.seasonsActive.add(trYr - 1);
+          if (pt.fromOwner) entry.ownersSet.add(pt.fromOwner);
+          if (pt.toOwner) {
+            entry.ownersSet.add(pt.toOwner);
+            if (champTeamsByYear[String(trYr - 1)] === pt.toOwner) entry.championshipShares += 1;
+          }
+        });
+      });
+
+      // 5. Index any explicitly nominated/voted players in playerHofBallots
+      Object.entries(ballots).forEach(([bKey, bObj]) => {
+        if (!bObj || typeof bObj !== "object") return;
+        const bName = bObj.playerName || bObj.name;
+        if (!bName) return;
+        getOrInitPlayer(bName, bObj.pos || "FLEX", bObj.nflTeam || "NFL", 0);
+      });
+
+      // Peer-group normalization (A8): find max points per position bucket so Offense, IDP, and K/DST are normalized against their own positional peers
+      const maxPtsByPos = {};
+      Object.values(playerMap).forEach(p => {
+        if (!maxPtsByPos[p.pos] || p.totalSyncedPts > maxPtsByPos[p.pos]) {
+          maxPtsByPos[p.pos] = p.totalSyncedPts;
+        }
+      });
+
+      // Compute Dominance-Heavy HOF Legacy Score (A7: 50% Sustained Positional Dominance + 25% Draft/Keeper ROI + 15% Playoff Impact + 10% Career Points)
+      const scoredList = Object.values(playerMap).map(p => {
+        const posMax = Math.max(1, maxPtsByPos[p.pos] || 200);
+        const ptsRatio = Math.min(1, p.totalSyncedPts / posMax);
+
+        // 1. 50% Sustained Positional Dominance (0–50 pts)
+        let rankDominance = 0;
+        if (p.bestPosRankNum <= 3) rankDominance = 34 - (p.bestPosRankNum - 1) * 2.5; // Top 3 positional tier: 29–34 pts
+        else if (p.bestPosRankNum <= 6) rankDominance = 25 - (p.bestPosRankNum - 4) * 2; // Top 4-6 tier: 21–25 pts
+        else if (p.bestPosRankNum <= 12) rankDominance = 18 - (p.bestPosRankNum - 7) * 1.2;
+        else if (p.bestDraftRound <= 2) rankDominance = 24;
+        else if (p.bestDraftRound <= 5) rankDominance = 17;
+        else rankDominance = 10;
+
+        const peerOutputBonus = Math.round(ptsRatio * 10 * 10) / 10;
+        const multiYrDominanceBonus = Math.min(6, (p.seasonsActive.size - 1) * 3 + Math.min(3, p.keeperCount * 2));
+        const dominanceScore50 = Math.min(50, Math.round((rankDominance + peerOutputBonus + multiYrDominanceBonus) * 10) / 10);
+
+        // 2. 25% Draft / Keeper / Blockbuster Trade ROI (0–25 pts)
+        let roiScore25 = 8;
+        if (p.keeperCount > 0) roiScore25 += Math.min(10, p.keeperCount * 6);
+        if (p.draftedRounds.length > 0 && p.bestPosRankNum <= 10) {
+          const surplus = Math.max(0, p.bestDraftRound - p.bestPosRankNum);
+          roiScore25 += Math.min(7, 3 + surplus * 0.8);
+        } else if (p.bestDraftRound <= 3) {
+          roiScore25 += 5;
+        }
+        if (p.tradeCount > 0) roiScore25 += Math.min(5, p.tradeCount * 3);
+        roiScore25 = Math.min(25, Math.round(roiScore25 * 10) / 10);
+
+        // 3. 15% Playoff & Championship Impact (0–15 pts)
+        let playoffScore15 = 5;
+        if (p.championshipShares > 0) playoffScore15 += Math.min(10, p.championshipShares * 7);
+        else if (p.playoffTeamShares > 0) playoffScore15 += Math.min(6, p.playoffTeamShares * 4);
+        else if (p.bestPosRankNum <= 5) playoffScore15 += 5;
+        playoffScore15 = Math.min(15, Math.round(playoffScore15 * 10) / 10);
+
+        // 4. 10% Career League Accumulation (0–10 pts)
+        const careerScore10 = Math.min(10, Math.round((ptsRatio * 6 + Math.min(4, p.seasonsActive.size * 1.5)) * 10) / 10);
+
+        const legacyScore = Math.min(99.5, Math.round((dominanceScore50 + roiScore25 + playoffScore15 + careerScore10) * 10) / 10);
+        const ballotObj = ballots[p.key] || { yes: [], no: [], nominated: false, inductedAt: 0 };
+        const yesVotes = Array.isArray(ballotObj.yes) ? ballotObj.yes : [];
+        const noVotes = Array.isArray(ballotObj.no) ? ballotObj.no : [];
+        const isInducted = yesVotes.length >= 7 || Boolean(ballotObj.inductedAt && yesVotes.length >= 7);
+        // Eligibility (A9): 1+ year absence from active league rosters OR official NFL retirement / Commissioner nomination
+        const isBallotEligible = !p.isCurrentlyRostered || Boolean(ballotObj.nominated) || isInducted;
+
+        return {
+          ...p,
+          dominanceScore50,
+          roiScore25,
+          playoffScore15,
+          careerScore10,
+          legacyScore,
+          hofScore: legacyScore,
+          yesVotes,
+          noVotes,
+          nominated: Boolean(ballotObj.nominated),
+          isInducted,
+          isBallotEligible,
+          ownersList: Array.from(p.ownersSet)
+        };
+      });
+
+      scoredList.sort((a, b) =>
+        (Number(b.isInducted) - Number(a.isInducted)) ||
+        (b.yesVotes.length - a.yesVotes.length) ||
+        (b.legacyScore - a.legacyScore) ||
+        (b.totalSyncedPts - a.totalSyncedPts)
+      );
+
+      return scoredList;
+    }
+
+    function buildPlayerHallOfFameHtml() {
+      const allCandidates = computePlayerHallOfFameCandidates();
+      const filterKey = uiState.playerHofFilter || "ALL";
+      const posFilter = uiState.posLeadersPosFilter || "ALL";
+      const myTeamId = safeId((uiState.isCommish ? uiState.selectedManager : uiState.myTeam) || "syeth");
+
+      const inductedList = allCandidates.filter(c => c.isInducted);
+      const ballotEligibleList = allCandidates.filter(c => c.isBallotEligible);
+      const activeWatchlist = allCandidates.filter(c => !c.isBallotEligible);
+
+      let filtered = allCandidates;
+      if (filterKey === "INDUCTED") filtered = inductedList;
+      else if (filterKey === "BALLOT_ELIGIBLE") filtered = ballotEligibleList;
+      else if (filterKey === "ACTIVE_WATCHLIST") filtered = activeWatchlist;
+
+      if (posFilter !== "ALL") {
+        filtered = filtered.filter(c => c.pos === posFilter);
+      }
+
+      const displayList = filtered.slice(0, 36);
+      const POS_PILLS = ["ALL", "QB", "RB", "WR", "TE", "DL", "LB", "DB", "K", "D/ST"];
+
+      const cardsHtml = displayList.map((c, idx) => {
+        const yesCount = c.yesVotes.length;
+        const noCount = c.noVotes.length;
+        const pctToInduction = Math.min(100, Math.round((yesCount / 7) * 100));
+        const myVote = c.yesVotes.includes(myTeamId) ? "YES" : (c.noVotes.includes(myTeamId) ? "NO" : "");
+        const peerBadge = c.peerGroup === "IDP"
+          ? `<span class="px-1.5 py-0.5 rounded text-[9px] font-mono font-bold bg-fuchsia-950/80 text-fuchsia-300 border border-fuchsia-500/40">IDP Peer-Normalized</span>`
+          : c.peerGroup === "LEGACY_SPECIAL"
+          ? `<span class="px-1.5 py-0.5 rounded text-[9px] font-mono font-bold bg-slate-900 text-slate-300 border border-white/15">Legacy Special</span>`
+          : `<span class="px-1.5 py-0.5 rounded text-[9px] font-mono font-bold bg-sky-950/80 text-sky-300 border border-sky-500/40">Offense Peer-Normalized</span>`;
+
+        const statusBadge = c.isInducted
+          ? `<span class="static-badge bg-amber-950 text-amber-300 border border-amber-400 text-[10px]">🏛️ Inducted HOF (${yesCount}/10)</span>`
+          : c.isBallotEligible
+          ? `<span class="static-badge bg-emerald-950 text-emerald-300 border border-emerald-500/60 text-[10px]">🗳️ Ballot Eligible (${c.isCurrentlyRostered ? 'Nominated' : '1+ Yr Unrostered'})</span>`
+          : `<span class="static-badge bg-[#13161F] text-slate-300 border border-white/15 text-[10px]">⏳ Active Roster Watchlist</span>`;
+
+        const ownersStr = c.ownersList.length > 0
+          ? c.ownersList.map(tid => escapeHtml(getOriginalManagerName(tid))).join(", ")
+          : "League History";
+
+        return `
+          <div class="bg-[#0B0D12] border ${c.isInducted ? 'border-amber-400/80 ring-1 ring-amber-400/30' : c.isBallotEligible ? 'border-emerald-500/40' : 'border-white/10'} rounded-xl p-3.5 sm:p-4 flex flex-col justify-between gap-3">
+            <div class="space-y-2.5">
+              <div class="flex items-start justify-between gap-2">
+                <div class="flex items-center gap-2.5 min-w-0">
+                  ${renderPlayerHeadshotHtml({ id: c.key, espnId: c.espnId, name: c.name, pos: c.pos }, "w-10 h-10", "text-xs")}
+                  <div class="min-w-0">
+                    <div class="flex flex-wrap items-center gap-1.5">
+                      <span class="font-mono text-[10px] font-black text-amber-400">#${idx + 1}</span>
+                      <span class="text-sm font-black text-white truncate">${escapeHtml(c.name)}</span>
+                      <span class="px-1.5 py-0.5 rounded text-[10px] font-mono font-bold bg-[#13161F] text-amber-300 border border-amber-500/40">${escapeHtml(c.pos)}</span>
+                      ${renderNflTeamPillHtml(c.nflTeam)}
+                    </div>
+                    <div class="flex flex-wrap items-center gap-1.5 mt-1">
+                      ${statusBadge}
+                      ${peerBadge}
+                    </div>
+                  </div>
+                </div>
+                <div class="text-right flex-shrink-0">
+                  <div class="text-base sm:text-lg font-mono font-black text-amber-300">${c.legacyScore.toFixed(1)}</div>
+                  <div class="text-[9px] font-extrabold uppercase tracking-wider text-slate-400">HOF Score</div>
+                </div>
+              </div>
+
+              <!-- 4-Pillar Dominance-Heavy Breakdown (A7: 50% / 25% / 15% / 10%) -->
+              <div class="grid grid-cols-4 gap-1.5 bg-[#13161F] border border-white/[0.07] rounded-lg p-2 text-center">
+                <div>
+                  <div class="text-[9px] font-bold uppercase text-slate-400">Dom (50%)</div>
+                  <div class="text-xs font-mono font-black text-emerald-300">${c.dominanceScore50.toFixed(1)}</div>
+                </div>
+                <div>
+                  <div class="text-[9px] font-bold uppercase text-slate-400">ROI (25%)</div>
+                  <div class="text-xs font-mono font-black text-sky-300">${c.roiScore25.toFixed(1)}</div>
+                </div>
+                <div>
+                  <div class="text-[9px] font-bold uppercase text-slate-400">Playoff (15%)</div>
+                  <div class="text-xs font-mono font-black text-amber-300">${c.playoffScore15.toFixed(1)}</div>
+                </div>
+                <div>
+                  <div class="text-[9px] font-bold uppercase text-slate-400">Career (10%)</div>
+                  <div class="text-xs font-mono font-black text-slate-200">${c.careerScore10.toFixed(1)}</div>
+                </div>
+              </div>
+
+              <div class="flex flex-wrap items-center justify-between gap-2 text-[11px] text-slate-300">
+                <span><strong class="text-slate-400">Franchise Lineage:</strong> ${ownersStr}</span>
+                <span class="font-mono text-[10px] text-slate-400">
+                  ${c.posRankLabel ? `Peak: <strong class="text-emerald-300">${escapeHtml(c.posRankLabel)}</strong> • ` : ''}
+                  ${c.totalSyncedPts > 0 ? `${c.totalSyncedPts.toFixed(1)} Pts` : `Rd ${c.bestDraftRound} Drafted`}
+                </span>
+              </div>
+            </div>
+
+            <!-- Live Synced 7/10 Supermajority Manager Ballot (A9) -->
+            <div class="pt-2.5 border-t border-white/10 space-y-2">
+              <div class="flex items-center justify-between gap-2 text-[10px]">
+                <span class="font-extrabold uppercase tracking-wider ${c.isInducted ? 'text-amber-300' : 'text-slate-400'}">
+                  <i class="fa-solid fa-check-to-slot mr-1 text-amber-400"></i>Manager Ballot: ${yesCount} / 10 Yes (7 Required)
+                </span>
+                <span class="font-mono text-slate-400">${yesCount}Y • ${noCount}N</span>
+              </div>
+              <div class="w-full h-1.5 rounded-full bg-[#13161F] overflow-hidden border border-white/10">
+                <div class="h-full ${c.isInducted ? 'bg-amber-400' : 'bg-emerald-500'} transition-all duration-300" style="width:${pctToInduction}%"></div>
+              </div>
+              <div class="flex flex-wrap items-center justify-between gap-1.5 pt-0.5">
+                ${(c.isBallotEligible || uiState.isCommish) ? `
+                  <div class="inline-flex items-center gap-1.5">
+                    <button
+                      type="button"
+                      onclick="votePlayerHofBallot('${safeId(c.key)}', 'YES')"
+                      class="px-2.5 py-1 rounded-lg text-[11px] font-extrabold border transition cursor-pointer ${myVote === 'YES' ? 'bg-emerald-700 text-white border-emerald-400' : 'bg-[#13161F] text-emerald-300 border-emerald-500/40 hover:bg-emerald-950/70'}"
+                    >
+                      👍 Induct (${yesCount})
+                    </button>
+                    <button
+                      type="button"
+                      onclick="votePlayerHofBallot('${safeId(c.key)}', 'NO')"
+                      class="px-2.5 py-1 rounded-lg text-[11px] font-extrabold border transition cursor-pointer ${myVote === 'NO' ? 'bg-rose-700 text-white border-rose-400' : 'bg-[#13161F] text-rose-300 border-rose-500/40 hover:bg-rose-950/70'}"
+                    >
+                      👎 Hold (${noCount})
+                    </button>
+                  </div>
+                ` : `
+                  <span class="text-[10px] text-slate-400 italic">Ballot unlocks after 1+ yr off active rosters (or NFL retirement)</span>
+                `}
+                ${uiState.isCommish ? `
+                  <button
+                    type="button"
+                    onclick="toggleCommishHofNomination('${safeId(c.key)}')"
+                    class="btn-action px-2 py-1 text-[10px] ${c.nominated ? 'text-amber-300 border-amber-400/60' : 'text-slate-400'}"
+                    title="Commissioner Override: Nominate retired/historic player to active 7/10 ballot"
+                  >
+                    <i class="fa-solid fa-gavel text-[9px]"></i>
+                    <span>${c.nominated ? 'Nominated ★' : 'Nominate'}</span>
+                  </button>
+                ` : ''}
+              </div>
+            </div>
+          </div>
+        `;
+      }).join("");
+
+      return `
+        <div id="playerHallOfFameSection" class="space-y-4">
+          <div class="app-card overflow-hidden p-4 sm:p-5 space-y-4">
+            <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-3 border-b border-white/10 pb-3.5">
+              <div>
+                <div class="flex flex-wrap items-center gap-2">
+                  <span class="static-badge bg-amber-950 text-amber-300 border border-amber-500/60">
+                    <i class="fa-solid fa-building-columns"></i> Individual NFL Player Hall of Fame
+                  </span>
+                  <span class="static-badge bg-[#13161F] text-emerald-300 border border-emerald-500/40">
+                    ${inductedList.length} Inducted • ${ballotEligibleList.length} Ballot Eligible
+                  </span>
+                  <h2 class="text-base sm:text-lg font-black text-white">Gamecock Mafia NFL Player Hall of Fame &amp; 7/10 Supermajority Ballot</h2>
+                </div>
+                <p class="text-xs text-slate-400 mt-0.5">Strictly for <strong class="text-white">individual NFL players only</strong> — scored by the Dominance-Heavy Formula (<strong class="text-emerald-300">50% Sustained Positional Dominance</strong> • <strong class="text-sky-300">25% Draft/Keeper ROI</strong> • <strong class="text-amber-300">15% Playoff Impact</strong> • <strong class="text-slate-200">10% Career Points</strong>), peer-normalized across Offense (<code class="font-mono">QB/RB/WR/TE</code>) &amp; IDP (<code class="font-mono">DL/LB/DB</code>). Requires <strong class="text-amber-300">1+ Yr Roster Absence</strong> + <strong class="text-amber-300">7/10 Manager Supermajority Vote</strong>.</p>
+              </div>
+              <div class="segmented-bar flex-wrap">
+                <button type="button" id="playerHofFilter-ALL" onclick="setPlayerHofFilter('ALL')" class="segmented-pill ${filterKey === 'ALL' ? 'active' : ''}">
+                  <span>All Candidates (${allCandidates.length})</span>
+                </button>
+                <button type="button" id="playerHofFilter-BALLOT_ELIGIBLE" onclick="setPlayerHofFilter('BALLOT_ELIGIBLE')" class="segmented-pill ${filterKey === 'BALLOT_ELIGIBLE' ? 'active' : ''}">
+                  <span>🗳️ On Ballot (${ballotEligibleList.length})</span>
+                </button>
+                <button type="button" id="playerHofFilter-INDUCTED" onclick="setPlayerHofFilter('INDUCTED')" class="segmented-pill ${filterKey === 'INDUCTED' ? 'active' : ''}">
+                  <span>🏛️ Inducted (${inductedList.length})</span>
+                </button>
+                <button type="button" id="playerHofFilter-ACTIVE_WATCHLIST" onclick="setPlayerHofFilter('ACTIVE_WATCHLIST')" class="segmented-pill ${filterKey === 'ACTIVE_WATCHLIST' ? 'active' : ''}">
+                  <span>Watchlist (${activeWatchlist.length})</span>
+                </button>
+              </div>
+            </div>
+
+            <div class="segmented-bar overflow-x-auto no-scrollbar max-w-full flex-nowrap">
+              ${POS_PILLS.map(pt => `
+                <button
+                  type="button"
+                  onclick="setPosLeadersPosFilter('${pt}')"
+                  class="segmented-pill font-mono ${posFilter === pt ? 'active' : ''}"
+                >${pt}</button>
+              `).join("")}
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-3.5">
+              ${cardsHtml || `
+                <div class="col-span-full bg-[#0B0D12] border border-white/10 rounded-xl p-8 text-center text-xs text-slate-400">
+                  No NFL Player Hall of Fame candidates match the selected filter yet.
+                </div>
+              `}
+            </div>
+          </div>
+        </div>
+      `;
+    }
+
     function buildRecordBookHtml() {
       const ed = leagueDB?.espnData || DEFAULT_ESPN_DATA;
       const recs = ed.records || DEFAULT_ESPN_DATA.records;
       const seasonRecs = computeSingleSeasonAllTimeRecords();
+      const posRecsAll = getDerivedPositionalRecordBook();
+      const posScope = uiState.recordBookPosScope || "ALL";
+      const posFilter = uiState.recordBookPosFilter || "ALL";
+      const POS_PILLS = ["ALL", "QB", "RB", "WR", "TE", "DL", "LB", "DB", "K", "D/ST"];
+
+      let filteredPosRecs = posScope === "STARTED_ONLY"
+        ? posRecsAll.filter(r => r.status === "STARTED")
+        : posRecsAll;
+      if (posFilter !== "ALL") {
+        filteredPosRecs = filteredPosRecs.filter(r => r.pos === posFilter);
+      }
+      filteredPosRecs.sort((a, b) => (b.pts - a.pts) || (b.ppg - a.ppg));
+      const topPosRecs = filteredPosRecs.slice(0, 16);
 
       const renderRecCard = (title, badgeCls, icon, items, valFmt) => `
         <div class="bg-[#0B0D12] border border-white/10 rounded-xl p-3.5 sm:p-4 space-y-2.5">
@@ -10624,8 +11883,70 @@
         </div>
       `;
 
+      const posStatusTagHtml = (status) => {
+        if (status === "FREE_AGENT") return `<span class="px-1.5 py-0.5 rounded text-[9px] font-extrabold bg-amber-950 text-amber-300 border border-amber-500/50">[FREE AGENT]</span>`;
+        if (status === "BENCHED") return `<span class="px-1.5 py-0.5 rounded text-[9px] font-bold bg-slate-900 text-slate-300 border border-white/15">[BENCHED]</span>`;
+        return `<span class="px-1.5 py-0.5 rounded text-[9px] font-extrabold bg-emerald-950 text-emerald-300 border border-emerald-500/50">[STARTED]</span>`;
+      };
+
       return `
         <div class="space-y-4">
+          <!-- Positional Record Book (A12: Full League Universe with Started Lineups vs All Players toggle) -->
+          <div id="positionalRecordBookCard" class="app-card overflow-hidden p-4 sm:p-5 space-y-4">
+            <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-3 border-b border-white/10 pb-3.5">
+              <div>
+                <div class="flex flex-wrap items-center gap-2">
+                  <span class="static-badge bg-emerald-950 text-emerald-300 border border-emerald-500/60">
+                    <i class="fa-solid fa-helmet-safety"></i> Positional Record Book
+                  </span>
+                  <span class="static-badge bg-[#13161F] text-slate-300 border border-white/15">
+                    Verified ESPN Sync (Zero Fabricated Data)
+                  </span>
+                  <h2 class="text-base sm:text-lg font-black text-white">Positional Single-Season &amp; Weekly Scoring Records</h2>
+                </div>
+                <p class="text-xs text-slate-400 mt-0.5">Tracks the full league universe across <strong class="text-white">QB, RB, WR, TE, DL, LB, DB, K, D/ST</strong> — tagging <span class="text-emerald-300 font-bold">[STARTED]</span>, <span class="text-slate-300 font-bold">[BENCHED]</span>, and <span class="text-amber-300 font-bold">[FREE AGENT]</span> performances.</p>
+              </div>
+              <div class="segmented-bar">
+                <button type="button" id="recPosScope-ALL" onclick="setRecordBookPosScope('ALL')" class="segmented-pill ${posScope === 'ALL' ? 'active' : ''}">
+                  <span>All Players (Started + Bench + FA)</span>
+                </button>
+                <button type="button" id="recPosScope-STARTED_ONLY" onclick="setRecordBookPosScope('STARTED_ONLY')" class="segmented-pill ${posScope === 'STARTED_ONLY' ? 'active' : ''}">
+                  <span>Started Lineups Only</span>
+                </button>
+              </div>
+            </div>
+
+            <div class="segmented-bar overflow-x-auto no-scrollbar max-w-full flex-nowrap">
+              ${POS_PILLS.map(pt => `
+                <button
+                  type="button"
+                  onclick="setRecordBookPosFilter('${pt}')"
+                  class="segmented-pill font-mono ${posFilter === pt ? 'active' : ''}"
+                >${pt}</button>
+              `).join("")}
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-2.5">
+              ${topPosRecs.map((pr, idx) => `
+                <div class="flex items-center justify-between gap-2 bg-[#0B0D12] border border-white/10 rounded-xl px-3.5 py-2.5 text-xs">
+                  <div class="min-w-0 space-y-0.5">
+                    <div class="flex flex-wrap items-center gap-1.5">
+                      <span class="font-mono font-black text-amber-400">#${idx + 1}</span>
+                      <span class="font-black text-white truncate">${escapeHtml(pr.playerName)}</span>
+                      <span class="px-1.5 py-0.5 rounded text-[10px] font-mono font-bold bg-[#13161F] text-sky-300 border border-sky-500/40">${escapeHtml(pr.pos)}</span>
+                      ${renderNflTeamPillHtml(pr.nflTeam)}
+                      ${posStatusTagHtml(pr.status)}
+                    </div>
+                    <div class="text-[10px] font-mono text-slate-400">
+                      ${Number(pr.year)}${pr.week > 0 ? ` • Week ${Number(pr.week)}` : ' Season'} • ${pr.teamId ? `Owned by ${escapeHtml(getHistoricalManagerDisplayName(pr.teamId))}` : 'Unrostered Free Agent'}${pr.ppg > 0 ? ` • ${pr.ppg.toFixed(1)} PPG` : ''}
+                    </div>
+                  </div>
+                  <span class="font-mono font-black text-sm text-emerald-300 flex-shrink-0">${pr.pts.toFixed(1)} pts</span>
+                </div>
+              `).join("")}
+            </div>
+          </div>
+
           <div class="app-card overflow-hidden p-4 sm:p-5 space-y-4">
             <div class="border-b border-white/10 pb-3">
               <div class="flex items-center gap-2">
@@ -10877,7 +12198,11 @@
       const navHtml = buildLeagueHqSubNavHtml();
       const sampleBannerHtml = curSub === "ARCHIVE" ? "" : buildEspnSampleDataNoticeHtml(curSub);
       let bodyHtml = "";
-      if (curSub === "VAULT") {
+      if (curSub === "POS_LEADERS") {
+        bodyHtml = buildPositionalTop10AndFreeAgentsHtml();
+      } else if (curSub === "PLAYER_HOF") {
+        bodyHtml = buildPlayerHallOfFameHtml();
+      } else if (curSub === "VAULT") {
         bodyHtml = buildAllTimeVaultHtml();
       } else if (curSub === "RIVALRY") {
         bodyHtml = buildRivalryMatrixHtml();
@@ -11540,10 +12865,8 @@
       const profA = getTeamProfile(teamA.id);
       const profB = getTeamProfile(teamB.id);
       const posFilter = uiState.tradeMachinePosFilter || "ALL";
-      const searchQ = String(uiState.tradePlayerSearch || "").toLowerCase().trim();
-      const matchesSearch = (p) => !searchQ || `${p.name || ""} ${p.pos || ""} ${p.nflTeam || ""}`.toLowerCase().includes(searchQ);
-      const filteredRosterA = rosterA.filter(p => doesPlayerMatchPosFilter(p, posFilter, profA) && matchesSearch(p));
-      const filteredRosterB = rosterB.filter(p => doesPlayerMatchPosFilter(p, posFilter, profB) && matchesSearch(p));
+      const filteredRosterA = rosterA.filter(p => doesPlayerMatchPosFilter(p, posFilter, profA));
+      const filteredRosterB = rosterB.filter(p => doesPlayerMatchPosFilter(p, posFilter, profB));
 
       const posFilterOptions = [
         { id: "ALL", label: "All" },
@@ -11601,20 +12924,6 @@
               `).join("")}
             </div>
             <div class="flex items-center gap-2">
-              <div class="relative flex-1 sm:w-48">
-                <i class="fa-solid fa-magnifying-glass text-[10px] text-slate-500 absolute left-2.5 top-1/2 -translate-y-1/2 pointer-events-none"></i>
-                <input
-                  id="tradeMachinePlayerSearchInput"
-                  type="text"
-                  value="${escapeHtml(uiState.tradePlayerSearch || '')}"
-                  oninput="setTradeMachinePlayerSearch(this.value)"
-                  placeholder="Search player..."
-                  class="w-full bg-[#13161F] text-white text-[11px] rounded-lg pl-7 pr-6 py-1 border border-white/10 focus:border-sky-400 focus:outline-none"
-                >
-                ${searchQ ? `
-                  <button type="button" onclick="setTradeMachinePlayerSearch('')" class="absolute right-2 top-1/2 -translate-y-1/2 text-slate-400 hover:text-white text-xs cursor-pointer" title="Clear player search">×</button>
-                ` : ''}
-              </div>
               <span class="text-[10px] text-slate-400 hidden sm:inline-flex items-center gap-2 whitespace-nowrap">
                 <span class="inline-flex items-center gap-1"><i class="fa-solid fa-lock text-amber-300"></i> Keeper</span>
                 <span class="inline-flex items-center gap-1"><i class="fa-solid fa-tag text-amber-400"></i> OTB</span>
@@ -12467,7 +13776,6 @@
       const canManage = !isScouting && (uiState.isCommish || tid === uiState.myTeam);
       const lockedByTimer = !uiState.isCommish && isKeeperDeadlineLocked();
       const posFilter = uiState.rosterPosFilter || "ALL";
-      const searchQ = String(uiState.rosterPlayerSearch || "").trim().toLowerCase();
 
       const otherBuckets = ["QB", "TE", "DL", "LB", "DB", "K", "D/ST"].filter(b => (caps.posCounts[b] || 0) > 0);
       const otherSummary = otherBuckets.length > 0
@@ -12476,14 +13784,7 @@
 
       const posOrder = { QB: 1, RB: 2, WR: 3, TE: 4, DL: 5, DE: 5, DT: 5, LB: 6, DB: 7, CB: 7, S: 7, K: 8, "D/ST": 9 };
       const sortedRoster = [...roster].sort((a, b) => (posOrder[a.pos] || 99) - (posOrder[b.pos] || 99));
-      const filteredRoster = sortedRoster.filter(p => {
-        if (!doesPlayerMatchPosFilter(p, posFilter, prof)) return false;
-        if (searchQ) {
-          const hay = `${p.name || ""} ${p.pos || ""} ${p.nflTeam || ""} ${p.posRank || ""}`.toLowerCase();
-          if (!hay.includes(searchQ)) return false;
-        }
-        return true;
-      });
+      const filteredRoster = sortedRoster.filter(p => doesPlayerMatchPosFilter(p, posFilter, prof));
 
       const rosterFilterPills = [
         { id: "ALL", label: `All (${roster.length})` },
@@ -12497,7 +13798,7 @@
       ];
 
       const playerRowsHtml = filteredRoster.length === 0
-        ? `<div class="p-6 text-center text-xs text-slate-500">No players on ${escapeHtml(team.name)}'s roster match the active filter${searchQ ? ` or "${escapeHtml(searchQ)}"` : ""}.</div>`
+        ? `<div class="p-6 text-center text-xs text-slate-500">No players on ${escapeHtml(team.name)}'s roster match the active filter.</div>`
         : filteredRoster.map(p => {
         const keeperIdx = caps.keeperIds.indexOf(p.id);
         const isKeeper = keeperIdx !== -1;
@@ -12507,7 +13808,8 @@
         const isIdp = ["DL", "LB", "DB"].includes(bucket);
         const acqRaw = String(p.acquiredVia || "").trim();
         const showAcqNote = Boolean(acqRaw && !/^(espn|espn roster|synced|default)$/i.test(acqRaw));
-        const pVal = computePlayerTradeValue(p);
+        const realSeasonPts = Number(p.totalPts) || 0;
+        const realAvgPts = Number(p.avgPts) || (realSeasonPts > 0 && Number(p.gamesPlayed) > 0 ? realSeasonPts / Number(p.gamesPlayed) : 0);
 
         return `
           <div class="px-3 py-2.5 flex flex-col sm:flex-row sm:items-center justify-between gap-2 ${isKeeper ? 'bg-[#73000A]/20 border-l-4 border-l-[#CC1429]' : 'bg-[#0B0D12]/70'}">
@@ -12519,7 +13821,7 @@
                   <span class="px-1.5 py-0.5 rounded text-[10px] font-mono font-black border leading-none ${isIdp ? 'bg-purple-950/80 text-purple-300 border-purple-500/50' : bucket === 'RB' ? 'bg-emerald-950/80 text-emerald-300 border-emerald-500/50' : bucket === 'WR' ? 'bg-sky-950/80 text-sky-300 border-sky-500/50' : 'bg-amber-950/80 text-amber-300 border-amber-500/50'}">${escapeHtml(p.pos)}</span>
                   ${renderNflTeamPillHtml(p.nflTeam)}
                   ${p.posRank ? `<span class="px-1.5 py-0.2 rounded bg-[#13161F] border border-white/10 text-[10px] font-mono text-emerald-300">${escapeHtml(p.posRank)}</span>` : ''}
-                  <span class="px-1.5 py-0.2 rounded bg-[#13161F] border border-white/10 text-[10px] font-mono text-slate-300" title="Estimated Trade Value">${pVal} pts</span>
+                  ${realSeasonPts > 0 ? `<span class="px-1.5 py-0.2 rounded bg-[#13161F] border border-white/10 text-[10px] font-mono text-slate-300" title="Actual ESPN Season Points">${realSeasonPts.toFixed(1)} Season Pts${realAvgPts > 0 ? ` (${realAvgPts.toFixed(1)} PPG)` : ''}</span>` : ''}
                   ${isKeeper ? `<span class="static-badge bg-[#73000A] text-amber-200 border border-[#CC1429]"><i class="fa-solid fa-lock text-[9px]"></i> Keeper #${keeperRound}</span>` : ''}
                   ${pTag === 'ON_BLOCK' ? `<span class="static-badge bg-amber-950 text-amber-300 border border-amber-500/70"><i class="fa-solid fa-tag text-[9px]"></i> On Block</span>` : ''}
                   ${pTag === 'UNTOUCHABLE' ? `<span class="static-badge bg-[#13161F] text-slate-200 border border-white/15"><i class="fa-solid fa-shield-halved text-[9px]"></i> Untouchable</span>` : ''}
@@ -12599,7 +13901,7 @@
               <div>
                 <div class="flex flex-wrap items-center gap-2">
                   <span class="static-badge bg-[#73000A] text-white border border-[#CC1429]">
-                    <i class="fa-solid fa-user-lock"></i> ${Number(state.year)} Keepers & Trade Value
+                    <i class="fa-solid fa-user-lock"></i> ${Number(state.year)} Roster & Keepers
                   </span>
                   <h3 class="text-sm sm:text-base font-black text-white">${escapeHtml(team.name)} • ${caps.totalKeepers}/${caps.maxKeepers} Locked</h3>
                 </div>
@@ -12635,7 +13937,7 @@
               </div>
             </div>
 
-            <!-- 1-Tap Position & Keeper Filter Pills + Quick Search -->
+            <!-- 1-Tap Position & Keeper Filter Pills -->
             <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 pt-2 border-t border-white/10">
               <div class="flex items-center gap-1.5 overflow-x-auto no-scrollbar pb-0.5">
                 <span class="text-[10px] font-extrabold uppercase tracking-wider text-slate-400 mr-1 flex-shrink-0">Filter:</span>
@@ -12646,17 +13948,6 @@
                     class="px-2.5 py-1 rounded-lg text-[11px] font-extrabold border transition cursor-pointer flex-shrink-0 ${posFilter === fp.id ? 'bg-[#73000A] text-white border-[#CC1429]' : 'bg-[#13161F] text-slate-400 border-white/10 hover:text-white'}"
                   >${fp.label}</button>
                 `).join("")}
-              </div>
-              <div class="relative w-full sm:w-52 flex-shrink-0">
-                <i class="fa-solid fa-magnifying-glass text-[10px] text-slate-500 absolute left-2.5 top-1/2 -translate-y-1/2"></i>
-                <input
-                  id="rosterPlayerSearchInput"
-                  type="search"
-                  value="${escapeHtml(uiState.rosterPlayerSearch || '')}"
-                  oninput="setRosterPlayerSearch(this.value)"
-                  placeholder="Search player or NFL team..."
-                  class="w-full bg-[#13161F] border border-white/10 focus:border-amber-400/60 rounded-lg pl-7 pr-2.5 py-1 text-xs text-white placeholder-slate-500 outline-none"
-                />
               </div>
             </div>
           </div>
@@ -12968,8 +14259,89 @@
     }
 
     /* -----------------------------------------------------------
-       7. TAB 2: CONDITIONAL TRADES & WAITING ON COMMISH RESOLUTION CENTER
+       7. TAB 2 / 5: SELF-SERVICE CONDITIONAL & PICK POOL RESOLUTION PROTOCOL (A4, A5, A6)
        ----------------------------------------------------------- */
+    function getPoolRecommendedCandidate(pool, stateOpt = null) {
+      if (!pool) return null;
+      const st = stateOpt || evaluateYearState(pool.year || uiState.activeYear || 2027);
+      if (!st || !st.orderCfg || !st.orderCfg.isLocked) return null;
+      if (!["LATER_OF_TWO", "EARLIER_OF_TWO", "MIDDLE_OF_POOL"].includes(pool.rule)) return null;
+      const cands = (pool.candidateOriginalOwners || []).map(origId => {
+        const pickObj = st.picks.find(p => p.round === Number(pool.round) && p.originalOwner === origId);
+        return { origId, overallPickNum: Number(pickObj?.overallPickNum) || 999 };
+      }).sort((a, b) => a.overallPickNum - b.overallPickNum);
+      if (cands.length === 0) return null;
+      if (pool.rule === "EARLIER_OF_TWO") return cands[0].origId;
+      if (pool.rule === "LATER_OF_TWO") return cands[cands.length - 1].origId;
+      if (pool.rule === "MIDDLE_OF_POOL") return cands[Math.floor(cands.length / 2)].origId;
+      return null;
+    }
+
+    function canUserResolveTradeCondition(item, isPool, stateOpt = null) {
+      if (!item) {
+        return { allowed: false, isCommishOverride: false, isDecisionOwner: false, isBlockedByUnlockedOrder: false, decisionOwnerId: "", actorTeamId: "" };
+      }
+      const st = stateOpt || evaluateYearState(item.year || uiState.activeYear || 2027);
+      const orderLocked = Boolean(st && st.orderCfg && st.orderCfg.isLocked);
+      const decisionOwnerId = isPool
+        ? safeId(item.poolHolder)
+        : safeId(item.favoredTeam || item.analysis?.favored || item.teamA);
+      const isSlotDependent = isPool
+        ? ["LATER_OF_TWO", "EARLIER_OF_TWO", "MIDDLE_OF_POOL"].includes(item.rule)
+        : true;
+      const myTeamId = safeId(uiState.myTeam || "syeth");
+      const isDecisionOwner = Boolean(myTeamId && myTeamId === decisionOwnerId);
+
+      if (uiState.isCommish) {
+        return {
+          allowed: true,
+          isCommishOverride: !isDecisionOwner,
+          isDecisionOwner,
+          isBlockedByUnlockedOrder: false,
+          isSlotDependent,
+          orderLocked,
+          decisionOwnerId,
+          actorTeamId: isDecisionOwner ? myTeamId : safeId(uiState.selectedManager || myTeamId)
+        };
+      }
+
+      if (isDecisionOwner) {
+        if (!isSlotDependent || orderLocked) {
+          return {
+            allowed: true,
+            isCommishOverride: false,
+            isDecisionOwner: true,
+            isBlockedByUnlockedOrder: false,
+            isSlotDependent,
+            orderLocked,
+            decisionOwnerId,
+            actorTeamId: myTeamId
+          };
+        }
+        return {
+          allowed: false,
+          isCommishOverride: false,
+          isDecisionOwner: true,
+          isBlockedByUnlockedOrder: true,
+          isSlotDependent: true,
+          orderLocked: false,
+          decisionOwnerId,
+          actorTeamId: myTeamId
+        };
+      }
+
+      return {
+        allowed: false,
+        isCommishOverride: false,
+        isDecisionOwner: false,
+        isBlockedByUnlockedOrder: false,
+        isSlotDependent,
+        orderLocked,
+        decisionOwnerId,
+        actorTeamId: myTeamId
+      };
+    }
+
     function renderPoolsResolutionSection(passedState) {
       const state = passedState || evaluateYearState(uiState.activeYear);
       const container = document.getElementById("poolsResolutionContainer");
@@ -12979,7 +14351,7 @@
         container.innerHTML = `
           <div class="bg-[#13161F] border border-white/10 rounded-2xl p-8 text-center space-y-2">
             <i class="fa-solid fa-circle-check text-emerald-400 text-2xl"></i>
-            <div class="text-sm font-bold text-white">No Conditional Picks Waiting on Commissioner in ${Number(state.year)}</div>
+            <div class="text-sm font-bold text-white">No Conditional Picks Waiting on Resolution in ${Number(state.year)}</div>
             <p class="text-xs text-slate-400">All traded picks in ${Number(state.year)} are finalized and assigned to specific original owners.</p>
           </div>
         `;
@@ -12993,13 +14365,17 @@
         const isResolved = Boolean(pool.resolvedOriginalOwner);
         const holderName = escapeHtml(getTeamName(pool.poolHolder));
         const owedToName = escapeHtml(getTeamName(pool.owedTo));
+        const perm = canUserResolveTradeCondition(pool, true, state);
+        const recOrigId = getPoolRecommendedCandidate(pool, state);
         const ruleSummaryText = pool.rule === "LATER_OF_TWO"
           ? "Later Pick (Highest Pick #)"
           : pool.rule === "EARLIER_OF_TWO"
           ? "Earlier Pick (Lowest Pick #)"
           : pool.rule === "MIDDLE_OF_POOL"
           ? "Middle Pick"
-          : "TBD / Manual Selection";
+          : "Discretionary / Choice / Performance";
+
+        const defaultNote = pool.resolutionNote || `Resolved ${pool.year} Rd ${pool.round} Pool (${ruleSummaryText}) -> ${owedToName}`;
 
         const candidateCardsHtml = pool.candidateOriginalOwners.map(origId => {
           const origName = escapeHtml(getTeamName(origId));
@@ -13008,14 +14384,17 @@
             ? `Pick ${escapeHtml(pickObj.formattedSlot)} (#${pickObj.overallPickNum})`
             : `${origName}'s ${Number(pool.year)} Rd ${Number(pool.round)}`;
           const isChosen = pool.resolvedOriginalOwner === origId;
+          const isRec = !isResolved && recOrigId === origId;
 
           return `
-            <div class="p-3.5 rounded-xl border ${isChosen ? 'bg-emerald-950/40 border-emerald-500' : 'bg-[#0B0D12] border-white/10'} flex flex-col justify-between gap-3">
+            <div class="p-3.5 rounded-xl border ${isChosen ? 'bg-emerald-950/40 border-emerald-500' : isRec ? 'bg-amber-950/30 border-amber-400' : 'bg-[#0B0D12] border-white/10'} flex flex-col justify-between gap-3">
               <div class="space-y-1">
-                <div class="flex items-center justify-between">
+                <div class="flex items-center justify-between gap-1">
                   <span class="font-mono text-xs font-black text-white">${slotInfo}</span>
                   ${isChosen
                     ? `<span class="static-badge bg-emerald-950 text-emerald-300 border border-emerald-600">Assigned to ${owedToName}</span>`
+                    : isRec
+                    ? `<span class="static-badge bg-amber-950 text-amber-300 border border-amber-400"><i class="fa-solid fa-star text-[8px]"></i> Auto-Match</span>`
                     : `<span class="static-badge bg-slate-800 text-slate-300">Candidate Pick</span>`
                   }
                 </div>
@@ -13024,14 +14403,18 @@
                 </p>
               </div>
 
-              ${uiState.isCommish ? `
+              ${perm.allowed ? `
                 <button onclick="resolvePoolToSpecificPick('${safeId(pool.id)}', '${safeId(origId)}')" class="${isChosen ? 'btn-action border-emerald-500 text-emerald-300' : 'btn-garnet'} px-3 py-2 text-xs w-full">
                   <i class="fa-solid ${isChosen ? 'fa-circle-check' : 'fa-gavel'}"></i>
-                  <span>${isChosen ? `Confirmed: ${origName}'s Pick Sent to ${owedToName}` : `Assign ${origName}'s Rd ${Number(pool.round)} Pick to ${owedToName}`}</span>
+                  <span>${isChosen ? `Confirmed: ${origName}'s Pick Sent to ${owedToName}` : `Assign ${origName}'s Rd ${Number(pool.round)} Pick to ${owedToName}${isRec ? ' (Recommended)' : ''}`}</span>
                 </button>
               ` : `
                 <div class="pt-2 border-t border-white/10 text-[11px] font-semibold ${isChosen ? 'text-emerald-300' : 'text-pending-200'}">
-                  ${isChosen ? `Finalized: Transferred to ${owedToName}` : `Status: Waiting on Commissioner`}
+                  ${isChosen
+                    ? `Finalized: Transferred to ${owedToName}`
+                    : perm.isBlockedByUnlockedOrder
+                    ? `<i class="fa-solid fa-lock mr-1"></i>Self-Service unlocks when ${Number(pool.year)} Draft Order locks`
+                    : `Decision Owner: ${holderName} (or Commissioner)`}
                 </div>
               `}
             </div>
@@ -13044,7 +14427,10 @@
               <div class="space-y-1">
                 <div class="flex flex-wrap items-center gap-2">
                   <span class="static-badge ${isResolved ? 'bg-emerald-950 text-emerald-300 border border-emerald-600' : 'bg-pending-900 text-pending-200 border border-pending-300'}">
-                    ${isResolved ? 'FINALIZED PICK' : 'WAITING ON COMMISH • CONDITIONAL PICK'}
+                    ${isResolved ? 'FINALIZED PICK' : (perm.allowed ? 'READY FOR SELF-SERVICE RESOLUTION' : 'PENDING CONDITIONAL PICK POOL')}
+                  </span>
+                  <span class="static-badge bg-[#0B0D12] text-sky-300 border border-sky-500/40">
+                    <i class="fa-solid fa-user-check text-[9px]"></i> Decision Owner: ${holderName}
                   </span>
                   <h3 class="text-base font-black text-white">
                     ${Number(pool.year)} Round ${Number(pool.round)}: ${holderName} Owes 1 of ${pool.candidateOriginalOwners.length} Picks to ${owedToName}
@@ -13052,6 +14438,7 @@
                 </div>
                 <p class="text-xs ${isResolved ? 'text-slate-300' : 'text-pending-100'}">
                   <strong>Trade Receipt (${escapeHtml(pool.parentTrade.id)}):</strong> ${escapeHtml(pool.parentTrade.headline)}
+                  ${pool.resolutionNote ? ` • <strong class="text-emerald-300">Audit Note: ${escapeHtml(pool.resolutionNote)}${pool.resolvedBy ? ` (by ${escapeHtml(getTeamName(pool.resolvedBy))})` : ''}</strong>` : ''}
                 </p>
               </div>
 
@@ -13062,7 +14449,7 @@
                     <option value="LATER_OF_TWO" ${pool.rule === 'LATER_OF_TWO' ? 'selected' : ''}>Later Pick (Highest Pick #)</option>
                     <option value="EARLIER_OF_TWO" ${pool.rule === 'EARLIER_OF_TWO' ? 'selected' : ''}>Earlier Pick (Lowest Pick #)</option>
                     ${pool.candidateOriginalOwners.length >= 3 ? `<option value="MIDDLE_OF_POOL" ${pool.rule === 'MIDDLE_OF_POOL' ? 'selected' : ''}>Middle Pick</option>` : ''}
-                    <option value="TBD" ${pool.rule === 'TBD' || pool.rule === 'UNASSIGNED' ? 'selected' : ''}>TBD (Manual Choice)</option>
+                    <option value="TBD" ${pool.rule === 'TBD' || pool.rule === 'UNASSIGNED' ? 'selected' : ''}>TBD (Discretionary / Performance Choice)</option>
                   </select>
                   ${isResolved ? `
                     <button onclick="reopenPool('${safeId(pool.id)}')" class="btn-action px-3 py-1.5 text-xs text-pending-300">
@@ -13074,6 +14461,23 @@
                 `}
               </div>
             </div>
+
+            ${!isResolved && perm.allowed ? `
+              <div class="bg-[#0B0D12]/90 border border-white/15 rounded-xl p-3 flex flex-col sm:flex-row sm:items-center gap-2">
+                <label for="resolutionNoteInput_${safeId(pool.id)}" class="text-[11px] font-extrabold uppercase tracking-wider text-amber-300 whitespace-nowrap flex items-center gap-1.5">
+                  <i class="fa-solid fa-file-signature"></i>
+                  <span>Audit Note (Required):</span>
+                </label>
+                <input
+                  id="resolutionNoteInput_${safeId(pool.id)}"
+                  type="text"
+                  maxlength="280"
+                  value="${escapeHtml(defaultNote)}"
+                  placeholder="Enter official resolution reason (logged to Google Sheets & Activity Wire)..."
+                  class="flex-1 bg-[#13161F] text-white text-xs rounded-lg px-3 py-1.5 border border-white/10 focus:border-amber-400 focus:outline-none"
+                >
+              </div>
+            ` : ''}
 
             <div class="grid grid-cols-1 md:grid-cols-${Math.min(pool.candidateOriginalOwners.length, 3)} gap-3.5">
               ${candidateCardsHtml}
@@ -13089,6 +14493,8 @@
         const analysis = cond.analysis;
         const favoredName = escapeHtml(getTeamName(analysis.favored));
         const partnerName = escapeHtml(getTeamName(analysis.partner));
+        const perm = canUserResolveTradeCondition(cond, false, state);
+        const defaultSwapNote = cond.resolutionNote || `Resolved ${cond.year} Rd ${(cond.roundsInvolved || []).join('/')} Conditional Swap (${favoredName} <-> ${partnerName})`;
 
         let breakdownCardsHtml = "";
         if (analysis && analysis.roundBreakdowns) {
@@ -13116,11 +14522,15 @@
                         }
                       </p>
                     </div>
-                    ${!cond.isResolved && uiState.isCommish ? `
+                    ${!cond.isResolved && perm.allowed ? `
                       <button onclick="executeConditionalSwap('${safeId(cond.id)}', ${Number(rb.round)})" class="${isRecommended ? 'btn-garnet' : 'btn-action text-slate-200'} px-3 py-2 text-xs w-full">
                         <i class="fa-solid fa-right-left"></i>
                         <span>Swap Round ${Number(rb.round)} Picks (${favoredName} ↔ ${partnerName})${isRecommended ? ' • Recommended' : ''}</span>
                       </button>
+                    ` : !cond.isResolved && perm.isBlockedByUnlockedOrder ? `
+                      <div class="pt-1.5 border-t border-white/10 text-[11px] font-semibold text-pending-200">
+                        <i class="fa-solid fa-lock mr-1"></i>Self-Service unlocks when ${Number(cond.year)} Draft Order locks
+                      </div>
                     ` : ''}
                   </div>
                 `;
@@ -13135,7 +14545,10 @@
               <div class="space-y-1.5">
                 <div class="flex flex-wrap items-center gap-2">
                   <span class="static-badge ${cond.isResolved ? 'bg-emerald-950 text-emerald-300 border border-emerald-600' : 'bg-pending-900 text-pending-200 border border-pending-300'}">
-                    ${cond.isResolved ? 'FINALIZED CONDITION' : 'WAITING ON COMMISH • CONDITIONAL SWAP'}
+                    ${cond.isResolved ? 'FINALIZED CONDITION' : (perm.allowed ? 'READY FOR SELF-SERVICE RESOLUTION' : 'PENDING CONDITIONAL SWAP')}
+                  </span>
+                  <span class="static-badge bg-[#0B0D12] text-sky-300 border border-sky-500/40">
+                    <i class="fa-solid fa-user-check text-[9px]"></i> Decision Owner: ${favoredName}
                   </span>
                   <h3 class="text-base font-black text-white">
                     ${Number(cond.year)} Round ${(cond.roundsInvolved || []).map(Number).join(" or ")}: ${teamAName} ↔ ${teamBName} (Favors ${favoredName})
@@ -13146,26 +14559,44 @@
                 </p>
                 <p class="text-[11px] text-pending-200/80">
                   <strong>Linked Trade (${escapeHtml(cond.parentTrade.id)}):</strong> ${escapeHtml(cond.parentTrade.headline)}
-                  ${cond.resolutionNote ? ` • <strong class="text-emerald-300">${escapeHtml(cond.resolutionNote)}</strong>` : ''}
+                  ${cond.resolutionNote ? ` • <strong class="text-emerald-300">${escapeHtml(cond.resolutionNote)}${cond.resolvedBy ? ` (by ${escapeHtml(getTeamName(cond.resolvedBy))})` : ''}</strong>` : ''}
                 </p>
               </div>
 
               <div class="flex flex-wrap items-center gap-2 self-start md:self-auto flex-shrink-0">
-                ${uiState.isCommish ? (
-                  !cond.isResolved ? `
-                    <button onclick="executeConditionalSwap('${safeId(cond.id)}', null)" class="btn-action px-3.5 py-2 text-xs text-slate-200">
-                      <i class="fa-solid fa-check"></i> Mark Settled (No Swap)
-                    </button>
-                  ` : `
-                    <button onclick="reopenConditionalSwap('${safeId(cond.id)}')" class="btn-action px-3 py-1.5 text-xs text-pending-300">
-                      <i class="fa-solid fa-rotate-left"></i> Re-Open Condition
-                    </button>
-                  `
-                ) : (
-                  !cond.isResolved ? `<span class="static-badge bg-slate-900/90 text-pending-200 border border-pending-400/50"><i class="fa-solid fa-hourglass-half"></i> Waiting on Commish</span>` : ''
-                )}
+                ${perm.allowed && !cond.isResolved ? `
+                  <button onclick="executeConditionalSwap('${safeId(cond.id)}', null)" class="btn-action px-3.5 py-2 text-xs text-slate-200">
+                    <i class="fa-solid fa-check"></i> Mark Settled (No Swap)
+                  </button>
+                ` : ''}
+                ${uiState.isCommish && cond.isResolved ? `
+                  <button onclick="reopenConditionalSwap('${safeId(cond.id)}')" class="btn-action px-3 py-1.5 text-xs text-pending-300">
+                    <i class="fa-solid fa-rotate-left"></i> Re-Open Condition
+                  </button>
+                ` : ''}
+                ${!perm.allowed && !cond.isResolved ? `
+                  <span class="static-badge bg-slate-900/90 text-pending-200 border border-pending-400/50">
+                    <i class="fa-solid fa-hourglass-half"></i> ${perm.isBlockedByUnlockedOrder ? `Unlocks on ${Number(cond.year)} Order Lock` : `Awaiting ${favoredName} / Commish`}
+                  </span>
+                ` : ''}
               </div>
             </div>
+            ${!cond.isResolved && perm.allowed ? `
+              <div class="bg-[#0B0D12]/90 border border-white/15 rounded-xl p-3 flex flex-col sm:flex-row sm:items-center gap-2">
+                <label for="resolutionNoteInput_${safeId(cond.id)}" class="text-[11px] font-extrabold uppercase tracking-wider text-amber-300 whitespace-nowrap flex items-center gap-1.5">
+                  <i class="fa-solid fa-file-signature"></i>
+                  <span>Audit Note (Required):</span>
+                </label>
+                <input
+                  id="resolutionNoteInput_${safeId(cond.id)}"
+                  type="text"
+                  maxlength="280"
+                  value="${escapeHtml(defaultSwapNote)}"
+                  placeholder="Enter official resolution reason (logged to Google Sheets & Activity Wire)..."
+                  class="flex-1 bg-[#13161F] text-white text-xs rounded-lg px-3 py-1.5 border border-white/10 focus:border-amber-400 focus:outline-none"
+                >
+              </div>
+            ` : ''}
             ${breakdownCardsHtml}
           </div>
         `;
@@ -13174,19 +14605,61 @@
       container.innerHTML = html;
     }
 
-    function resolvePoolToSpecificPick(poolId, chosenOriginalOwner) {
-      if (!requireCommish()) return;
+    async function resolvePoolToSpecificPick(poolId, chosenOriginalOwner, noteOpt = "") {
       const pid = safeId(poolId);
       const chosen = safeId(chosenOriginalOwner);
       for (const tr of leagueDB.trades) {
         const pool = (tr.pools || []).find(p => p.id === pid);
         if (pool && pool.candidateOriginalOwners.includes(chosen)) {
+          const state = evaluateYearState(pool.year || uiState.activeYear || 2027);
+          const perm = canUserResolveTradeCondition(pool, true, state);
+          if (!perm.allowed) {
+            if (perm.isBlockedByUnlockedOrder) {
+              showToast(`Slot-dependent pool resolution unlocks once the ${pool.year} Draft Order is locked (or ask the Commissioner to override).`, "error");
+            } else {
+              showToast(`Only Decision Owner (${getTeamName(perm.decisionOwnerId)}) or the Commissioner can resolve this pool.`, "error");
+            }
+            openPinModal();
+            return;
+          }
+
+          const modalNoteEl = document.getElementById(`modalResolutionNoteInput_${pid}`);
+          const cardNoteEl = document.getElementById(`resolutionNoteInput_${pid}`);
+          const rawNote = cleanStr(
+            noteOpt || (modalNoteEl ? modalNoteEl.value : "") || (cardNoteEl ? cardNoteEl.value : ""),
+            280
+          ).trim();
+          const finalNote = rawNote || `Assigned ${getTeamName(chosen)}'s ${pool.year} Rd ${pool.round} pick to ${getTeamName(pool.owedTo)} (${pool.ruleLabel || pool.rule}).`;
+
           pushUndoState(`Resolve ${pool.year} Rd ${pool.round} Pool to ${getTeamName(chosen)}'s Pick`);
           pool.resolvedOriginalOwner = chosen;
-          saveDatabase();
+          pool.resolutionNote = finalNote;
+          pool.resolvedBy = perm.actorTeamId || uiState.myTeam || "syeth";
+          pool.resolvedAt = Date.now();
+
+          appendLeagueActivityEvent(
+            "CONDITION_RESOLVED",
+            `Condition Resolved: ${pool.year} Rd ${pool.round} Pool (${tr.id})`,
+            `${getTeamName(pool.resolvedBy)} assigned ${getTeamName(chosen)}'s original ${pool.year} Rd ${pool.round} pick to ${getTeamName(pool.owedTo)}. Note: ${finalNote}`,
+            { teamId: pool.resolvedBy, year: pool.year }
+          );
+
+          leagueDB.updatedAt = Date.now();
+          saveDatabase(uiState.isCommish, `RESOLVE_POOL_${pid}`);
           renderAll();
           closeModal("inspectModal");
           showToast(`Finalized Pool: ${getTeamName(chosen)}'s ${pool.year} Rd ${pool.round} pick assigned to ${getTeamName(pool.owedTo)}!`, "success");
+
+          if (!uiState.isCommish && typeof pushTradeConditionResolutionToCloud === "function") {
+            await pushTradeConditionResolutionToCloud({
+              tradeId: tr.id,
+              conditionType: "POOL",
+              conditionId: pid,
+              chosenOriginalOwner: chosen,
+              actorTeamId: pool.resolvedBy,
+              resolutionNote: finalNote
+            });
+          }
           return;
         }
       }
@@ -13200,7 +14673,7 @@
         if (pool) {
           pushUndoState(`Re-open ${pool.year} Rd ${pool.round} Pool`);
           pool.resolvedOriginalOwner = null;
-          saveDatabase();
+          saveDatabase(true, `REOPEN_POOL_${pid}`);
           renderAll();
           showToast("Pool re-opened and marked as Pending Final.", "info");
           return;
@@ -13227,7 +14700,7 @@
           } else {
             pool.ruleLabel = `1 of ${pool.candidateOriginalOwners.length} from ${getTeamName(pool.poolHolder)}'s Pool (${cands} — Manual assignment)`;
           }
-          saveDatabase();
+          saveDatabase(true, `UPDATE_POOL_RULE_${pid}`);
           renderAll();
           showToast("Updated Multi-Pick Pool resolution rule.", "info");
           return;
@@ -13239,17 +14712,38 @@
      * Executes a conditional swap in a specific single round (e.g. Round 9 or Round 10)
      * or marks it settled without swapping if targetRound is null.
      */
-    function executeConditionalSwap(condId, targetRound) {
-      if (!requireCommish()) return;
+    async function executeConditionalSwap(condId, targetRound, noteOpt = "") {
       const cid = safeId(condId);
       for (const tr of leagueDB.trades) {
         const cond = (tr.conditionals || []).find(c => c.id === cid);
         if (cond) {
+          const state = evaluateYearState(cond.year || uiState.activeYear || 2027);
+          const perm = canUserResolveTradeCondition(cond, false, state);
+          if (!perm.allowed) {
+            if (perm.isBlockedByUnlockedOrder) {
+              showToast(`Conditional round swaps unlock once the ${cond.year} Draft Order is locked (or ask the Commissioner to override).`, "error");
+            } else {
+              showToast(`Only Decision Owner (${getTeamName(perm.decisionOwnerId)}) or the Commissioner can resolve this swap.`, "error");
+            }
+            openPinModal();
+            return;
+          }
+
+          const modalNoteEl = document.getElementById(`modalResolutionNoteInput_${cid}`);
+          const cardNoteEl = document.getElementById(`resolutionNoteInput_${cid}`);
+          const rawNote = cleanStr(
+            noteOpt || (modalNoteEl ? modalNoteEl.value : "") || (cardNoteEl ? cardNoteEl.value : ""),
+            280
+          ).trim();
+
           pushUndoState(`Resolve Conditional Swap (${cond.id})`);
           // First remove any prior swap transfers generated by this condition
           tr.directTransfers = (tr.directTransfers || []).filter(dt => dt.generatedByCondId !== cond.id);
 
           cond.isResolved = true;
+          cond.resolvedBy = perm.actorTeamId || uiState.myTeam || "syeth";
+          cond.resolvedAt = Date.now();
+
           if (targetRound) {
             const rNum = Number(targetRound);
             cond.resolvedRound = rNum;
@@ -13257,16 +14751,36 @@
               { year: cond.year, round: rNum, originalOwner: cond.teamA, fromOwner: cond.teamA, toOwner: cond.teamB, generatedByCondId: cond.id },
               { year: cond.year, round: rNum, originalOwner: cond.teamB, fromOwner: cond.teamB, toOwner: cond.teamA, generatedByCondId: cond.id }
             );
-            cond.resolutionNote = `Swapped Round ${rNum} picks between ${getTeamName(cond.teamA)} and ${getTeamName(cond.teamB)}.`;
+            cond.resolutionNote = rawNote || `Swapped Round ${rNum} picks between ${getTeamName(cond.teamA)} and ${getTeamName(cond.teamB)}.`;
             showToast(`Executed Round ${rNum} Pick Swap (${getTeamName(cond.teamA)} ↔ ${getTeamName(cond.teamB)})!`, "success");
           } else {
             cond.resolvedRound = null;
-            cond.resolutionNote = `Condition marked settled without swapping original picks.`;
+            cond.resolutionNote = rawNote || `Condition marked settled without swapping original picks.`;
             showToast("Condition marked as settled (original picks retained).", "info");
           }
-          saveDatabase();
+
+          appendLeagueActivityEvent(
+            "CONDITION_RESOLVED",
+            `Condition Resolved: ${cond.year} Swap (${tr.id})`,
+            `${getTeamName(cond.resolvedBy)} finalized ${cond.id}: ${cond.resolutionNote}`,
+            { teamId: cond.resolvedBy, year: cond.year }
+          );
+
+          leagueDB.updatedAt = Date.now();
+          saveDatabase(uiState.isCommish, `RESOLVE_SWAP_${cid}`);
           renderAll();
           closeModal("inspectModal");
+
+          if (!uiState.isCommish && typeof pushTradeConditionResolutionToCloud === "function") {
+            await pushTradeConditionResolutionToCloud({
+              tradeId: tr.id,
+              conditionType: "SWAP",
+              conditionId: cid,
+              targetRound: targetRound ? Number(targetRound) : null,
+              actorTeamId: cond.resolvedBy,
+              resolutionNote: cond.resolutionNote
+            });
+          }
           return;
         }
       }
@@ -14419,6 +15933,8 @@
       const typeMeta = {
         DRAFT_DATE: { icon: `<i class="fa-solid fa-calendar-check text-sky-400"></i>`, badge: "Draft Date", cls: "border-sky-500/35 bg-sky-950/30 text-sky-300", accent: "border-l-sky-400" },
         DRAFT_ORDER: { icon: `<i class="fa-solid fa-list-ol text-emerald-400"></i>`, badge: "Draft Order", cls: "border-emerald-500/35 bg-emerald-950/30 text-emerald-300", accent: "border-l-emerald-400" },
+        CONDITION_RESOLVED: { icon: `<i class="fa-solid fa-file-signature text-amber-400"></i>`, badge: "Condition Resolved", cls: "border-amber-500/45 bg-amber-950/35 text-amber-200", accent: "border-l-amber-400" },
+        HOF_INDUCTION: { icon: `<i class="fa-solid fa-building-columns text-amber-300"></i>`, badge: "Player HOF", cls: "border-amber-400/50 bg-amber-950/40 text-amber-200", accent: "border-l-amber-300" },
         FEASTER_DECREE: { icon: `<span>🍆</span>`, badge: "Feaster Decree", cls: "border-fuchsia-500/35 bg-fuchsia-950/35 text-fuchsia-200", accent: "border-l-fuchsia-400" },
         HALL_OF_SHAME: { icon: `<i class="fa-solid fa-triangle-exclamation text-pink-400"></i>`, badge: "Hall of Shame", cls: "border-pink-500/40 bg-pink-950/35 text-pink-200", accent: "border-l-pink-400" },
         RECORD_SET: { icon: `<span>🏆</span>`, badge: "Record Set", cls: "border-amber-500/40 bg-amber-950/30 text-amber-200", accent: "border-l-amber-400" },
@@ -15128,23 +16644,44 @@
 
       if (pick.poolEncumbrance) {
         const pool = pick.poolEncumbrance;
+        const perm = canUserResolveTradeCondition("POOL", pool, state);
+        const recPick = getPoolRecommendedCandidate(pool, state);
+        const defaultNote = recPick ? `${pool.ruleType}: Slot ${recPick.formattedSlot} (${getOriginalManagerName(recPick.originalOwner)})` : `${getOriginalManagerName(pool.poolHolder)} choice (${pool.ruleLabel || "Pool"})`;
         bodyHtml += `
           <div class="pending-pool-card p-4 rounded-xl space-y-3">
-            <div class="font-bold text-pending-100 flex items-center gap-2">
-              <i class="fa-solid fa-hourglass-half text-pending-300"></i>
-              <span>Pending Final • Multi-Pick Pool</span>
+            <div class="flex flex-wrap items-center justify-between gap-2">
+              <div class="font-bold text-pending-100 flex items-center gap-2">
+                <i class="fa-solid fa-hourglass-half text-pending-300"></i>
+                <span>Pending Final • Multi-Pick Pool</span>
+              </div>
+              <span class="static-badge bg-amber-950/90 text-amber-200 border border-amber-400/50 text-[10px]">
+                <i class="fa-solid fa-user-check mr-1 text-amber-400"></i>Decision Owner: ${escapeHtml(getTeamName(perm.decisionOwnerId))}
+              </span>
             </div>
             <p class="text-xs text-pending-200">${escapeHtml(pool.ruleLabel)}</p>
-            ${uiState.isCommish ? `
-              <div class="flex flex-wrap gap-2 pt-1">
-                ${pool.candidateOriginalOwners.map(candId => `
-                  <button onclick="resolvePoolToSpecificPick('${safeId(pool.id)}', '${safeId(candId)}')" class="btn-pending px-3 py-1.5 text-xs">
-                    Assign ${escapeHtml(getTeamName(candId))}'s Rd ${Number(pool.round)} to ${escapeHtml(getTeamName(pool.owedTo))} →
-                  </button>
-                `).join('')}
+            ${perm.canResolve ? `
+              <div class="space-y-2 pt-1">
+                <input
+                  id="modalResolutionNoteInput_${safeId(pool.id)}"
+                  type="text"
+                  maxlength="240"
+                  value="${escapeHtml(defaultNote)}"
+                  placeholder="Required audit note for TRADES_BACKUP & Activity Wire..."
+                  class="w-full bg-[#0B0D12] text-white text-xs rounded-lg px-2.5 py-1.5 border border-amber-500/40 focus:border-amber-400 focus:outline-none"
+                >
+                <div class="flex flex-wrap gap-2">
+                  ${pool.candidateOriginalOwners.map(candId => {
+                    const isRec = recPick && recPick.originalOwner === candId;
+                    return `
+                      <button onclick="resolvePoolToSpecificPick('${safeId(pool.id)}', '${safeId(candId)}', document.getElementById('modalResolutionNoteInput_${safeId(pool.id)}')?.value)" class="${isRec ? 'btn-garnet' : 'btn-pending'} px-3 py-1.5 text-xs">
+                        Assign ${escapeHtml(getTeamName(candId))}'s Rd ${Number(pool.round)} to ${escapeHtml(getTeamName(pool.owedTo))}${isRec ? ' ★' : ''} →
+                      </button>
+                    `;
+                  }).join('')}
+                </div>
               </div>
             ` : `
-              <div class="text-[11px] text-pending-200/80 italic">Commissioner will assign the final pick once ${Number(pool.year)} draft order is locked.</div>
+              <div class="text-[11px] text-pending-200/80 italic">${escapeHtml(perm.blockedReason || `Decision-Owner (${getTeamName(perm.decisionOwnerId)}) or Commissioner will finalize this pool.`)}</div>
             `}
           </div>
         `;
@@ -15153,24 +16690,43 @@
       if (pick.conditionalSwap && !pick.conditionalSwap.isResolved) {
         const cond = pick.conditionalSwap;
         const analysis = cond.analysis;
+        const perm = canUserResolveTradeCondition("COND", cond, state);
+        const defaultNote = (analysis && state.orderCfg.isLocked && analysis.recommendedRound)
+          ? `Order locked: Rd ${analysis.recommendedRound} most favorable for ${getOriginalManagerName(perm.decisionOwnerId)}`
+          : `Resolved per trade condition (${cond.summary || "Swap"})`;
         bodyHtml += `
           <div class="pending-pool-card p-4 rounded-xl space-y-2.5">
-            <div class="font-bold text-pending-100 flex items-center gap-2">
-              <i class="fa-solid fa-repeat text-pending-300"></i>
-              <span>Pending Final • Conditional Round Swap (Rd ${cond.roundsInvolved.map(Number).join(' or ')})</span>
+            <div class="flex flex-wrap items-center justify-between gap-2">
+              <div class="font-bold text-pending-100 flex items-center gap-2">
+                <i class="fa-solid fa-repeat text-pending-300"></i>
+                <span>Pending Final • Conditional Round Swap (Rd ${cond.roundsInvolved.map(Number).join(' or ')})</span>
+              </div>
+              <span class="static-badge bg-amber-950/90 text-amber-200 border border-amber-400/50 text-[10px]">
+                <i class="fa-solid fa-user-check mr-1 text-amber-400"></i>Decision Owner: ${escapeHtml(getTeamName(perm.decisionOwnerId))}
+              </span>
             </div>
             <p class="text-xs text-pending-200">${escapeHtml(cond.summary)}</p>
-            ${uiState.isCommish ? `
-              <div class="flex flex-wrap gap-2 pt-1">
-                ${(cond.roundsInvolved || []).map(rNum => `
-                  <button onclick="executeConditionalSwap('${safeId(cond.id)}', ${Number(rNum)})" class="${analysis?.recommendedRound === rNum && state.orderCfg.isLocked ? 'btn-garnet' : 'btn-pending'} px-3 py-1.5 text-xs">
-                    Swap Round ${Number(rNum)} Only ${analysis?.recommendedRound === rNum && state.orderCfg.isLocked ? '(Recommended)' : ''}
-                  </button>
-                `).join('')}
-                <button onclick="executeConditionalSwap('${safeId(cond.id)}', null)" class="btn-action px-3 py-1.5 text-xs text-slate-200">Mark Settled (No Swap)</button>
+            ${perm.canResolve ? `
+              <div class="space-y-2 pt-1">
+                <input
+                  id="modalResolutionNoteInput_${safeId(cond.id)}"
+                  type="text"
+                  maxlength="240"
+                  value="${escapeHtml(defaultNote)}"
+                  placeholder="Required audit note for TRADES_BACKUP & Activity Wire..."
+                  class="w-full bg-[#0B0D12] text-white text-xs rounded-lg px-2.5 py-1.5 border border-amber-500/40 focus:border-amber-400 focus:outline-none"
+                >
+                <div class="flex flex-wrap gap-2">
+                  ${(cond.roundsInvolved || []).map(rNum => `
+                    <button onclick="executeConditionalSwap('${safeId(cond.id)}', ${Number(rNum)}, document.getElementById('modalResolutionNoteInput_${safeId(cond.id)}')?.value)" class="${analysis?.recommendedRound === rNum && state.orderCfg.isLocked ? 'btn-garnet' : 'btn-pending'} px-3 py-1.5 text-xs">
+                      Swap Round ${Number(rNum)} Only ${analysis?.recommendedRound === rNum && state.orderCfg.isLocked ? '(Recommended)' : ''}
+                    </button>
+                  `).join('')}
+                  <button onclick="executeConditionalSwap('${safeId(cond.id)}', null, document.getElementById('modalResolutionNoteInput_${safeId(cond.id)}')?.value)" class="btn-action px-3 py-1.5 text-xs text-slate-200">Mark Settled (No Swap)</button>
+                </div>
               </div>
             ` : `
-              <div class="text-[11px] text-pending-200/80 italic">Commissioner will finalize this swap once ${Number(cond.year)} draft order is locked.</div>
+              <div class="text-[11px] text-pending-200/80 italic">${escapeHtml(perm.blockedReason || `Decision-Owner (${getTeamName(perm.decisionOwnerId)}) or Commissioner will finalize this swap.`)}</div>
             `}
           </div>
         `;
@@ -15210,6 +16766,9 @@
 
       const holderName = getTeamName(pool.poolHolder);
       const owedName = getTeamName(pool.owedTo);
+      const perm = canUserResolveTradeCondition("POOL", pool, state);
+      const recPick = getPoolRecommendedCandidate(pool, state);
+      const defaultNote = recPick ? `${pool.ruleType}: Slot ${recPick.formattedSlot} (${getOriginalManagerName(recPick.originalOwner)})` : `${getOriginalManagerName(pool.poolHolder)} choice (${pool.ruleLabel || "Pool"})`;
 
       document.getElementById("inspectModalBadge").textContent = `${Number(pool.year)} ROUND ${Number(pool.round)} • PENDING FINAL POOL`;
       document.getElementById("inspectModalTitle").textContent = `${holderName}'s Round ${Number(pool.round)} Pool Owed to ${owedName}`;
@@ -15218,25 +16777,42 @@
         <div class="pending-pool-card p-4 rounded-xl space-y-2">
           <div class="flex items-center justify-between">
             <span class="text-xs font-bold text-pending-200 uppercase">Trade Receipt (${escapeHtml(pool.parentTrade.id)})</span>
-            ${uiState.isCommish ? `<button onclick="closeModal('inspectModal'); openEditTradeModal('${safeId(pool.parentTrade.id)}');" class="text-xs text-sky-300 hover:underline cursor-pointer">Edit Trade ✎</button>` : ''}
+            <span class="static-badge bg-amber-950/90 text-amber-200 border border-amber-400/50 text-[10px]">
+              <i class="fa-solid fa-user-check mr-1 text-amber-400"></i>Decision Owner: ${escapeHtml(getTeamName(perm.decisionOwnerId))}
+            </span>
           </div>
           <div class="text-sm font-bold text-white">${escapeHtml(pool.parentTrade.headline)}</div>
           <div class="text-xs text-pending-100"><strong>Rule:</strong> ${escapeHtml(pool.ruleLabel)}</div>
+          ${perm.canResolve ? `
+            <div class="pt-1">
+              <input
+                id="modalPoolResolutionNoteInput_${safeId(pool.id)}"
+                type="text"
+                maxlength="240"
+                value="${escapeHtml(defaultNote)}"
+                placeholder="Required audit note for TRADES_BACKUP & Activity Wire..."
+                class="w-full bg-[#0B0D12] text-white text-xs rounded-lg px-2.5 py-1.5 border border-amber-500/40 focus:border-amber-400 focus:outline-none"
+              >
+            </div>
+          ` : `
+            <div class="text-[11px] text-amber-200/90 italic pt-1">${escapeHtml(perm.blockedReason || "")}</div>
+          `}
         </div>
 
         <div class="space-y-2.5">
-          <div class="text-xs font-bold uppercase text-slate-300">${uiState.isCommish ? `Select Which Original Pick Transfers to ${escapeHtml(owedName)}:` : `Candidate Picks in Pool (1 Owed to ${escapeHtml(owedName)}):`}</div>
+          <div class="text-xs font-bold uppercase text-slate-300">${perm.canResolve ? `Select Which Original Pick Transfers to ${escapeHtml(owedName)}:` : `Candidate Picks in Pool (1 Owed to ${escapeHtml(owedName)}):`}</div>
           ${pool.candidateOriginalOwners.map(candId => {
             const candName = escapeHtml(getTeamName(candId));
             const otherNames = pool.candidateOriginalOwners.filter(x => x !== candId).map(x => escapeHtml(getTeamName(x))).join(" & ");
+            const isRec = recPick && recPick.originalOwner === candId;
             return `
-              <div class="bg-[#0b0f19] border border-slate-700 rounded-xl p-3.5 flex items-center justify-between gap-3">
+              <div class="bg-[#0b0f19] border ${isRec ? 'border-amber-400/70' : 'border-slate-700'} rounded-xl p-3.5 flex items-center justify-between gap-3">
                 <div>
-                  <div class="text-sm font-black text-white">${candName}'s Original ${Number(pool.year)} Round ${Number(pool.round)} Pick</div>
+                  <div class="text-sm font-black text-white">${candName}'s Original ${Number(pool.year)} Round ${Number(pool.round)} Pick ${isRec ? '<span class="text-amber-300 text-xs">★ Recommended</span>' : ''}</div>
                   <div class="text-xs text-slate-400">${escapeHtml(owedName)} would receive ${candName}'s pick • ${escapeHtml(holderName)} keeps ${otherNames || escapeHtml(holderName)}'s pick</div>
                 </div>
-                ${uiState.isCommish ? `
-                  <button onclick="resolvePoolToSpecificPick('${safeId(pool.id)}', '${safeId(candId)}')" class="btn-garnet px-3.5 py-2 text-xs whitespace-nowrap">
+                ${perm.canResolve ? `
+                  <button onclick="resolvePoolToSpecificPick('${safeId(pool.id)}', '${safeId(candId)}', document.getElementById('modalPoolResolutionNoteInput_${safeId(pool.id)}')?.value)" class="btn-garnet px-3.5 py-2 text-xs whitespace-nowrap">
                     Assign to ${escapeHtml(owedName)} →
                   </button>
                 ` : `
@@ -18992,6 +20568,96 @@
       return false;
     }
 
+    async function pushTradeConditionResolutionToCloud(resPayload) {
+      const customUrl = getActiveCloudSyncUrl();
+      if (!customUrl || !resPayload) return false;
+      if (uiState.isCommish) {
+        return await pushAdminStateToCloud(`RESOLVE_${resPayload.conditionType || 'CONDITION'}:${resPayload.conditionId || ''}`);
+      }
+      updateSyncStatusUI("Syncing Resolution...", false, false);
+      try {
+        const actorTeamId = safeId(resPayload.actorTeamId || uiState.myTeam || "syeth");
+        const payload = {
+          action: "RESOLVE_TRADE_CONDITION",
+          passHash: uiState.verifiedPassHash || leagueDB?.leaguePassphraseHash || "",
+          actorTeamId,
+          teamPinHash: uiState.myTeamPinHash || getSavedTeamPinHash(actorTeamId) || "",
+          conditionKind: String(resPayload.conditionType || resPayload.conditionKind || "POOL").toUpperCase(),
+          conditionType: String(resPayload.conditionType || resPayload.conditionKind || "POOL").toUpperCase(),
+          tradeId: String(resPayload.tradeId || ""),
+          conditionId: String(resPayload.conditionId || ""),
+          resolvedOriginalOwner: (resPayload.resolvedOriginalOwner || resPayload.chosenOriginalOwner) ? safeId(resPayload.resolvedOriginalOwner || resPayload.chosenOriginalOwner) : "",
+          resolvedRound: resPayload.resolvedRound !== undefined && resPayload.resolvedRound !== null ? Number(resPayload.resolvedRound) : null,
+          resolutionNote: cleanStr(resPayload.resolutionNote || "", 240).trim(),
+          fallbackBaseState: sanitizeStateForPublicExport(leagueDB)
+        };
+        const res = await fetch(customUrl, {
+          method: "POST",
+          redirect: "follow",
+          headers: { "Content-Type": "text/plain;charset=utf-8" },
+          body: JSON.stringify(payload)
+        });
+        const resJson = await res.json().catch(() => null);
+        if (res.ok && resJson && resJson.ok && resJson.state) {
+          const validated = validateAndSanitizeDatabase(resJson.state);
+          if (validated) {
+            await mergePreservedSecurityMetadata(validated);
+            leagueDB = validated;
+            saveDatabase(false);
+            uiState.lastSyncedAt = Date.now();
+            renderAll();
+          }
+          updateSyncStatusUI("Condition Resolved & Synced ✓", true, false);
+          return true;
+        }
+      } catch (e) {
+        console.warn("Condition resolution cloud sync warning:", e);
+      }
+      return false;
+    }
+
+    async function pushHofBallotVoteToCloud(playerId, teamId, vote, extraMeta = {}) {
+      const customUrl = getActiveCloudSyncUrl();
+      if (!customUrl || !playerId || !teamId) return false;
+      try {
+        const payload = {
+          action: "VOTE_HOF_BALLOT",
+          passHash: uiState.verifiedPassHash || leagueDB?.leaguePassphraseHash || "",
+          commishAuthHash: uiState.commishSessionHash || "",
+          playerId: safeId(playerId),
+          playerName: cleanStr(extraMeta.playerName || "", 60).trim(),
+          pos: cleanStr(extraMeta.pos || "", 12).toUpperCase(),
+          teamId: safeId(teamId),
+          vote: String(vote || "YES").toUpperCase(),
+          nominateToggle: Boolean(extraMeta.nominateToggle),
+          nominated: Boolean(extraMeta.nominated),
+          fallbackBaseState: sanitizeStateForPublicExport(leagueDB)
+        };
+        const res = await fetch(customUrl, {
+          method: "POST",
+          redirect: "follow",
+          headers: { "Content-Type": "text/plain;charset=utf-8" },
+          body: JSON.stringify(payload)
+        });
+        const resJson = await res.json().catch(() => null);
+        if (res.ok && resJson && resJson.ok && resJson.state) {
+          const validated = validateAndSanitizeDatabase(resJson.state);
+          if (validated) {
+            await mergePreservedSecurityMetadata(validated);
+            leagueDB = validated;
+            saveDatabase(false);
+            uiState.lastSyncedAt = Date.now();
+            renderAll();
+          }
+          updateSyncStatusUI("HOF Ballot Synced ✓", true, false);
+          return true;
+        }
+      } catch (e) {
+        // Non-blocking HOF ballot sync
+      }
+      return false;
+    }
+
     async function pushChampRenameFeasterToCloud(feasterTeamId, customTeamName, lockActive = true) {
       const customUrl = getActiveCloudSyncUrl();
       if (!customUrl || !feasterTeamId) return false;
@@ -19413,22 +21079,73 @@
           out.rosters["espn_" + tm.id] = entries.map(en => {
             const p = en.playerPoolEntry?.player || {};
             const appliedTotal = Number(en.playerPoolEntry?.appliedStatTotal) || 0;
+            const statsArr = Array.isArray(p.stats) ? p.stats : [];
+            const actualSeasonStat = statsArr.find(st => Number(st?.seasonId) === yr && Number(st?.statSourceId) === 0 && Number(st?.statSplitTypeId) === 0);
+            const projSeasonStat = statsArr.find(st => Number(st?.seasonId) === yr && Number(st?.statSourceId) === 1 && Number(st?.statSplitTypeId) === 0);
+            const statTotal = Math.round((Number(actualSeasonStat?.appliedTotal ?? appliedTotal) || 0) * 10) / 10;
+            const statAvg = Math.round((Number(actualSeasonStat?.appliedAverage) || (statTotal > 0 ? statTotal / 17 : 0)) * 10) / 10;
+            const projTotal = Math.round((Number(projSeasonStat?.appliedTotal) || statTotal) * 10) / 10;
             const ratingsObj = en.playerPoolEntry?.ratings || {};
             const r0 = ratingsObj["0"] || Object.values(ratingsObj)[0] || null;
             const posCode = POS_MAP[p.defaultPositionId] || "FLEX";
             const pRankStr = (r0 && Number(r0.positionalRanking) > 0) ? (posCode + Number(r0.positionalRanking)) : "";
             return {
               id: "espn_p_" + (p.id || en.playerId),
+              espnId: Number(p.id || en.playerId) || 0,
               name: p.fullName || "Player",
               pos: posCode,
               nflTeam: TEAM_NFL[p.proTeamId] || "NFL",
               slot: SLOT_MAP[en.lineupSlotId] || "BE",
-              totalPts: Math.round(appliedTotal * 10) / 10,
+              totalPts: statTotal,
+              projPts: projTotal,
+              avgPts: statAvg,
               acquiredVia: en.acquisitionType || "DRAFT",
               posRank: pRankStr
             };
           });
         });
+
+        try {
+          const faFilter = {
+            players: {
+              filterStatus: { value: ["FREEAGENT", "WAIVERS"] },
+              limit: 80,
+              sortAppliedStatTotal: { sortAsc: false, sortPriority: 1, value: "00" + yr }
+            }
+          };
+          const faRes = await fetch(\`https://lm-api-reads.fantasy.espn.com/apis/v3/games/ffl/seasons/\${yr}/segments/0/leagues/\${leagueId}?view=kona_player_info\`, {
+            credentials: "include",
+            headers: { "x-fantasy-filter": JSON.stringify(faFilter) }
+          });
+          if (faRes.ok) {
+            const faData = await faRes.json();
+            out.freeAgents = (faData?.players || []).slice(0, 80).map((pl, fIdx) => {
+              const pObj = pl?.player || pl || {};
+              const pid = Number(pObj.id || pl.id) || (fIdx + 1);
+              const statsArr = Array.isArray(pObj.stats) ? pObj.stats : [];
+              const actualSt = statsArr.find(st => Number(st?.seasonId) === yr && Number(st?.statSourceId) === 0 && Number(st?.statSplitTypeId) === 0);
+              const projSt = statsArr.find(st => Number(st?.seasonId) === yr && Number(st?.statSourceId) === 1 && Number(st?.statSplitTypeId) === 0);
+              const tot = Math.round((Number(pl?.ratings?.["0"]?.totalRating ?? actualSt?.appliedTotal ?? 0) || 0) * 10) / 10;
+              const avg = Math.round((Number(actualSt?.appliedAverage) || (tot > 0 ? tot / 17 : 0)) * 10) / 10;
+              const prj = Math.round((Number(projSt?.appliedTotal) || tot) * 10) / 10;
+              const posCode = POS_MAP[pObj.defaultPositionId] || "FLEX";
+              return {
+                id: "espn_fa_" + pid,
+                espnId: pid,
+                name: pObj.fullName || ("Free Agent #" + pid),
+                pos: posCode,
+                nflTeam: TEAM_NFL[pObj.proTeamId] || "FA",
+                slot: "FA",
+                status: "FREE_AGENT",
+                totalPts: tot,
+                pts: tot,
+                projPts: prj,
+                avgPts: avg,
+                percentOwned: Math.round((Number(pObj.ownership?.percentOwned) || 0) * 10) / 10
+              };
+            }).filter(fa => fa.name && (fa.totalPts > 0 || fa.projPts > 0));
+          }
+        } catch (faErr) {}
       }
       console.log("✓ Pulled " + yr + " (" + (seasonCompleted ? "Final" : "In Progress") + ", " + standings.length + " teams" + (extractedDraftPicks.length > 0 ? ", " + extractedDraftPicks.length + " draft picks" : "") + ")");
     } catch (err) { console.warn("Skipped " + yr, err); }
@@ -19902,6 +21619,8 @@
               projPts: Number(p.projPts) || 0,
               totalPts: Number(p.totalPts || p.pts) || 0,
               pts: Number(p.totalPts || p.pts || p.projPts) || 0,
+              avgPts: Number(p.avgPts) || 0,
+              gamesPlayed: Number(p.gamesPlayed) || 0,
               posRank: cleanStr(p.posRank || "", 12),
               acquiredVia: cleanStr(p.acquiredVia || p.acqType || "ESPN Sync", 24)
             }));
@@ -20300,6 +22019,19 @@
             closestGames: [...allMatchupDiffs].filter(x => x.margin > 0).sort((a, b) => a.margin - b.margin).slice(0, 10),
             longestStreaks: computedStreaks.length > 0 ? computedStreaks : (ed.records?.longestStreaks || [])
           };
+        }
+
+        if (Array.isArray(parsed.freeAgents) && parsed.freeAgents.length > 0) {
+          ed.freeAgents = parsed.freeAgents;
+        }
+        if (parsed.positionalLeaders && typeof parsed.positionalLeaders === "object") {
+          ed.positionalLeaders = parsed.positionalLeaders;
+        }
+        if (parsed.positionalRecords && typeof parsed.positionalRecords === "object") {
+          ed.positionalRecords = parsed.positionalRecords;
+        }
+        if (parsed.playerHofBallots && typeof parsed.playerHofBallots === "object") {
+          ed.playerHofBallots = { ...(ed.playerHofBallots || {}), ...parsed.playerHofBallots };
         }
 
         ed.lastSyncedAt = Date.now();

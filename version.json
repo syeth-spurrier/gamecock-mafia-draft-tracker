@@ -1,5 +1,5 @@
 {
-  "version": "8.7.0",
-  "releasedAt": "2026-11-15T23:05:00Z",
-  "notes": "v8.7.0: Sleek Custom Season Pill & Mobile Sync Dot, My Team 1-Line KPI Strip & 1-Tap Scout Avatar Strip, Smart 1–10+Active Picks Default, Inline Conditional Swap in Sticky Deal Bar, 2-Row Draft Board Toolbar, 5-Tab League Hub with Mobile Core/Advanced Table Toggle, and 4-Tab Activity Wire"
+  "version": "9.0.0",
+  "releasedAt": "2026-11-16T02:15:00Z",
+  "notes": "v9.0.0: Self-Learning Pick Valuation Engine (Exponential Decay + Pre-Lock Bracket Tiers + Damped Moving Average), Self-Service Conditional & Pool Resolution with Audit Notes, Individual NFL Player Hall of Fame & 7/10 Supermajority Ballot, Positional Top 10 & Free Agent Hub, Positional Record Book (Started vs. All Players), De-Cluttered Roster & Trade Machine, Unified Sticky Scouting Header, and 7-Theme CSS Variable Isolation"
 }
