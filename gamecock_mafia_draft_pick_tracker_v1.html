@@ -29944,6 +29944,21 @@
           }
         }
       }
+      // Preserve newer local ESPN Sync & FAAB data if cloud state has an older lastSyncedAt timestamp
+      const localEspnTs = Number(leagueDB?.espnData?.lastSyncedAt) || 0;
+      const remoteEspnTs = Number(validated?.espnData?.lastSyncedAt) || 0;
+      if (localEspnTs > remoteEspnTs && leagueDB?.espnData) {
+        const remoteHofState = validated?.espnData?.hofState || leagueDB.espnData.hofState;
+        const remoteHofBallots = validated?.espnData?.playerHofBallots || leagueDB.espnData.playerHofBallots;
+        validated.espnData = JSON.parse(JSON.stringify(leagueDB.espnData));
+        if (remoteHofState) validated.espnData.hofState = remoteHofState;
+        if (remoteHofBallots) {
+          validated.espnData.playerHofBallots = { ...(validated.espnData.playerHofBallots || {}), ...remoteHofBallots };
+        }
+        if (leagueDB?.faabData) {
+          validated.faabData = JSON.parse(JSON.stringify(leagueDB.faabData));
+        }
+      }
       // Auto-decrypt signed-in manager's encrypted Draft Prep board when Team PIN hash is unlocked
       const activeTeamId = safeId(uiState.myTeam || "");
       const activePinHash = uiState.myTeamPinHash || (activeTeamId ? getSavedTeamPinHash(activeTeamId) : "");
@@ -31849,11 +31864,17 @@
     async function pushEspnDataToCloud() {
       const customUrl = getActiveCloudSyncUrl();
       if (!customUrl || !leagueDB?.espnData) return false;
-      if (uiState.isCommish) {
-        return await pushAdminStateToCloud("ESPN_SYNC_UPDATE");
-      }
       updateSyncStatusUI("Syncing ESPN HQ...", false, false);
       try {
+        const liteFallback = sanitizeStateForPublicExport(leagueDB);
+        if (liteFallback && typeof liteFallback === "object") {
+          // Avoid sending duplicate 1.5MB espnData/faabData inside fallbackBaseState
+          liteFallback.espnData = {
+            leagueId: leagueDB.espnData.leagueId || "30215",
+            currentSeason: leagueDB.espnData.currentSeason || 2026
+          };
+          delete liteFallback.faabData;
+        }
         const payload = {
           action: "ESPN_SYNC_UPDATE",
           actorTeamId: safeId(uiState.myTeam || "syeth"),
@@ -31861,7 +31882,7 @@
           commishAuthHash: uiState.commishSessionHash || leagueDB?.commishPinHash || "",
           espnData: leagueDB.espnData,
           faabData: leagueDB.faabData,
-          fallbackBaseState: sanitizeStateForPublicExport(leagueDB)
+          fallbackBaseState: liteFallback
         };
         const res = await fetch(customUrl, {
           method: "POST",
@@ -31881,6 +31902,8 @@
           }
           updateSyncStatusUI("ESPN Synced ✓", true, false);
           return true;
+        } else if (uiState.isCommish) {
+          return await pushAdminStateToCloud("ESPN_SYNC_UPDATE");
         }
       } catch (e) {
         console.warn("ESPN cloud push warning:", e);
@@ -31891,7 +31914,7 @@
     function buildEspnBrowserConsoleExtractorSnippet(leagueIdOverride = "") {
       const lid = (leagueIdOverride || leagueDB?.espnData?.leagueId || "").trim();
       return `(async () => {
-  /* GAMECOCK MAFIA — 1-CLICK ESPN MASTER EXTRACTOR v12.0 (2016–Present History, True Optimal Lineups, Master Keepers, All-Time FAAB & 250 FA/Rookies)
+  /* GAMECOCK MAFIA — 1-CLICK ESPN MASTER EXTRACTOR v12.1 (2016–Present History, Live/Just-Finished Week Capture, True Optimal Lineups, Master Keepers, All-Time FAAB & 250 FA/Rookies)
      Run inside your browser DevTools Console (F12) while logged into fantasy.espn.com */
   const urlMatch = location.href.match(/leagueId=(\\d+)/);
   const leagueId = "${escapeHtml(lid)}" || (urlMatch ? urlMatch[1] : prompt("Enter your ESPN League ID:"));
@@ -31921,6 +31944,28 @@
   const globalPlayerMap = {};
   const priorYearActualPtsByPid = {};
   const prevSeasonRosterPidsBySlot = {};
+
+  const extractSideWeekScore = (side, wkNum) => {
+    if (!side) return 0;
+    const tot = Number(side.totalPoints) || 0;
+    const bySp = (side.pointsByScoringPeriod && side.pointsByScoringPeriod[String(wkNum)] !== undefined)
+      ? (Number(side.pointsByScoringPeriod[String(wkNum)]) || 0)
+      : 0;
+    const live = Number(side.totalPointsLive) || 0;
+    const boxStat = Number(side.rosterForCurrentScoringPeriod?.appliedStatTotal || side.rosterForMatchupPeriod?.appliedStatTotal) || 0;
+    let starterSum = 0;
+    const entries = side.rosterForCurrentScoringPeriod?.entries || side.rosterForMatchupPeriod?.entries || [];
+    if (entries.length > 0) {
+      entries.forEach(en => {
+        const sl = Number(en?.lineupSlotId);
+        if (sl !== 20 && sl !== 21) {
+          starterSum += Number(en?.playerPoolEntry?.appliedStatTotal) || 0;
+        }
+      });
+    }
+    const best = tot > 0 ? tot : Math.max(bySp, live, boxStat, starterSum);
+    return Math.round(best * 100) / 100;
+  };
 
   const solveOptimalLineupPts = (entries, slotCountsObj) => {
     if (!Array.isArray(entries) || entries.length === 0) return { maxPts: 0, benchPts: 0, hasBox: false };
@@ -31969,7 +32014,7 @@
 
   const histArchiveByYear = {};
   try {
-    const bulkRes = await fetch(\`https://lm-api-reads.fantasy.espn.com/apis/v3/games/ffl/leagueHistory/\${leagueId}?view=mTeam&view=mRoster&view=mMatchupScore&view=mStandings&view=mSettings&view=mDraftDetail&view=mNav\`, { credentials: "include" });
+    const bulkRes = await fetch(\`https://lm-api-reads.fantasy.espn.com/apis/v3/games/ffl/leagueHistory/\${leagueId}?view=mTeam&view=mRoster&view=mMatchupScore&view=mStandings&view=mSettings&view=mDraftDetail&view=mNav&_t=\${Date.now()}\`, { credentials: "include", cache: "no-store" });
     if (bulkRes.ok) {
       const bulkArr = await bulkRes.json();
       if (Array.isArray(bulkArr)) {
@@ -31983,8 +32028,8 @@
       let lg = null;
       if (yr >= 2018) {
         try {
-          const endpoint = \`https://lm-api-reads.fantasy.espn.com/apis/v3/games/ffl/seasons/\${yr}/segments/0/leagues/\${leagueId}?view=mTeam&view=mRoster&view=mMatchup&view=mMatchupScore&view=mStandings&view=mSettings&view=mDraftDetail&view=mTransactions2&view=mBoxscore&view=mNav\`;
-          const res = await fetch(endpoint, { credentials: "include" });
+          const endpoint = \`https://lm-api-reads.fantasy.espn.com/apis/v3/games/ffl/seasons/\${yr}/segments/0/leagues/\${leagueId}?view=mTeam&view=mRoster&view=mMatchup&view=mMatchupScore&view=mStandings&view=mSettings&view=mDraftDetail&view=mTransactions2&view=mBoxscore&view=mNav&_t=\${Date.now()}\`;
+          const res = await fetch(endpoint, { credentials: "include", cache: "no-store" });
           if (res.ok) {
             const data = await res.json();
             lg = Array.isArray(data) ? data.find(d => Number(d?.seasonId) === yr) || data[0] : data;
@@ -31993,7 +32038,7 @@
       }
       if (!lg) lg = histArchiveByYear[yr] || null;
       if (!lg && yr < 2018) {
-        const res = await fetch(\`https://lm-api-reads.fantasy.espn.com/apis/v3/games/ffl/leagueHistory/\${leagueId}?seasonId=\${yr}&view=mTeam&view=mRoster&view=mMatchupScore&view=mStandings&view=mSettings&view=mDraftDetail&view=mNav\`, { credentials: "include" });
+        const res = await fetch(\`https://lm-api-reads.fantasy.espn.com/apis/v3/games/ffl/leagueHistory/\${leagueId}?seasonId=\${yr}&view=mTeam&view=mRoster&view=mMatchupScore&view=mStandings&view=mSettings&view=mDraftDetail&view=mNav&_t=\${Date.now()}\`, { credentials: "include", cache: "no-store" });
         if (res.ok) {
           const data = await res.json();
           lg = Array.isArray(data) ? data.find(d => Number(d?.seasonId) === yr) || data[0] : data;
@@ -32002,6 +32047,46 @@
       if (!lg || !Array.isArray(lg.teams) || lg.teams.length === 0) continue;
       if (lg.seasonId && Number(lg.seasonId) !== yr) continue;
       out.currentSeason = Math.max(out.currentSeason, yr);
+
+      // For active/recent seasons, explicitly fetch the current & just-finished scoringPeriodId boxscores
+      // so we always capture the most recent week's points even before ESPN's weekly batch rollover!
+      const curMatchupPeriod = Number(lg.status?.currentMatchupPeriod || lg.scoringPeriodId) || 1;
+      const latestSp = Number(lg.status?.latestScoringPeriod || curMatchupPeriod) || 1;
+      const hasOfficialFinalRankPre = lg.teams.some(tm => Number(tm.rankCalculatedFinal) > 0 || Number(tm.rankFinal) > 0);
+      if (yr >= 2025 && !hasOfficialFinalRankPre && Array.isArray(lg.schedule)) {
+        const checkWeeks = [...new Set([Math.max(1, curMatchupPeriod - 1), curMatchupPeriod, Math.min(18, latestSp)].filter(w => w >= 1 && w <= 18))];
+        for (const spWk of checkWeeks) {
+          try {
+            const spUrl = \`https://lm-api-reads.fantasy.espn.com/apis/v3/games/ffl/seasons/\${yr}/segments/0/leagues/\${leagueId}?scoringPeriodId=\${spWk}&view=mMatchup&view=mMatchupScore&view=mBoxscore&view=mStandings&view=mTeam&_t=\${Date.now()}\`;
+            const spRes = await fetch(spUrl, { credentials: "include", cache: "no-store" });
+            if (spRes.ok) {
+              const spData = await spRes.json();
+              const spLg = Array.isArray(spData) ? spData[0] : spData;
+              if (Array.isArray(spLg?.schedule)) {
+                spLg.schedule.forEach(spm => {
+                  if (Number(spm?.matchupPeriodId) !== spWk) return;
+                  const targetM = lg.schedule.find(m => Number(m?.matchupPeriodId) === spWk && Number(m?.home?.teamId) === Number(spm?.home?.teamId));
+                  if (targetM) {
+                    if (spm.home) targetM.home = { ...targetM.home, ...spm.home };
+                    if (spm.away) targetM.away = { ...targetM.away, ...spm.away };
+                    if (spm.winner && spm.winner !== "UNDECIDED") targetM.winner = spm.winner;
+                  }
+                });
+              }
+              if (Array.isArray(spLg?.teams)) {
+                const spGp = spLg.teams.reduce((mx, tm) => Math.max(mx, (tm.record?.overall?.wins || 0) + (tm.record?.overall?.losses || 0) + (tm.record?.overall?.ties || 0)), 0);
+                const curGp = lg.teams.reduce((mx, tm) => Math.max(mx, (tm.record?.overall?.wins || 0) + (tm.record?.overall?.losses || 0) + (tm.record?.overall?.ties || 0)), 0);
+                if (spGp > curGp) {
+                  spLg.teams.forEach(spt => {
+                    const baseT = lg.teams.find(bt => bt.id === spt.id);
+                    if (baseT && spt.record) baseT.record = spt.record;
+                  });
+                }
+              }
+            }
+          } catch (spErr) {}
+        }
+      }
 
       const proByeMap = lg.settings?.proTeamByeWeeks || {};
       const divNameMap = {};
@@ -32101,17 +32186,18 @@
       let bracketChampId = null;
       let bracketRunnerId = null;
       let finalsMatchupRaw = null;
+      const byRegWeek = {};
 
       if (Array.isArray(lg.schedule) && lg.schedule.length > 0) {
-        const byRegWeek = {};
         lg.schedule.forEach(m => {
           const wk = Number(m.matchupPeriodId) || 0;
           const hId = m.home?.teamId;
           const aId = m.away?.teamId;
           if (!wk || !hId) return;
-          const hPts = Math.round((Number(m.home?.totalPoints) || 0) * 100) / 100;
-          const aPts = Math.round((Number(m.away?.totalPoints) || 0) * 100) / 100;
+          const hPts = extractSideWeekScore(m.home, wk);
+          const aPts = extractSideWeekScore(m.away, wk);
           const tier = String(m.playoffTierType || "NONE");
+          const isDecided = Boolean(m.winner && m.winner !== "UNDECIDED");
           const isPlayed = Boolean(hPts > 0 || aPts > 0);
           if (!isPlayed) {
             if (yr >= curCalYr - 1 && !hasOfficialFinalRank && wk <= regSeasonWeeks && aId) {
@@ -32126,7 +32212,7 @@
 
           if (wk <= regSeasonWeeks) {
             if (!byRegWeek[wk]) byRegWeek[wk] = [];
-            byRegWeek[wk].push({ wk, hId, aId, hPts, aPts, tier });
+            byRegWeek[wk].push({ wk, hId, aId, hPts, aPts, tier, isDecided });
             if (hOpt.hasBox && hOpt.maxPts > 0 && trueMaxPfMap[hId] !== undefined) {
               trueMaxPfMap[hId] += Math.max(hPts, hOpt.maxPts);
               benchPtsMap[hId] += hOpt.benchPts;
@@ -32223,6 +32309,31 @@
       }
       matchups.forEach(m => { delete m._rawRef; });
 
+      // Detect any completed regular-season week not yet rolled into tm.record.overall (e.g. Tuesday/Wednesday before ESPN batch rollover)
+      const unrolledBonusByTeam = {};
+      if (!hasOfficialFinalRank && yr >= 2025) {
+        const dayOfWeek = new Date().getDay(); // 2 = Tue, 3 = Wed
+        Object.entries(byRegWeek).forEach(([wkKey, wkGames]) => {
+          const wkNum = Number(wkKey);
+          if (wkNum <= maxGp || wkNum > regSeasonWeeks) return;
+          const allHaveScores = wkGames.length >= 4 && wkGames.every(g => g.hPts > 0 && g.aPts > 0);
+          const isFinishedWeek = wkNum < curMatchupPeriod || wkGames.some(g => g.isDecided) || (allHaveScores && (dayOfWeek === 2 || dayOfWeek === 3));
+          if (!isFinishedWeek) return;
+          wkGames.forEach(g => {
+            if (!g.hId || !g.aId) return;
+            if (!unrolledBonusByTeam[g.hId]) unrolledBonusByTeam[g.hId] = { w: 0, l: 0, t: 0, pf: 0, pa: 0 };
+            if (!unrolledBonusByTeam[g.aId]) unrolledBonusByTeam[g.aId] = { w: 0, l: 0, t: 0, pf: 0, pa: 0 };
+            unrolledBonusByTeam[g.hId].pf += g.hPts;
+            unrolledBonusByTeam[g.hId].pa += g.aPts;
+            unrolledBonusByTeam[g.aId].pf += g.aPts;
+            unrolledBonusByTeam[g.aId].pa += g.hPts;
+            if (g.hPts > g.aPts) { unrolledBonusByTeam[g.hId].w += 1; unrolledBonusByTeam[g.aId].l += 1; }
+            else if (g.aPts > g.hPts) { unrolledBonusByTeam[g.aId].w += 1; unrolledBonusByTeam[g.hId].l += 1; }
+            else { unrolledBonusByTeam[g.hId].t += 1; unrolledBonusByTeam[g.aId].t += 1; }
+          });
+        });
+      }
+
       const seasonCompleted = Boolean((yr < curCalYr && maxGp >= 12) || hasOfficialFinalRank || bracketChampId);
 
       const standings = lg.teams.map(tm => {
@@ -32240,11 +32351,12 @@
         const ap = allPlayMap[tm.id] || { w: 0, l: 0 };
         const med = medianMap[tm.id] || { w: 0, l: 0 };
         const tb = toiletStats[tm.id] || { w: 0, pts: 0, gp: 0 };
-        const winsNum = tm.record?.overall?.wins || 0;
-        const lossesNum = tm.record?.overall?.losses || 0;
-        const tiesNum = tm.record?.overall?.ties || 0;
-        const pfNum = Math.round((tm.record?.overall?.pointsFor || 0) * 10) / 10;
-        const paNum = Math.round((tm.record?.overall?.pointsAgainst || 0) * 10) / 10;
+        const unrolled = unrolledBonusByTeam[tm.id] || { w: 0, l: 0, t: 0, pf: 0, pa: 0 };
+        const winsNum = (tm.record?.overall?.wins || 0) + unrolled.w;
+        const lossesNum = (tm.record?.overall?.losses || 0) + unrolled.l;
+        const tiesNum = (tm.record?.overall?.ties || 0) + unrolled.t;
+        const pfNum = Math.round(((tm.record?.overall?.pointsFor || 0) + unrolled.pf) * 10) / 10;
+        const paNum = Math.round(((tm.record?.overall?.pointsAgainst || 0) + unrolled.pa) * 10) / 10;
         const faabSpentNum = Number(tm.transactionCounter?.acquisitionBudgetSpent) || 0;
         const hasTrueMax = Boolean(yr >= 2018 && boxscoreWkCount[tm.id] > 0 && trueMaxPfMap[tm.id] > 0);
         const maxPfNum = hasTrueMax ? Math.round(Math.max(pfNum, trueMaxPfMap[tm.id]) * 10) / 10 : 0;
@@ -33628,9 +33740,8 @@
             picksArr.push(entry);
           });
           if (picksArr.length > 0) {
-            const record = { year: yrNum, completed: true, bySlot, picks: picksArr };
+            const record = { year: yrNum, completed: true, picks: picksArr };
             ed.draftResults[String(yrNum)] = record;
-            ed.pastDraftPicks[String(yrNum)] = record;
           }
         };
 

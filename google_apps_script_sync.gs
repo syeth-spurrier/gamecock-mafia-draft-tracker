@@ -80,7 +80,7 @@ function readRowChunkedJson(stateSheet, rowNum, primaryColNum, overflowStartColN
     try {
       var sheetMaxCols = stateSheet.getMaxColumns();
       var availCols = Math.max(0, sheetMaxCols - overflowStartColNum + 1);
-      var colsToRead = Math.min(maxOverflowCols || 45, availCols);
+      var colsToRead = Math.min(maxOverflowCols || 120, availCols);
       if (colsToRead > 0) {
         var extraRow = stateSheet.getRange(rowNum, overflowStartColNum, 1, colsToRead).getValues();
         if (extraRow && extraRow[0]) {
@@ -108,13 +108,13 @@ function readRowChunkedJson(stateSheet, rowNum, primaryColNum, overflowStartColN
 }
 
 function readStoredState(stateSheet) {
-  // Primary chunk in B2 (col 2), overflow chunks across D2+ (up to 45 cols ~ 2.0MB)
-  return readRowChunkedJson(stateSheet, 2, 2, 4, 45);
+  // Primary chunk in B2 (col 2), overflow chunks across D2+ (up to 120 cols ~ 5.3MB)
+  return readRowChunkedJson(stateSheet, 2, 2, 4, 120);
 }
 
 function readSnapshotStateAtRow(stateSheet, rowNum) {
-  // Snapshot rows 5..35 store primary chunk in D (col 4) and overflow chunks across E+ (up to 45 cols)
-  return readRowChunkedJson(stateSheet, rowNum, 4, 5, 45);
+  // Snapshot rows 5..35 store primary chunk in D (col 4) and overflow chunks across E+ (up to 120 cols ~ 5.3MB)
+  return readRowChunkedJson(stateSheet, rowNum, 4, 5, 120);
 }
 
 function listSnapshotsFromSheet(stateSheet) {
@@ -2258,13 +2258,13 @@ function saveAndMirrorToSheets(sheets, state, actionLabel) {
   for (var pos = CELL_CHUNK_SIZE; pos < jsonStr.length; pos += CELL_CHUNK_SIZE) {
     overflowChunks.push(jsonStr.slice(pos, pos + CELL_CHUNK_SIZE));
   }
-  // Pad trailing empty strings so shrinking payloads clear stale overflow cells
-  var padTarget = Math.max(15, overflowChunks.length + 3);
+  var curMaxCols = sheets.stateSheet.getMaxColumns();
+  // Pad trailing empty strings across all existing overflow columns so shrinking payloads never leave stale chunks
+  var padTarget = Math.max(15, curMaxCols - 4, overflowChunks.length + 3);
   while (overflowChunks.length < padTarget) overflowChunks.push("");
 
   // Ensure LIVE_STATE_JSON has enough columns for snapshot row (4 metadata/primary cols + overflowChunks.length)
   var neededCols = 4 + overflowChunks.length;
-  var curMaxCols = sheets.stateSheet.getMaxColumns();
   if (curMaxCols < neededCols) {
     sheets.stateSheet.insertColumnsAfter(curMaxCols, neededCols - curMaxCols);
   }
@@ -2828,18 +2828,30 @@ function autoWeeklyEspnSync() {
     var schedule = Array.isArray(data.schedule) ? data.schedule : [];
     var scoresByWeek = {};
     var syncedSeasonMatchups = [];
+    function extractSidePointsForWeek(side, wkNum) {
+      if (!side) return 0;
+      var tot = Number(side.totalPoints || 0);
+      var bySp = (side.pointsByScoringPeriod && side.pointsByScoringPeriod[String(wkNum)] !== undefined)
+        ? Number(side.pointsByScoringPeriod[String(wkNum)] || 0)
+        : 0;
+      var live = Number(side.totalPointsLive || 0);
+      var boxTot = Number((side.rosterForCurrentScoringPeriod && side.rosterForCurrentScoringPeriod.appliedStatTotal) ||
+                          (side.rosterForMatchupPeriod && side.rosterForMatchupPeriod.appliedStatTotal) || 0);
+      return tot > 0 ? tot : Math.max(bySp, live, boxTot);
+    }
+
     schedule.forEach(function(m) {
       if (!m || !m.home || !m.away) return;
       var wk = Number(m.matchupPeriodId) || 0;
       if (wk <= 0) return;
-      var hScore = Number(m.home.totalPoints || 0);
-      var aScore = Number(m.away.totalPoints || 0);
+      var hScore = extractSidePointsForWeek(m.home, wk);
+      var aScore = extractSidePointsForWeek(m.away, wk);
       var hSlot = String(m.home.teamId);
       var aSlot = String(m.away.teamId);
       var hMgr = slotMap[hSlot] || "";
       var aMgr = slotMap[aSlot] || "";
       var mTier = String(m.playoffTierType || "NONE").toUpperCase();
-      var isPlayedGame = Boolean((hScore > 0 || aScore > 0) && m.winner !== "UNDECIDED");
+      var isPlayedGame = Boolean(hScore > 0 || aScore > 0);
 
       // Preserve future unplayed regular-season games (played: false) so Playoff Path has remaining schedule!
       if (!isPlayedGame && wk > regWeeks) return;
