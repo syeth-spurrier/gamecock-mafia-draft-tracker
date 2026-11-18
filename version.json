@@ -1,5 +1,5 @@
 {
-  "version": "11.0.0",
-  "releasedAt": "2026-11-16T17:15:00Z",
-  "notes": "v11.0.0 (Wave 3): 64 Verbatim Canonical Trades & Locked Draft Orders (2018–2027) from Official Draft Sheet, Split Vault Architecture (Trade Vault 2-Tier Mobile Header + What It Became Flip + Time Capsules 2016–2026), Calibrated Player HOF VORP Formula (50/25/15/10, Skill 1.00x / IDP 0.88x / K & D/ST 0.65x 72/82 Cap, 3 Concrete Proof Chips, Active NFL Exclusion Toggle), Automated mTransactions2 FAAB Analytics & 6 Custom Badges, and Active-Era Trade Center History Scope"
+  "version": "12.0.0",
+  "releasedAt": "2026-11-18T00:15:00Z",
+  "notes": "v12.0.0 (Wave 4): Expanded ESPN Master Sync (True Weekly Optimal Lineups & Coaching Efficiency, Master Keepers Source of Truth, 250 Free Agents/Rookies, All-Time FAAB), Trade Hub 4-View Redesign (Trade Machine + Strategic Fit, Filterable OTB Asset Marketplace, Creative Matchmaker, Active Offers & History), My Team Franchise Modes, Week 6+ Playoff Path & What-If Schedule Picker, AES-GCM Encrypted Private Draft Prep Mode, Co-Commissioner Governance & Central Bank Access, 3-Tab Player Hall of Fame + Permanent Returning HOF Badge, Auto-Assigned Live Badges, and 12 Colorways"
 }
