@@ -2523,7 +2523,7 @@
       <footer id="appFooterShell" class="hidden border-t border-white/[0.06] pt-4 pb-2 mt-6 no-print">
         <div class="flex flex-col sm:flex-row items-center justify-between gap-2 text-[11px] text-slate-400">
           <div class="flex items-center gap-2">
-            <span class="font-bold text-slate-400">Gamecock Mafia League Hub &amp; Draft Tracker v13.0.0</span>
+            <span class="font-bold text-slate-400">Gamecock Mafia League Hub &amp; Draft Tracker v13.0.1</span>
             <span>•</span>
             <span>Est. 2016</span>
           </div>
@@ -8738,7 +8738,7 @@
       }
     ];
 
-    const APP_BUILD_VERSION = "13.0.0";
+    const APP_BUILD_VERSION = "13.0.1";
 
     function getRoundsForYear(year) {
       const yr = Number(year) || 2027;
@@ -10336,7 +10336,7 @@
       };
 
       const out = {
-        version: "13.0.0",
+        version: "13.0.1",
         deletedSeedTradeIds: Array.isArray(raw.deletedSeedTradeIds) ? raw.deletedSeedTradeIds.slice(0, 200).map(safeId).filter(Boolean) : [],
         updatedAt: Number(raw.updatedAt) > 0 ? Number(raw.updatedAt) : 0,
         baseUpcomingYear: Math.min(2035, Math.max(2026, Number(raw.baseUpcomingYear) || 2027)),
@@ -34457,7 +34457,7 @@
     function buildEspnBrowserConsoleExtractorSnippet(leagueIdOverride = "") {
       const lid = (leagueIdOverride || leagueDB?.espnData?.leagueId || "").trim();
       return `(async () => {
-  /* GAMECOCK MAFIA — 1-CLICK ESPN MASTER EXTRACTOR v13.0 (2016–Present History, Full Weekly Boxscore Sweep, True Optimal Lineups, Weekly Positional Kings, Repaired 4-Point FAAB Sweep & 250 FA/Rookies)
+  /* GAMECOCK MAFIA — 1-CLICK ESPN MASTER EXTRACTOR v13.0.1 (2016–Present History, Lean <=4-View Fetches, Full Weekly Boxscore Sweep, True Optimal Lineups, Weekly Positional Kings, Zero-400 FAAB Sweep & 250 FA/Rookies)
      Run inside your browser DevTools Console (F12) while logged into fantasy.espn.com */
   const urlMatch = location.href.match(/leagueId=(\\d+)/);
   const leagueId = "${escapeHtml(lid)}" || (urlMatch ? urlMatch[1] : prompt("Enter your ESPN League ID:"));
@@ -34575,14 +34575,16 @@
     };
   };
 
-  console.log("🐓 Fetching Gamecock Mafia MASTER ESPN History v13.0 (Weekly Boxscores, Positional Kings, 4-Point FAAB Sweep, Optimal Lineups & 250 FA/Rookies) for League " + leagueId + "...");
+  console.log("🐓 Fetching Gamecock Mafia MASTER ESPN History v13.0.1 (Weekly Boxscores, Positional Kings, 4-Point FAAB Sweep, Optimal Lineups & 250 FA/Rookies) for League " + leagueId + "...");
 
   const histArchiveByYear = {};
+  let bulkArchiveLoaded = false;
   try {
-    const bulkRes = await fetch(\`https://lm-api-reads.fantasy.espn.com/apis/v3/games/ffl/leagueHistory/\${leagueId}?view=mTeam&view=mRoster&view=mMatchupScore&view=mStandings&view=mSettings&view=mDraftDetail&view=mNav&_t=\${Date.now()}\`, { credentials: "include", cache: "no-store" });
+    const bulkRes = await fetch(\`https://lm-api-reads.fantasy.espn.com/apis/v3/games/ffl/leagueHistory/\${leagueId}?view=mTeam&view=mRoster&view=mMatchupScore&view=mSettings&view=mDraftDetail&_t=\${Date.now()}\`, { credentials: "include", cache: "no-store" });
     if (bulkRes.ok) {
       const bulkArr = await bulkRes.json();
-      if (Array.isArray(bulkArr)) {
+      if (Array.isArray(bulkArr) && bulkArr.length > 0) {
+        bulkArchiveLoaded = true;
         bulkArr.forEach(item => { if (item && item.seasonId) histArchiveByYear[item.seasonId] = item; });
       }
     }
@@ -34593,17 +34595,32 @@
       let lg = null;
       if (yr >= 2018) {
         try {
-          const endpoint = \`https://lm-api-reads.fantasy.espn.com/apis/v3/games/ffl/seasons/\${yr}/segments/0/leagues/\${leagueId}?view=mTeam&view=mRoster&view=mMatchup&view=mMatchupScore&view=mStandings&view=mSettings&view=mDraftDetail&view=mTransactions2&view=mBoxscore&view=mNav&_t=\${Date.now()}\`;
-          const res = await fetch(endpoint, { credentials: "include", cache: "no-store" });
-          if (res.ok) {
-            const data = await res.json();
-            lg = Array.isArray(data) ? data.find(d => Number(d?.seasonId) === yr) || data[0] : data;
+          const baseSeasonUrl = \`https://lm-api-reads.fantasy.espn.com/apis/v3/games/ffl/seasons/\${yr}/segments/0/leagues/\${leagueId}\`;
+          const [resCore, resSched] = await Promise.all([
+            fetch(\`\${baseSeasonUrl}?view=mTeam&view=mRoster&view=mStandings&view=mSettings&_t=\${Date.now()}\`, { credentials: "include", cache: "no-store" }),
+            fetch(\`\${baseSeasonUrl}?view=mMatchup&view=mMatchupScore&view=mDraftDetail&_t=\${Date.now()}\`, { credentials: "include", cache: "no-store" })
+          ]);
+          if (resCore.ok) {
+            const coreRaw = await resCore.json();
+            const coreLg = Array.isArray(coreRaw) ? coreRaw.find(d => Number(d?.seasonId) === yr) || coreRaw[0] : coreRaw;
+            let schedLg = null;
+            if (resSched.ok) {
+              const schedRaw = await resSched.json();
+              schedLg = Array.isArray(schedRaw) ? schedRaw.find(d => Number(d?.seasonId) === yr) || schedRaw[0] : schedRaw;
+            }
+            if (coreLg) {
+              lg = {
+                ...coreLg,
+                schedule: Array.isArray(schedLg?.schedule) ? schedLg.schedule : coreLg.schedule,
+                draftDetail: schedLg?.draftDetail || coreLg.draftDetail
+              };
+            }
           }
         } catch (e) {}
       }
       if (!lg) lg = histArchiveByYear[yr] || null;
-      if (!lg && yr < 2018) {
-        const res = await fetch(\`https://lm-api-reads.fantasy.espn.com/apis/v3/games/ffl/leagueHistory/\${leagueId}?seasonId=\${yr}&view=mTeam&view=mRoster&view=mMatchupScore&view=mStandings&view=mSettings&view=mDraftDetail&view=mNav&_t=\${Date.now()}\`, { credentials: "include", cache: "no-store" });
+      if (!lg && yr < 2018 && !bulkArchiveLoaded) {
+        const res = await fetch(\`https://lm-api-reads.fantasy.espn.com/apis/v3/games/ffl/leagueHistory/\${leagueId}?seasonId=\${yr}&view=mTeam&view=mRoster&view=mMatchupScore&view=mSettings&view=mDraftDetail&_t=\${Date.now()}\`, { credentials: "include", cache: "no-store" });
         if (res.ok) {
           const data = await res.json();
           lg = Array.isArray(data) ? data.find(d => Number(d?.seasonId) === yr) || data[0] : data;
@@ -34613,8 +34630,8 @@
       if (lg.seasonId && Number(lg.seasonId) !== yr) continue;
       out.currentSeason = Math.max(out.currentSeason, yr);
 
-      // Wave 4 v13.0: For the active/current season, sweep EVERY played scoringPeriodId (1..maxSp)
-      // so we get full weekly boxscore rosters (true optimal lineups, Weekly Positional Kings, Bench Blunders & exact FAAB post-add pts)!
+      // Wave 4 v13.0.1: For the active/current season, sweep EVERY played scoringPeriodId (1..maxSp)
+      // using lean 3-view requests (keeping views <=4 avoids ESPN 400 Bad Request throttling)
       const curMatchupPeriod = Number(lg.status?.currentMatchupPeriod || lg.scoringPeriodId) || 1;
       const latestSp = Number(lg.status?.latestScoringPeriod || curMatchupPeriod) || 1;
       const hasOfficialFinalRankPre = lg.teams.some(tm => Number(tm.rankCalculatedFinal) > 0 || Number(tm.rankFinal) > 0);
@@ -34624,7 +34641,7 @@
         console.log("  ↳ Sweeping " + yr + " weekly boxscores (Weeks 1–" + maxSweepWk + ")...");
         for (let spWk = 1; spWk <= maxSweepWk; spWk++) {
           try {
-            const spUrl = \`https://lm-api-reads.fantasy.espn.com/apis/v3/games/ffl/seasons/\${yr}/segments/0/leagues/\${leagueId}?scoringPeriodId=\${spWk}&view=mMatchup&view=mMatchupScore&view=mBoxscore&view=mStandings&view=mTeam&_t=\${Date.now()}\`;
+            const spUrl = \`https://lm-api-reads.fantasy.espn.com/apis/v3/games/ffl/seasons/\${yr}/segments/0/leagues/\${leagueId}?scoringPeriodId=\${spWk}&view=mMatchupScore&view=mBoxscore&view=mTeam&_t=\${Date.now()}\`;
             const spRes = await fetch(spUrl, { credentials: "include", cache: "no-store" });
             if (spRes.ok) {
               const spData = await spRes.json();
@@ -35004,30 +35021,34 @@
         const nonKeeperRaw = isPreDraftKeeperOnlyPhase ? [] : rawDraftPicks.filter(pk => !pk.keeper && Number(pk.playerId) > 0);
         const targetPicks = nonKeeperRaw;
         const allReferencedPicks = [...targetPicks, ...keeperRaw];
-        const missingPids = [...new Set(allReferencedPicks.map(pk => Number(pk.playerId)).filter(pid => pid > 0 && !globalPlayerMap[pid]))];
+        const missingPids = [...new Set(allReferencedPicks.map(pk => Number(pk.playerId)).filter(pid => Number.isInteger(pid) && pid > 0 && !globalPlayerMap[pid]))];
         if (missingPids.length > 0 && yr >= 2018) {
-          try {
-            const pRes = await fetch(\`https://lm-api-reads.fantasy.espn.com/apis/v3/games/ffl/seasons/\${yr}/segments/0/leagues/\${leagueId}?view=kona_player_info\`, {
-              credentials: "include",
-              headers: { "x-fantasy-filter": JSON.stringify({ players: { filterIds: { value: missingPids } } }) }
-            });
-            if (pRes.ok) {
-              const pData = await pRes.json();
-              (pData?.players || []).forEach(pl => {
-                const pObj = pl?.player || pl;
-                const pid = Number(pObj?.id || pl?.id) || 0;
-                if (pid > 0 && pObj?.fullName) {
-                  globalPlayerMap[pid] = {
-                    espnId: pid,
-                    playerId: "espn_p_" + pid,
-                    name: pObj.fullName,
-                    pos: POS_MAP[pObj.defaultPositionId] || "FLEX",
-                    nflTeam: TEAM_NFL[pObj.proTeamId] || "NFL"
-                  };
-                }
+          const lookupYr = Math.max(2019, yr);
+          for (let bi = 0; bi < missingPids.length; bi += 75) {
+            const chunk = missingPids.slice(bi, bi + 75);
+            try {
+              const pRes = await fetch(\`https://lm-api-reads.fantasy.espn.com/apis/v3/games/ffl/seasons/\${lookupYr}/segments/0/leagues/\${leagueId}?view=kona_player_info\`, {
+                credentials: "include",
+                headers: { "x-fantasy-filter": JSON.stringify({ players: { filterIds: { value: chunk }, limit: chunk.length } }) }
               });
-            }
-          } catch (e) {}
+              if (pRes.ok) {
+                const pData = await pRes.json();
+                (pData?.players || []).forEach(pl => {
+                  const pObj = pl?.player || pl;
+                  const pid = Number(pObj?.id || pl?.id) || 0;
+                  if (pid > 0 && pObj?.fullName) {
+                    globalPlayerMap[pid] = {
+                      espnId: pid,
+                      playerId: "espn_p_" + pid,
+                      name: pObj.fullName,
+                      pos: POS_MAP[pObj.defaultPositionId] || "FLEX",
+                      nflTeam: TEAM_NFL[pObj.proTeamId] || "NFL"
+                    };
+                  }
+                });
+              }
+            } catch (e) {}
+          }
         }
         if (targetPicks.length > 0) {
           const sortedRawPicks = [...targetPicks].sort((a, b) => (Number(a.overallPickNumber) || 0) - (Number(b.overallPickNumber) || 0));
@@ -35324,15 +35345,18 @@
       };
       ingestRawTxs(lg.transactions);
       if (yr >= 2018) {
-        const maxTxSp = Math.min(18, Math.max(1, Number(lg.status?.latestScoringPeriod || lg.status?.currentMatchupPeriod || lg.scoringPeriodId || (seasonCompleted ? 17 : regSeasonWeeks)) || regSeasonWeeks));
-        const txFilterHeader = JSON.stringify({ transactions: { filterType: { value: ["WAIVER", "FREEAGENT", "TRADE_ACCEPTED"] } } });
+        const defaultMaxSp = seasonCompleted ? (yr >= 2021 ? 17 : 16) : Math.max(1, curMatchupPeriod);
+        const maxTxSp = Math.min(18, Math.max(1, Number(lg.status?.latestScoringPeriod || lg.status?.currentMatchupPeriod || lg.scoringPeriodId || defaultMaxSp) || defaultMaxSp));
+        const txFilterHeader = JSON.stringify({ transactions: { filterType: { value: ["WAIVER", "FREEAGENT", "TRADE_ACCEPT"] } } });
+        let useTxFilter = true;
         for (let txSp = 1; txSp <= maxTxSp; txSp++) {
           try {
-            let txRes = await fetch(\`https://lm-api-reads.fantasy.espn.com/apis/v3/games/ffl/seasons/\${yr}/segments/0/leagues/\${leagueId}?scoringPeriodId=\${txSp}&view=mTransactions2\`, {
-              credentials: "include",
-              headers: { "x-fantasy-filter": txFilterHeader }
-            });
-            if (!txRes.ok) {
+            let txRes = await fetch(\`https://lm-api-reads.fantasy.espn.com/apis/v3/games/ffl/seasons/\${yr}/segments/0/leagues/\${leagueId}?scoringPeriodId=\${txSp}&view=mTransactions2\`, useTxFilter
+              ? { credentials: "include", headers: { "x-fantasy-filter": txFilterHeader } }
+              : { credentials: "include" }
+            );
+            if (!txRes.ok && useTxFilter) {
+              useTxFilter = false;
               txRes = await fetch(\`https://lm-api-reads.fantasy.espn.com/apis/v3/games/ffl/seasons/\${yr}/segments/0/leagues/\${leagueId}?scoringPeriodId=\${txSp}&view=mTransactions2\`, {
                 credentials: "include"
               });
@@ -35373,7 +35397,7 @@
           const pidNum = Number(it?.playerId) || 0;
           const pidStr = String(pidNum);
           if (pidNum <= 0) return;
-          if (!globalPlayerMap[pidNum]) missingTxPids.add(pidNum);
+          if (!globalPlayerMap[pidNum] && Number.isInteger(pidNum)) missingTxPids.add(pidNum);
           if (itType === "ADD" && (txType.includes("WAIVER") || txType.includes("FREEAGENT") || it.toTeamId)) {
             addEvents.push({ teamSlot: Number(it.toTeamId || tx.teamId) || 0, pid: pidNum, pidStr, bid, wk, ts, txType });
           } else if (itType === "DROP" || (itType === "TRADE" && it.fromTeamId)) {
@@ -35382,31 +35406,35 @@
         });
       });
 
-      // Resolve any waiver player names not present on end-of-season rosters
+      // Resolve any waiver player names not present on end-of-season rosters (chunked <=75 with explicit limit)
       if (missingTxPids.size > 0 && yr >= 2018) {
-        try {
-          const pIdsArr = [...missingTxPids].slice(0, 150);
-          const pRes = await fetch(\`https://lm-api-reads.fantasy.espn.com/apis/v3/games/ffl/seasons/\${yr}/segments/0/leagues/\${leagueId}?view=kona_player_info\`, {
-            credentials: "include",
-            headers: { "x-fantasy-filter": JSON.stringify({ players: { filterIds: { value: pIdsArr } } }) }
-          });
-          if (pRes.ok) {
-            const pData = await pRes.json();
-            (pData?.players || []).forEach(pl => {
-              const pObj = pl?.player || pl;
-              const pid = Number(pObj?.id || pl?.id) || 0;
-              if (pid > 0 && pObj?.fullName) {
-                globalPlayerMap[pid] = {
-                  espnId: pid,
-                  playerId: "espn_p_" + pid,
-                  name: pObj.fullName,
-                  pos: POS_MAP[pObj.defaultPositionId] || "FLEX",
-                  nflTeam: TEAM_NFL[pObj.proTeamId] || "NFL"
-                };
-              }
+        const lookupYr = Math.max(2019, yr);
+        const pIdsAll = [...missingTxPids].slice(0, 225);
+        for (let bi = 0; bi < pIdsAll.length; bi += 75) {
+          const chunk = pIdsAll.slice(bi, bi + 75);
+          try {
+            const pRes = await fetch(\`https://lm-api-reads.fantasy.espn.com/apis/v3/games/ffl/seasons/\${lookupYr}/segments/0/leagues/\${leagueId}?view=kona_player_info\`, {
+              credentials: "include",
+              headers: { "x-fantasy-filter": JSON.stringify({ players: { filterIds: { value: chunk }, limit: chunk.length } }) }
             });
-          }
-        } catch (e) {}
+            if (pRes.ok) {
+              const pData = await pRes.json();
+              (pData?.players || []).forEach(pl => {
+                const pObj = pl?.player || pl;
+                const pid = Number(pObj?.id || pl?.id) || 0;
+                if (pid > 0 && pObj?.fullName) {
+                  globalPlayerMap[pid] = {
+                    espnId: pid,
+                    playerId: "espn_p_" + pid,
+                    name: pObj.fullName,
+                    pos: POS_MAP[pObj.defaultPositionId] || "FLEX",
+                    nflTeam: TEAM_NFL[pObj.proTeamId] || "NFL"
+                  };
+                }
+              });
+            }
+          } catch (e) {}
+        }
       }
 
       addEvents.sort((a, b) => (a.wk - b.wk) || (a.ts - b.ts));
@@ -35562,7 +35590,7 @@
         });
 
         // Pull Top 250 Free Agents + Incoming NFL Rookies for Draft Prep Mode (excluding rostered players)
-        try {
+        if (isCurrentOrActiveSeason || yr >= curCalYr || out.freeAgents.length === 0) try {
           const faFilter = {
             players: {
               filterStatus: { value: ["FREEAGENT", "WAIVERS"] },
@@ -35637,7 +35665,7 @@
         } catch (faErr) {}
       }
       if (yr >= 2016) {
-        console.log("✓ Pulled " + yr + " (" + (seasonCompleted ? "Final" : "In Progress") + ", " + standings.length + " teams, " + extractedKeepers.length + " keepers" + (extractedDraftPicks.length > 0 ? ", " + extractedDraftPicks.length + " draft picks" : "") + ")");
+        console.log("✓ Pulled " + yr + " (" + (seasonCompleted ? "Final" : "In Progress") + ", " + standings.length + " teams, " + extractedKeepers.length + " keepers" + (extractedDraftPicks.length > 0 ? ", " + extractedDraftPicks.length + " draft picks" : "") + (yr >= 2018 ? ", " + paidWaiverCount + " paid FAAB claims" : "") + ")");
       }
     } catch (err) { console.warn("Skipped " + yr, err); }
   }
@@ -35771,7 +35799,7 @@
     function copyEspnConsoleExtractorScript() {
       const lid = document.getElementById("espnSyncLeagueIdInput")?.value || leagueDB?.espnData?.leagueId || "";
       const script = buildEspnBrowserConsoleExtractorSnippet(lid);
-      copyTextToClipboard(script, "Copied v13.0 ESPN Master Extractor! Open fantasy.espn.com → F12 Console → Paste & press Enter.");
+      copyTextToClipboard(script, "Copied v13.0.1 ESPN Master Extractor! Open fantasy.espn.com → F12 Console → Paste & press Enter.");
     }
 
     function buildEspnHistoricalBoxscoreBackfillSnippet(leagueIdOverride = "") {

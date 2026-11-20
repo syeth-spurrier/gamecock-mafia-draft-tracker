@@ -620,7 +620,7 @@ function callGeminiStructuredJson_(stateObj, taskDirective, telemetryPayload, re
     sysParts.push("TASK INSTRUCTIONS:\n" + taskDirective);
   }
 
-  var endpoint = "https://generativelanguage.googleapis.com/v1beta/models/" + GEMINI_MODEL_NAME + ":generateContent?key=" + encodeURIComponent(apiKey);
+  var endpoint = "https://generativelanguage.googleapis.com/v1beta/models/" + GEMINI_MODEL_NAME + ":generateContent";
   var reqPayload = {
     systemInstruction: {
       parts: [{ text: sysParts.join("\n\n") }]
@@ -641,6 +641,7 @@ function callGeminiStructuredJson_(stateObj, taskDirective, telemetryPayload, re
   var resp = UrlFetchApp.fetch(endpoint, {
     method: "post",
     contentType: "application/json",
+    headers: { "x-goog-api-key": apiKey },
     payload: JSON.stringify(reqPayload),
     muteHttpExceptions: true
   });
@@ -3348,7 +3349,7 @@ function autoWeeklyEspnSync() {
     var targetYear = (now.getMonth() <= 1 && Number(ed.currentSeason)) ? Number(ed.currentSeason) : now.getFullYear();
     var url = "https://lm-api-reads.fantasy.espn.com/apis/v3/games/ffl/seasons/" +
       targetYear + "/segments/0/leagues/" + leagueId +
-      "?view=mTeam&view=mRoster&view=mStandings&view=mMatchupScore&view=mSettings&view=mTransactions2&view=mBoxscore";
+      "?view=mTeam&view=mRoster&view=mMatchupScore&view=mSettings&view=mBoxscore";
 
     var headers = {};
     if (espnS2 && espnSwid) {
@@ -4117,15 +4118,19 @@ function autoWeeklyEspnSync() {
     }
     ingestRawTxList_(data.transactions);
 
+    var useTxFilterGas = true;
     for (var txSp = 1; txSp <= maxSweepSp; txSp++) {
       try {
         var txUrlSp = "https://lm-api-reads.fantasy.espn.com/apis/v3/games/ffl/seasons/" +
           seasonYr + "/segments/0/leagues/" + leagueId + "?scoringPeriodId=" + txSp + "&view=mTransactions2";
-        var txFilterHeaders = Object.assign({}, headers, {
-          "x-fantasy-filter": JSON.stringify({ transactions: { filterType: { value: ["WAIVER", "FREEAGENT", "TRADE_ACCEPTED"] } } })
-        });
-        var txRespSp = UrlFetchApp.fetch(txUrlSp, { method: "get", headers: txFilterHeaders, muteHttpExceptions: true });
-        if (txRespSp.getResponseCode() !== 200) {
+        var txReqHeaders = useTxFilterGas
+          ? Object.assign({}, headers, {
+              "x-fantasy-filter": JSON.stringify({ transactions: { filterType: { value: ["WAIVER", "FREEAGENT", "TRADE_ACCEPT"] } } })
+            })
+          : headers;
+        var txRespSp = UrlFetchApp.fetch(txUrlSp, { method: "get", headers: txReqHeaders, muteHttpExceptions: true });
+        if (txRespSp.getResponseCode() !== 200 && useTxFilterGas) {
+          useTxFilterGas = false;
           txRespSp = UrlFetchApp.fetch(txUrlSp, { method: "get", headers: headers, muteHttpExceptions: true });
         }
         if (txRespSp.getResponseCode() === 200) {

@@ -1,5 +1,5 @@
 {
-  "version": "13.0.0",
-  "releasedAt": "2026-11-20T02:16:00Z",
-  "notes": "v13.0.0 (Wave 4 Master Update): My Team Focus Cleanup & Draft App Relocated Inside Draft Board, Touch-Safe Floating Badge Popovers & Badge Legend, Option B Starter-Tier Keeper Surplus & Smart Trade Target Matcher, Light-Mode Theme Overhaul (Iced Out Frost & America Flag Navy/Crimson + WCAG AA Contrast), League 30215 Playoff Path Command Center (Divisional Tiebreaker Engine, Magic/Tragic Numbers, Rooting Guide & What-If Simulator), Weekly Positional Kings (All 9 Positions + Bench Explosions Toggle + 2018–2025 Backfill), 4-Point FAAB Ledger Repair & Sync Health Diagnostics, Native Gemini 2.5 Flash AI Engine (Tone Presets, Anti-Slop Contract, Custom League Lore, Weekly Recaps, Trade Roasts, Playoff Advisor, AI Trade Text Parser & Standby HOF Bio), 1-Tap PNG Receipt Share Cards, Mobile Bottom Sheets & Skeleton Shimmer Sync"
+  "version": "13.0.1",
+  "releasedAt": "2026-11-20T03:02:00Z",
+  "notes": "v13.0.1 (ESPN Sync Hotfix): Fixed HTTP 400 Bad Request spam during 1-Click ESPN Console Extractor & Tuesday Auto-Sync mTransactions2 sweeps (replaced invalid ESPN enum TRADE_ACCEPTED with valid TRADE_ACCEPT), split 10-view ESPN season fetches into lean <=4-view parallel calls, added explicit limit/batching on kona_player_info lookups, and upgraded Gemini API key transport in Apps Script to x-goog-api-key header for optimal AQ. Auth key compatibility."
 }
