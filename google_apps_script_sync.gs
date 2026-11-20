@@ -593,7 +593,7 @@ function callGeminiStructuredJson_(stateObj, taskDirective, telemetryPayload, re
   opts = opts || {};
   ensureAiStructures_(stateObj);
   var props = PropertiesService.getScriptProperties();
-  var apiKey = props ? String(props.getProperty("GEMINI_API_KEY") || "").trim() : "";
+  var apiKey = props ? String(props.getProperty("GEMINI_API_KEY") || "").replace(/^["']+|["']+$/g, "").trim() : "";
   if (!apiKey) {
     return {
       ok: false,
@@ -648,10 +648,19 @@ function callGeminiStructuredJson_(stateObj, taskDirective, telemetryPayload, re
   var code = resp.getResponseCode();
   var text = resp.getContentText();
   if (code < 200 || code >= 300) {
+    var apiErrMsg = "";
+    try {
+      var errObj = JSON.parse(text);
+      apiErrMsg = (errObj && errObj.error && errObj.error.message) ? String(errObj.error.message) : "";
+    } catch (ignoreErrParse) {}
+    var hint = "";
+    if (code === 401 || code === 403) {
+      hint = " [Check: In Google AI Studio / Cloud Console -> Credentials -> API restrictions, ensure 'Generative Language API' is selected (not 'Gemini API'), and run testGeminiConnection() once in Apps Script.]";
+    }
     return {
       ok: false,
       code: "GEMINI_HTTP_" + code,
-      error: "Gemini API returned HTTP " + code + ": " + String(text || "").slice(0, 260)
+      error: "Gemini API HTTP " + code + ": " + (apiErrMsg || String(text || "").slice(0, 220)) + hint
     };
   }
 
@@ -686,6 +695,43 @@ function callGeminiStructuredJson_(stateObj, taskDirective, telemetryPayload, re
     tonePreset: presetKey,
     toneName: presetObj.name
   };
+}
+
+/**
+ * 1-CLICK COMMISSIONER DIAGNOSTIC:
+ * Select "testGeminiConnection" in the Apps Script function dropdown and click Run.
+ * 1. Triggers Google's OAuth consent popup if UrlFetchApp external requests need authorization.
+ * 2. Verifies GEMINI_API_KEY in Script Properties against Gemini 2.5 Flash using x-goog-api-key.
+ */
+function testGeminiConnection() {
+  var props = PropertiesService.getScriptProperties();
+  var apiKey = props ? String(props.getProperty("GEMINI_API_KEY") || "").replace(/^["']+|["']+$/g, "").trim() : "";
+  if (!apiKey) {
+    Logger.log("❌ GEMINI_API_KEY is missing in Project Settings -> Script Properties.");
+    return;
+  }
+  Logger.log("🔑 Found GEMINI_API_KEY (prefix: " + apiKey.slice(0, 4) + "..., length: " + apiKey.length + ")");
+  var endpoint = "https://generativelanguage.googleapis.com/v1beta/models/" + GEMINI_MODEL_NAME + ":generateContent";
+  var resp = UrlFetchApp.fetch(endpoint, {
+    method: "post",
+    contentType: "application/json",
+    headers: { "x-goog-api-key": apiKey },
+    payload: JSON.stringify({
+      contents: [{ role: "user", parts: [{ text: "Reply with the two words: GAMECOCK READY" }] }]
+    }),
+    muteHttpExceptions: true
+  });
+  var code = resp.getResponseCode();
+  var bodyTxt = resp.getContentText();
+  if (code >= 200 && code < 300) {
+    Logger.log("✅ SUCCESS (HTTP " + code + ")! Gemini 2.5 Flash is connected and authorized.");
+    Logger.log("Response preview: " + String(bodyTxt).slice(0, 260));
+  } else {
+    Logger.log("❌ FAILED (HTTP " + code + "): " + String(bodyTxt).slice(0, 500));
+    if (code === 401 || code === 403) {
+      Logger.log("👉 FIX: Open Google Cloud Console -> APIs & Services -> Credentials -> click your API key -> under API restrictions select 'Generative Language API' (NOT 'Gemini API'), OR generate a fresh key in a new project on aistudio.google.com/apikey.");
+    }
+  }
 }
 
 /**
@@ -2470,7 +2516,14 @@ function doPost(e) {
     if (action === "SAVE_AI_VOICE_SETTINGS") {
       var authAiCfg = isAuthorizedCommishOrCoCommish(stored, body);
       if (!authAiCfg.authorized) {
-        return jsonResponse({ ok: false, error: "Commissioner or Co-Commissioner PIN required to update AI Voice Settings." });
+        var hasHashAiCfg = Boolean(body && body.commishAuthHash && /^[a-f0-9]{64}$/i.test(String(body.commishAuthHash)));
+        return jsonResponse({
+          ok: false,
+          code: hasHashAiCfg ? "COMMISH_PIN_MISMATCH" : "COMMISH_PIN_MISSING",
+          error: hasHashAiCfg
+            ? "Commissioner PIN did not match the PIN stored in Google Sheets. Lock & re-unlock Commissioner Mode in More Tools."
+            : "Commissioner Mode is locked (no active PIN session). Open More -> Unlock Commissioner Mode, then click Save again."
+        });
       }
       var baseStateAiCfg = stored || body.fallbackBaseState;
       if (!baseStateAiCfg || !Array.isArray(baseStateAiCfg.teams)) {
@@ -2497,7 +2550,14 @@ function doPost(e) {
     if (action === "AI_GENERATE_WEEKLY_RECAP") {
       var authRecap = isAuthorizedCommishOrCoCommish(stored, body);
       if (!authRecap.authorized) {
-        return jsonResponse({ ok: false, error: "Commissioner or Co-Commissioner PIN required to generate Weekly Recaps." });
+        var hasHashRecap = Boolean(body && body.commishAuthHash && /^[a-f0-9]{64}$/i.test(String(body.commishAuthHash)));
+        return jsonResponse({
+          ok: false,
+          code: hasHashRecap ? "COMMISH_PIN_MISMATCH" : "COMMISH_PIN_MISSING",
+          error: hasHashRecap
+            ? "Commissioner PIN did not match Google Sheets. Lock & re-unlock Commissioner Mode in More Tools."
+            : "Commissioner Mode is locked (no active PIN session). Open More -> Unlock Commissioner Mode to generate Weekly Recaps."
+        });
       }
       var baseStateRecap = stored || body.fallbackBaseState;
       if (!baseStateRecap || !Array.isArray(baseStateRecap.teams)) {

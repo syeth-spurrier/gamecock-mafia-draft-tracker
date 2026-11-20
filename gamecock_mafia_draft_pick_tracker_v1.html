@@ -2523,7 +2523,7 @@
       <footer id="appFooterShell" class="hidden border-t border-white/[0.06] pt-4 pb-2 mt-6 no-print">
         <div class="flex flex-col sm:flex-row items-center justify-between gap-2 text-[11px] text-slate-400">
           <div class="flex items-center gap-2">
-            <span class="font-bold text-slate-400">Gamecock Mafia League Hub &amp; Draft Tracker v13.0.1</span>
+            <span class="font-bold text-slate-400">Gamecock Mafia League Hub &amp; Draft Tracker v13.0.2</span>
             <span>•</span>
             <span>Est. 2016</span>
           </div>
@@ -3065,7 +3065,7 @@
   </div>
 
   <!-- 8. COMMISSIONER / CO-COMMISSIONER PIN MODAL -->
-  <div id="pinModal" class="hidden fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-3 sm:p-4">
+  <div id="pinModal" class="hidden fixed inset-0 z-[70] bg-black/80 backdrop-blur-sm flex items-center justify-center p-3 sm:p-4">
     <div class="bg-[#13161F] border border-white/10 rounded-2xl max-w-sm w-full p-5 sm:p-6 shadow-2xl text-center space-y-4">
       <div class="w-12 h-12 mx-auto rounded-xl garnet-hero-banner border border-[#CC1429]/50 flex items-center justify-center text-white text-xl">
         <i class="fa-solid fa-user-shield"></i>
@@ -8738,7 +8738,7 @@
       }
     ];
 
-    const APP_BUILD_VERSION = "13.0.1";
+    const APP_BUILD_VERSION = "13.0.2";
 
     function getRoundsForYear(year) {
       const yr = Number(year) || 2027;
@@ -10336,7 +10336,7 @@
       };
 
       const out = {
-        version: "13.0.1",
+        version: "13.0.2",
         deletedSeedTradeIds: Array.isArray(raw.deletedSeedTradeIds) ? raw.deletedSeedTradeIds.slice(0, 200).map(safeId).filter(Boolean) : [],
         updatedAt: Number(raw.updatedAt) > 0 ? Number(raw.updatedAt) : 0,
         baseUpcomingYear: Math.min(2035, Math.max(2026, Number(raw.baseUpcomingYear) || 2027)),
@@ -33838,6 +33838,12 @@
             showToast(changed ? "Pulled latest live league updates!" : "Already up to date!", "success");
           }
         } else {
+          if (leagueDB) {
+            leagueDB.hasGeminiApiKey = Boolean(validated.hasGeminiApiKey);
+            if (validated.commishPinVerifier && validated.commishPinVerifier !== DEFAULT_PIN_VERIFIER) {
+              leagueDB.commishPinVerifier = validated.commishPinVerifier;
+            }
+          }
           updateSyncStatusUI("Unpublished Local Edits", false, true);
         }
       } catch (e) {
@@ -37414,6 +37420,11 @@
         showToast("Commissioner or Co-Commissioner Mode required to configure AI Voice Settings.", "error");
         return;
       }
+      if (!uiState.isCommish || !uiState.commishSessionHash) {
+        showToast("Unlock Commissioner Mode with your PIN first to configure AI Voice & Lore.", "info");
+        openPinModal();
+        return;
+      }
       const cfg = getActiveAiVoiceSettings();
       _draftAiVoicePreset = cfg.preset;
       const hasKey = Boolean(leagueDB?.hasGeminiApiKey);
@@ -37532,9 +37543,18 @@
       saveDatabase(false);
       updateAiVoiceAdminStatusPill();
 
+      if (!uiState.isCommish || !uiState.commishSessionHash) {
+        showToast("Unlock Commissioner Mode with your PIN, then tap Save again (your Lore draft is preserved).", "info");
+        openPinModal();
+        return;
+      }
+
       const btn = document.getElementById("saveAiVoiceSettingsBtn");
       if (btn) { btn.disabled = true; btn.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> <span>Saving...</span>`; }
-      const resp = await postAiActionToCloud("SAVE_AI_VOICE_SETTINGS", { aiVoice: nextVoice });
+      const resp = await postAiActionToCloud("SAVE_AI_VOICE_SETTINGS", {
+        aiVoice: nextVoice,
+        fallbackBaseState: sanitizeStateForPublicExport(leagueDB)
+      });
       if (btn) { btn.disabled = false; btn.innerHTML = `<i class="fa-solid fa-floppy-disk"></i> <span>Save AI Voice &amp; Lore</span>`; }
 
       if (resp.ok) {
@@ -37764,6 +37784,11 @@
     }
 
     async function requestAiWeeklyRecap(seasonYr, weekNum, forceRegenerate = false) {
+      if (!uiState.isCommish || !uiState.commishSessionHash) {
+        showToast("Unlock Commissioner Mode with your PIN first to generate Weekly Recaps.", "info");
+        openPinModal();
+        return;
+      }
       const btn = document.getElementById("aiWeeklyRecapGenBtn");
       if (btn) {
         btn.disabled = true;
@@ -38059,6 +38084,11 @@
     }
 
     async function requestAiHofBio(playerKey, forceRegenerate = false) {
+      if (!uiState.isCommish || !uiState.commishSessionHash) {
+        showToast("Unlock Commissioner Mode with your PIN first to generate HOF Plaque Bios.", "info");
+        openPinModal();
+        return;
+      }
       const allCand = typeof computePlayerHallOfFameCandidates === "function" ? computePlayerHallOfFameCandidates() : [];
       const cand = allCand.find(c => c.key === playerKey);
       if (!cand) {

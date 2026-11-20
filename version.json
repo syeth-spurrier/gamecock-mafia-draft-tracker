@@ -1,5 +1,5 @@
 {
-  "version": "13.0.1",
-  "releasedAt": "2026-11-20T03:02:00Z",
-  "notes": "v13.0.1 (ESPN Sync Hotfix): Fixed HTTP 400 Bad Request spam during 1-Click ESPN Console Extractor & Tuesday Auto-Sync mTransactions2 sweeps (replaced invalid ESPN enum TRADE_ACCEPTED with valid TRADE_ACCEPT), split 10-view ESPN season fetches into lean <=4-view parallel calls, added explicit limit/batching on kona_player_info lookups, and upgraded Gemini API key transport in Apps Script to x-goog-api-key header for optimal AQ. Auth key compatibility."
+  "version": "13.0.2",
+  "releasedAt": "2026-11-20T03:29:00Z",
+  "notes": "v13.0.2 (AI Auth & Diagnostics Patch): Enforced active Commissioner PIN unlock (uiState.isCommish + commishSessionHash) before opening/saving AI Voice & Lore, generating Weekly Recaps, or generating HOF Bios (preserving draft Lore if re-authentication is needed), synced live hasGeminiApiKey & PIN verifier metadata even when local state is newer, clarified Apps Script PIN vs Gemini 401/403 error messages, and added 1-click testGeminiConnection() diagnostic helper in google_apps_script_sync.gs."
 }
