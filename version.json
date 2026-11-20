@@ -1,5 +1,5 @@
 {
-  "version": "12.0.0",
-  "releasedAt": "2026-11-18T00:15:00Z",
-  "notes": "v12.0.0 (Wave 4): Expanded ESPN Master Sync (True Weekly Optimal Lineups & Coaching Efficiency, Master Keepers Source of Truth, 250 Free Agents/Rookies, All-Time FAAB), Trade Hub 4-View Redesign (Trade Machine + Strategic Fit, Filterable OTB Asset Marketplace, Creative Matchmaker, Active Offers & History), My Team Franchise Modes, Week 6+ Playoff Path & What-If Schedule Picker, AES-GCM Encrypted Private Draft Prep Mode, Co-Commissioner Governance & Central Bank Access, 3-Tab Player Hall of Fame + Permanent Returning HOF Badge, Auto-Assigned Live Badges, and 12 Colorways"
+  "version": "13.0.0",
+  "releasedAt": "2026-11-20T02:16:00Z",
+  "notes": "v13.0.0 (Wave 4 Master Update): My Team Focus Cleanup & Draft App Relocated Inside Draft Board, Touch-Safe Floating Badge Popovers & Badge Legend, Option B Starter-Tier Keeper Surplus & Smart Trade Target Matcher, Light-Mode Theme Overhaul (Iced Out Frost & America Flag Navy/Crimson + WCAG AA Contrast), League 30215 Playoff Path Command Center (Divisional Tiebreaker Engine, Magic/Tragic Numbers, Rooting Guide & What-If Simulator), Weekly Positional Kings (All 9 Positions + Bench Explosions Toggle + 2018–2025 Backfill), 4-Point FAAB Ledger Repair & Sync Health Diagnostics, Native Gemini 2.5 Flash AI Engine (Tone Presets, Anti-Slop Contract, Custom League Lore, Weekly Recaps, Trade Roasts, Playoff Advisor, AI Trade Text Parser & Standby HOF Bio), 1-Tap PNG Receipt Share Cards, Mobile Bottom Sheets & Skeleton Shimmer Sync"
 }

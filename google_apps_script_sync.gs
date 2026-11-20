@@ -12,6 +12,9 @@
  *        passphrase hash & Commissioner PIN hash inside this script!)
  *   5. Copy the Web App URL (ends in /exec) and paste it into your Tracker's
  *      Admin -> Live Sheet / GitHub Sync modal!
+ *   6. (v13.0.0 Native Gemini AI) In Apps Script -> Project Settings -> Script Properties,
+ *      add property `GEMINI_API_KEY` with your Google AI Studio Gemini API key.
+ *      The key stays strictly server-side and is never returned to the browser.
  *
  * Automatically maintains 5 tabs inside your Google Sheet:
  *   - LIVE_STATE_JSON     (Canonical JSON state + 30-version rollback history, multi-cell chunk-safe)
@@ -196,6 +199,12 @@ function sanitizeStateForClient(stateObj) {
   delete clone.leaguePassphraseHash;
   delete clone.cloudSyncUrl;
   delete clone.oneSignalRestKey;
+  delete clone.geminiApiKey;
+  delete clone.GEMINI_API_KEY;
+  if (clone.settings && typeof clone.settings === "object") {
+    delete clone.settings.geminiApiKey;
+    delete clone.settings.GEMINI_API_KEY;
+  }
   if (clone.pushConfig && typeof clone.pushConfig === "object") {
     delete clone.pushConfig.oneSignalRestKey;
     delete clone.pushConfig.restApiKey;
@@ -211,6 +220,12 @@ function sanitizeStateForClient(stateObj) {
     (stateObj.oneSignalRestKey && String(stateObj.oneSignalRestKey).trim()) ||
     (stateObj.pushConfig && stateObj.pushConfig.oneSignalRestKey && String(stateObj.pushConfig.oneSignalRestKey).trim())
   );
+  var hasGemKey = false;
+  try {
+    var sProps = PropertiesService.getScriptProperties();
+    hasGemKey = Boolean(sProps && sProps.getProperty("GEMINI_API_KEY") && String(sProps.getProperty("GEMINI_API_KEY")).trim());
+  } catch (ignoreGemPropErr) {}
+  clone.hasGeminiApiKey = hasGemKey;
   return clone;
 }
 
@@ -340,6 +355,336 @@ function appendServerActivityEvent(stateObj, evtType, title, detail, meta) {
   if (stateObj.activityLog.length > 100) {
     stateObj.activityLog = stateObj.activityLog.slice(0, 100);
   }
+}
+
+/* ============================================================================
+ * WAVE 4 (v13.0.0) NATIVE GEMINI AI ENGINE — TONE PRESETS, ANTI-SLOP & CACHE
+ * ============================================================================ */
+var GEMINI_MODEL_NAME = "gemini-2.5-flash";
+var AI_CACHE_MAX_BYTES = 35000;
+var AI_MEMBER_HOURLY_LIMIT = 25;
+
+var AI_TONE_PRESETS = {
+  DRY_BEAT: {
+    name: "Dry Beat Writer",
+    directive: "Write like a deadpan, veteran beat reporter covering a ruthless 10-man keeper league as if it were the real NFL wire. Deliver dry, raised-eyebrow sarcasm buried inside crisp, matter-of-fact journalism. No caps-lock, no cheerleading, no fluff."
+  },
+  SNARKY_COMMISH: {
+    name: "Snarky Commish",
+    directive: "Write like a sharp, dryly sarcastic league insider who keeps the spreadsheet receipts open in another tab. Prioritize clever understatement, ironic observations, and surgical factual burns (bench blunders, FAAB overpays, All-Play luck frauds) over loud banter. Dry wit > yelling."
+  },
+  RUTHLESS_ROAST: {
+    name: "Ruthless Roast",
+    directive: "Write in sharp, unfiltered league group-chat roast mode. Go straight for the jugular on weekly low scores, lopsided trades, catastrophic benching decisions, and playoff collapses using biting, surgical comedy. Stay 100% anchored to real receipts—never resort to generic hype-bro clichés."
+  }
+};
+
+var AI_ANTI_SLOP_SYSTEM_BLOCK = [
+  "STRICT EDITORIAL & ANTI-SLOP CONTRACT (MANDATORY):",
+  "1. FORBIDDEN CLICHES — NEVER USE ANY OF THESE PHRASES OR VARIANTS: \"What a wild week\", \"Strap in\", \"Buckle up\", \"Without further ado\", \"Let's dive in\", \"Rollercoaster\", \"Statement win\", \"Absolute cinema\", \"Name a more iconic duo\", \"Chef's kiss\", \"Fantasy football is a cruel mistress\", \"Only time will tell\", \"At the end of the day\".",
+  "2. FORMATTING: Maximum ONE (1) exclamation mark across the entire JSON response. ZERO emoji walls (do not put emojis in prose strings). Short, punchy sentences. Zero chatty preambles, zero throat-clearing intros, zero cheesy sign-offs.",
+  "3. STRICT FACT GROUNDING: Every score, player name, player stat, FAAB dollar, record, division, seed, and magic number MUST appear verbatim in the supplied JSON payload. If a stat is missing, omit it—NEVER hallucinate NFL injuries, weather, or game scripts not present in the JSON."
+].join("\n");
+
+var POS_KING_BUCKETS_GAS = ["QB", "RB", "WR", "TE", "DL", "LB", "DB", "D/ST", "K"];
+
+function normalizePosBucketGas_(rawPos, defaultPosId) {
+  var pid = Number(defaultPosId);
+  if (pid === 1) return "QB";
+  if (pid === 2) return "RB";
+  if (pid === 3) return "WR";
+  if (pid === 4) return "TE";
+  if (pid === 5) return "K";
+  if (pid === 16) return "D/ST";
+  if (pid === 9 || pid === 11) return "DL";
+  if (pid === 10) return "LB";
+  if (pid === 12 || pid === 13 || pid === 14) return "DB";
+  var up = String(rawPos || "").toUpperCase().trim();
+  if (up === "QB" || up === "RB" || up === "WR" || up === "TE" || up === "K") return up;
+  if (up === "D/ST" || up === "DST" || up === "DEF") return "D/ST";
+  if (up === "DL" || up === "DE" || up === "DT" || up === "EDR") return "DL";
+  if (up === "LB") return "LB";
+  if (up === "DB" || up === "CB" || up === "S" || up === "FS" || up === "SS") return "DB";
+  return "";
+}
+
+function createEmptyPosKingsStore_(seasonYear) {
+  var obj = { updatedAt: Date.now(), starters: {}, bench: {} };
+  if (seasonYear) obj.seasonYear = Number(seasonYear);
+  POS_KING_BUCKETS_GAS.forEach(function(b) {
+    obj.starters[b] = [];
+    obj.bench[b] = [];
+  });
+  return obj;
+}
+
+function mergeWeeklyPosKingsList_(existingArr, incomingArr, maxKeep) {
+  var cap = maxKeep || 10;
+  var byKey = {};
+  (Array.isArray(existingArr) ? existingArr : []).concat(Array.isArray(incomingArr) ? incomingArr : []).forEach(function(row) {
+    if (!row || !row.playerName || !(Number(row.pts) > 0)) return;
+    var key = String(row.year || 0) + "_" + String(row.week || 0) + "_" + String(row.playerId || row.playerName) + "_" + String(row.teamId || "") + "_" + (row.isStarter ? "S" : "B");
+    var cleanRow = {
+      playerId: String(row.playerId || "").slice(0, 32),
+      playerName: String(row.playerName || "").slice(0, 60),
+      pos: String(row.pos || "").slice(0, 8),
+      nflTeam: String(row.nflTeam || "NFL").slice(0, 8),
+      teamId: String(row.teamId || "").slice(0, 32),
+      year: Number(row.year) || 0,
+      week: Number(row.week) || 0,
+      pts: Math.round(Number(row.pts) * 100) / 100,
+      slotId: Number(row.slotId !== undefined ? row.slotId : (row.isStarter ? 0 : 20)),
+      isStarter: Boolean(row.isStarter)
+    };
+    if (!byKey[key] || cleanRow.pts > byKey[key].pts) {
+      byKey[key] = cleanRow;
+    }
+  });
+  var list = Object.keys(byKey).map(function(k) { return byKey[k]; });
+  list.sort(function(a, b) {
+    if (b.pts !== a.pts) return b.pts - a.pts;
+    if (b.year !== a.year) return b.year - a.year;
+    return b.week - a.week;
+  });
+  return list.slice(0, cap);
+}
+
+function sanitizeWeeklyPosKingsStore_(rawStore, fallbackSeasonYr) {
+  var out = createEmptyPosKingsStore_(rawStore && rawStore.seasonYear ? rawStore.seasonYear : fallbackSeasonYr);
+  if (rawStore && rawStore.startYear) out.startYear = Number(rawStore.startYear) || 2018;
+  if (!rawStore || typeof rawStore !== "object") return out;
+  var srcSt = (rawStore.starters && typeof rawStore.starters === "object") ? rawStore.starters : {};
+  var srcBn = (rawStore.bench && typeof rawStore.bench === "object") ? rawStore.bench : {};
+  POS_KING_BUCKETS_GAS.forEach(function(b) {
+    out.starters[b] = mergeWeeklyPosKingsList_([], srcSt[b], 10);
+    out.bench[b] = mergeWeeklyPosKingsList_([], srcBn[b], 10);
+  });
+  return out;
+}
+
+function mergeWeeklyPosKingsStores_(baseStore, incomingStore, replaceSameSeason) {
+  var base = sanitizeWeeklyPosKingsStore_(baseStore, incomingStore && incomingStore.seasonYear);
+  if (!incomingStore || typeof incomingStore !== "object") return base;
+  var inc = sanitizeWeeklyPosKingsStore_(incomingStore, base.seasonYear);
+  if (replaceSameSeason && inc.seasonYear && base.seasonYear && Number(inc.seasonYear) !== Number(base.seasonYear)) {
+    return inc;
+  }
+  POS_KING_BUCKETS_GAS.forEach(function(b) {
+    base.starters[b] = mergeWeeklyPosKingsList_(base.starters[b], inc.starters[b], 10);
+    base.bench[b] = mergeWeeklyPosKingsList_(base.bench[b], inc.bench[b], 10);
+  });
+  base.updatedAt = Date.now();
+  return base;
+}
+
+function ensureAiStructures_(stateObj) {
+  if (!stateObj || typeof stateObj !== "object") return;
+  if (!stateObj.settings || typeof stateObj.settings !== "object") {
+    stateObj.settings = {};
+  }
+  var av = (stateObj.settings.aiVoice && typeof stateObj.settings.aiVoice === "object")
+    ? stateObj.settings.aiVoice
+    : {};
+  var presetKey = String(av.preset || "SNARKY_COMMISH").toUpperCase();
+  if (!AI_TONE_PRESETS[presetKey]) presetKey = "SNARKY_COMMISH";
+  stateObj.settings.aiVoice = {
+    preset: presetKey,
+    customLore: String(av.customLore || "").slice(0, 1500),
+    hofAiEnabled: Boolean(av.hofAiEnabled),
+    updatedAt: Number(av.updatedAt) || 0
+  };
+  if (!stateObj.aiCache || typeof stateObj.aiCache !== "object") {
+    stateObj.aiCache = {};
+  }
+  if (!stateObj.aiCache.weeklyRecaps || typeof stateObj.aiCache.weeklyRecaps !== "object") stateObj.aiCache.weeklyRecaps = {};
+  if (!stateObj.aiCache.tradeGrades || typeof stateObj.aiCache.tradeGrades !== "object") stateObj.aiCache.tradeGrades = {};
+  if (!stateObj.aiCache.playoffAdvisors || typeof stateObj.aiCache.playoffAdvisors !== "object") stateObj.aiCache.playoffAdvisors = {};
+  if (!stateObj.aiCache.hofBios || typeof stateObj.aiCache.hofBios !== "object") stateObj.aiCache.hofBios = {};
+}
+
+function trimAiCache_(stateObj) {
+  ensureAiStructures_(stateObj);
+  var cache = stateObj.aiCache;
+  var curSeason = Number((stateObj.espnData && stateObj.espnData.currentSeason) || 2026);
+  // 1. Keep only active-season weekly recaps and playoff advisors in live aiCache
+  Object.keys(cache.weeklyRecaps).forEach(function(k) {
+    var m = String(k).match(/^(\d{4})_/);
+    if (m && Number(m[1]) < curSeason) {
+      delete cache.weeklyRecaps[k];
+    }
+  });
+  Object.keys(cache.playoffAdvisors).forEach(function(k) {
+    var m = String(k).match(/^(\d{4})_/);
+    if (m && Number(m[1]) < curSeason) {
+      delete cache.playoffAdvisors[k];
+    }
+  });
+  // 2. Enforce strict <= 35 KB total storage cap by pruning oldest entries from advisors, then tradeGrades, then recaps
+  var buckets = ["playoffAdvisors", "tradeGrades", "weeklyRecaps", "hofBios"];
+  var guard = 0;
+  while (JSON.stringify(cache).length > AI_CACHE_MAX_BYTES && guard < 200) {
+    guard++;
+    var evicted = false;
+    for (var bi = 0; bi < buckets.length; bi++) {
+      var bName = buckets[bi];
+      var bObj = cache[bName] || {};
+      var keys = Object.keys(bObj);
+      if (keys.length === 0) continue;
+      keys.sort(function(a, b) {
+        return Number((bObj[a] && bObj[a].generatedAt) || 0) - Number((bObj[b] && bObj[b].generatedAt) || 0);
+      });
+      delete bObj[keys[0]];
+      evicted = true;
+      break;
+    }
+    if (!evicted) break;
+  }
+}
+
+function enforceAntiSlopExclamationCap_(node, stateRef) {
+  if (!stateRef) stateRef = { exclamUsed: 0 };
+  if (typeof node === "string") {
+    var cleaned = "";
+    for (var i = 0; i < node.length; i++) {
+      var ch = node.charAt(i);
+      if (ch === "!") {
+        if (stateRef.exclamUsed < 1) {
+          stateRef.exclamUsed += 1;
+          cleaned += ch;
+        } else {
+          cleaned += ".";
+        }
+      } else {
+        cleaned += ch;
+      }
+    }
+    return cleaned.replace(/\.\.+/g, ".").trim();
+  }
+  if (Array.isArray(node)) {
+    return node.map(function(item) { return enforceAntiSlopExclamationCap_(item, stateRef); });
+  }
+  if (node && typeof node === "object") {
+    var out = {};
+    Object.keys(node).forEach(function(k) {
+      out[k] = enforceAntiSlopExclamationCap_(node[k], stateRef);
+    });
+    return out;
+  }
+  return node;
+}
+
+function checkAndConsumeMemberAiQuota_() {
+  try {
+    var cache = CacheService.getScriptCache();
+    var now = new Date();
+    var hrKey = "gcm_ai_hr_" + now.getUTCFullYear() + "_" + (now.getUTCMonth() + 1) + "_" + now.getUTCDate() + "_" + now.getUTCHours();
+    var curCount = Number(cache.get(hrKey) || 0);
+    if (curCount >= AI_MEMBER_HOURLY_LIMIT) {
+      return { allowed: false, used: curCount, limit: AI_MEMBER_HOURLY_LIMIT };
+    }
+    cache.put(hrKey, String(curCount + 1), 3700);
+    return { allowed: true, used: curCount + 1, limit: AI_MEMBER_HOURLY_LIMIT };
+  } catch (cacheErr) {
+    return { allowed: true, used: 0, limit: AI_MEMBER_HOURLY_LIMIT };
+  }
+}
+
+function callGeminiStructuredJson_(stateObj, taskDirective, telemetryPayload, responseSchema, opts) {
+  opts = opts || {};
+  ensureAiStructures_(stateObj);
+  var props = PropertiesService.getScriptProperties();
+  var apiKey = props ? String(props.getProperty("GEMINI_API_KEY") || "").trim() : "";
+  if (!apiKey) {
+    return {
+      ok: false,
+      code: "GEMINI_API_KEY_MISSING",
+      error: "GEMINI_API_KEY is not configured in Apps Script PropertiesService. Add it in Project Settings -> Script Properties."
+    };
+  }
+
+  var voiceCfg = stateObj.settings.aiVoice || { preset: "SNARKY_COMMISH", customLore: "" };
+  var presetKey = AI_TONE_PRESETS[voiceCfg.preset] ? voiceCfg.preset : "SNARKY_COMMISH";
+  var presetObj = AI_TONE_PRESETS[presetKey];
+
+  var sysParts = [];
+  if (opts.skipToneAndSlop) {
+    sysParts.push("You are a strict JSON parser for a 10-team fantasy football keeper league (Gamecock Mafia). Return ONLY valid JSON matching the exact schema with zero preamble.");
+  } else {
+    sysParts.push("VOICE & TONE DIRECTIVE (" + presetObj.name + "):\n" + presetObj.directive);
+    sysParts.push(AI_ANTI_SLOP_SYSTEM_BLOCK);
+    if (voiceCfg.customLore && String(voiceCfg.customLore).trim()) {
+      sysParts.push("COMMISSIONER LEAGUE LORE & STYLE NOTES:\n" + String(voiceCfg.customLore).trim());
+    }
+  }
+  if (taskDirective) {
+    sysParts.push("TASK INSTRUCTIONS:\n" + taskDirective);
+  }
+
+  var endpoint = "https://generativelanguage.googleapis.com/v1beta/models/" + GEMINI_MODEL_NAME + ":generateContent?key=" + encodeURIComponent(apiKey);
+  var reqPayload = {
+    systemInstruction: {
+      parts: [{ text: sysParts.join("\n\n") }]
+    },
+    contents: [
+      {
+        role: "user",
+        parts: [{ text: "STRUCTURED LEAGUE TELEMETRY JSON:\n" + JSON.stringify(telemetryPayload) }]
+      }
+    ],
+    generationConfig: {
+      responseMimeType: "application/json",
+      responseSchema: responseSchema,
+      temperature: opts.temperature !== undefined ? opts.temperature : 0.65
+    }
+  };
+
+  var resp = UrlFetchApp.fetch(endpoint, {
+    method: "post",
+    contentType: "application/json",
+    payload: JSON.stringify(reqPayload),
+    muteHttpExceptions: true
+  });
+  var code = resp.getResponseCode();
+  var text = resp.getContentText();
+  if (code < 200 || code >= 300) {
+    return {
+      ok: false,
+      code: "GEMINI_HTTP_" + code,
+      error: "Gemini API returned HTTP " + code + ": " + String(text || "").slice(0, 260)
+    };
+  }
+
+  var outer = JSON.parse(text);
+  var cand = outer && outer.candidates && outer.candidates[0];
+  var rawPart = cand && cand.content && cand.content.parts && cand.content.parts[0] && cand.content.parts[0].text;
+  if (!rawPart) {
+    return { ok: false, code: "GEMINI_EMPTY_RESPONSE", error: "Gemini returned an empty response." };
+  }
+
+  var parsed = null;
+  try {
+    parsed = JSON.parse(rawPart);
+  } catch (parseErr) {
+    var sIdx = rawPart.indexOf("{");
+    var eIdx = rawPart.lastIndexOf("}");
+    if (sIdx !== -1 && eIdx > sIdx) {
+      parsed = JSON.parse(rawPart.slice(sIdx, eIdx + 1));
+    } else {
+      return { ok: false, code: "GEMINI_BAD_JSON", error: "Gemini response was not valid JSON." };
+    }
+  }
+
+  if (!opts.skipToneAndSlop) {
+    parsed = enforceAntiSlopExclamationCap_(parsed, { exclamUsed: 0 });
+  }
+
+  return {
+    ok: true,
+    data: parsed,
+    model: GEMINI_MODEL_NAME,
+    tonePreset: presetKey,
+    toneName: presetObj.name
+  };
 }
 
 /**
@@ -1404,7 +1749,16 @@ function doPost(e) {
           : (existingEspn.hofState || null),
         faabTransactions: (incomingEspn.faabTransactions && typeof incomingEspn.faabTransactions === "object")
           ? Object.assign({}, existingEspn.faabTransactions || {}, incomingEspn.faabTransactions)
-          : (existingEspn.faabTransactions || {})
+          : (existingEspn.faabTransactions || {}),
+        seasonWeeklyPosKings: (incomingEspn.seasonWeeklyPosKings && typeof incomingEspn.seasonWeeklyPosKings === "object")
+          ? mergeWeeklyPosKingsStores_(existingEspn.seasonWeeklyPosKings, incomingEspn.seasonWeeklyPosKings, true)
+          : sanitizeWeeklyPosKingsStore_(existingEspn.seasonWeeklyPosKings, Number(incomingEspn.currentSeason || existingEspn.currentSeason || 2026)),
+        allTimeWeeklyPosKings: (incomingEspn.allTimeWeeklyPosKings && typeof incomingEspn.allTimeWeeklyPosKings === "object")
+          ? mergeWeeklyPosKingsStores_(existingEspn.allTimeWeeklyPosKings, incomingEspn.allTimeWeeklyPosKings, false)
+          : sanitizeWeeklyPosKingsStore_(existingEspn.allTimeWeeklyPosKings, null),
+        weeklyBenchBlunders: (incomingEspn.weeklyBenchBlunders && typeof incomingEspn.weeklyBenchBlunders === "object")
+          ? Object.assign({}, existingEspn.weeklyBenchBlunders || {}, incomingEspn.weeklyBenchBlunders)
+          : (existingEspn.weeklyBenchBlunders || {})
       };
       // Wave 4 Q3: Import Keepers from ESPN as Master Source of Truth when present
       var masterKeepers = body.masterKeepersByTeam || incomingEspn.masterKeepersByTeam || incomingEspn.keepers || null;
@@ -1996,6 +2350,28 @@ function doPost(e) {
         updatedAt: Date.now()
       };
 
+      // Roll prior-season AI Weekly Recaps into ESPN season archive and clear active-season aiCache
+      ensureAiStructures_(baseStateRoll);
+      var prevSeasonKey = String(prevUpcoming - 1);
+      if (baseStateRoll.espnData.seasons && baseStateRoll.espnData.seasons[prevSeasonKey]) {
+        var archivedRecaps = {};
+        Object.keys(baseStateRoll.aiCache.weeklyRecaps || {}).forEach(function(rk) {
+          if (String(rk).indexOf(prevSeasonKey + "_") === 0) {
+            archivedRecaps[rk] = baseStateRoll.aiCache.weeklyRecaps[rk];
+          }
+        });
+        if (Object.keys(archivedRecaps).length > 0) {
+          baseStateRoll.espnData.seasons[prevSeasonKey].archivedRecaps = Object.assign(
+            {},
+            baseStateRoll.espnData.seasons[prevSeasonKey].archivedRecaps || {},
+            archivedRecaps
+          );
+        }
+      }
+      baseStateRoll.aiCache.weeklyRecaps = {};
+      baseStateRoll.aiCache.playoffAdvisors = {};
+      trimAiCache_(baseStateRoll);
+
       appendServerActivityEvent(
         baseStateRoll,
         "SEASON_ROLLOVER",
@@ -2085,6 +2461,447 @@ function doPost(e) {
         saveAndMirrorToSheets(sheets, baseStateCo, "SET_CO_COMMISH_PIN:" + targetCoTid);
         return jsonResponse({ ok: true, state: sanitizeStateForClient(baseStateCo) });
       }
+    }
+
+    // ------------------------------------------------------------------------
+    // ACTION 1O: NATIVE GEMINI AI VOICE SETTINGS (COMMISSIONER / CO-COMMISH)
+    // ------------------------------------------------------------------------
+    if (action === "SAVE_AI_VOICE_SETTINGS") {
+      var authAiCfg = isAuthorizedCommishOrCoCommish(stored, body);
+      if (!authAiCfg.authorized) {
+        return jsonResponse({ ok: false, error: "Commissioner or Co-Commissioner PIN required to update AI Voice Settings." });
+      }
+      var baseStateAiCfg = stored || body.fallbackBaseState;
+      if (!baseStateAiCfg || !Array.isArray(baseStateAiCfg.teams)) {
+        return jsonResponse({ ok: false, error: "Initialize database first." });
+      }
+      ensureAiStructures_(baseStateAiCfg);
+      var incVoice = (body.aiVoice && typeof body.aiVoice === "object") ? body.aiVoice : {};
+      var nextPreset = String(incVoice.preset || baseStateAiCfg.settings.aiVoice.preset || "SNARKY_COMMISH").toUpperCase();
+      if (!AI_TONE_PRESETS[nextPreset]) nextPreset = "SNARKY_COMMISH";
+      baseStateAiCfg.settings.aiVoice = {
+        preset: nextPreset,
+        customLore: String(incVoice.customLore !== undefined ? incVoice.customLore : baseStateAiCfg.settings.aiVoice.customLore || "").slice(0, 1500),
+        hofAiEnabled: incVoice.hofAiEnabled !== undefined ? Boolean(incVoice.hofAiEnabled) : Boolean(baseStateAiCfg.settings.aiVoice.hofAiEnabled),
+        updatedAt: Date.now()
+      };
+      baseStateAiCfg.updatedAt = Date.now();
+      saveAndMirrorToSheets(sheets, baseStateAiCfg, "SAVE_AI_VOICE:" + nextPreset);
+      return jsonResponse({ ok: true, state: sanitizeStateForClient(baseStateAiCfg) });
+    }
+
+    // ------------------------------------------------------------------------
+    // ACTION 1P: AI_GENERATE_WEEKLY_RECAP (COMMISSIONER / CO-COMMISH PIN)
+    // ------------------------------------------------------------------------
+    if (action === "AI_GENERATE_WEEKLY_RECAP") {
+      var authRecap = isAuthorizedCommishOrCoCommish(stored, body);
+      if (!authRecap.authorized) {
+        return jsonResponse({ ok: false, error: "Commissioner or Co-Commissioner PIN required to generate Weekly Recaps." });
+      }
+      var baseStateRecap = stored || body.fallbackBaseState;
+      if (!baseStateRecap || !Array.isArray(baseStateRecap.teams)) {
+        return jsonResponse({ ok: false, error: "Initialize database first." });
+      }
+      ensureAiStructures_(baseStateRecap);
+      var recapSeason = Number(body.season || (baseStateRecap.espnData && baseStateRecap.espnData.currentSeason) || 2026);
+      var recapWeek = Number(body.week) || 1;
+      var recapKey = recapSeason + "_" + recapWeek;
+      var forceRegenRecap = Boolean(body.forceRegenerate);
+
+      if (!forceRegenRecap && baseStateRecap.aiCache.weeklyRecaps[recapKey]) {
+        return jsonResponse({ ok: true, cached: true, recapKey: recapKey, recap: baseStateRecap.aiCache.weeklyRecaps[recapKey], aiCache: baseStateRecap.aiCache });
+      }
+
+      var recapSchema = {
+        type: "OBJECT",
+        properties: {
+          headline: { type: "STRING" },
+          subhead: { type: "STRING" },
+          matchupDigest: {
+            type: "ARRAY",
+            items: {
+              type: "OBJECT",
+              properties: {
+                matchup: { type: "STRING" },
+                summary: { type: "STRING" }
+              },
+              required: ["matchup", "summary"]
+            }
+          },
+          fraudAndBenchWatch: { type: "STRING" },
+          playoffPulse: { type: "STRING" }
+        },
+        required: ["headline", "subhead", "matchupDigest", "fraudAndBenchWatch", "playoffPulse"]
+      };
+
+      var recapDirective = [
+        "Generate a concise, punchy Week " + recapWeek + " (" + recapSeason + " season) Gamecock Mafia fantasy football recap strictly from the supplied JSON telemetry.",
+        "Total copy across ALL fields combined MUST be <= 300 words.",
+        "matchupDigest must have 1 crisp sentence per played matchup in the payload (exact teams and scores from JSON).",
+        "fraudAndBenchWatch highlights All-Play luck frauds, worst bench blunders, King of the Week positional explosion, or notable FAAB bids/busts ONLY if present in the JSON.",
+        "playoffPulse summarizes the biggest playoff seed/division race swing based ONLY on the JSON standings."
+      ].join(" ");
+
+      var gemRecap = callGeminiStructuredJson_(baseStateRecap, recapDirective, body.telemetry || {}, recapSchema, { temperature: 0.72 });
+      if (!gemRecap.ok) {
+        return jsonResponse({ ok: false, code: gemRecap.code, error: gemRecap.error });
+      }
+
+      var savedRecap = {
+        season: recapSeason,
+        week: recapWeek,
+        headline: String(gemRecap.data.headline || "").slice(0, 180),
+        subhead: String(gemRecap.data.subhead || "").slice(0, 260),
+        matchupDigest: Array.isArray(gemRecap.data.matchupDigest) ? gemRecap.data.matchupDigest.slice(0, 6).map(function(m) {
+          return {
+            matchup: String((m && m.matchup) || "").slice(0, 120),
+            summary: String((m && m.summary) || "").slice(0, 280)
+          };
+        }) : [],
+        fraudAndBenchWatch: String(gemRecap.data.fraudAndBenchWatch || "").slice(0, 520),
+        playoffPulse: String(gemRecap.data.playoffPulse || "").slice(0, 420),
+        tonePreset: gemRecap.tonePreset,
+        toneName: gemRecap.toneName,
+        model: gemRecap.model,
+        generatedBy: authRecap.actorTeamId || "commish",
+        generatedAt: Date.now()
+      };
+
+      baseStateRecap.aiCache.weeklyRecaps[recapKey] = savedRecap;
+      trimAiCache_(baseStateRecap);
+      baseStateRecap.updatedAt = Date.now();
+      saveAndMirrorToSheets(sheets, baseStateRecap, "AI_WEEKLY_RECAP:" + recapKey);
+      return jsonResponse({ ok: true, cached: false, recapKey: recapKey, recap: savedRecap, aiCache: baseStateRecap.aiCache, state: sanitizeStateForClient(baseStateRecap) });
+    }
+
+    // ------------------------------------------------------------------------
+    // ACTION 1Q: AI_GRADE_TRADE (CACHE-FIRST + 25/HR MEMBER THROTTLE)
+    // ------------------------------------------------------------------------
+    if (action === "AI_GRADE_TRADE") {
+      var baseStateTradeAi = stored || body.fallbackBaseState;
+      if (!baseStateTradeAi || !Array.isArray(baseStateTradeAi.teams)) {
+        return jsonResponse({ ok: false, error: "Initialize database first." });
+      }
+      ensureAiStructures_(baseStateTradeAi);
+      var tKey = String(body.tradeId || body.cacheKey || "").trim().slice(0, 80);
+      if (!tKey) {
+        return jsonResponse({ ok: false, error: "Missing tradeId/cacheKey for AI trade grade." });
+      }
+      var authTradeAi = isAuthorizedCommishOrCoCommish(stored, body);
+      var forceTradeRegen = Boolean(body.forceRegenerate && authTradeAi.authorized);
+
+      if (!forceTradeRegen && baseStateTradeAi.aiCache.tradeGrades[tKey]) {
+        return jsonResponse({ ok: true, cached: true, tradeKey: tKey, grade: baseStateTradeAi.aiCache.tradeGrades[tKey], aiCache: baseStateTradeAi.aiCache });
+      }
+
+      var quotaTrade = checkAndConsumeMemberAiQuota_();
+      if (!quotaTrade.allowed) {
+        return jsonResponse({ ok: false, code: "AI_RATE_LIMIT", error: "Hourly league AI limit (" + quotaTrade.limit + " uncached calls/hr) reached. Cached grades still load instantly—try again next hour." });
+      }
+
+      var tradeSchema = {
+        type: "OBJECT",
+        properties: {
+          teamAGrade: { type: "STRING" },
+          teamBGrade: { type: "STRING" },
+          winnerTag: { type: "STRING" },
+          verdict: { type: "STRING" },
+          keeperCapNote: { type: "STRING" }
+        },
+        required: ["teamAGrade", "teamBGrade", "winnerTag", "verdict", "keeperCapNote"]
+      };
+
+      var tradeDirective = [
+        "Grade and roast this Gamecock Mafia keeper-league trade strictly using the provided JSON telemetry (players, positional starter ranks, 12-keeper cap impact, draft picks, conditional/Salmon pool rules, 3-Pillar Power Ranks, and Contender/Rebuilder status).",
+        "teamAGrade and teamBGrade should be crisp letter grades (e.g., A-, B+, C, D-).",
+        "winnerTag is a punchy 2-6 word tag naming the winner or calling it even.",
+        "Total copy across ALL fields combined MUST be <= 120 words."
+      ].join(" ");
+
+      var gemTrade = callGeminiStructuredJson_(baseStateTradeAi, tradeDirective, body.telemetry || {}, tradeSchema, { temperature: 0.7 });
+      if (!gemTrade.ok) {
+        return jsonResponse({ ok: false, code: gemTrade.code, error: gemTrade.error });
+      }
+
+      var savedGrade = {
+        tradeKey: tKey,
+        teamAGrade: String(gemTrade.data.teamAGrade || "B").slice(0, 12),
+        teamBGrade: String(gemTrade.data.teamBGrade || "B").slice(0, 12),
+        winnerTag: String(gemTrade.data.winnerTag || "").slice(0, 80),
+        verdict: String(gemTrade.data.verdict || "").slice(0, 480),
+        keeperCapNote: String(gemTrade.data.keeperCapNote || "").slice(0, 260),
+        tonePreset: gemTrade.tonePreset,
+        toneName: gemTrade.toneName,
+        model: gemTrade.model,
+        generatedAt: Date.now()
+      };
+
+      baseStateTradeAi.aiCache.tradeGrades[tKey] = savedGrade;
+      trimAiCache_(baseStateTradeAi);
+      baseStateTradeAi.updatedAt = Date.now();
+      saveAndMirrorToSheets(sheets, baseStateTradeAi, "AI_GRADE_TRADE:" + tKey);
+      return jsonResponse({ ok: true, cached: false, tradeKey: tKey, grade: savedGrade, aiCache: baseStateTradeAi.aiCache });
+    }
+
+    // ------------------------------------------------------------------------
+    // ACTION 1R: AI_PLAYOFF_ADVISOR (CACHE-FIRST + 25/HR MEMBER THROTTLE)
+    // ------------------------------------------------------------------------
+    if (action === "AI_PLAYOFF_ADVISOR") {
+      var baseStatePoAi = stored || body.fallbackBaseState;
+      if (!baseStatePoAi || !Array.isArray(baseStatePoAi.teams)) {
+        return jsonResponse({ ok: false, error: "Initialize database first." });
+      }
+      ensureAiStructures_(baseStatePoAi);
+      var poSeason = Number(body.season || (baseStatePoAi.espnData && baseStatePoAi.espnData.currentSeason) || 2026);
+      var poMgr = String(body.managerId || "").toLowerCase().trim().slice(0, 24);
+      var poWeek = Number(body.week) || 1;
+      if (!poMgr) {
+        return jsonResponse({ ok: false, error: "Missing managerId for Playoff Advisor." });
+      }
+      var poKey = poSeason + "_" + poMgr + "_W" + poWeek;
+      var authPoAi = isAuthorizedCommishOrCoCommish(stored, body);
+      var forcePoRegen = Boolean(body.forceRegenerate && authPoAi.authorized);
+
+      if (!forcePoRegen && baseStatePoAi.aiCache.playoffAdvisors[poKey]) {
+        return jsonResponse({ ok: true, cached: true, advisorKey: poKey, brief: baseStatePoAi.aiCache.playoffAdvisors[poKey], aiCache: baseStatePoAi.aiCache });
+      }
+
+      var quotaPo = checkAndConsumeMemberAiQuota_();
+      if (!quotaPo.allowed) {
+        return jsonResponse({ ok: false, code: "AI_RATE_LIMIT", error: "Hourly league AI limit (" + quotaPo.limit + " uncached calls/hr) reached. Try again next hour." });
+      }
+
+      var poSchema = {
+        type: "OBJECT",
+        properties: {
+          leverageBullet: { type: "STRING" },
+          rootingBullet: { type: "STRING" },
+          rosterAngleBullet: { type: "STRING" }
+        },
+        required: ["leverageBullet", "rootingBullet", "rosterAngleBullet"]
+      };
+
+      var poDirective = [
+        "Produce a sharp 3-bullet Playoff Path advisor brief for this Gamecock Mafia manager strictly from the supplied JSON telemetry (exact seed, overall & divisional record, magic/tragic numbers, top rooting guide games, remaining opponents, and starter-tier surplus/deficits).",
+        "Remember League 30215 locks Division Winners to Seeds #1-#2 and breaks ALL ties by Divisional Record BEFORE Points For.",
+        "Total copy across ALL 3 bullets combined MUST be <= 130 words."
+      ].join(" ");
+
+      var gemPo = callGeminiStructuredJson_(baseStatePoAi, poDirective, body.telemetry || {}, poSchema, { temperature: 0.65 });
+      if (!gemPo.ok) {
+        return jsonResponse({ ok: false, code: gemPo.code, error: gemPo.error });
+      }
+
+      var savedBrief = {
+        advisorKey: poKey,
+        season: poSeason,
+        managerId: poMgr,
+        week: poWeek,
+        leverageBullet: String(gemPo.data.leverageBullet || "").slice(0, 320),
+        rootingBullet: String(gemPo.data.rootingBullet || "").slice(0, 320),
+        rosterAngleBullet: String(gemPo.data.rosterAngleBullet || "").slice(0, 320),
+        tonePreset: gemPo.tonePreset,
+        toneName: gemPo.toneName,
+        model: gemPo.model,
+        generatedAt: Date.now()
+      };
+
+      baseStatePoAi.aiCache.playoffAdvisors[poKey] = savedBrief;
+      trimAiCache_(baseStatePoAi);
+      baseStatePoAi.updatedAt = Date.now();
+      saveAndMirrorToSheets(sheets, baseStatePoAi, "AI_PLAYOFF_ADVISOR:" + poKey);
+      return jsonResponse({ ok: true, cached: false, advisorKey: poKey, brief: savedBrief, aiCache: baseStatePoAi.aiCache });
+    }
+
+    // ------------------------------------------------------------------------
+    // ACTION 1S: AI_GENERATE_HOF_BIO (STANDBY FEATURE FLAG + COMMISH PIN)
+    // ------------------------------------------------------------------------
+    if (action === "AI_GENERATE_HOF_BIO") {
+      var authHofAi = isAuthorizedCommishOrCoCommish(stored, body);
+      if (!authHofAi.authorized) {
+        return jsonResponse({ ok: false, error: "Commissioner or Co-Commissioner PIN required to generate Hall of Fame Plaque Bios." });
+      }
+      var baseStateHofAi = stored || body.fallbackBaseState;
+      if (!baseStateHofAi || !Array.isArray(baseStateHofAi.teams)) {
+        return jsonResponse({ ok: false, error: "Initialize database first." });
+      }
+      ensureAiStructures_(baseStateHofAi);
+      if (!baseStateHofAi.settings.aiVoice.hofAiEnabled) {
+        return jsonResponse({ ok: false, code: "HOF_AI_DISABLED", error: "HOF Bio AI is currently in Standby mode. Enable HOF_AI_ENABLED in Commissioner AI Voice Settings when inductions begin." });
+      }
+      var hofPid = String(body.playerId || "").trim().slice(0, 64);
+      if (!hofPid) {
+        return jsonResponse({ ok: false, error: "Missing playerId for HOF Bio." });
+      }
+      var forceHofRegen = Boolean(body.forceRegenerate);
+      if (!forceHofRegen && baseStateHofAi.aiCache.hofBios[hofPid]) {
+        return jsonResponse({ ok: true, cached: true, playerId: hofPid, bio: baseStateHofAi.aiCache.hofBios[hofPid], aiCache: baseStateHofAi.aiCache });
+      }
+
+      var hofSchema = {
+        type: "OBJECT",
+        properties: {
+          plaqueHeadline: { type: "STRING" },
+          inductionBio: { type: "STRING" },
+          signatureStatLine: { type: "STRING" }
+        },
+        required: ["plaqueHeadline", "inductionBio", "signatureStatLine"]
+      };
+
+      var hofDirective = "Write a prestigious yet grounded Gamecock Mafia Hall of Fame bronze plaque inscription strictly from the supplied player career telemetry JSON. Total copy <= 120 words.";
+      var gemHof = callGeminiStructuredJson_(baseStateHofAi, hofDirective, body.telemetry || {}, hofSchema, { temperature: 0.6 });
+      if (!gemHof.ok) {
+        return jsonResponse({ ok: false, code: gemHof.code, error: gemHof.error });
+      }
+
+      var savedBio = {
+        playerId: hofPid,
+        plaqueHeadline: String(gemHof.data.plaqueHeadline || "").slice(0, 120),
+        inductionBio: String(gemHof.data.inductionBio || "").slice(0, 560),
+        signatureStatLine: String(gemHof.data.signatureStatLine || "").slice(0, 180),
+        tonePreset: gemHof.tonePreset,
+        toneName: gemHof.toneName,
+        model: gemHof.model,
+        generatedAt: Date.now()
+      };
+
+      baseStateHofAi.aiCache.hofBios[hofPid] = savedBio;
+      trimAiCache_(baseStateHofAi);
+      baseStateHofAi.updatedAt = Date.now();
+      saveAndMirrorToSheets(sheets, baseStateHofAi, "AI_HOF_BIO:" + hofPid);
+      return jsonResponse({ ok: true, cached: false, playerId: hofPid, bio: savedBio, aiCache: baseStateHofAi.aiCache });
+    }
+
+    // ------------------------------------------------------------------------
+    // ACTION 1T: AI_PARSE_TRADE_TEXT (STRICT PRE-FILL ONLY — NEVER AUTO-COMMITS)
+    // ------------------------------------------------------------------------
+    if (action === "AI_PARSE_TRADE_TEXT") {
+      var baseStateParse = stored || body.fallbackBaseState;
+      if (!baseStateParse || !Array.isArray(baseStateParse.teams)) {
+        return jsonResponse({ ok: false, error: "Initialize database first." });
+      }
+      var rawTradeText = String(body.rawText || "").trim().slice(0, 600);
+      if (!rawTradeText) {
+        return jsonResponse({ ok: false, error: "Paste group-chat trade text first." });
+      }
+
+      var quotaParse = checkAndConsumeMemberAiQuota_();
+      if (!quotaParse.allowed) {
+        return jsonResponse({ ok: false, code: "AI_RATE_LIMIT", error: "Hourly league AI limit (" + quotaParse.limit + " calls/hr) reached. Please enter the trade manually." });
+      }
+
+      var baseYr = Number(baseStateParse.baseUpcomingYear) || 2027;
+      var validYears = [baseYr, baseYr + 1];
+      var validTeamIds = (baseStateParse.teams || []).map(function(t) { return String(t.id); });
+      var teamDirectory = (baseStateParse.teams || []).map(function(t) {
+        var prof = (baseStateParse.teamProfiles && baseStateParse.teamProfiles[t.id]) || {};
+        return {
+          id: t.id,
+          name: t.name,
+          customTeamName: prof.customTeamName || ""
+        };
+      });
+
+      var parseSchema = {
+        type: "OBJECT",
+        properties: {
+          teamA: { type: "STRING" },
+          teamB: { type: "STRING" },
+          summary: { type: "STRING" },
+          playersMoved: {
+            type: "ARRAY",
+            items: {
+              type: "OBJECT",
+              properties: {
+                name: { type: "STRING" },
+                fromOwner: { type: "STRING" },
+                toOwner: { type: "STRING" }
+              },
+              required: ["name", "fromOwner", "toOwner"]
+            }
+          },
+          picksMoved: {
+            type: "ARRAY",
+            items: {
+              type: "OBJECT",
+              properties: {
+                year: { type: "INTEGER" },
+                round: { type: "INTEGER" },
+                originalOwner: { type: "STRING" },
+                fromOwner: { type: "STRING" },
+                toOwner: { type: "STRING" }
+              },
+              required: ["year", "round", "originalOwner", "fromOwner", "toOwner"]
+            }
+          },
+          isConditional: { type: "BOOLEAN" },
+          conditionalRule: { type: "STRING" }
+        },
+        required: ["teamA", "teamB", "summary", "playersMoved", "picksMoved", "isConditional", "conditionalRule"]
+      };
+
+      var parseDirective = [
+        "Parse the raw group-chat trade text into structured fields for pre-filling a trade form.",
+        "Constrain teamA, teamB, originalOwner, fromOwner, and toOwner STRICTLY to one of these exact valid manager IDs: " + validTeamIds.join(", ") + ".",
+        "Known manager aliases: Alex = geltz, Shane = boss, David/Maryland = mary.",
+        "Constrain pick years STRICTLY to the active 2-year rolling draft window: " + validYears.join(" or ") + " (default to " + baseYr + " if year omitted). Rounds must be integers 1..20.",
+        "If the text mentions a pick swap, best-of/worst-of pool, or conditional protection (e.g. '9/10 swap favoring Corbyn'), set isConditional=true and write the exact rule in conditionalRule.",
+        "Expand obvious NFL player shorthand (e.g. AJB -> A.J. Brown, D. Monty -> David Montgomery) when matching roster names in the payload."
+      ].join(" ");
+
+      var parsePayload = {
+        rawTradeText: rawTradeText,
+        validManagers: teamDirectory,
+        activeDraftYears: validYears,
+        rosterHints: body.rosterHints || {}
+      };
+
+      var gemParse = callGeminiStructuredJson_(baseStateParse, parseDirective, parsePayload, parseSchema, { temperature: 0.1, skipToneAndSlop: true });
+      if (!gemParse.ok) {
+        return jsonResponse({ ok: false, code: gemParse.code, error: gemParse.error });
+      }
+
+      var pd = gemParse.data || {};
+      var validSet = {};
+      validTeamIds.forEach(function(id) { validSet[id] = true; });
+      var cleanId = function(v) {
+        var s = String(v || "").toLowerCase().trim();
+        return validSet[s] ? s : "";
+      };
+
+      var cleanTeamA = cleanId(pd.teamA);
+      var cleanTeamB = cleanId(pd.teamB);
+      var cleanPicks = (Array.isArray(pd.picksMoved) ? pd.picksMoved : []).map(function(pk) {
+        var yrNum = Number(pk && pk.year);
+        if (validYears.indexOf(yrNum) === -1) yrNum = baseYr;
+        var rdNum = Math.min(20, Math.max(1, Math.round(Number(pk && pk.round) || 1)));
+        var orig = cleanId(pk && pk.originalOwner) || cleanId(pk && pk.fromOwner) || cleanTeamA;
+        var from = cleanId(pk && pk.fromOwner) || orig;
+        var to = cleanId(pk && pk.toOwner) || (from === cleanTeamA ? cleanTeamB : cleanTeamA);
+        if (!orig || !to || from === to) return null;
+        return { year: yrNum, round: rdNum, originalOwner: orig, fromOwner: from, toOwner: to };
+      }).filter(Boolean);
+
+      var cleanPlayers = (Array.isArray(pd.playersMoved) ? pd.playersMoved : []).map(function(pl) {
+        var nm = String((pl && pl.name) || "").trim().slice(0, 64);
+        var from = cleanId(pl && pl.fromOwner);
+        var to = cleanId(pl && pl.toOwner) || (from === cleanTeamA ? cleanTeamB : cleanTeamA);
+        if (!nm || !from || !to || from === to) return null;
+        return { name: nm, fromOwner: from, toOwner: to };
+      }).filter(Boolean);
+
+      return jsonResponse({
+        ok: true,
+        parsed: {
+          teamA: cleanTeamA,
+          teamB: cleanTeamB,
+          summary: String(pd.summary || "").trim().slice(0, 220),
+          playersMoved: cleanPlayers,
+          picksMoved: cleanPicks,
+          isConditional: Boolean(pd.isConditional),
+          conditionalRule: String(pd.conditionalRule || "").trim().slice(0, 240)
+        }
+      });
     }
 
     // ------------------------------------------------------------------------
@@ -2230,7 +3047,25 @@ function doPost(e) {
           newState.pushConfig.oneSignalRestKey = stored.pushConfig.oneSignalRestKey;
         }
       }
+      // Preserve Wave 4 settings.aiVoice and server-generated aiCache safely
+      ensureAiStructures_(newState);
+      if (stored && stored.aiCache && typeof stored.aiCache === "object") {
+        ensureAiStructures_(stored);
+        ["weeklyRecaps", "tradeGrades", "playoffAdvisors", "hofBios"].forEach(function(bk) {
+          newState.aiCache[bk] = Object.assign({}, stored.aiCache[bk] || {}, newState.aiCache[bk] || {});
+        });
+      }
+      if (stored && stored.settings && stored.settings.aiVoice && (!newState.settings.aiVoice.updatedAt || newState.settings.aiVoice.updatedAt < Number(stored.settings.aiVoice.updatedAt || 0))) {
+        newState.settings.aiVoice = Object.assign({}, stored.settings.aiVoice);
+      }
+      trimAiCache_(newState);
       delete newState.cloudSyncUrl;
+      delete newState.geminiApiKey;
+      delete newState.GEMINI_API_KEY;
+      if (newState.settings) {
+        delete newState.settings.geminiApiKey;
+        delete newState.settings.GEMINI_API_KEY;
+      }
 
       newState.updatedAt = Date.now();
       saveAndMirrorToSheets(sheets, newState, syncReason);
@@ -3130,40 +3965,177 @@ function autoWeeklyEspnSync() {
       }
     }
 
-    // 4B. Extract Weekly Player Boxscore Points + mTransactions2 FAAB Waivers for Active Season
+    // 4B. Wave 4 Repair: Full Scoring-Period Sweep for Weekly Boxscores (Positional Kings + True Max PF) & mTransactions2 FAAB Waivers
     var weeklyPtsByPid = {};
-    schedule.forEach(function(m) {
-      var wk = Number(m && m.matchupPeriodId) || 0;
-      if (!wk) return;
-      [m.home, m.away].forEach(function(side) {
-        var entries = (side && side.rosterForCurrentScoringPeriod && side.rosterForCurrentScoringPeriod.entries) ||
-                      (side && side.rosterForMatchupPeriod && side.rosterForMatchupPeriod.entries) || [];
-        entries.forEach(function(en) {
-          var pObj = (en && en.playerPoolEntry && en.playerPoolEntry.player) || {};
-          var pid = Number((en && en.playerId) || pObj.id) || 0;
-          var pts = Number((en && en.playerPoolEntry && en.playerPoolEntry.appliedStatTotal) || 0);
-          if (pid <= 0) return;
-          if (!weeklyPtsByPid[pid]) weeklyPtsByPid[pid] = {};
-          weeklyPtsByPid[pid][wk] = Math.round(pts * 100) / 100;
-        });
+    var playerMetaByPid = {};
+    Object.keys(ed.rosters || {}).forEach(function(mKey) {
+      (ed.rosters[mKey] || []).forEach(function(rp) {
+        if (rp && rp.espnId) {
+          playerMetaByPid[String(rp.espnId)] = {
+            name: rp.name || ("Player #" + rp.espnId),
+            pos: normalizePosBucketGas_(rp.pos, 0) || String(rp.pos || ""),
+            nflTeam: rp.nflTeam || "NFL"
+          };
+        }
       });
     });
 
-    var rawTxs = Array.isArray(data.transactions) ? data.transactions : [];
-    try {
-      var txUrl = "https://lm-api-reads.fantasy.espn.com/apis/v3/games/ffl/seasons/" +
-        seasonYr + "/segments/0/leagues/" + leagueId + "?view=mTransactions2";
-      var txHeaders = Object.assign({}, headers, {
-        "x-fantasy-filter": JSON.stringify({ transactions: { limit: 2000 } })
-      });
-      var txResp = UrlFetchApp.fetch(txUrl, { method: "get", headers: txHeaders, muteHttpExceptions: true });
-      if (txResp.getResponseCode() === 200) {
-        var txJson = JSON.parse(txResp.getContentText());
-        if (txJson && Array.isArray(txJson.transactions) && txJson.transactions.length >= rawTxs.length) {
-          rawTxs = txJson.transactions;
+    var maxSweepSp = Math.min(18, Math.max(currentSp || 1, maxGamesPlayed || 1));
+    var seasonKingsBuilder = createEmptyPosKingsStore_(seasonYr);
+    var weeklyBenchBlundersMap = (ed.weeklyBenchBlunders && typeof ed.weeklyBenchBlunders === "object") ? Object.assign({}, ed.weeklyBenchBlunders) : {};
+    var rebuiltMaxPfBySlot = {};
+    data.teams.forEach(function(t) {
+      rebuiltMaxPfBySlot[String(t.id)] = { maxPf: 0, actualPf: 0, benchPts: 0, weeksCounted: 0 };
+    });
+
+    function recordBoxscoreEntriesGas_(wkNum, teamSlotStr, sideScore, entries) {
+      if (!Array.isArray(entries) || entries.length === 0) return;
+      var mgrIdForSlot = slotMap[teamSlotStr] || "";
+      if (wkNum <= regWeeks) {
+        var wkOpt = computeBoxscoreOptimalPts(entries);
+        if (wkOpt && wkOpt.optPts > 0 && rebuiltMaxPfBySlot[teamSlotStr]) {
+          rebuiltMaxPfBySlot[teamSlotStr].maxPf += Math.max(sideScore, wkOpt.optPts);
+          rebuiltMaxPfBySlot[teamSlotStr].actualPf += sideScore;
+          rebuiltMaxPfBySlot[teamSlotStr].benchPts += wkOpt.benchPts;
+          rebuiltMaxPfBySlot[teamSlotStr].weeksCounted += 1;
         }
       }
-    } catch (txSyncErr) {}
+      entries.forEach(function(en) {
+        var pObj = (en && en.playerPoolEntry && en.playerPoolEntry.player) || {};
+        var pid = Number((en && en.playerId) || pObj.id) || 0;
+        if (pid <= 0) return;
+        var pidStr = String(pid);
+        var slotId = Number(en && en.lineupSlotId !== undefined ? en.lineupSlotId : 20);
+        var pts = Math.round(Number((en && en.playerPoolEntry && en.playerPoolEntry.appliedStatTotal) || 0) * 100) / 100;
+        var pName = pObj.fullName || (playerMetaByPid[pidStr] && playerMetaByPid[pidStr].name) || ("Player #" + pidStr);
+        var posBucket = normalizePosBucketGas_(playerMetaByPid[pidStr] && playerMetaByPid[pidStr].pos, pObj.defaultPositionId);
+        var nflTm = (playerMetaByPid[pidStr] && playerMetaByPid[pidStr].nflTeam) || "NFL";
+        playerMetaByPid[pidStr] = { name: pName, pos: posBucket || "", nflTeam: nflTm };
+        if (!weeklyPtsByPid[pidStr]) weeklyPtsByPid[pidStr] = {};
+        weeklyPtsByPid[pidStr][wkNum] = pts;
+
+        if (mgrIdForSlot && posBucket && pts > 0 && POS_KING_BUCKETS_GAS.indexOf(posBucket) !== -1) {
+          var isStarter = (slotId !== 20 && slotId !== 21);
+          var kingRow = {
+            playerId: "espn_p_" + pidStr,
+            playerName: pName,
+            pos: posBucket,
+            nflTeam: nflTm,
+            teamId: mgrIdForSlot,
+            year: seasonYr,
+            week: wkNum,
+            pts: pts,
+            slotId: slotId,
+            isStarter: isStarter
+          };
+          if (isStarter) {
+            seasonKingsBuilder.starters[posBucket].push(kingRow);
+          } else if (slotId === 20) {
+            seasonKingsBuilder.bench[posBucket].push(kingRow);
+            var bkKey = seasonYr + "_" + wkNum;
+            if (!weeklyBenchBlundersMap[bkKey]) weeklyBenchBlundersMap[bkKey] = [];
+            weeklyBenchBlundersMap[bkKey].push({
+              playerName: pName, pos: posBucket, teamId: mgrIdForSlot, pts: pts, week: wkNum, year: seasonYr
+            });
+          }
+        }
+      });
+    }
+
+    // Sweep completed weeks 1..maxSweepSp for real weekly boxscores & Weekly Positional Kings
+    for (var bxWk = 1; bxWk <= maxSweepSp; bxWk++) {
+      try {
+        var bxUrl = "https://lm-api-reads.fantasy.espn.com/apis/v3/games/ffl/seasons/" +
+          seasonYr + "/segments/0/leagues/" + leagueId +
+          "?scoringPeriodId=" + bxWk + "&view=mBoxscore&view=mMatchup";
+        var bxResp = UrlFetchApp.fetch(bxUrl, { method: "get", headers: headers, muteHttpExceptions: true });
+        if (bxResp.getResponseCode() === 200) {
+          var bxJson = JSON.parse(bxResp.getContentText());
+          var bxSched = (bxJson && Array.isArray(bxJson.schedule)) ? bxJson.schedule : [];
+          bxSched.forEach(function(bm) {
+            if (!bm || Number(bm.matchupPeriodId) !== bxWk) return;
+            [bm.home, bm.away].forEach(function(side) {
+              if (!side || !side.teamId) return;
+              var entries = (side.rosterForCurrentScoringPeriod && side.rosterForCurrentScoringPeriod.entries) ||
+                            (side.rosterForMatchupPeriod && side.rosterForMatchupPeriod.entries) || [];
+              var sidePts = extractSidePointsForWeek(side, bxWk);
+              if (entries.length > 0 && sidePts > 0) {
+                recordBoxscoreEntriesGas_(bxWk, String(side.teamId), sidePts, entries);
+              }
+            });
+          });
+        }
+      } catch (bxErr) {}
+    }
+
+    // Apply rebuilt true coaching efficiency onto rawTeamRows when weekly boxscores were swept
+    rawTeamRows.forEach(function(rRow) {
+      var rb = rebuiltMaxPfBySlot[String(rRow.espnTeamId)];
+      if (rb && rb.weeksCounted >= 1 && rb.maxPf > 0) {
+        rRow.hasTrueMaxPf = true;
+        rRow.maxPointsFor = Math.round(rb.maxPf * 10) / 10;
+        rRow.maxPf = rRow.maxPointsFor;
+        rRow.benchPoints = Math.round(rb.benchPts * 10) / 10;
+        rRow.coachingEfficiency = Math.min(100, Math.round((rb.actualPf / rb.maxPf) * 1000) / 10);
+      }
+    });
+
+    // Trim compact Weekly Positional Kings (Top 10 Starter + Top 10 Bench per position) & Bench Blunders (Top 3/week)
+    ed.seasonWeeklyPosKings = sanitizeWeeklyPosKingsStore_(seasonKingsBuilder, seasonYr);
+    ed.allTimeWeeklyPosKings = mergeWeeklyPosKingsStores_(ed.allTimeWeeklyPosKings, ed.seasonWeeklyPosKings, false);
+    Object.keys(weeklyBenchBlundersMap).forEach(function(bkKey) {
+      var arr = Array.isArray(weeklyBenchBlundersMap[bkKey]) ? weeklyBenchBlundersMap[bkKey] : [];
+      arr.sort(function(a, b) { return Number(b.pts || 0) - Number(a.pts || 0); });
+      weeklyBenchBlundersMap[bkKey] = arr.slice(0, 3);
+    });
+    ed.weeklyBenchBlunders = weeklyBenchBlundersMap;
+
+    // Checkpoint 1 — Robust 3-Tier Season acquisitionBudget Denominator (never 0/NaN)
+    var settingsAcqBudget = Number(data.settings && data.settings.acquisitionSettings && data.settings.acquisitionSettings.acquisitionBudget) || 0;
+    var teamSumMaxBudget = 0;
+    (data.teams || []).forEach(function(tm) {
+      var tc = (tm && tm.transactionCounter) || {};
+      var spVal = Number(tc.acquisitionBudgetSpent) || 0;
+      var remVal = Number(tc.acquisitionBudgetRemaining) || 0;
+      if (spVal + remVal > teamSumMaxBudget) teamSumMaxBudget = spVal + remVal;
+    });
+    annualFaabBudget = settingsAcqBudget > 0 ? settingsAcqBudget : (teamSumMaxBudget > 0 ? teamSumMaxBudget : 600);
+
+    // Checkpoint 2 — Full-Season mTransactions2 Sweep across scoringPeriodId 1..maxSweepSp
+    var txById = {};
+    var rawTxs = [];
+    function ingestRawTxList_(arr) {
+      if (!Array.isArray(arr)) return;
+      arr.forEach(function(tx) {
+        if (!tx) return;
+        var tid = String(tx.id || (String(tx.scoringPeriodId || 0) + "_" + String(tx.teamId || 0) + "_" + String(tx.processDate || tx.proposedDate || 0) + "_" + String(tx.bidAmount || 0)));
+        if (!txById[tid]) {
+          txById[tid] = true;
+          rawTxs.push(tx);
+        }
+      });
+    }
+    ingestRawTxList_(data.transactions);
+
+    for (var txSp = 1; txSp <= maxSweepSp; txSp++) {
+      try {
+        var txUrlSp = "https://lm-api-reads.fantasy.espn.com/apis/v3/games/ffl/seasons/" +
+          seasonYr + "/segments/0/leagues/" + leagueId + "?scoringPeriodId=" + txSp + "&view=mTransactions2";
+        var txFilterHeaders = Object.assign({}, headers, {
+          "x-fantasy-filter": JSON.stringify({ transactions: { filterType: { value: ["WAIVER", "FREEAGENT", "TRADE_ACCEPTED"] } } })
+        });
+        var txRespSp = UrlFetchApp.fetch(txUrlSp, { method: "get", headers: txFilterHeaders, muteHttpExceptions: true });
+        if (txRespSp.getResponseCode() !== 200) {
+          txRespSp = UrlFetchApp.fetch(txUrlSp, { method: "get", headers: headers, muteHttpExceptions: true });
+        }
+        if (txRespSp.getResponseCode() === 200) {
+          var txJsonSp = JSON.parse(txRespSp.getContentText());
+          if (txJsonSp && Array.isArray(txJsonSp.transactions)) {
+            ingestRawTxList_(txJsonSp.transactions);
+          }
+        }
+      } catch (txSpErr) {}
+    }
 
     var faabTeamsMap = {};
     rawTeamRows.forEach(function(stRow) {
@@ -3175,36 +4147,45 @@ function autoWeeklyEspnSync() {
         moves: Number(stRow.acquisitions) || 0,
         zeroDollarAdds: 0,
         maxSingleBid: 0,
+        maxSingleBidPct: 0,
         maxBidPlayer: "",
         totalWaiverPts: 0,
         bestBargainPts: 0,
         bestBargainBid: 0,
         bestBargainPlayer: "",
         worstBusterBid: 0,
+        worstBusterBidPct: 0,
         worstBusterPts: 0,
         worstBusterPtsPerDollar: null,
         worstBusterPlayer: ""
       };
     });
 
+    // Checkpoint 3 — Read parent tx.bidAmount and child ADD item playerId/toTeamId
     var addEvents = [];
     var dropEvents = [];
+    var paidWaiverCount = 0;
+    var busterCandidateCount = 0;
+    var busterFloor = Math.ceil(annualFaabBudget * 0.25);
+
     rawTxs.forEach(function(tx) {
       if (!tx || String(tx.status || "").toUpperCase() !== "EXECUTED") return;
       var txType = String(tx.type || "").toUpperCase();
       var wk = Math.max(1, Number(tx.scoringPeriodId || tx.matchupPeriodId) || 1);
-      var bid = Math.max(0, Number(tx.bidAmount) || 0);
+      var bid = Math.max(0, Number(tx.bidAmount || 0));
       var ts = Number(tx.processDate || tx.proposedDate) || 0;
       (Array.isArray(tx.items) ? tx.items : []).forEach(function(it) {
         var itType = String((it && it.type) || "").toUpperCase();
-        var pid = Number(it && it.playerId) || 0;
-        if (pid <= 0) return;
-        if (itType === "ADD" && (txType.indexOf("WAIVER") !== -1 || txType.indexOf("FREEAGENT") !== -1 || it.toTeamId)) {
+        var pidStr = String((it && it.playerId) || "").trim();
+        if (!pidStr || pidStr === "0") return;
+        if (itType === "ADD" && (txType === "WAIVER" || txType === "FREEAGENT" || txType.indexOf("WAIVER") !== -1 || txType.indexOf("FREEAGENT") !== -1)) {
           var toMgr = slotMap[String(it.toTeamId || tx.teamId)] || "";
-          if (toMgr) addEvents.push({ mgrId: toMgr, pid: pid, bid: bid, wk: wk, ts: ts });
+          if (toMgr) {
+            addEvents.push({ mgrId: toMgr, pid: pidStr, bid: bid, wk: wk, ts: ts, isWaiver: txType.indexOf("WAIVER") !== -1 });
+          }
         } else if (itType === "DROP" || (itType === "TRADE" && it.fromTeamId)) {
           var fromMgr = slotMap[String(it.fromTeamId || tx.teamId)] || "";
-          if (fromMgr) dropEvents.push({ mgrId: fromMgr, pid: pid, wk: wk, ts: ts });
+          if (fromMgr) dropEvents.push({ mgrId: fromMgr, pid: pidStr, wk: wk, ts: ts });
         }
       });
     });
@@ -3212,7 +4193,6 @@ function autoWeeklyEspnSync() {
     dropEvents.sort(function(a, b) { return (a.wk - b.wk) || (a.ts - b.ts); });
 
     var bargainCap = Math.max(0, Math.round(annualFaabBudget * 0.02));
-    var busterFloor = Math.ceil(annualFaabBudget * 0.25);
     var hasWkBox = Object.keys(weeklyPtsByPid).length > 0;
     var executedClaims = [];
     addEvents.forEach(function(ad) {
@@ -3227,21 +4207,26 @@ function autoWeeklyEspnSync() {
         }
       }
       var endWk = nextDrop ? nextDrop.wk : 18;
-      var rPts = 0;
+      // Checkpoint 4 — Normalized String(playerId) join & explicit 0.0-point validity
+      var rPts = 0.0;
       if (hasWkBox && weeklyPtsByPid[ad.pid]) {
-        for (var w = ad.wk; w < endWk; w++) rPts += Number(weeklyPtsByPid[ad.pid][w] || 0);
-        if (ad.wk === endWk && weeklyPtsByPid[ad.pid][ad.wk]) rPts += Number(weeklyPtsByPid[ad.pid][ad.wk] || 0);
+        for (var w = ad.wk; w < endWk; w++) {
+          var wVal = weeklyPtsByPid[ad.pid][w];
+          if (wVal !== undefined && wVal !== null && !isNaN(Number(wVal))) rPts += Number(wVal);
+        }
+        if (ad.wk === endWk && weeklyPtsByPid[ad.pid][ad.wk] !== undefined) {
+          rPts += Number(weeklyPtsByPid[ad.pid][ad.wk]) || 0;
+        }
       }
       rPts = Math.round(rPts * 10) / 10;
-      var pName = "Player #" + ad.pid;
-      Object.keys(ed.rosters || {}).forEach(function(mKey) {
-        (ed.rosters[mKey] || []).forEach(function(rp) {
-          if (Number(rp.espnId) === ad.pid && rp.name) pName = rp.name;
-        });
-      });
+      var pName = (playerMetaByPid[ad.pid] && playerMetaByPid[ad.pid].name) || ("Player #" + ad.pid);
+      var bidPct = annualFaabBudget > 0 ? Math.round((ad.bid / annualFaabBudget) * 1000) / 10 : 0;
+
       if (ad.bid === 0) tRec.zeroDollarAdds += 1;
-      if (ad.bid > tRec.maxSingleBid) {
+      if (ad.bid > 0) paidWaiverCount += 1;
+      if (ad.bid > 0 && ad.bid > tRec.maxSingleBid) {
         tRec.maxSingleBid = ad.bid;
+        tRec.maxSingleBidPct = bidPct;
         tRec.maxBidPlayer = pName;
       }
       tRec.totalWaiverPts = Math.round((tRec.totalWaiverPts + rPts) * 10) / 10;
@@ -3251,10 +4236,12 @@ function autoWeeklyEspnSync() {
         tRec.bestBargainPlayer = pName;
       }
       if (ad.bid >= busterFloor) {
-        var ppd = Math.round((rPts / Math.max(1, ad.bid)) * 100) / 100;
-        if (tRec.worstBusterPtsPerDollar === null || ppd < tRec.worstBusterPtsPerDollar) {
+        busterCandidateCount += 1;
+        var ppd = Math.round((rPts / Math.max(1, ad.bid)) * 1000) / 1000;
+        if (tRec.worstBusterPtsPerDollar === null || ppd < tRec.worstBusterPtsPerDollar || (ppd === tRec.worstBusterPtsPerDollar && ad.bid > tRec.worstBusterBid)) {
           tRec.worstBusterPtsPerDollar = ppd;
           tRec.worstBusterBid = ad.bid;
+          tRec.worstBusterBidPct = bidPct;
           tRec.worstBusterPts = rPts;
           tRec.worstBusterPlayer = pName;
         }
@@ -3264,6 +4251,7 @@ function autoWeeklyEspnSync() {
         playerId: "espn_p_" + ad.pid,
         playerName: pName,
         bid: ad.bid,
+        bidPct: bidPct,
         addWeek: ad.wk,
         dropWeek: nextDrop ? nextDrop.wk : null,
         rosteredPts: rPts
@@ -3276,6 +4264,12 @@ function autoWeeklyEspnSync() {
       budget: annualFaabBudget,
       hasExecutedClaims: executedClaims.length > 0,
       usedRosFallback: !hasWkBox,
+      health: {
+        budget: annualFaabBudget,
+        paidWaiverCount: paidWaiverCount,
+        busterCandidateCount: busterCandidateCount,
+        sweptWeeks: maxSweepSp
+      },
       teams: faabTeamsMap,
       claims: executedClaims.slice(0, 250)
     };
@@ -3304,7 +4298,8 @@ function autoWeeklyEspnSync() {
       faab: seasonFaabObj,
       matchups: syncedSeasonMatchups.length > 0 ? syncedSeasonMatchups : (prevSeasonObj.matchups || []),
       keptPlayers: syncedKeptPlayerList.length > 0 ? syncedKeptPlayerList : (Array.isArray(prevSeasonObj.keptPlayers) ? prevSeasonObj.keptPlayers : []),
-      draftPicks: Array.isArray(prevSeasonObj.draftPicks) ? prevSeasonObj.draftPicks : undefined
+      draftPicks: Array.isArray(prevSeasonObj.draftPicks) ? prevSeasonObj.draftPicks : undefined,
+      archivedRecaps: prevSeasonObj.archivedRecaps || undefined
     };
     ed.seasonStandings[String(seasonYr)] = rawTeamRows;
 
