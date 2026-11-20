@@ -2523,7 +2523,7 @@
       <footer id="appFooterShell" class="hidden border-t border-white/[0.06] pt-4 pb-2 mt-6 no-print">
         <div class="flex flex-col sm:flex-row items-center justify-between gap-2 text-[11px] text-slate-400">
           <div class="flex items-center gap-2">
-            <span class="font-bold text-slate-400">Gamecock Mafia League Hub &amp; Draft Tracker v13.0.2</span>
+            <span class="font-bold text-slate-400">Gamecock Mafia League Hub &amp; Draft Tracker v13.0.3</span>
             <span>•</span>
             <span>Est. 2016</span>
           </div>
@@ -3907,7 +3907,7 @@
       <div class="flex items-start justify-between gap-3 border-b border-white/[0.08] pb-3">
         <div>
           <div class="flex flex-wrap items-center gap-2 mb-1">
-            <span class="static-badge bg-indigo-950 text-indigo-300 border border-indigo-500/50">✦ Gemini 2.5 Flash • Anti-Slop Engine</span>
+            <span class="static-badge bg-indigo-950 text-indigo-300 border border-indigo-500/50">✦ Gemini 3.8 Flash • Anti-Slop Engine</span>
             <span id="aiVoiceKeyStatusBadge" class="static-badge bg-[#0B0D12] text-slate-300 border border-white/15">Checking Key...</span>
           </div>
           <h3 class="text-base sm:text-lg font-black text-white">Commissioner AI Voice &amp; League Lore Settings</h3>
@@ -8738,7 +8738,7 @@
       }
     ];
 
-    const APP_BUILD_VERSION = "13.0.2";
+    const APP_BUILD_VERSION = "13.0.3";
 
     function getRoundsForYear(year) {
       const yr = Number(year) || 2027;
@@ -10336,7 +10336,7 @@
       };
 
       const out = {
-        version: "13.0.2",
+        version: "13.0.3",
         deletedSeedTradeIds: Array.isArray(raw.deletedSeedTradeIds) ? raw.deletedSeedTradeIds.slice(0, 200).map(safeId).filter(Boolean) : [],
         updatedAt: Number(raw.updatedAt) > 0 ? Number(raw.updatedAt) : 0,
         baseUpcomingYear: Math.min(2035, Math.max(2026, Number(raw.baseUpcomingYear) || 2027)),
@@ -37445,7 +37445,7 @@
                 <i class="fa-solid ${hasKey ? 'fa-shield-check' : 'fa-key'} mr-1"></i>
                 ${hasKey ? "Server-Side GEMINI_API_KEY Verified in Apps Script Properties" : "30-Second Key Setup (Zero Client Exposure)"}
               </span>
-              <span class="text-[10px] font-mono text-slate-400">Model: gemini-2.5-flash</span>
+              <span class="text-[10px] font-mono text-slate-400">Model: gemini-3.8-flash</span>
             </div>
             <p class="text-[11px] text-slate-400 leading-relaxed">
               Your Gemini API key is stored <strong class="text-white">strictly</strong> in Google Apps Script (<span class="font-mono text-slate-200">Extensions → Apps Script → Project Settings → Script Properties → GEMINI_API_KEY</span>) and never sent to browsers or GitHub.
@@ -38146,7 +38146,7 @@
       }
       if (statusEl) {
         statusEl.className = "text-[11px] font-semibold text-indigo-300";
-        statusEl.textContent = "Resolving managers, players & rolling-window draft picks with Gemini 2.5 Flash...";
+        statusEl.textContent = "Resolving managers, players & rolling-window draft picks with Gemini 3.8 Flash...";
       }
 
       // Send compact roster hints so abbreviations like AJB / D. Monty resolve to exact rostered players

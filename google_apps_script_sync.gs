@@ -360,7 +360,8 @@ function appendServerActivityEvent(stateObj, evtType, title, detail, meta) {
 /* ============================================================================
  * WAVE 4 (v13.0.0) NATIVE GEMINI AI ENGINE — TONE PRESETS, ANTI-SLOP & CACHE
  * ============================================================================ */
-var GEMINI_MODEL_NAME = "gemini-2.5-flash";
+var GEMINI_MODEL_NAME = "gemini-3.8-flash";
+var GEMINI_FALLBACK_MODELS = ["gemini-flash-latest", "gemini-3.6-flash", "gemini-2.5-flash"];
 var AI_CACHE_MAX_BYTES = 35000;
 var AI_MEMBER_HOURLY_LIMIT = 25;
 
@@ -620,7 +621,14 @@ function callGeminiStructuredJson_(stateObj, taskDirective, telemetryPayload, re
     sysParts.push("TASK INSTRUCTIONS:\n" + taskDirective);
   }
 
-  var endpoint = "https://generativelanguage.googleapis.com/v1beta/models/" + GEMINI_MODEL_NAME + ":generateContent";
+  var overrideModel = props ? String(props.getProperty("GEMINI_MODEL") || "").trim() : "";
+  var candidateModels = [];
+  if (overrideModel) candidateModels.push(overrideModel);
+  if (candidateModels.indexOf(GEMINI_MODEL_NAME) === -1) candidateModels.push(GEMINI_MODEL_NAME);
+  (GEMINI_FALLBACK_MODELS || []).forEach(function(m) {
+    if (m && candidateModels.indexOf(m) === -1) candidateModels.push(m);
+  });
+
   var reqPayload = {
     systemInstruction: {
       parts: [{ text: sysParts.join("\n\n") }]
@@ -638,15 +646,25 @@ function callGeminiStructuredJson_(stateObj, taskDirective, telemetryPayload, re
     }
   };
 
-  var resp = UrlFetchApp.fetch(endpoint, {
-    method: "post",
-    contentType: "application/json",
-    headers: { "x-goog-api-key": apiKey },
-    payload: JSON.stringify(reqPayload),
-    muteHttpExceptions: true
-  });
-  var code = resp.getResponseCode();
-  var text = resp.getContentText();
+  var code = 0;
+  var text = "";
+  var activeModel = candidateModels[0] || GEMINI_MODEL_NAME;
+  for (var mi = 0; mi < candidateModels.length; mi++) {
+    activeModel = candidateModels[mi];
+    var endpoint = "https://generativelanguage.googleapis.com/v1beta/models/" + encodeURIComponent(activeModel) + ":generateContent";
+    var resp = UrlFetchApp.fetch(endpoint, {
+      method: "post",
+      contentType: "application/json",
+      headers: { "x-goog-api-key": apiKey },
+      payload: JSON.stringify(reqPayload),
+      muteHttpExceptions: true
+    });
+    code = resp.getResponseCode();
+    text = resp.getContentText();
+    if (code >= 200 && code < 300) break;
+    if (code !== 404) break;
+  }
+
   if (code < 200 || code >= 300) {
     var apiErrMsg = "";
     try {
@@ -660,13 +678,23 @@ function callGeminiStructuredJson_(stateObj, taskDirective, telemetryPayload, re
     return {
       ok: false,
       code: "GEMINI_HTTP_" + code,
-      error: "Gemini API HTTP " + code + ": " + (apiErrMsg || String(text || "").slice(0, 220)) + hint
+      error: "Gemini API HTTP " + code + " (" + activeModel + "): " + (apiErrMsg || String(text || "").slice(0, 220)) + hint
     };
   }
 
   var outer = JSON.parse(text);
   var cand = outer && outer.candidates && outer.candidates[0];
-  var rawPart = cand && cand.content && cand.content.parts && cand.content.parts[0] && cand.content.parts[0].text;
+  var respParts = (cand && cand.content && Array.isArray(cand.content.parts)) ? cand.content.parts : [];
+  var rawPart = "";
+  for (var pi = 0; pi < respParts.length; pi++) {
+    var pt = respParts[pi];
+    if (pt && !pt.thought && typeof pt.text === "string" && pt.text.trim()) {
+      rawPart = pt.text;
+    }
+  }
+  if (!rawPart && respParts[0] && typeof respParts[0].text === "string") {
+    rawPart = respParts[0].text;
+  }
   if (!rawPart) {
     return { ok: false, code: "GEMINI_EMPTY_RESPONSE", error: "Gemini returned an empty response." };
   }
@@ -691,7 +719,7 @@ function callGeminiStructuredJson_(stateObj, taskDirective, telemetryPayload, re
   return {
     ok: true,
     data: parsed,
-    model: GEMINI_MODEL_NAME,
+    model: activeModel,
     tonePreset: presetKey,
     toneName: presetObj.name
   };
@@ -701,7 +729,7 @@ function callGeminiStructuredJson_(stateObj, taskDirective, telemetryPayload, re
  * 1-CLICK COMMISSIONER DIAGNOSTIC:
  * Select "testGeminiConnection" in the Apps Script function dropdown and click Run.
  * 1. Triggers Google's OAuth consent popup if UrlFetchApp external requests need authorization.
- * 2. Verifies GEMINI_API_KEY in Script Properties against Gemini 2.5 Flash using x-goog-api-key.
+ * 2. Verifies GEMINI_API_KEY in Script Properties against Gemini 3.8 Flash (with auto-fallback) using x-goog-api-key.
  */
 function testGeminiConnection() {
   var props = PropertiesService.getScriptProperties();
@@ -711,23 +739,40 @@ function testGeminiConnection() {
     return;
   }
   Logger.log("🔑 Found GEMINI_API_KEY (prefix: " + apiKey.slice(0, 4) + "..., length: " + apiKey.length + ")");
-  var endpoint = "https://generativelanguage.googleapis.com/v1beta/models/" + GEMINI_MODEL_NAME + ":generateContent";
-  var resp = UrlFetchApp.fetch(endpoint, {
-    method: "post",
-    contentType: "application/json",
-    headers: { "x-goog-api-key": apiKey },
-    payload: JSON.stringify({
-      contents: [{ role: "user", parts: [{ text: "Reply with the two words: GAMECOCK READY" }] }]
-    }),
-    muteHttpExceptions: true
+  var overrideModel = props ? String(props.getProperty("GEMINI_MODEL") || "").trim() : "";
+  var testModels = [];
+  if (overrideModel) testModels.push(overrideModel);
+  if (testModels.indexOf(GEMINI_MODEL_NAME) === -1) testModels.push(GEMINI_MODEL_NAME);
+  (GEMINI_FALLBACK_MODELS || []).forEach(function(m) {
+    if (m && testModels.indexOf(m) === -1) testModels.push(m);
   });
-  var code = resp.getResponseCode();
-  var bodyTxt = resp.getContentText();
+
+  var code = 0;
+  var bodyTxt = "";
+  var usedModel = testModels[0];
+  for (var ti = 0; ti < testModels.length; ti++) {
+    usedModel = testModels[ti];
+    var endpoint = "https://generativelanguage.googleapis.com/v1beta/models/" + encodeURIComponent(usedModel) + ":generateContent";
+    var resp = UrlFetchApp.fetch(endpoint, {
+      method: "post",
+      contentType: "application/json",
+      headers: { "x-goog-api-key": apiKey },
+      payload: JSON.stringify({
+        contents: [{ role: "user", parts: [{ text: "Reply with the two words: GAMECOCK READY" }] }]
+      }),
+      muteHttpExceptions: true
+    });
+    code = resp.getResponseCode();
+    bodyTxt = resp.getContentText();
+    if (code >= 200 && code < 300) break;
+    if (code !== 404) break;
+  }
+
   if (code >= 200 && code < 300) {
-    Logger.log("✅ SUCCESS (HTTP " + code + ")! Gemini 2.5 Flash is connected and authorized.");
+    Logger.log("✅ SUCCESS (HTTP " + code + ")! " + usedModel + " is connected and authorized.");
     Logger.log("Response preview: " + String(bodyTxt).slice(0, 260));
   } else {
-    Logger.log("❌ FAILED (HTTP " + code + "): " + String(bodyTxt).slice(0, 500));
+    Logger.log("❌ FAILED (HTTP " + code + " on " + usedModel + "): " + String(bodyTxt).slice(0, 500));
     if (code === 401 || code === 403) {
       Logger.log("👉 FIX: Open Google Cloud Console -> APIs & Services -> Credentials -> click your API key -> under API restrictions select 'Generative Language API' (NOT 'Gemini API'), OR generate a fresh key in a new project on aistudio.google.com/apikey.");
     }
