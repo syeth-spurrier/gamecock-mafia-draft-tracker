@@ -145,6 +145,26 @@ function listSnapshotsFromSheet(stateSheet) {
   return out;
 }
 
+var PIN_SALT_GAS = "gcm_v4_salt:";
+var PIN_VERIFIER_SALT_GAS = "gcm_pin_verifier_v5:";
+var CO_COMMISH_VERIFIER_SALT_GAS = "gcm_cocommish_verifier_v12:";
+
+function sha256HexGas_(inputStr) {
+  var rawBytes = Utilities.computeDigest(
+    Utilities.DigestAlgorithm.SHA_256,
+    String(inputStr || ""),
+    Utilities.Charset.UTF_8
+  );
+  var hex = [];
+  for (var i = 0; i < rawBytes.length; i++) {
+    var b = rawBytes[i];
+    if (b < 0) b += 256;
+    var h = b.toString(16);
+    hex.push(h.length === 1 ? "0" + h : h);
+  }
+  return hex.join("");
+}
+
 function getExpectedPassHash(storedState) {
   if (storedState && storedState.leaguePassphraseHash && /^[a-f0-9]{64}$/i.test(storedState.leaguePassphraseHash)) {
     return storedState.leaguePassphraseHash.toLowerCase();
@@ -165,18 +185,45 @@ function isAuthorizedCommishOrCoCommish(storedState, body) {
   if (!provided || !/^[a-f0-9]{64}$/i.test(provided)) {
     return { authorized: false, isMasterCommish: false, isCoCommish: false, actorTeamId: actorTid };
   }
+  // 1. Direct wire-hash match against stored commishPinHash (or default)
   if (provided === getExpectedCommishHash(storedState)) {
     return { authorized: true, isMasterCommish: true, isCoCommish: false, actorTeamId: actorTid || "syeth" };
   }
+  // 2. Cryptographic verifier match against stored commishPinVerifier (handles states where commishPinHash was stripped/stale)
+  if (storedState && storedState.commishPinVerifier && /^[a-f0-9]{64}$/i.test(String(storedState.commishPinVerifier))) {
+    var calcMasterVerifier = sha256HexGas_(PIN_VERIFIER_SALT_GAS + provided);
+    if (calcMasterVerifier === String(storedState.commishPinVerifier).toLowerCase()) {
+      storedState.commishPinHash = provided; // Auto-heal stored wire hash for subsequent saves
+      return { authorized: true, isMasterCommish: true, isCoCommish: false, actorTeamId: actorTid || "syeth" };
+    }
+  }
   var coList = (storedState && Array.isArray(storedState.coCommissioners)) ? storedState.coCommissioners : [];
   var coHashes = (storedState && storedState.coCommishPinHashes && typeof storedState.coCommishPinHashes === "object") ? storedState.coCommishPinHashes : {};
-  if (actorTid && coList.indexOf(actorTid) !== -1 && coHashes[actorTid] && String(coHashes[actorTid]).toLowerCase() === provided) {
+  var coVerifiers = (storedState && storedState.coCommishPinVerifiers && typeof storedState.coCommishPinVerifiers === "object") ? storedState.coCommishPinVerifiers : {};
+
+  function matchesCoCommish_(cid) {
+    if (!cid || coList.indexOf(cid) === -1) return false;
+    if (coHashes[cid] && String(coHashes[cid]).toLowerCase() === provided) return true;
+    if (coVerifiers[cid] && /^[a-f0-9]{64}$/i.test(String(coVerifiers[cid]))) {
+      var calcCoVer = sha256HexGas_(CO_COMMISH_VERIFIER_SALT_GAS + cid + ":" + provided);
+      if (calcCoVer === String(coVerifiers[cid]).toLowerCase()) {
+        if (!storedState.coCommishPinHashes || typeof storedState.coCommishPinHashes !== "object") {
+          storedState.coCommishPinHashes = {};
+        }
+        storedState.coCommishPinHashes[cid] = provided;
+        return true;
+      }
+    }
+    return false;
+  }
+
+  if (actorTid && matchesCoCommish_(actorTid)) {
     return { authorized: true, isMasterCommish: false, isCoCommish: true, actorTeamId: actorTid };
   }
   // Fallback scan if actorTeamId wasn't explicitly passed on a legacy payload
   for (var i = 0; i < coList.length; i++) {
     var cid = String(coList[i] || "").toLowerCase();
-    if (cid && coHashes[cid] && String(coHashes[cid]).toLowerCase() === provided) {
+    if (matchesCoCommish_(cid)) {
       return { authorized: true, isMasterCommish: false, isCoCommish: true, actorTeamId: cid };
     }
   }
@@ -776,6 +823,57 @@ function testGeminiConnection() {
     if (code === 401 || code === 403) {
       Logger.log("👉 FIX: Open Google Cloud Console -> APIs & Services -> Credentials -> click your API key -> under API restrictions select 'Generative Language API' (NOT 'Gemini API'), OR generate a fresh key in a new project on aistudio.google.com/apikey.");
     }
+  }
+}
+
+/**
+ * 1-CLICK COMMISSIONER PIN DIAGNOSTIC & SYNC:
+ * - Run as-is to check whether Google Sheets' commishPinHash & commishPinVerifier match each other.
+ * - To force-sync a specific PIN into Google Sheets safely (without leaving plaintext anywhere):
+ *     1. Project Settings -> Script Properties -> Add property COMMISH_PIN_OVERRIDE = <your desired 4-16 char PIN>
+ *     2. Select "syncCommishPinFromProperty" and click Run.
+ *     3. Both commishPinHash & commishPinVerifier are saved to LIVE_STATE_JSON and COMMISH_PIN_OVERRIDE is auto-deleted!
+ */
+function syncCommishPinFromProperty() {
+  var ss = SpreadsheetApp.getActiveSpreadsheet();
+  var sheets = ensureSheetsExist(ss);
+  var stored = readStoredState(sheets.stateSheet);
+  if (!stored || !Array.isArray(stored.teams)) {
+    Logger.log("❌ Google Sheet LIVE_STATE_JSON is empty. Seed it from the app first.");
+    return;
+  }
+  var props = PropertiesService.getScriptProperties();
+  var overridePin = props ? String(props.getProperty("COMMISH_PIN_OVERRIDE") || "").trim() : "";
+
+  if (overridePin) {
+    if (overridePin.length < 4 || overridePin.length > 16) {
+      Logger.log("❌ COMMISH_PIN_OVERRIDE must be 4 to 16 characters.");
+      return;
+    }
+    var wireHash = sha256HexGas_(PIN_SALT_GAS + overridePin);
+    var verifier = sha256HexGas_(PIN_VERIFIER_SALT_GAS + wireHash);
+    stored.commishPinHash = wireHash;
+    stored.commishPinVerifier = verifier;
+    stored.updatedAt = Date.now();
+    saveAndMirrorToSheets(sheets, stored, "SYNC_COMMISH_PIN_OVERRIDE");
+    props.deleteProperty("COMMISH_PIN_OVERRIDE");
+    Logger.log("✅ Synced new Commissioner PIN hash + verifier into Google Sheets and auto-deleted COMMISH_PIN_OVERRIDE!");
+    Logger.log("👉 Now refresh the app (Ctrl+Shift+R) and unlock Commissioner Mode with that PIN.");
+    return;
+  }
+
+  var storedHash = stored.commishPinHash ? String(stored.commishPinHash).toLowerCase() : "";
+  var storedVer = stored.commishPinVerifier ? String(stored.commishPinVerifier).toLowerCase() : "";
+  var expectedHash = getExpectedCommishHash(stored);
+  var calcVerFromHash = sha256HexGas_(PIN_VERIFIER_SALT_GAS + expectedHash);
+  Logger.log("🔍 Sheet PIN Status:");
+  Logger.log("  • Has stored commishPinHash: " + Boolean(storedHash) + (storedHash === DEFAULT_COMMISH_PIN_HASH ? " (DEFAULT)" : (storedHash ? " (CUSTOM)" : " (MISSING — falls back to DEFAULT)")));
+  Logger.log("  • Has stored commishPinVerifier: " + Boolean(storedVer));
+  Logger.log("  • Hash & Verifier match each other: " + (storedVer ? (calcVerFromHash === storedVer) : "N/A"));
+  if (storedVer && calcVerFromHash !== storedVer) {
+    Logger.log("💡 Detected desync (stored commishPinHash was missing/stale vs commishPinVerifier). With v13.0.4+, simply saving from the app while unlocked will now auto-heal it automatically!");
+  } else {
+    Logger.log("💡 If your browser PIN still differs, temporarily add Script Property COMMISH_PIN_OVERRIDE = <your PIN> and re-run syncCommishPinFromProperty().");
   }
 }
 
